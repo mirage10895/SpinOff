@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeContainer"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cardList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="true" />
+
+        <RelativeLayout
+            android:id="@+id/no_media_display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="20dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgNoMedia"
+                android:layout_width="wrap_content"
+                android:layout_height="110dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="14dp"
+                android:src="@drawable/no_data" />
+
+            <TextView
+                android:id="@+id/tvListNothing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgNoMedia"
+                android:layout_marginBottom="14dp"
+                android:gravity="center"
+                android:text="@string/empty_results"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvListNothing2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvListNothing"
+                android:gravity="center"
+                android:text="@string/empty_desc_results"
+                android:textColor="@color/colorPrimary" />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/filterKing"
+            android:layout_width="300dp"
+            android:layout_height="500dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:elevation="10dp"
+            android:translationZ="4dp"
+            android:visibility="gone">
+
+        </FrameLayout>
+    </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
