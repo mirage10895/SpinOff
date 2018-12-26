@@ -16,11 +16,13 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
@@ -57,7 +59,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         ctx = view.getContext();
         db = AppDatabase.getAppDatabase(ctx);
 
-        setDbMovies(db.moviesDAO().getAll());
+        setDbMovies(DatabaseTransactionManager.getAllMovies(db));
 
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -92,8 +94,10 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_delete:
-                db.moviesDAO().deleteMovie(Content.currentMovie);
-                setDbMovies(db.moviesDAO().getAll());
+                DatabaseTransactionManager.deleteMovie(db, Content.currentMovie);
+                setDbMovies(this.movies.stream()
+                        .filter(movie -> movie.getId() != Content.currentMovie.getId())
+                        .collect(Collectors.toList()));
                 return true;
             default:
                 break;

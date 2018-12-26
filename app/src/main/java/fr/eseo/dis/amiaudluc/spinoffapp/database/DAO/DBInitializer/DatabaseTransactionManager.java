@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,27 +31,121 @@ public class DatabaseTransactionManager {
         taskDB.execute();
     }
 
+    public static void deleteSerie(final AppDatabase db, Serie serie) {
+        new Thread(() -> db.seriesDAO().deleteSerie(serie)).start();
+        Log.i(TAG, "Serie deleted -> "+ serie.getName());
+    }
+
+    public static List<Integer> getAllMovieIds(final AppDatabase db) {
+        GetAllMovieIds getAllMovieIds = new GetAllMovieIds(db);
+        try {
+            AsyncTask<String, Boolean, List<Integer>> kk = getAllMovieIds.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<Movie> getAllMovies(final AppDatabase db) {
+        GetAllMovies getAllMovies = new GetAllMovies(db);
+        try {
+            AsyncTask<String, Boolean, List<Movie>> kk = getAllMovies.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<Integer> getAllSerieIds(final AppDatabase db) {
+        GetAllSerieIds getAllSerieIds = new GetAllSerieIds(db);
+        try {
+            AsyncTask<String, Boolean, List<Integer>> kk = getAllSerieIds.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public static List<Serie> getAllSeries(final AppDatabase db) {
+        GetAllSeries getAllSeries = new GetAllSeries(db);
+        try {
+            AsyncTask<String, Boolean, List<Serie>> kk = getAllSeries.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public static Serie getSerieById(final AppDatabase db, int id) {
+        GetSerieById getSerieById = new GetSerieById(db, id);
+        try {
+            AsyncTask<String, Boolean, Serie> kk = getSerieById.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<Season> getAllSeasons(final AppDatabase db) {
+        GetAllSeasons getAllSeasons = new GetAllSeasons(db);
+        try {
+            AsyncTask<String, Boolean, List<Season>> kk = getAllSeasons.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public static Season getSeasonById(final AppDatabase db, int id) {
+        GetSeasonById getSeasonById = new GetSeasonById(db, id);
+        try {
+            AsyncTask<String, Boolean, Season> kk = getSeasonById.execute();
+            return kk.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void addMovie(final AppDatabase db, Movie movie){
         new Thread(() -> db.moviesDAO().insertMovie(movie)).start();
     }
 
-    public static void delete(final AppDatabase db, Media media) {
-        Delete taskDelete = null;
-        if (Objects.equals(media.getMediaType(), Media.MOVIE)){
-            taskDelete = new Delete(db,(Movie) media);
-        }else if (media.getMediaType().equals(Media.SERIE)){
-            taskDelete = new Delete(db,(Serie) media);
-        }
-        if (taskDelete != null) {
-            taskDelete.execute();
-        }
+    public static void addSeason(final AppDatabase db, Season season){
+        new Thread(() -> db.seasonDAO().insertSeason(season)).start();
+        new Thread(() -> db.episodesDAO().insertAll(season.getEpisodes()));
     }
 
-    private static class Get extends AsyncTask<String, Void, List<Movie>> {
+    public static void deleteMovie(final AppDatabase db, Movie movie) {
+        new Thread(() -> db.moviesDAO().deleteMovie(movie)).start();
+        Log.i(TAG, "Movie deleted -> "+ movie.getTitle());
+    }
+
+    private static class GetAllMovieIds extends AsyncTask<String, Boolean, List<Integer>> {
 
         private final AppDatabase mDb;
 
-        Get(AppDatabase db) {
+        GetAllMovieIds(AppDatabase db) {
+            mDb = db;
+        }
+
+        @Override
+        protected List<Integer> doInBackground(String... strings) {
+            return mDb.moviesDAO().getAllIds();
+        }
+    }
+
+    private static class GetAllMovies extends AsyncTask<String, Boolean, List<Movie>> {
+
+        private final AppDatabase mDb;
+
+        GetAllMovies(AppDatabase db) {
             mDb = db;
         }
 
@@ -60,38 +155,77 @@ public class DatabaseTransactionManager {
         }
     }
 
-    private static class Delete extends AsyncTask<Void, Void, Void> {
+    private static class GetAllSerieIds extends AsyncTask<String, Boolean, List<Integer>> {
 
         private final AppDatabase mDb;
 
-        private Serie serie;
-
-        private Movie movie;
-
-        Delete(AppDatabase db, Serie serie) {
+        GetAllSerieIds(AppDatabase db) {
             mDb = db;
-            this.serie = serie;
-        }
-
-        Delete(AppDatabase db, Movie movie) {
-            mDb = db;
-            this.movie = movie;
         }
 
         @Override
-        protected Void doInBackground(Void... strings) {
-            if (movie != null){
-                mDb.moviesDAO().deleteMovie(movie);
-            }
-            if (serie != null){
-                mDb.seriesDAO().deleteSerie(serie);
-            }
-            return null;
+        protected List<Integer> doInBackground(String... strings) {
+            return mDb.seriesDAO().getAllIds();
+        }
+    }
+
+    private static class GetAllSeries extends AsyncTask<String, Boolean, List<Serie>> {
+
+        private final AppDatabase mDb;
+
+        GetAllSeries(AppDatabase db) {
+            mDb = db;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected List<Serie> doInBackground(String... strings) {
+            return mDb.seriesDAO().getAll();
+        }
+    }
+
+    private static class GetSerieById extends AsyncTask<String, Boolean, Serie> {
+
+        private final AppDatabase mDb;
+        private final int id;
+
+        GetSerieById(AppDatabase db, int id) {
+            mDb = db;
+            this.id = id;
+        }
+
+        @Override
+        protected Serie doInBackground(String... strings) {
+            return mDb.seriesDAO().getSerieById(id);
+        }
+    }
+
+    private static class GetAllSeasons extends AsyncTask<String, Boolean, List<Season>> {
+
+        private final AppDatabase mDb;
+
+        GetAllSeasons(AppDatabase db) {
+            mDb = db;
+        }
+
+        @Override
+        protected List<Season> doInBackground(String... strings) {
+            return mDb.seasonDAO().getAll();
+        }
+    }
+
+    private static class GetSeasonById extends AsyncTask<String, Boolean, Season> {
+
+        private final AppDatabase mDb;
+        private final int id;
+
+        GetSeasonById(AppDatabase db, int id) {
+            mDb = db;
+            this.id = id;
+        }
+
+        @Override
+        protected Season doInBackground(String... strings) {
+            return mDb.seasonDAO().getSeasonById(id);
         }
     }
 
@@ -131,8 +265,7 @@ public class DatabaseTransactionManager {
                         episode.setIdSeason(seasonFromSerie.getId());
                     }
                     seasonFromSerie.setEpisodes(tmp.getEpisodes());
-                    mDb.seasonDAO().insertSeason(seasonFromSerie);
-                    mDb.episodesDAO().insertAll(seasonFromSerie.getEpisodes());
+                    DatabaseTransactionManager.addSeason(mDb, seasonFromSerie);
                 }
             }
         }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,8 +45,8 @@ public class DashboardFragment extends Fragment {
         TextView seriesLength = view.findViewById(R.id.series_length);
         TextView moviesLength = view.findViewById(R.id.movies_length);
 
-        seriesCunt.setText(db.seriesDAO().getAll().size()+"");
-        moviesCunt.setText(db.moviesDAO().getAll().size()+"");
+        seriesCunt.setText(String.valueOf(DatabaseTransactionManager.getAllSeries(db).size()));
+        moviesCunt.setText(String.valueOf(DatabaseTransactionManager.getAllMovies(db).size()));
 
         return view;
     }
