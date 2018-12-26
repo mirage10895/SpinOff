@@ -1,7 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.Utils;
 
-import android.util.Log;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,10 +28,9 @@ public class DateUtils {
     public static String toString(Date date){
         Calendar cal = Calendar.getInstance(Locale.US);
         cal.setTime(date);
-        String dateRes = String.valueOf(cal.get(Calendar.DATE))
+        return String.valueOf(cal.get(Calendar.DATE))
                 .concat(" - "+String.valueOf(cal.get(Calendar.MONTH)+1)
                         .concat(" - "+String.valueOf(cal.get(Calendar.YEAR))));
-        return dateRes;
     }
 
     public static String getStringFromDate(Date date){
@@ -41,7 +38,7 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
-    public static boolean isToday(Date date) {
+    private static boolean isToday(Date date) {
         return android.text.format.DateUtils.isToday(date.getTime());
     }
 

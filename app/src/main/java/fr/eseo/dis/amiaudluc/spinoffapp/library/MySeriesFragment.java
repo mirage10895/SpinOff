@@ -16,11 +16,13 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.series.SeriesAdapter;
@@ -48,7 +50,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
         ctx = view.getContext();
         db = AppDatabase.getAppDatabase(ctx);
 
-        setDbSeries(db.seriesDAO().getAll());
+        setDbSeries(DatabaseTransactionManager.getAllSeries(db));
 
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -82,8 +84,10 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_delete:
-                db.seriesDAO().deleteSerie(Content.currentSerie);
-                setDbSeries(db.seriesDAO().getAll());
+                DatabaseTransactionManager.deleteSerie(db, Content.currentSerie);
+                setDbSeries(this.series.stream()
+                        .filter(serie -> serie.getId() != Content.currentSerie.getId())
+                        .collect(Collectors.toList()));
                 return true;
             default:
                 break;

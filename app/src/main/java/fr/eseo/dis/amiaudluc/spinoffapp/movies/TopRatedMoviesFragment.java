@@ -20,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
 
@@ -111,8 +112,8 @@ public class TopRatedMoviesFragment extends BaseMovieFragment {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_add:
-                if (!db.moviesDAO().getAllIds().contains(Content.currentMovie.getId())) {
-                    db.moviesDAO().insertMovie(Content.currentMovie);
+                if (!DatabaseTransactionManager.getAllMovieIds(db).contains(Content.currentMovie.getId())) {
+                    DatabaseTransactionManager.addMovie(db, Content.currentMovie);
                 }else{
                     Snackbar.make(getView(), "Already added to library", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();

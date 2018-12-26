@@ -105,10 +105,10 @@ public class TopRatedSeriesFragment extends BaseFragment {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_add:
-                if (!db.seriesDAO().getAllIds().contains(Content.currentSerie.getId())) {
+                if (!DatabaseTransactionManager.getAllSerieIds(db).contains(Content.currentSerie.getId())) {
                     DatabaseTransactionManager.addSerieWithSeasons(db,Content.currentSerie);
                 }else{
-                    Snackbar.make(getView(), "Already added to library", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.topRatedSeriesView, "Already added to library", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 return true;

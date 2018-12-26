@@ -20,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.Utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.Utils.LogUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
 
 /**
@@ -59,7 +60,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
             Event event = events.get(position);
 
             if(event.getEpisode() != null){
-                String posterpath = db.seasonDAO().getSeasonById(event.getEpisode().getIdSeason()).getPosterPath();
+                String posterpath = DatabaseTransactionManager.getSeasonById(db, event.getEpisode().getIdSeason()).getPosterPath();
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + posterpath;
                 Picasso.with(ctx).load(link).fit().error(R.drawable.ic_menu_gallery)
                         .into(holder.seriePoster);

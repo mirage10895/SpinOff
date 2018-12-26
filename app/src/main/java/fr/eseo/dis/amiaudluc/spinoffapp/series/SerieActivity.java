@@ -48,15 +48,12 @@ public class SerieActivity extends AppCompatActivity {
         serie=Content.currentSerie;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (db.seriesDAO().getAllIds().contains(serie.getId())){
-                    Snackbar.make(view, "You already got this serie on your library !", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }else{
-                    DatabaseTransactionManager.addSerieWithSeasons(db,Content.currentSerie);
-                }
+        fab.setOnClickListener(view -> {
+            if (DatabaseTransactionManager.getAllSerieIds(db).contains(serie.getId())){
+                Snackbar.make(view, "You already got this serie on your library !", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }else{
+                DatabaseTransactionManager.addSerieWithSeasons(db,Content.currentSerie);
             }
         });
         ActionBar actionBar = getSupportActionBar();

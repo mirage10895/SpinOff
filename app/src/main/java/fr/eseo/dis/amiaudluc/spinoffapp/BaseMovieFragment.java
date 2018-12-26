@@ -1,12 +1,15 @@
 package fr.eseo.dis.amiaudluc.spinoffapp;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
 
@@ -16,19 +19,25 @@ import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
 
 public abstract class BaseMovieFragment extends BaseFragment {
 
-
     protected MoviesAdapter moviesAdapter;
+    private View view;
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        this.view = view;
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_add:
-                if (db.moviesDAO().getAllIds().contains(Content.currentMovie.getId())){
-                    Snackbar.make(getView(),"Movie is already in your library",Snackbar.LENGTH_LONG)
-                            .setAction("Action",null).show();
+                if (DatabaseTransactionManager.getAllMovieIds(db).contains(Content.currentMovie.getId())){
+                    Snackbar.make(this.view, "This movie is already in your library", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }else{
-                    db.moviesDAO().insertMovie(Content.currentMovie);
-                    Snackbar.make(getView(),"Movie added to your library",Snackbar.LENGTH_LONG)
+                    DatabaseTransactionManager.addMovie(db, Content.currentMovie);
+                    Snackbar.make(this.view,"Movie added to your library",Snackbar.LENGTH_LONG)
                             .setAction("Action",null).show();
                 }
                 return true;

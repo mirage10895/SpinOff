@@ -23,6 +23,7 @@ import com.squareup.picasso.Target;
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
@@ -46,11 +47,11 @@ public class MovieActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            if (db.moviesDAO().getAllIds().contains(movie.getId())){
+            if (DatabaseTransactionManager.getAllMovieIds(db).contains(movie.getId())){
                 Snackbar.make(view,"Movie is already in your library",Snackbar.LENGTH_LONG)
                         .setAction("Action",null).show();
             }else{
-                db.moviesDAO().insertMovie(movie);
+                DatabaseTransactionManager.addMovie(db, movie);
                 Snackbar.make(view,"Movie added to your library",Snackbar.LENGTH_LONG)
                         .setAction("Action",null).show();
             }
@@ -129,7 +130,7 @@ public class MovieActivity extends AppCompatActivity {
         private int id;
 
         public String getId() {
-            return id+"";
+            return String.valueOf(id);
         }
 
         public void setId(int id) {
@@ -143,9 +144,8 @@ public class MovieActivity extends AppCompatActivity {
             String args = "&language=en-US&append_to_response=credits,videos";
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("movie",this.getId(),args);
 
-            return jsonStr;
+            return sh.makeServiceCall("movie", this.getId(),args);
         }
 
         @Override

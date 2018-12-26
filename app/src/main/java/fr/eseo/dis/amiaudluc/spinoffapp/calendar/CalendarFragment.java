@@ -25,6 +25,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.Utils.LogUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
@@ -90,8 +91,8 @@ public class CalendarFragment extends Fragment implements SearchInterface {
         public void onItemClick ( int position){
             if (this.type.equals("event")) {
                 Content.currentEpisode = this.today.get(position).getEpisode();
-                Content.currentSeason = db.seasonDAO().getSeasonById(this.today.get(position).getEpisode().getIdSeason());
-                Content.currentSerie = db.seriesDAO().getSerieById(Content.currentSeason.getSerieId());
+                Content.currentSeason = DatabaseTransactionManager.getSeasonById(db, this.today.get(position).getEpisode().getIdSeason());
+                Content.currentSerie = DatabaseTransactionManager.getSerieById(db, Content.currentSeason.getSerieId());
                 Intent intent = new Intent(ctx, EpisodeActivity.class);
                 startActivity(intent);
             }

@@ -19,6 +19,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
 
@@ -57,7 +58,7 @@ public class OnAirSeriesFragment extends BaseFragment {
             mGetSerTask = new OnAirSeriesFragment.GetSeries();
             mGetSerTask.setNo(1);
             mGetSerTask.execute();
-        }else{
+        } else {
             onAirSeriesView.findViewById(R.id.progressBar).setVisibility(View.GONE);
             Content.series.clear();
             Content.series.addAll(WebServiceParser.multiSeriesParser(data));
@@ -85,13 +86,10 @@ public class OnAirSeriesFragment extends BaseFragment {
     private void initializeSwipeContainer(){
         swipeContainer = (SwipeRefreshLayout) onAirSeriesView.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mGetSerTask = new OnAirSeriesFragment.GetSeries();
-                mGetSerTask.setNo(1);
-                mGetSerTask.execute();
-            }
+        swipeContainer.setOnRefreshListener(() -> {
+            mGetSerTask = new GetSeries();
+            mGetSerTask.setNo(1);
+            mGetSerTask.execute();
         });
 
         swipeContainer.setColorSchemeResources(R.color.colorAccent,
@@ -104,10 +102,10 @@ public class OnAirSeriesFragment extends BaseFragment {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_add:
-                if (!db.seriesDAO().getAllIds().contains(Content.currentSerie.getId())) {
-                    db.seriesDAO().insertSerie(Content.currentSerie);
+                if (!DatabaseTransactionManager.getAllSerieIds(db).contains(Content.currentSerie.getId())) {
+                    DatabaseTransactionManager.addSerieWithSeasons(db, Content.currentSerie);
                 }else{
-                    Snackbar.make(getView(), "Already added to library", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.onAirSeriesView, "Already added to library", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 return true;
