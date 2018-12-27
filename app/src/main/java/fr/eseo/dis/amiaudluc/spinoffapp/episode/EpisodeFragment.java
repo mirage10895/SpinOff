@@ -27,7 +27,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.DateUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;

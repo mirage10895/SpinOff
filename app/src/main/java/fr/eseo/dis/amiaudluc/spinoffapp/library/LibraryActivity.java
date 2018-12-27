@@ -2,14 +2,9 @@ package fr.eseo.dis.amiaudluc.spinoffapp.library;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -18,19 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.ConstUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.LogUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;

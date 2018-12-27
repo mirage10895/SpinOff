@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.Utils;
+package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
 import android.app.Notification;
 import android.app.NotificationManager;
