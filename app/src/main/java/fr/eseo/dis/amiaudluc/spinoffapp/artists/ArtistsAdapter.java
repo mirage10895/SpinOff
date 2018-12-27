@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.ConstUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
@@ -27,7 +27,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
     private ArrayList<Artist> artists;
     private final ItemInterface mListener;
     private final Context ctx;
-    private final String type = "realisator";
+    private static final String TYPE = ConstUtils.REALISATOR;
 
     public ArtistsAdapter(Context ctx, ItemInterface listener, ArrayList<Artist> data){
         this.mListener = listener;
@@ -64,8 +64,8 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
         }
     }
 
-    public String getType() {
-        return type;
+    public static String getType() {
+        return TYPE;
     }
 
     @Override

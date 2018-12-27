@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.Utils;
+package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
 import android.util.Log;
 

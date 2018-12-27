@@ -14,6 +14,7 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.Tools;
 
 /**
@@ -35,13 +36,16 @@ public class HttpsHandler {
          */
         public boolean isOnline(Context ctx) {
             ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            NetworkInfo netInfo = null;
+            if (cm != null) {
+                netInfo = cm.getActiveNetworkInfo();
+            }
             return netInfo != null && netInfo.isConnectedOrConnecting();
         }
 
         private InputStream makeServiceCallStream(String type,String id, String args) {
             InputStream in = null;
-            String reqUrl = "https://api.themoviedb.org/3/"+type+"/"+id+"?api_key=a7f24efde1bef3ab89c6dc391e0038ea"+args;
+            String reqUrl = "https://api.themoviedb.org/3/"+type+"/"+id+"?api_key="+ ConstUtils.API_KEY+args;
             try {
 
                 URL url = new URL(reqUrl);

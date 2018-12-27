@@ -6,7 +6,6 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
-import android.text.format.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.LogUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.RoomTypeConverter;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
@@ -158,14 +156,14 @@ public class Season {
 
     public List<Episode> getOldEpisodes(){
         return this.getEpisodes().stream().filter(s -> s.getAirDate() != null)
-                .filter(s -> fr.eseo.dis.amiaudluc.spinoffapp.Utils.DateUtils.isDayBefore(s.getAirDate()))
+                .filter(s -> fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils.isDayBefore(s.getAirDate()))
                 .collect(Collectors.toList());
     }
 
     public List<Episode> getFutureEpisodes(){
         return this.getEpisodes().stream()
                 .filter(s -> s.getAirDate() != null
-                        && !fr.eseo.dis.amiaudluc.spinoffapp.Utils.DateUtils.isDayBefore(s.getAirDate()))
+                        && !fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils.isDayBefore(s.getAirDate()))
                 .collect(Collectors.toList());
     }
 

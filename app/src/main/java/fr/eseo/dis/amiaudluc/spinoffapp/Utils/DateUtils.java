@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.Utils;
+package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
 import java.text.DateFormat;
 import java.text.ParseException;

@@ -1,20 +1,13 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.notifications;
 
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationManagerCompat;
-import android.widget.Toast;
 
-import java.util.List;
-
-import fr.eseo.dis.amiaudluc.spinoffapp.MainActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.ConstUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.LogUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.Utils.NotificationUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.LogUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.NotificationUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
