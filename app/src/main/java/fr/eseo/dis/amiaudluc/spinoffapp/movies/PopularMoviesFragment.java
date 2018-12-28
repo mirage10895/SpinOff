@@ -35,8 +35,7 @@ public class PopularMoviesFragment extends BaseMovieFragment {
     private View popularMoviesView;
     private SwipeRefreshLayout swipeContainer;
     private PopularMoviesFragment.GetMovies mGetMovTask;
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    private AppDatabase db;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         popularMoviesView = inflater.inflate(R.layout.layout_main, container, false);
@@ -101,36 +100,6 @@ public class PopularMoviesFragment extends BaseMovieFragment {
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
                 R.color.white);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu_add:
-                if (!DatabaseTransactionManager.getAllMovieIds(db).contains(Content.currentMovie.getId())) {
-                    DatabaseTransactionManager.addMovie(db, Content.currentMovie);
-                }else{
-                    Snackbar.make(this.popularMoviesView, "Already added to library", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-                return true;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public void onItemClick(int position) {
-        Content.currentMovie = Content.movies.get(position);
-        Intent intent = new Intent(getContext(), MovieActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentMovie = Content.movies.get(position);
-        onCreateContextMenu(contextMenu,v,menuInfo);
     }
 
     /**

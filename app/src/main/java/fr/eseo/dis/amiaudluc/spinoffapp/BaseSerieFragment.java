@@ -2,30 +2,27 @@ package fr.eseo.dis.amiaudluc.spinoffapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.action.DeleteMovieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.series.SerieActivity;
 
 /**
- * Created by lucasamiaud on 04/04/2018.
+ * Created by lucasamiaud on 28/12/2018.
  */
 
-public abstract class BaseMovieFragment extends BaseFragment {
+public abstract class BaseSerieFragment extends BaseFragment{
 
-    protected MoviesAdapter moviesAdapter;
     private View view;
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         this.view = view;
         super.onViewCreated(view, savedInstanceState);
     }
@@ -34,13 +31,13 @@ public abstract class BaseMovieFragment extends BaseFragment {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.context_menu_add:
-                if (DatabaseTransactionManager.getAllMovieIds(db).contains(Content.currentMovie.getId())){
+                if (!DatabaseTransactionManager.getAllSerieIds(db).contains(Content.currentSerie.getId())) {
+                    DatabaseTransactionManager.addSerieWithSeasons(db, Content.currentSerie);
                     Snackbar.make(this.view, "This movie is already in your library", Snackbar.LENGTH_LONG)
-                            .setAction("", null).show();
+                            .setAction("Undo", new DeleteSerieActionListener(db, Content.currentSerie)).show();
                 }else{
-                    DatabaseTransactionManager.addMovie(db, Content.currentMovie);
-                    Snackbar.make(this.view,"Movie added to your library",Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new DeleteMovieActionListener(db, Content.currentMovie)).show();
+                    Snackbar.make(this.view, "This serie is already in your library", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
                 return true;
             default:
@@ -51,14 +48,15 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     @Override
     public void onItemClick(int position) {
-        Content.currentMovie = Content.movies.get(position);
-        Intent intent = new Intent(getContext(), MovieActivity.class);
+        Content.currentSerie = Content.series.get(position);
+
+        Intent intent = new Intent(getContext(), SerieActivity.class);
         startActivity(intent);
     }
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentMovie = Content.movies.get(position);
+        Content.currentSerie = Content.series.get(position);
         onCreateContextMenu(contextMenu,v,menuInfo);
     }
 }

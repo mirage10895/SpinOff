@@ -34,7 +34,7 @@ public class MovieActivity extends AppCompatActivity {
     private FrameLayout content;
     private RelativeLayout noMedia;
     private String currentFragment;
-    private SingleMovieFragment fragment = new SingleMovieFragment();
+    private SingleMovieFragment fragment = SingleMovieFragment.newInstance();
     private AppDatabase db;
 
     @Override

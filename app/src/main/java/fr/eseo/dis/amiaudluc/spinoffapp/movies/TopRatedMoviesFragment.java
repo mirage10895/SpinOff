@@ -93,49 +93,16 @@ public class TopRatedMoviesFragment extends BaseMovieFragment {
     private void initializeSwipeContainer(){
         swipeContainer = (SwipeRefreshLayout) topRatedMoviesView.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mGetMovTask = new TopRatedMoviesFragment.GetMovies();
-                mGetMovTask.setNo(1);
-                mGetMovTask.execute();
-            }
+        swipeContainer.setOnRefreshListener(() -> {
+            mGetMovTask = new GetMovies();
+            mGetMovTask.setNo(1);
+            mGetMovTask.execute();
         });
 
         swipeContainer.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
                 R.color.white);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu_add:
-                if (!DatabaseTransactionManager.getAllMovieIds(db).contains(Content.currentMovie.getId())) {
-                    DatabaseTransactionManager.addMovie(db, Content.currentMovie);
-                }else{
-                    Snackbar.make(getView(), "Already added to library", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-                return true;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public void onItemClick(int position) {
-        Content.currentMovie = Content.movies.get(position);
-        Intent intent = new Intent(getContext(), MovieActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentMovie = Content.movies.get(position);
-        onCreateContextMenu(contextMenu,v,menuInfo);
     }
 
     /**

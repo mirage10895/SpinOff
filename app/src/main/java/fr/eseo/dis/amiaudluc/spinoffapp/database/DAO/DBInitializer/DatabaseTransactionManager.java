@@ -6,13 +6,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
@@ -117,9 +115,9 @@ public class DatabaseTransactionManager {
         new Thread(() -> db.moviesDAO().insertMovie(movie)).start();
     }
 
-    public static void addSeason(final AppDatabase db, Season season){
+    static void addSeason(final AppDatabase db, Season season){
         new Thread(() -> db.seasonDAO().insertSeason(season)).start();
-        new Thread(() -> db.episodesDAO().insertAll(season.getEpisodes()));
+        new Thread(() -> db.episodesDAO().insertAll(season.getEpisodes())).start();
     }
 
     public static void deleteMovie(final AppDatabase db, Movie movie) {

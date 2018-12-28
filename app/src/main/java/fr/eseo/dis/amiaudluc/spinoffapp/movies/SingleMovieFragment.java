@@ -42,8 +42,6 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     private Context ctx;
     private Movie movie = Content.currentMovie;
     private String type ="";
-    private static final int RECOVERY_REQUEST = 1;
-    private YouTubePlayerSupportFragment youTubePlayerView;
 
     public SingleMovieFragment() {
         // Required empty public constructor
@@ -57,7 +55,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SingleMovieFragment.
      */
-    public static SingleMovieFragment newInstance(String param1, String param2) {
+    public static SingleMovieFragment newInstance() {
         SingleMovieFragment fragment = new SingleMovieFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);

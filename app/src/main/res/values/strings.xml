@@ -42,7 +42,6 @@
     <string name="menu_series">Series</string>
     <string name="menu_my_space">Personal space</string>
     <string name="menu_calendar">My Calendar</string>
-    <string name="title_activity_movie">MovieActivity</string>
 
     <!-- YOUTUBE -->
 
@@ -60,6 +59,8 @@
     <string name="send_request">Search</string>
     <string name="search_title">Search</string>
     <string name="title_activity_serie">SerieActivity</string>
+    <string name="title_activity_movie">MovieActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
     <string name="number_seasons">Seasons</string>
     <string name="menu_discover">Discover</string>
     <string name="menu_library">Library</string>

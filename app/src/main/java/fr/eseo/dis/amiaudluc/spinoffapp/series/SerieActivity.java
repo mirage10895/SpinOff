@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
@@ -54,6 +55,8 @@ public class SerieActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }else{
                 DatabaseTransactionManager.addSerieWithSeasons(db,Content.currentSerie);
+                Snackbar.make(view, "Serie added to your library !", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", new DeleteSerieActionListener(db, Content.currentSerie)).show();
             }
         });
         ActionBar actionBar = getSupportActionBar();
@@ -144,9 +147,8 @@ public class SerieActivity extends AppCompatActivity {
             String args = "&language=en-US";
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("tv",this.getId(),args);
 
-            return jsonStr;
+            return sh.makeServiceCall("tv", this.getId(),args);
         }
 
         @Override

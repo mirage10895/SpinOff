@@ -18,13 +18,14 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
  * Created by lucasamiaud on 19/03/2018.
  */
 
-public abstract class BaseFragment extends Fragment implements SearchInterface{
+public abstract class BaseFragment extends Fragment implements SearchInterface {
 
 
     public EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     public SwipeRefreshLayout swipeContainer;
     public FilterKingFragment fKFragment;
     public AppDatabase db;
+    public String type;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,16 +51,12 @@ public abstract class BaseFragment extends Fragment implements SearchInterface{
 
     @Override
     public void setType(String type) {
-        //To override
+        this.type = type;
     }
 
     @Override
-    public void onItemClick(int position) {
-        //To override
-    }
-
-    @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        //To override
+    public void onDetach() {
+        endlessRecyclerViewScrollListener.resetState();
+        super.onDetach();
     }
 }

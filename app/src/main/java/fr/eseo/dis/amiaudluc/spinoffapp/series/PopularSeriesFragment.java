@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.BaseFragment;
+import fr.eseo.dis.amiaudluc.spinoffapp.BaseSerieFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
@@ -25,7 +26,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
  * Created by lucasamiaud on 01/03/2018.
  */
 
-public class PopularSeriesFragment extends BaseFragment{
+public class PopularSeriesFragment extends BaseSerieFragment{
 
     private Context ctx;
     private SeriesAdapter seriesAdapter;
@@ -100,20 +101,6 @@ public class PopularSeriesFragment extends BaseFragment{
                 R.color.white);
     }
 
-    @Override
-    public void onItemClick(int position) {
-        Content.currentSerie = Content.series.get(position);
-
-        Intent intent = new Intent(getContext(), SerieActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentSerie = Content.series.get(position);
-        onCreateContextMenu(contextMenu,v,menuInfo);
-    }
-
     /**
      * Async task class to get json by making HTTP call
      */
@@ -134,9 +121,8 @@ public class PopularSeriesFragment extends BaseFragment{
             String args = "&language=en-US&page="+this.getNo()+"&region=FR";
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("tv","popular",args);
 
-            return jsonStr;
+            return sh.makeServiceCall("tv","popular",args);
         }
 
         @Override
@@ -155,7 +141,7 @@ public class PopularSeriesFragment extends BaseFragment{
                 popularSeriesView.findViewById(R.id.cardList).setVisibility(View.GONE);
                 popularSeriesView.findViewById(R.id.no_media_display).setVisibility(View.VISIBLE);
                 Snackbar.make(popularSeriesView, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Refresh", null).show();
             }
             loadSeries();
         }

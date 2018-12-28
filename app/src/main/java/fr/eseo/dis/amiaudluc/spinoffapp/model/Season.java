@@ -45,7 +45,7 @@ public class Season {
     @ColumnInfo(name = "overview")
     private String overview;
     @ColumnInfo(name = "serie_id")
-    private int SerieId;
+    private int serieId;
     @Ignore
     private ArrayList<Artist> cast;
     @Ignore
@@ -132,11 +132,11 @@ public class Season {
     }
 
     public int getSerieId() {
-        return SerieId;
+        return serieId;
     }
 
     public void setSerieId(int serieId) {
-        SerieId = serieId;
+        this.serieId = serieId;
     }
 
     public ArrayList<Video> getVideos() {

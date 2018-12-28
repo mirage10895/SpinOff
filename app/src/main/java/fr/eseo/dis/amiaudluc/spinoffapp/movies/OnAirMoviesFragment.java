@@ -84,13 +84,10 @@ public class OnAirMoviesFragment extends BaseMovieFragment {
     private void initializeSwipeContainer(){
         swipeContainer = (SwipeRefreshLayout) onAirMoviesView.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mGetSerTask = new OnAirMoviesFragment.GetMovies();
-                mGetSerTask.setNo(1);
-                mGetSerTask.execute();
-            }
+        swipeContainer.setOnRefreshListener(() -> {
+            mGetSerTask = new GetMovies();
+            mGetSerTask.setNo(1);
+            mGetSerTask.execute();
         });
 
         swipeContainer.setColorSchemeResources(R.color.colorAccent,

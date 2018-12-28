@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.BaseFragment;
+import fr.eseo.dis.amiaudluc.spinoffapp.BaseSerieFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
@@ -27,7 +29,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
  * Created by lucasamiaud on 05/03/2018.
  */
 
-public class OnAirSeriesFragment extends BaseFragment {
+public class OnAirSeriesFragment extends BaseSerieFragment {
     private Context ctx;
     private SeriesAdapter seriesAdapter;
     private View onAirSeriesView;
@@ -98,37 +100,6 @@ public class OnAirSeriesFragment extends BaseFragment {
                 R.color.white);
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu_add:
-                if (!DatabaseTransactionManager.getAllSerieIds(db).contains(Content.currentSerie.getId())) {
-                    DatabaseTransactionManager.addSerieWithSeasons(db, Content.currentSerie);
-                }else{
-                    Snackbar.make(this.onAirSeriesView, "Already added to library", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-                return true;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public void onItemClick(int position) {
-        Content.currentSerie = Content.series.get(position);
-
-        Intent intent = new Intent(getContext(), SerieActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentSerie = Content.series.get(position);
-        onCreateContextMenu(contextMenu,v,menuInfo);
-    }
-
     /**
      * Async task class to get json by making HTTP call
      */
@@ -149,9 +120,8 @@ public class OnAirSeriesFragment extends BaseFragment {
             String args = "&language=en-US&page="+this.getNo()+"&region=FR";
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("tv","on_the_air",args);
 
-            return jsonStr;
+            return sh.makeServiceCall("tv","on_the_air",args);
         }
 
         @Override
