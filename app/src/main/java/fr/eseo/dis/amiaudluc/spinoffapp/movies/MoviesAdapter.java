@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.movies;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -41,15 +42,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     public void setMovies(ArrayList<Movie> movies){this.movies = movies;}
 
+    @NonNull
     @Override
-    public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View myMovieView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_movie, parent, false);
         return new MoviesViewHolder(myMovieView);
     }
 
     @Override
-    public void onBindViewHolder(MoviesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
         if (getItemCount() != 0) {
             Movie movie = movies.get(position);
 
@@ -78,7 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
                     tempList = movies.stream()
                             .filter(movie -> movie.getGenres()
                                     .stream()
-                                    .anyMatch(genre -> genre.getName().equals(constraint.toString())))
+                                    .anyMatch(genre -> String.valueOf(genre.getId()).equals(constraint.toString())))
                             .collect(Collectors.toCollection(ArrayList::new));
                     filterResults.count = tempList.size();
                     filterResults.values = tempList;

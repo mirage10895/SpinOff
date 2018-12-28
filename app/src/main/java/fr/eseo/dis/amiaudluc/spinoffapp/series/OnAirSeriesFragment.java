@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.series;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -34,10 +35,9 @@ public class OnAirSeriesFragment extends BaseSerieFragment {
     private SeriesAdapter seriesAdapter;
     private View onAirSeriesView;
     private OnAirSeriesFragment.GetSeries mGetSerTask;
-    private AppDatabase db;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         onAirSeriesView = inflater.inflate(R.layout.layout_main, container, false);
         ctx = onAirSeriesView.getContext();
 

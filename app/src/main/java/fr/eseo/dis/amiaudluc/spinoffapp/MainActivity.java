@@ -1,10 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -16,20 +12,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.calendar.CalendarActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.calendar.CalendarFragment;
@@ -37,13 +27,9 @@ import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.library.LibraryActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.OnAirMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.PopularMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.TopRatedMoviesFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.notifications.NotificationReceiver;
 import fr.eseo.dis.amiaudluc.spinoffapp.search.SearchActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.series.OnAirSeriesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.series.PopularSeriesFragment;
@@ -56,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     private String currentFragment;
     private HashMap<String, Fragment> fragments = new HashMap<>();
     private FloatingActionsMenu fam;
-    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +49,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        db = AppDatabase.getAppDatabase(this);
 
         fragments.put(getString(R.string.fragment_popular_movies), new PopularMoviesFragment());
         fragments.put(getString(R.string.fragment_popular_series), new PopularSeriesFragment());
@@ -178,72 +162,63 @@ public class MainActivity extends AppCompatActivity
 
         FloatingActionButton fabTop = (FloatingActionButton) findViewById(R.id.button_top_rated);
         fabTop.setIcon(R.drawable.ic_thumb_up_yellow);
-        fabTop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //The switch is here to redirect on the right page
-                //If you coming from Movies you go to top rated movies
-                //If you coming from Series you go to top rated series
-                switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
-                    case "Movies":
-                        currentFragment = getString(R.string.fragment_top_rated_movies);
-                        break;
-                    case "Series":
-                        currentFragment = getString(R.string.fragment_top_rated_series);
-                        break;
-                    default:
-                        Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                }
-                switchFragment(fragments.get(currentFragment));
-                fam.collapse();
-                fam.collapse();
+        fabTop.setOnClickListener(view -> {
+            //The switch is here to redirect on the right page
+            //If you coming from Movies you go to top rated movies
+            //If you coming from Series you go to top rated series
+            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
+                case "Movies":
+                    currentFragment = getString(R.string.fragment_top_rated_movies);
+                    break;
+                case "Series":
+                    currentFragment = getString(R.string.fragment_top_rated_series);
+                    break;
+                default:
+                    Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
             }
+            switchFragment(fragments.get(currentFragment));
+            fam.collapse();
+            fam.collapse();
         });
 
         FloatingActionButton fabPop = (FloatingActionButton) findViewById(R.id.button_pop);
         fabPop.setIcon(R.drawable.ic_star_yellow);
-        fabPop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
-                    case "Movies":
-                        currentFragment = getString(R.string.fragment_popular_movies);
-                        break;
-                    case "Series":
-                        currentFragment = getString(R.string.fragment_popular_series);
-                        break;
-                    default:
-                        Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                }
-                //resetEndlessScroll((ItemInterface)fragments.get(previousFragment));
-                switchFragment(fragments.get(currentFragment));
-                fam.collapse();
-                fam.collapse();
+        fabPop.setOnClickListener(view -> {
+            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
+                case "Movies":
+                    currentFragment = getString(R.string.fragment_popular_movies);
+                    break;
+                case "Series":
+                    currentFragment = getString(R.string.fragment_popular_series);
+                    break;
+                default:
+                    Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
             }
+            //resetEndlessScroll((ItemInterface)fragments.get(previousFragment));
+            switchFragment(fragments.get(currentFragment));
+            fam.collapse();
+            fam.collapse();
         });
 
         FloatingActionButton fabNew = (FloatingActionButton) findViewById(R.id.button_on_air);
         fabNew.setIcon(R.drawable.ic_alert_circle);
-        fabNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
-                    case "Movies":
-                        currentFragment = getString(R.string.fragment_on_air_movies);
-                        break;
-                    case "Series":
-                        currentFragment = getString(R.string.fragment_on_air_series);
-                        break;
-                    default:
-                        Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                }
-                //resetEndlessScroll((ItemInterface)fragments.get(previousFragment));
-                switchFragment(fragments.get(currentFragment));
-                fam.collapse();
+        fabNew.setOnClickListener(view -> {
+            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
+                case "Movies":
+                    currentFragment = getString(R.string.fragment_on_air_movies);
+                    break;
+                case "Series":
+                    currentFragment = getString(R.string.fragment_on_air_series);
+                    break;
+                default:
+                    Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
             }
+            //resetEndlessScroll((ItemInterface)fragments.get(previousFragment));
+            switchFragment(fragments.get(currentFragment));
+            fam.collapse();
         });
     }
 

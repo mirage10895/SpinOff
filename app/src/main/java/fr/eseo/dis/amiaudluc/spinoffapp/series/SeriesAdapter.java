@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.series;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -37,15 +38,16 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         this.series = series;
     }
 
+    @NonNull
     @Override
-    public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SeriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View mySerieView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_serie, parent, false);
         return new SeriesAdapter.SeriesViewHolder(mySerieView);
     }
 
     @Override
-    public void onBindViewHolder(SeriesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SeriesViewHolder holder, int position) {
         if (getItemCount() != 0) {
             Serie serie = series.get(position);
 

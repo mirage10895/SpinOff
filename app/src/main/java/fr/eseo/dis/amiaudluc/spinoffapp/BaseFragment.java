@@ -35,18 +35,22 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
 
         fKFragment = new FilterKingFragment();
         FragmentManager manager = getFragmentManager();
-        manager.beginTransaction()
-                .replace(R.id.filterKing, fKFragment)
-                .addToBackStack(null)
-                .commit();
+        if (manager != null) {
+            manager.beginTransaction()
+                    .replace(R.id.filterKing, fKFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
 
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater menuInflater = getActivity().getMenuInflater();
-        menuInflater.inflate(R.menu.context_menu_main, menu);
+        if (getActivity() != null) {
+            MenuInflater menuInflater = getActivity().getMenuInflater();
+            menuInflater.inflate(R.menu.context_menu_main, menu);
+        }
     }
 
     @Override

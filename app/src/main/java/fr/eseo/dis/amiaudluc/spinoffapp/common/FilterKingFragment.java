@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.common;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ public class FilterKingFragment extends Fragment {
 
 
     private Context ctx;
-    private ArrayAdapter<String> genresDisplay;
+    private ArrayAdapter<Genre> genresDisplay;
     private Filterable adapter;
     private View filterKingView;
 
@@ -37,13 +38,13 @@ public class FilterKingFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void instanciateFrag(Filterable caca){
-        this.adapter = caca;
+    public void instanciateFrag(Filterable filterable){
+        this.adapter = filterable;
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         filterKingView = inflater.inflate(R.layout.fragment_filter_king, container, false);
         ctx = filterKingView.getContext();
@@ -58,10 +59,10 @@ public class FilterKingFragment extends Fragment {
             Spinner spinner = filterKingView.findViewById(R.id.spinner);
             @Override
             public void onClick(View view) {
-                String genre = (String)spinner.getSelectedItem();
+                Genre genre = (Genre)spinner.getSelectedItem();
                 String sub = Content.currentFragment.substring(Content.currentFragment.length()-6,Content.currentFragment.length());
                 if (sub.equals("Movies")){
-                    adapter.getFilter().filter(genre);
+                    adapter.getFilter().filter(String.valueOf(genre.getId()));
                 }else if(sub.equals("Series")){
                     //applySerieFilter(genre);
                 }
@@ -76,9 +77,7 @@ public class FilterKingFragment extends Fragment {
     }
 
     private void setSpinnerData(ArrayList<Genre> allGenres){
-        for(Genre genre: allGenres){
-            genresDisplay.add(genre.getName());
-        }
+        genresDisplay.addAll(allGenres);
         genresDisplay.notifyDataSetChanged();
     }
 
@@ -94,9 +93,8 @@ public class FilterKingFragment extends Fragment {
             String args = "&language=en-US";
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("genre","movie/list",args);
 
-            return jsonStr;
+            return sh.makeServiceCall("genre","movie/list",args);
         }
 
         @Override

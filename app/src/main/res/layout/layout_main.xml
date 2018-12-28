@@ -73,7 +73,7 @@
             android:layout_height="500dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:elevation="10dp"
+            android:elevation="100dp"
             android:translationZ="4dp"
             android:visibility="gone">
 
