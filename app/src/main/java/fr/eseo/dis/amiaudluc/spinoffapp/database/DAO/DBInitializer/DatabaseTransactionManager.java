@@ -115,7 +115,7 @@ public class DatabaseTransactionManager {
         new Thread(() -> db.moviesDAO().insertMovie(movie)).start();
     }
 
-    static void addSeason(final AppDatabase db, Season season){
+    private static void addSeason(final AppDatabase db, Season season){
         new Thread(() -> db.seasonDAO().insertSeason(season)).start();
         new Thread(() -> db.episodesDAO().insertAll(season.getEpisodes())).start();
     }

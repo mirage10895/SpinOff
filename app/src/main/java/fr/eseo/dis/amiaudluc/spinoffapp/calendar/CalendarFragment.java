@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,8 +41,8 @@ public class CalendarFragment extends Fragment implements SearchInterface {
     private Context ctx;
     private AppDatabase db;
     private EventAdapter eventAdapter;
-    private ArrayList<Event> events;
-    private ArrayList<Event> today = new ArrayList<>();
+    private List<Event> events;
+    private List<Event> today = new ArrayList<>();
     private String type;
     private MaterialCalendarView materialCalendarView;
 
@@ -52,7 +53,7 @@ public class CalendarFragment extends Fragment implements SearchInterface {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View myCalendarView = inflater.inflate(R.layout.fragment_calendar, container, false);
             this.ctx = myCalendarView.getContext();
             db = AppDatabase.getAppDatabase(ctx);
@@ -72,7 +73,7 @@ public class CalendarFragment extends Fragment implements SearchInterface {
             mGetCalendar.execute();
 
             materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
-                today = new ArrayList<>(events.stream().filter(event -> event.getDate().equals(date.getDate())).collect(Collectors.toList()));
+                today = events.stream().filter(event -> event.getDate().equals(date.getDate())).collect(Collectors.toList());
                 eventAdapter.setEvent(today);
                 eventAdapter.notifyDataSetChanged();
                 recycler.setVisibility(View.VISIBLE);

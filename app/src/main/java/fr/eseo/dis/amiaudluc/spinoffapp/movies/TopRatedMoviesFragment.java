@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.movies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,7 +38,7 @@ public class TopRatedMoviesFragment extends BaseMovieFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         topRatedMoviesView = inflater.inflate(R.layout.layout_main, container, false);
         ctx = topRatedMoviesView.getContext();
 

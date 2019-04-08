@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         });
         initializeButtons();
 
-        /**
+        /*
          * DEBUG MODE
          */
         CacheManager.getInstance().removeAll(this);
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity
             //The switch is here to redirect on the right page
             //If you coming from Movies you go to top rated movies
             //If you coming from Series you go to top rated series
-            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
+            switch(currentFragment.substring(currentFragment.length() - 6)){
                 case "Movies":
                     currentFragment = getString(R.string.fragment_top_rated_movies);
                     break;
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fabPop = (FloatingActionButton) findViewById(R.id.button_pop);
         fabPop.setIcon(R.drawable.ic_star_yellow);
         fabPop.setOnClickListener(view -> {
-            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
+            switch(currentFragment.substring(currentFragment.length() - 6)){
                 case "Movies":
                     currentFragment = getString(R.string.fragment_popular_movies);
                     break;
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fabNew = (FloatingActionButton) findViewById(R.id.button_on_air);
         fabNew.setIcon(R.drawable.ic_alert_circle);
         fabNew.setOnClickListener(view -> {
-            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
+            switch(currentFragment.substring(currentFragment.length() - 6)){
                 case "Movies":
                     currentFragment = getString(R.string.fragment_on_air_movies);
                     break;
@@ -270,34 +271,44 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        /**
+        /*
          * This to stay on Movie theme or on Serie theme whatever we wanna go
          */
         switch (id) {
             case R.id.nav_movies:
-                if(currentFragment.substring(0,2).equals("To")){
-                    currentFragment = getString(R.string.fragment_top_rated_movies);
-                }else if(currentFragment.substring(0,2).equals("Po")){
-                    currentFragment = getString(R.string.fragment_popular_movies);
-                }else if(currentFragment.substring(0,2).equals("On")) {
-                    currentFragment = getString(R.string.fragment_on_air_movies);
-                }else{
-                    currentFragment = getString(R.string.fragment_top_rated_series);
+                switch (currentFragment.substring(0, 2)) {
+                    case "To":
+                        currentFragment = getString(R.string.fragment_top_rated_movies);
+                        break;
+                    case "Po":
+                        currentFragment = getString(R.string.fragment_popular_movies);
+                        break;
+                    case "On":
+                        currentFragment = getString(R.string.fragment_on_air_movies);
+                        break;
+                    default:
+                        currentFragment = getString(R.string.fragment_top_rated_series);
+                        break;
                 }
                 break;
             case R.id.nav_series:
-                if(currentFragment.substring(0,2).equals("To")){
-                    currentFragment = getString(R.string.fragment_top_rated_series);
-                }else if(currentFragment.substring(0,2).equals("Po")){
-                    currentFragment = getString(R.string.fragment_popular_series);
-                }else if(currentFragment.substring(0,2).equals("On")) {
-                    currentFragment = getString(R.string.fragment_on_air_series);
-                }else{
-                    currentFragment = getString(R.string.fragment_top_rated_series);
+                switch (currentFragment.substring(0, 2)) {
+                    case "To":
+                        currentFragment = getString(R.string.fragment_top_rated_series);
+                        break;
+                    case "Po":
+                        currentFragment = getString(R.string.fragment_popular_series);
+                        break;
+                    case "On":
+                        currentFragment = getString(R.string.fragment_on_air_series);
+                        break;
+                    default:
+                        currentFragment = getString(R.string.fragment_top_rated_series);
+                        break;
                 }
                 break;
             case R.id.nav_library:

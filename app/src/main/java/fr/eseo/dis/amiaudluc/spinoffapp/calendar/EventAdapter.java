@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.calendar;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
@@ -28,13 +30,13 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHolder>{
 
     private SearchInterface fragment;
-    private ArrayList<Event> events;
+    private List<Event> events;
     private Context ctx;
     private AppDatabase db;
 
     private static final String TAG = EventAdapter.class.getSimpleName();
 
-    public EventAdapter(SearchInterface fragment, Context ctx, ArrayList<Event> eventList){
+    EventAdapter(SearchInterface fragment, Context ctx, List<Event> eventList){
         this.fragment = fragment;
         this.ctx = ctx;
         this.setEvent(eventList);
@@ -48,12 +50,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         return new EventsViewHolder(mySerieView);
     }
 
-    public void setEvent(ArrayList<Event> events){
+    public void setEvent(List<Event> events){
         this.events = events;
     }
 
     @Override
-    public void onBindViewHolder(EventsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EventsViewHolder holder, int position) {
         if (getItemCount() != 0) {
             Event event = events.get(position);
 
@@ -92,7 +94,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         private final TextView textEpisode;
         private final TextView textAirDate;
 
-        public EventsViewHolder(View view) {
+        EventsViewHolder(View view) {
             super(view);
             this.view = view;
 

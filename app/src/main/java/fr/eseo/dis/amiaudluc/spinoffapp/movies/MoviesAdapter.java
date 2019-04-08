@@ -14,11 +14,11 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 
@@ -28,10 +28,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> implements Filterable{
 
-    private final String TAG = MoviesAdapter.class.getSimpleName();
-
     private SearchInterface fragment;
-    private ArrayList<Movie> movies;
+    private List<Movie> movies;
     private Context ctx;
 
     public MoviesAdapter(Context ctx, SearchInterface fragment, ArrayList<Movie> data) {
@@ -40,7 +38,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         setMovies(data);
     }
 
-    public void setMovies(ArrayList<Movie> movies){this.movies = movies;}
+    public void setMovies(List<Movie> movies){this.movies = movies;}
 
     @NonNull
     @Override
@@ -75,13 +73,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             @Override
             protected FilterResults performFiltering(final CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                ArrayList<Movie> tempList;
+                List<Movie> tempList;
                 if (constraint != null && constraint.length() > 0) {
                     tempList = movies.stream()
                             .filter(movie -> movie.getGenres()
                                     .stream()
                                     .anyMatch(genre -> String.valueOf(genre.getId()).equals(constraint.toString())))
-                            .collect(Collectors.toCollection(ArrayList::new));
+                            .collect(Collectors.toList());
                     filterResults.count = tempList.size();
                     filterResults.values = tempList;
                 }
@@ -91,7 +89,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 if (filterResults.count > 0) {
-                    setMovies((ArrayList<Movie>)filterResults.values);
+                    setMovies((List<Movie>) filterResults.values);
                     notifyDataSetChanged();
                 }
             }
@@ -100,13 +98,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnCreateContextMenuListener {
 
-        private final View view;
-
         private final ImageView moviePoster;
 
         MoviesViewHolder(View view) {
             super(view);
-            this.view = view;
 
             moviePoster = view.findViewById(R.id.poster_ic);
 
