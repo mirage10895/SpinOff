@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
@@ -25,16 +26,16 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
 
 
     private SearchInterface fragment;
-    private ArrayList<Episode> episodes;
+    private List<Episode> episodes;
     private Context ctx;
 
-    public EpisodesAdapter(Context ctx, SearchInterface fragment,ArrayList<Episode> data){
+    public EpisodesAdapter(Context ctx, SearchInterface fragment, List<Episode> data){
         this.ctx = ctx;
         this.fragment = fragment;
         setEpisodes(data);
     }
 
-    public void setEpisodes(ArrayList<Episode> episodes){
+    public void setEpisodes(List<Episode> episodes){
         this.episodes = episodes;
     }
 

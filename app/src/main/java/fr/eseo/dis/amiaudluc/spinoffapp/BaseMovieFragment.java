@@ -16,6 +16,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 /**
  * Created by lucasamiaud on 04/04/2018.
@@ -23,6 +25,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
 
 public abstract class BaseMovieFragment extends BaseFragment {
 
+    public MovieViewModel movieViewModel;
     protected MoviesAdapter moviesAdapter;
     private View view;
 
@@ -42,33 +45,21 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu_add:
-                if (DatabaseTransactionManager.getAllMovieIds(db).contains(Content.currentMovie.getId())){
-                    Snackbar.make(this.view, "This movie is already in your library", Snackbar.LENGTH_LONG)
-                            .setAction("", null).show();
-                }else{
-                    DatabaseTransactionManager.addMovie(db, Content.currentMovie);
-                    Snackbar.make(this.view,"Movie added to your library",Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new DeleteMovieActionListener(db, Content.currentMovie)).show();
-                }
-                return true;
-            default:
-                break;
+        if (item.getItemId() == R.id.context_menu_add) {
+            //TODO refacto
         }
         return false;
     }
 
     @Override
-    public void onItemClick(int position) {
-        Content.currentMovie = Content.movies.get(position);
+    public void onItemClick(Integer id) {
         Intent intent = new Intent(getContext(), MovieActivity.class);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentMovie = Content.movies.get(position);
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
         onCreateContextMenu(contextMenu,v,menuInfo);
     }
 }

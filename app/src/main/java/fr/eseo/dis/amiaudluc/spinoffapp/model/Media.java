@@ -4,8 +4,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.model;
  * Created by lucasamiaud on 02/03/2018.
  */
 
-public interface Media{
-
+public interface Media {
     String MOVIE =  "movie";
     String SERIE = "tv";
     String ARTIST= "artist";

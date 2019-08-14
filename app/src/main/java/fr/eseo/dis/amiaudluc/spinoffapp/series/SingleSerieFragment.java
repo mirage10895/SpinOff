@@ -4,6 +4,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.series;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +43,7 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         singleSerieView = inflater.inflate(R.layout.fragment_single_serie, container, false);
         ctx = singleSerieView.getContext();
@@ -51,13 +52,13 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
 
         ImageView rate = singleSerieView.findViewById(R.id.rate);
         rate.setImageBitmap(CircularImageBar.BuildNote(0));
-        if(serie.getNoteAvg() != -1){
-            rate.setImageBitmap(CircularImageBar.BuildNote((serie.getNoteAvg())));
+        if(serie.getVoteAverage() != -1){
+            rate.setImageBitmap(CircularImageBar.BuildNote((serie.getVoteAverage())));
         }
 
         ImageView flag = singleSerieView.findViewById(R.id.flag);
         flag.setImageResource(R.drawable.ic_cam_iris);
-        if (!serie.getOriginalLanguage().equals(Language.unknown)){
+        if (!serie.getOriginalLanguage().equals(Language.DEFAULT)){
             int imageResource = getResources().getIdentifier("@drawable/"+serie.getOriginalLanguage().name()+"_icon",null,ctx.getPackageName());
             flag.setImageResource(imageResource);
         }
@@ -88,17 +89,17 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
         recyclerSeason.setHasFixedSize(true);
         recyclerSeason.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false));
         recyclerSeason.setNestedScrollingEnabled(false);
-        recyclerSeason.setAdapter(new SeasonsAdapter(singleSerieView.getContext(),this,serie.getSeasons()));
+        recyclerSeason.setAdapter(new SeasonsAdapter(singleSerieView.getContext(),this, serie.getSeasons()));
 
         RecyclerView recyclerReal = singleSerieView.findViewById(R.id.realisators);
         recyclerReal.setHasFixedSize(true);
         recyclerReal.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        recyclerReal.setAdapter(new ArtistsAdapter(singleSerieView.getContext(),this,serie.getCreators()));
+        recyclerReal.setAdapter(new ArtistsAdapter(singleSerieView.getContext(),this, serie.getCreatedBy()));
 
         RecyclerView recyclerNetwork = singleSerieView.findViewById(R.id.networks);
         recyclerNetwork.setHasFixedSize(true);
         recyclerNetwork.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        recyclerNetwork.setAdapter(new NetworksAdapter(singleSerieView.getContext(),this,serie.getNetworks()));
+        recyclerNetwork.setAdapter(new NetworksAdapter(singleSerieView.getContext(),this, serie.getNetworks()));
 
         return singleSerieView;
     }
@@ -109,22 +110,28 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(int position) {
-        if(this.type.equals("network")){
-            Content.currentNetwork = this.serie.getNetworks().get(position);
-        }else if (this.type.equals("season")){
-            Content.currentSeason = this.serie.getSeasons().get(position);
-            Intent intent = new Intent(ctx, SeasonActivity.class);
-            startActivity(intent);
-        }else if (this.type.equals("artist")){
-            Content.currentArtist = this.serie.getCreators().get(position);
-            Intent intent = new Intent(ctx, ArtistActivity.class);
-            startActivity(intent);
+    public void onItemClick(Integer position) {
+        switch (this.type) {
+            case "network":
+                Content.currentNetwork = this.serie.getNetworks().get(position);
+                break;
+            case "season": {
+                Content.currentSeason = this.serie.getSeasons().get(position);
+                Intent intent = new Intent(ctx, SeasonActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case "artist": {
+                Content.currentArtist = this.serie.getCreatedBy().get(position);
+                Intent intent = new Intent(ctx, ArtistActivity.class);
+                startActivity(intent);
+                break;
+            }
         }
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
 
     }
 

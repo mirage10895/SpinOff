@@ -23,7 +23,7 @@ public class DeleteSerieActionListener implements View.OnClickListener {
     }
     @Override
     public void onClick(View v) {
-        DatabaseTransactionManager.deleteSerie(db, serie);
+        DatabaseTransactionManager.executeAsync(() -> db.serieDAO().deleteSerie(serie));
         Snackbar.make(v,"Serie deleted from your library", Snackbar.LENGTH_LONG)
                 .setAction("Action",null).show();
     }

@@ -25,59 +25,73 @@ import fr.eseo.dis.amiaudluc.spinoffapp.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
+import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
 
+    private SerieViewModel serieViewModel;
     private Serie serie;
     private FrameLayout content;
     private RelativeLayout noMedia;
     private String currentFragment;
-    private SingleSerieFragment fragment = new SingleSerieFragment();
+    private SingleSerieFragment fragment;
     private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
+        content = findViewById(R.id.content);
+        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        db = AppDatabase.getAppDatabase(this);
+        Integer id = getIntent().getIntExtra("id", 0);
+        ActionBar actionBar = getSupportActionBar();
 
-        serie=Content.currentSerie;
+        this.db = AppDatabase.getAppDatabase(this);
+        this.fragment = new SingleSerieFragment();
+        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+        this.serieViewModel.initGetSerieById(id);
+        this.serieViewModel.getSerie().observe(this, serieResult -> {
+            if (serieResult != null) {
+                this.serie = serieResult;
+                setBackground(this.getResources().getString(R.string.base_url_poster_original) + serieResult.getBackdropPath());
+                fragment.setSerie(serieResult);
+                noMedia.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
+                currentFragment = getString(R.string.fragment_single_serie);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content, fragment, currentFragment)
+                        .commit();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            if (DatabaseTransactionManager.getAllSerieIds(db).contains(serie.getId())){
-                Snackbar.make(view, "You already got this serie on your library !", Snackbar.LENGTH_LONG)
+                if (actionBar != null) {
+                    actionBar.setTitle(this.serie.getName());
+                }
+            } else {
+                noMedia.setVisibility(View.VISIBLE);
+                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }else{
-                DatabaseTransactionManager.addSerieWithSeasons(db,Content.currentSerie);
-                Snackbar.make(view, "Serie added to your library !", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", new DeleteSerieActionListener(db, Content.currentSerie)).show();
             }
         });
-        ActionBar actionBar = getSupportActionBar();
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-
-            actionBar.setTitle(getString(R.string.emptyField));
-            if (serie.getName() != null) {
-                actionBar.setTitle(serie.getName());
-            }
         }
 
-        setBackground(this.getResources().getString(R.string.base_url_poster_original) + serie.getBackdropPath());
-
-        content = findViewById(R.id.content);
-        content.setVisibility(View.GONE);
-        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
-
-        GetSingleSerie taskDetSer = new GetSingleSerie();
-        taskDetSer.setId(serie.getId());
-        taskDetSer.execute();
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(view -> db.serieDAO().getAllIds().observe(this, integers -> {
+            if (integers != null && integers.contains(this.serie.getId())){
+                Snackbar.make(view, "You already got this serie on your library !", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            } else {
+                DatabaseTransactionManager.addSerieWithSeasons(db, this.serie);
+                Snackbar.make(view, "Serie added to your library !", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", new DeleteSerieActionListener(db, this.serie)).show();
+            }
+        }));
 
     }
 
@@ -119,58 +133,10 @@ public class SerieActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
-    }
-
-    private class GetSingleSerie extends android.os.AsyncTask<String, Void, String>{
-
-        private int id;
-
-        public String getId() {
-            return id+"";
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-
-        @Override
-        protected String doInBackground(String... strings) {
-            HttpsHandler sh = new HttpsHandler();
-            String args = "&language=en-US";
-
-            // Making a request to url and getting response
-
-            return sh.makeServiceCall("tv", this.getId(),args);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(!result.isEmpty()) {
-                Serie serie = WebServiceParser.singleSerieParser(result);
-                if (serie.getId() == -1){
-                    noMedia.setVisibility(View.VISIBLE);
-                }else {
-                    Content.currentSerie = serie;
-                    fragment.setSerie(serie);
-                    noMedia.setVisibility(View.GONE);
-                    content.setVisibility(View.VISIBLE);
-                    currentFragment = getString(R.string.fragment_single_serie);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                            fragment, currentFragment).commit();
-                }
-            }else{
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
+        return super.onOptionsItemSelected(item);
     }
 }

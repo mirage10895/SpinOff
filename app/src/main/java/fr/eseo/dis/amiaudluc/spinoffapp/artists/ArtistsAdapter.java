@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
@@ -24,18 +25,18 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
 
 public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistViewHolder> {
 
-    private ArrayList<Artist> artists;
+    private List<Artist> artists;
     private final ItemInterface mListener;
     private final Context ctx;
     private static final String TYPE = ConstUtils.REALISATOR;
 
-    public ArtistsAdapter(Context ctx, ItemInterface listener, ArrayList<Artist> data){
+    public ArtistsAdapter(Context ctx, ItemInterface listener, List<Artist> data){
         this.mListener = listener;
         this.ctx = ctx;
         this.setArtist(data);
     }
 
-    public void setArtist(ArrayList<Artist> artists){
+    public void setArtist(List<Artist> artists){
         this.artists = artists;
     }
 
@@ -95,7 +96,8 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
         @Override
         public void onClick(View v) {
             frag.setType(ConstUtils.ARTIST);
-            mListener.onItemClick(getAdapterPosition());
+            Artist artist = artists.get(getAdapterPosition());
+            mListener.onItemClick(artist.getId());
         }
 
     }

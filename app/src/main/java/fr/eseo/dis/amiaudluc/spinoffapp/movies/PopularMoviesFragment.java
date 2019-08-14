@@ -1,28 +1,29 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.movies;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.BaseFragment;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.spinoffapp.BaseMovieFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
-import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 /**
  * Created by lucasamiaud on 28/02/2018.
@@ -34,56 +35,58 @@ public class PopularMoviesFragment extends BaseMovieFragment {
     private MoviesAdapter moviesAdapter;
     private View popularMoviesView;
     private SwipeRefreshLayout swipeContainer;
-    private PopularMoviesFragment.GetMovies mGetMovTask;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         popularMoviesView = inflater.inflate(R.layout.layout_main, container, false);
         ctx = popularMoviesView.getContext();
-
         db = AppDatabase.getAppDatabase(ctx);
+        this.movieViewModel = new MovieViewModel(ApiRepository.getInstance());
 
         RecyclerView recycler = (RecyclerView) popularMoviesView.findViewById(R.id.cardList);
         recycler.setHasFixedSize(true);
         int columns = getResources().getInteger(R.integer.scripts_columns);
         recycler.setLayoutManager(new GridLayoutManager(ctx, columns));
 
-        moviesAdapter = new MoviesAdapter(ctx,this,Content.movies);
+        moviesAdapter = new MoviesAdapter(ctx,this, new ArrayList<>());
         recycler.setAdapter(moviesAdapter);
 
+        this.movieViewModel.initPopularMovies(1);
+        this.observeMovies();
         initializeSwipeContainer();
-
-        String data = CacheManager.getInstance().read(ctx,CacheManager.CORE_POP_MOV);
-
-        if(data.isEmpty()) {
-            mGetMovTask = new GetMovies();
-            mGetMovTask.setNo(1);
-            mGetMovTask.execute();
-        }else{
-            popularMoviesView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-            Content.movies.clear();
-            Content.movies.addAll(WebServiceParser.multiMoviesParser(data));
-            loadMovies();
-        }
 
         this.endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener((GridLayoutManager)recycler.getLayoutManager()) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                GetMovies mGetMovies = new GetMovies();
-                mGetMovies.setNo(page+1);
-                mGetMovies.execute();
+                movieViewModel.initPopularMovies(page + 1);
+                observeMovies();
             }
         };
 
         recycler.addOnScrollListener(endlessRecyclerViewScrollListener);
 
-        fKFragment.instanciateFrag(moviesAdapter);
-
         return popularMoviesView;
     }
 
-    private void loadMovies() {
-        moviesAdapter.setMovies(Content.movies);
+    private void observeMovies() {
+        this.movieViewModel.getMovies().observe(this, movies -> {
+            swipeContainer.setRefreshing(false);
+            popularMoviesView.findViewById(R.id.progressBar).setVisibility(View.GONE);
+            popularMoviesView.findViewById(R.id.cardList).setVisibility(View.VISIBLE);
+            popularMoviesView.findViewById(R.id.no_media_display).setVisibility(View.GONE);
+            if (movies != null) {
+                loadMovies(movies.stream().map(Movie::toDatabaseFormat).collect(Collectors.toList()));
+            } else {
+                popularMoviesView.findViewById(R.id.cardList).setVisibility(View.GONE);
+                popularMoviesView.findViewById(R.id.no_media_display).setVisibility(View.VISIBLE);
+                Snackbar.make(popularMoviesView, R.string.no_results, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void loadMovies(List<MovieDatabase> movieDatabases) {
+        moviesAdapter.setMovies(movieDatabases);
         moviesAdapter.notifyDataSetChanged();
     }
 
@@ -91,62 +94,13 @@ public class PopularMoviesFragment extends BaseMovieFragment {
         swipeContainer = (SwipeRefreshLayout) popularMoviesView.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(() -> {
-            mGetMovTask = new GetMovies();
-            mGetMovTask.setNo(1);
-            mGetMovTask.execute();
+            this.movieViewModel.initPopularMovies(1);
+            this.observeMovies();
         });
 
         swipeContainer.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
                 R.color.white);
-    }
-
-    /**
-     * Async task class to get json by making HTTP call
-     */
-    private class GetMovies extends android.os.AsyncTask<String, Void, String> {
-
-        private int no;
-
-        private int getNo(){
-            return this.no;
-        }
-
-        private void setNo(int no){
-            this.no = no;
-        }
-        @Override
-        protected String doInBackground(String... urls) {
-            HttpsHandler sh = new HttpsHandler();
-            String args = "&language=en-US&page="+this.getNo()+"&region=FR";
-
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("movie","popular",args);
-
-            return jsonStr;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            swipeContainer.setRefreshing(false);
-            popularMoviesView.findViewById(R.id.progressBar).setVisibility(View.GONE);
-            popularMoviesView.findViewById(R.id.cardList).setVisibility(View.VISIBLE);
-            popularMoviesView.findViewById(R.id.no_media_display).setVisibility(View.GONE);
-            if(!result.isEmpty()) {
-                if(this.getNo() ==1){
-                    Content.movies.clear();
-                }
-                CacheManager.getInstance().write(ctx,CacheManager.CORE_POP_MOV,result);
-                Content.movies.addAll(WebServiceParser.multiMoviesParser(result));
-            }else{
-                popularMoviesView.findViewById(R.id.cardList).setVisibility(View.GONE);
-                popularMoviesView.findViewById(R.id.no_media_display).setVisibility(View.VISIBLE);
-                Snackbar.make(popularMoviesView, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-            loadMovies();
-        }
-
     }
 }

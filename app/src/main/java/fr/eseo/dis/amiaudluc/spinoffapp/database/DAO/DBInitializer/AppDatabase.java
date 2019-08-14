@@ -1,38 +1,32 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
-import android.support.annotation.NonNull;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.EpisodesDAO;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.MoviesDAO;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.EpisodeDAO;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.MovieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.SeasonDAO;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBOptimizer.SerieWithSeasonsDAO;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.SeriesDAO;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.SerieDAO;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SeasonDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 
 /**
  * Created by lucasamiaud on 29/12/2017.
  */
 
-@Database(entities = {Movie.class, Serie.class, Season.class, Episode.class}, version = 1)
-@TypeConverters({RoomTypeConverter.class})
+@Database(entities = {MovieDatabase.class, SerieDatabase.class, SeasonDatabase.class, EpisodeDatabase.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
 
-    public abstract MoviesDAO moviesDAO();
-    public abstract SeriesDAO seriesDAO();
+    public abstract MovieDAO moviesDAO();
+    public abstract SerieDAO serieDAO();
     public abstract SeasonDAO seasonDAO();
-    public abstract EpisodesDAO episodesDAO();
-    public abstract SerieWithSeasonsDAO serieWithSeasonsDAO();
+    public abstract EpisodeDAO episodeDAO();
 
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {
@@ -44,13 +38,5 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static void destroyInstance() {
         INSTANCE = null;
-    }
-
-    public void nukeDB(){
-        moviesDAO().deleteAllMovies();
-        episodesDAO().deleteAllEpisodes();
-        seasonDAO().deleteAllSeasons();
-        seriesDAO().deleteAllSeries();
-        destroyInstance();
     }
 }

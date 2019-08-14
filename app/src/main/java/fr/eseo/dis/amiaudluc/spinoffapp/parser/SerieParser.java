@@ -70,8 +70,8 @@ class SerieParser {
 
             serie.setOriginalName(c.getString("original_name"));
             serie.setName(c.getString("name"));
-            serie.setOriginCountry(WebServiceParser.getLanguage(c.getString("origin_country")));
-            serie.setNoteAvg(c.getDouble("vote_average"));
+            //serie.setOriginCountry(WebServiceParser.getLanguage(c.getString("origin_country")));
+            //serie.setNoteAvg(c.getDouble("vote_average"));
             serie.setVoteCount(c.getInt("vote_count"));
             serie.setId(c.getInt("id"));
             serie.setPopularity(c.getDouble("popularity"));
@@ -98,7 +98,7 @@ class SerieParser {
                 serie.setGenres(WebServiceParser.multiGenresParser(c.getString("genres")));
             }
             if(c.has("created_by")){
-                serie.setCreators(WebServiceParser.multiArtistsParser(c.getString("created_by")));
+                //serie.setCreators(WebServiceParser.multiArtistsParser(c.getString("created_by")));
             }
             if(c.has("episode_run_time")){
                 String kk = c.getString("episode_run_time");

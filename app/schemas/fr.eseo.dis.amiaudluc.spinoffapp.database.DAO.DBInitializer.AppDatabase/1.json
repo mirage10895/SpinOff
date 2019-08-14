@@ -2,107 +2,17 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9368f138fc78db35b80a898a12c910b4",
+    "identityHash": "39e572e458174dc6ad7fc75017ff3ca2",
     "entities": [
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`adult` INTEGER NOT NULL, `backdrop_path` TEXT, `budget` INTEGER NOT NULL, `home_page` TEXT, `id` INTEGER NOT NULL, `imdb_id` INTEGER NOT NULL, `original_tile` TEXT, `overview` TEXT, `popularity` REAL NOT NULL, `poster_path` TEXT, `productionCompanies` TEXT, `release_date` INTEGER, `revenue` INTEGER NOT NULL, `runtime` INTEGER NOT NULL, `status` TEXT, `tagline` TEXT, `title` TEXT, `video` INTEGER NOT NULL, `vote_avg` REAL NOT NULL, `vote_count` INTEGER NOT NULL, `media_type` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `posterPath` TEXT, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
-          {
-            "fieldPath": "adult",
-            "columnName": "adult",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "backdropPath",
-            "columnName": "backdrop_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "budget",
-            "columnName": "budget",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "homePage",
-            "columnName": "home_page",
-            "affinity": "TEXT",
-            "notNull": false
-          },
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "imdbId",
-            "columnName": "imdb_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "originalTitle",
-            "columnName": "original_tile",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "overview",
-            "columnName": "overview",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "popularity",
-            "columnName": "popularity",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "posterPath",
-            "columnName": "poster_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "productionCompanies",
-            "columnName": "productionCompanies",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "releaseDate",
-            "columnName": "release_date",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "revenue",
-            "columnName": "revenue",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "runtime",
-            "columnName": "runtime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "status",
-            "columnName": "status",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "tagline",
-            "columnName": "tagline",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "title",
@@ -111,28 +21,16 @@
             "notNull": false
           },
           {
-            "fieldPath": "video",
-            "columnName": "video",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "voteAvg",
-            "columnName": "vote_avg",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "voteCount",
-            "columnName": "vote_count",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "mediaType",
-            "columnName": "media_type",
+            "fieldPath": "posterPath",
+            "columnName": "posterPath",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "watched",
+            "columnName": "watched",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -146,49 +44,13 @@
       },
       {
         "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`backdrop_path` TEXT, `runtime` INTEGER NOT NULL, `first_air_date` INTEGER, `home_page` TEXT, `id` INTEGER NOT NULL, `in_production` INTEGER NOT NULL, `last_air_date` INTEGER, `name` TEXT, `number_of_episodes` INTEGER NOT NULL, `number_of_seasons` INTEGER NOT NULL, `original_name` TEXT, `overview` TEXT, `popularity` REAL NOT NULL, `poster_path` TEXT, `production_companies` TEXT, `seasons` TEXT, `status` TEXT, `type` TEXT, `note_avg` REAL NOT NULL, `vote_count` INTEGER NOT NULL, `media_type` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `posterPath` TEXT, `seasonsNumber` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
-          {
-            "fieldPath": "backdropPath",
-            "columnName": "backdrop_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "runtime",
-            "columnName": "runtime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "firstAirDate",
-            "columnName": "first_air_date",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "homepage",
-            "columnName": "home_page",
-            "affinity": "TEXT",
-            "notNull": false
-          },
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "inProduction",
-            "columnName": "in_production",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lastAirDate",
-            "columnName": "last_air_date",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -197,81 +59,15 @@
             "notNull": false
           },
           {
-            "fieldPath": "numberOfEpisodes",
-            "columnName": "number_of_episodes",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "numberOfSeasons",
-            "columnName": "number_of_seasons",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "originalName",
-            "columnName": "original_name",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "overview",
-            "columnName": "overview",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "popularity",
-            "columnName": "popularity",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
             "fieldPath": "posterPath",
-            "columnName": "poster_path",
+            "columnName": "posterPath",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "productionCompanies",
-            "columnName": "production_companies",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "seasons",
-            "columnName": "seasons",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "status",
-            "columnName": "status",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "noteAvg",
-            "columnName": "note_avg",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "voteCount",
-            "columnName": "vote_count",
+            "fieldPath": "seasonsNumber",
+            "columnName": "seasonsNumber",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "mediaType",
-            "columnName": "media_type",
-            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -286,43 +82,13 @@
       },
       {
         "tableName": "seasons",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`air_date` INTEGER, `episode_count` INTEGER NOT NULL, `id` INTEGER NOT NULL, `poster_path` TEXT, `season_number` INTEGER NOT NULL, `episodes` TEXT, `name` TEXT, `overview` TEXT, `serie_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`serie_id`) REFERENCES `series`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `season_number` INTEGER, `poster_path` TEXT, `serie_id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`serie_id`) REFERENCES `series`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
-          {
-            "fieldPath": "airDate",
-            "columnName": "air_date",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "episodeCount",
-            "columnName": "episode_count",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "posterPath",
-            "columnName": "poster_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "seasonNumber",
-            "columnName": "season_number",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "episodes",
-            "columnName": "episodes",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -331,16 +97,22 @@
             "notNull": false
           },
           {
-            "fieldPath": "overview",
-            "columnName": "overview",
+            "fieldPath": "seasonNumber",
+            "columnName": "season_number",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "posterPath",
+            "columnName": "poster_path",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "SerieId",
+            "fieldPath": "serieId",
             "columnName": "serie_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -349,7 +121,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_seasons_serie_id",
+            "unique": false,
+            "columnNames": [
+              "serie_id"
+            ],
+            "createSql": "CREATE  INDEX `index_seasons_serie_id` ON `${TABLE_NAME}` (`serie_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "series",
@@ -366,25 +147,13 @@
       },
       {
         "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`air_date` INTEGER, `episode_number` INTEGER NOT NULL, `overview` TEXT, `name` TEXT, `id` INTEGER NOT NULL, `production_code` TEXT, `season_number` INTEGER NOT NULL, `still_path` TEXT, `vote_avg` REAL NOT NULL, `vote_count` INTEGER NOT NULL, `season_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`season_id`) REFERENCES `seasons`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `season_id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`season_id`) REFERENCES `seasons`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
-            "fieldPath": "airDate",
-            "columnName": "air_date",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "episodeNumber",
-            "columnName": "episode_number",
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "overview",
-            "columnName": "overview",
-            "affinity": "TEXT",
-            "notNull": false
           },
           {
             "fieldPath": "name",
@@ -393,46 +162,10 @@
             "notNull": false
           },
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "productionCode",
-            "columnName": "production_code",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "seasonNumber",
-            "columnName": "season_number",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "stillPath",
-            "columnName": "still_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "voteAvg",
-            "columnName": "vote_avg",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "voteCount",
-            "columnName": "vote_count",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "idSeason",
+            "fieldPath": "seasonId",
             "columnName": "season_id",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -441,7 +174,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_episodes_season_id",
+            "unique": false,
+            "columnNames": [
+              "season_id"
+            ],
+            "createSql": "CREATE  INDEX `index_episodes_season_id` ON `${TABLE_NAME}` (`season_id`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "seasons",
@@ -459,7 +201,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9368f138fc78db35b80a898a12c910b4\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"39e572e458174dc6ad7fc75017ff3ca2\")"
     ]
   }
 }

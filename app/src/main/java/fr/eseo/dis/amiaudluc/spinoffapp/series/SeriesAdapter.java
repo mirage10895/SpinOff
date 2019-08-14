@@ -11,10 +11,11 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 
@@ -25,16 +26,16 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>{
 
     private SearchInterface fragment;
-    private ArrayList<Serie> series;
+    private List<SerieDatabase> series;
     private Context ctx;
 
-    public SeriesAdapter(Context ctx, SearchInterface fragment,ArrayList<Serie> data){
+    public SeriesAdapter(Context ctx, SearchInterface fragment, List<SerieDatabase> data){
         this.ctx = ctx;
         this.fragment = fragment;
         setSeries(data);
     }
 
-    public void setSeries(ArrayList<Serie> series){
+    public void setSeries(List<SerieDatabase> series){
         this.series = series;
     }
 
@@ -42,14 +43,14 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     @Override
     public SeriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View mySerieView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_serie, parent, false);
+                .inflate(R.layout.item_media, parent, false);
         return new SeriesAdapter.SeriesViewHolder(mySerieView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SeriesViewHolder holder, int position) {
         if (getItemCount() != 0) {
-            Serie serie = series.get(position);
+            SerieDatabase serie = series.get(position);
 
             holder.seriePoster.setImageResource(R.drawable.ic_loading);
             if(serie.getPosterPath() != null){
@@ -83,13 +84,15 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
 
         @Override
         public void onClick(View v) {
+            final SerieDatabase serieDatabase = series.get(getAdapterPosition());
             fragment.setType(Media.SERIE);
-            fragment.onItemClick(getAdapterPosition());
+            fragment.onItemClick(serieDatabase.getId());
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            fragment.onCreateCtxMenu(contextMenu,view,contextMenuInfo,getAdapterPosition());
+            final SerieDatabase serieDatabase = series.get(getAdapterPosition());
+            fragment.onCreateCtxMenu(contextMenu,view,contextMenuInfo, serieDatabase.getId());
         }
     }
 }

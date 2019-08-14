@@ -1,5 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -7,42 +8,42 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 
 /**
  * Created by lucasamiaud on 08/03/2018.
  */
 
 @Dao
-public interface SeriesDAO {
+public interface SerieDAO {
 
     @Insert
-    public void insertSerie(Serie serie);
+    public void insertSerie(SerieDatabase serie);
 
     @Query("SELECT * FROM series")
-    List<Serie> getAll();
+    LiveData<List<SerieDatabase>> getAll();
 
     @Query("SELECT id FROM series")
-    List<Integer> getAllIds();
+    LiveData<List<Integer>> getAllIds();
 
     @Query("SELECT * FROM series where name LIKE  :firstName")
-    Serie findByTitle(String firstName);
+    LiveData<SerieDatabase> findByTitle(String firstName);
 
     @Query("SELECT COUNT(*) from series")
     int countSeries();
 
-    @Query("SELECT SUM(vote_count) from SERIES")
+    @Query("SELECT SUM(id) from SERIES")
     int countVotesSeries();
 
     @Insert
-    void insertAll(Serie... series);
+    void insertAll(SerieDatabase... series);
 
     @Delete
-    void deleteSerie(Serie serie);
+    void deleteSerie(SerieDatabase serie);
 
     @Query("DELETE FROM series")
     void deleteAllSeries();
 
     @Query("SELECT * FROM SERIES where id = :id")
-    Serie getSerieById(int id);
+    LiveData<SerieDatabase> getSerieById(int id);
 }

@@ -24,7 +24,7 @@ public class DeleteMovieActionListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        DatabaseTransactionManager.deleteMovie(db, movie);
+        DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().deleteMovie(movie));
         Snackbar.make(v,"Movie deleted from your library", Snackbar.LENGTH_LONG)
                 .setAction("Action",null).show();
     }

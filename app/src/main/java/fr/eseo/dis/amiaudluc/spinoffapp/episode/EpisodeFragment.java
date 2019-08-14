@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,7 +53,7 @@ public class EpisodeFragment extends Fragment implements SearchInterface{
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         episodeView = inflater.inflate(R.layout.fragment_episode, container, false);
         ctx = episodeView.getContext();
@@ -94,7 +95,7 @@ public class EpisodeFragment extends Fragment implements SearchInterface{
             RecyclerView recyclerGuest = episodeView.findViewById(R.id.guest_stars);
             recyclerGuest.setHasFixedSize(true);
             recyclerGuest.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-            ActorsAdapter artistsAdapter = new ActorsAdapter(ctx,this,this.episode.getGuestStars());
+            ActorsAdapter artistsAdapter = new ActorsAdapter(ctx,this, this.episode.getGuestStars());
             recyclerGuest.setAdapter(artistsAdapter);
         }
 
@@ -139,7 +140,7 @@ public class EpisodeFragment extends Fragment implements SearchInterface{
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(Integer position) {
         if (this.type.equals("actor")){
             Content.currentArtist = this.episode.getGuestStars().get(position);
             Intent intent = new Intent(ctx, ArtistActivity.class);
@@ -148,7 +149,7 @@ public class EpisodeFragment extends Fragment implements SearchInterface{
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
 
     }
 }

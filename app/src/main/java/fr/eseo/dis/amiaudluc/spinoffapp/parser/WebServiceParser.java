@@ -139,11 +139,11 @@ public class WebServiceParser {
      */
     static Language getLanguage(String language){
         switch (language){
-            case "es": return Language.es;
-            case "en": return Language.en;
-            case "fr": return Language.fr;
-            case "us": return Language.us;
-            default:return Language.unknown;
+            case "es": return Language.ES;
+            case "en": return Language.EN;
+            case "fr": return Language.FR;
+            case "us": return Language.US;
+            default:return Language.DEFAULT;
         }
     }
 

@@ -3,6 +3,6 @@
     android:useLevel="true"
     android:innerRadiusRatio="2.3"
 
-    android:thickness="4.5sp" >
+    android:thickness="2sp" >
     <solid android:color="@color/colorAccent" />
 </shape>

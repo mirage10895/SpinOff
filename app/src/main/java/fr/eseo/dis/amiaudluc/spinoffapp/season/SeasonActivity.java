@@ -44,7 +44,7 @@ public class SeasonActivity extends AppCompatActivity {
             }
         }
 
-        findViewById(R.id.fab).setVisibility(View.GONE);
+        findViewById(R.id. fab).setVisibility(View.GONE);
 
         content = findViewById(R.id.content);
         content.setVisibility(View.GONE);

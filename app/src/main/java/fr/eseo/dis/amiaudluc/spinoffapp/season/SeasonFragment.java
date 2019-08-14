@@ -156,12 +156,12 @@ public class SeasonFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(int position) {
-        if(this.getType().equals("actor")){
+    public void onItemClick(Integer position) {
+        if (this.getType().equals("actor")){
             Content.currentArtist = this.season.getCast().get(position);
             Intent intent = new Intent(ctx, ArtistActivity.class);
             startActivity(intent);
-        }else if(this.getType().equals("episode")){
+        } else if (this.getType().equals("episode")){
             Content.currentEpisode = this.season.getEpisodes().get(position);
             Intent intent = new Intent(ctx, EpisodeActivity.class);
             startActivity(intent);
@@ -169,7 +169,7 @@ public class SeasonFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
 
     }
 

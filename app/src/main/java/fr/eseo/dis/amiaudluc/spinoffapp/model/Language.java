@@ -1,38 +1,38 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by lucasamiaud on 28/02/2018.
  */
 
 public enum Language {
 
-    en("English","EN"),
-    fr("French","FR"),
-    es("Spanish","ES"),
-    us("USA","US"),
-    unknown("UNKNOWN","unknown");
+    @SerializedName("en")
+    EN("English","en"),
+    @SerializedName("fr")
+    FR("French","fr"),
+    @SerializedName("es")
+    ES("Spanish","es"),
+    @SerializedName("us")
+    US("USA","us"),
+    @SerializedName("gb")
+    GB("Great Britain","gb"),
+    DEFAULT("UNKNOWN","unknown");
 
     private String fullName;
-    private String majThis;
+    private String name;
 
-    Language(String fullName,String majThis){
+    Language(String fullName, String majThis){
         this.fullName = fullName;
-        this.majThis = majThis;
+        this.name = majThis;
     }
 
     public String getFullName() {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getMajThis() {
-        return majThis;
-    }
-
-    public void setMajThis(String majThis) {
-        this.majThis = majThis;
+    public String getName() {
+        return name;
     }
 }

@@ -62,7 +62,7 @@ public class EpisodeParser {
                 episode.setOverview(c.getString("overview"));
             }
             if(c.has("vote_average")){
-                episode.setVoteAvg(c.getDouble("vote_average"));
+                //episode.setVoteAvg(c.getDouble("vote_average"));
             }
             if(c.has("vote_count")){
                 episode.setVoteCount(c.getInt("vote_count"));

@@ -3,14 +3,12 @@ package fr.eseo.dis.amiaudluc.spinoffapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.View;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.FilterKingFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 
@@ -23,25 +21,13 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
 
     public EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     public SwipeRefreshLayout swipeContainer;
-    public FilterKingFragment fKFragment;
     public AppDatabase db;
     public String type;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         db = AppDatabase.getAppDatabase(this.getContext());
-
-        fKFragment = new FilterKingFragment();
-        FragmentManager manager = getFragmentManager();
-        if (manager != null) {
-            manager.beginTransaction()
-                    .replace(R.id.filterKing, fKFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
-
     }
 
     @Override

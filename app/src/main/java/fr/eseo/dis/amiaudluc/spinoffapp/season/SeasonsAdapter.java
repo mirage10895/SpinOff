@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.season;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
@@ -25,29 +26,30 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 
 public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonViewHolder>{
 
-    private ArrayList<Season> seasons;
+    private List<Season> seasons;
     private final ItemInterface mListener;
     private final Context ctx;
 
-    public SeasonsAdapter(Context ctx, ItemInterface listener, ArrayList<Season> data){
+    public SeasonsAdapter(Context ctx, ItemInterface listener, List<Season> data){
         this.mListener = listener;
         this.ctx = ctx;
         this.setSeasons(data);
     }
 
-    public void setSeasons(ArrayList<Season> seasons){
+    public void setSeasons(List<Season> seasons){
         this.seasons = seasons;
     }
 
+    @NonNull
     @Override
-    public SeasonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SeasonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View seasonView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_season, parent, false);
         return new SeasonViewHolder(seasonView);
     }
 
     @Override
-    public void onBindViewHolder(SeasonViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SeasonViewHolder holder, int position) {
         if (getItemCount() != 0) {
             Season season = seasons.get(position);
 
@@ -73,8 +75,8 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
             if (season.getAirDate() != null){
                 cal.setTime(season.getAirDate());
                 String date = String.valueOf(cal.get(Calendar.DATE))
-                        .concat(" - "+String.valueOf(cal.get(Calendar.MONTH))
-                                .concat(" - "+String.valueOf(cal.get(Calendar.YEAR))));
+                        .concat(" - " + cal.get(Calendar.MONTH))
+                                .concat(" - " + cal.get(Calendar.YEAR));
                 holder.seasonAirDate.setText(date);
             }
         }
@@ -95,7 +97,7 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
         private final TextView seasonNumberEpisodes;
         private final TextView seasonNumber;
 
-        public SeasonViewHolder(View view) {
+        SeasonViewHolder(View view) {
             super(view);
             this.view = view;
 
@@ -105,7 +107,7 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
             seasonNumber = view.findViewById(R.id.season);
 
 
-            view.setOnClickListener(this);
+            this.view.setOnClickListener(this);
         }
 
         @Override

@@ -44,9 +44,9 @@ public class DashboardFragment extends Fragment {
         TextView moviesCunt = view.findViewById(R.id.nb_movies);
         TextView seriesLength = view.findViewById(R.id.series_length);
         TextView moviesLength = view.findViewById(R.id.movies_length);
-
-        seriesCunt.setText(String.valueOf(DatabaseTransactionManager.getAllSeries(db).size()));
-        moviesCunt.setText(String.valueOf(DatabaseTransactionManager.getAllMovies(db).size()));
+        
+        db.moviesDAO().getAll().observe(this, movieDatabases -> moviesCunt.setText(String.valueOf(movieDatabases.size())));
+        db.serieDAO().getAll().observe(this, serieDatabases -> moviesCunt.setText(String.valueOf(serieDatabases.size())));
 
         return view;
     }

@@ -4,6 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.Date;
+
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SeasonDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.LogUtils;
@@ -24,13 +29,13 @@ public class NotificationReceiver extends BroadcastReceiver {
         LogUtils.d(LogUtils.DEBUG_TAG,"AlarmReceiver => onReceive !");
         int episodeId = intent.getIntExtra(ConstUtils.BUNDLE_KEY_EPISODE,-1);
         LogUtils.d(LogUtils.DEBUG_TAG,"Episode id => " + episodeId);
-        Episode episode = AppDatabase.getAppDatabase(context).episodesDAO().getEpisodeById(episodeId);
-        Season season = AppDatabase.getAppDatabase(context).seasonDAO().getSeasonById(episode.getIdSeason());
-        Serie serie = AppDatabase.getAppDatabase(context).seriesDAO().getSerieById(season.getSerieId());
-        NotificationUtils.getInstance(context).createNotification(
-                context,
-                "Nouvel Episode !",
-                "Serie "+serie.getOriginalName()+" "+episode.toString()+" le "+ DateUtils.getStringFromDate(episode.getAirDate()));
+//        EpisodeDatabase episode = AppDatabase.getAppDatabase(context).episodeDAO().getEpisodeById(episodeId);
+//        SeasonDatabase season = AppDatabase.getAppDatabase(context).seasonDAO().getSeasonById(episode.getSeasonId());
+//        SerieDatabase serie = AppDatabase.getAppDatabase(context).serieDAO().getSerieById(season.getSerieId());
+//        NotificationUtils.getInstance(context).createNotification(
+//                context,
+//                "Nouvel Episode !",
+//                "Serie "+serie.getName()+" "+episode.toString()+" le "+ DateUtils.getStringFromDate(new Date()));
 
     }
 }

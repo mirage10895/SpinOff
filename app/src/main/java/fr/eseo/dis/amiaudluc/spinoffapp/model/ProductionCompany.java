@@ -1,38 +1,20 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by lucasamiaud on 28/02/2018.
  */
 
-@Entity
+@Getter
+@Setter
 public class ProductionCompany {
-
-    @ColumnInfo(name = "name")
     private String name;
-    @ColumnInfo(name = "id")
     private int id;
 
     public ProductionCompany(){
-        this.name="";
-        this.id=0;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.name = "";
+        this.id = 0;
     }
 }

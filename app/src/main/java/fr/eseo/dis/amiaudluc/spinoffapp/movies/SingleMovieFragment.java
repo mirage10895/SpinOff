@@ -4,6 +4,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.movies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,21 +41,13 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
 
     private View singleMovieView;
     private Context ctx;
-    private Movie movie = Content.currentMovie;
+    private Movie movie;
     private String type ="";
 
     public SingleMovieFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SingleMovieFragment.
-     */
     public static SingleMovieFragment newInstance() {
         SingleMovieFragment fragment = new SingleMovieFragment();
         Bundle args = new Bundle();
@@ -63,21 +56,21 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         singleMovieView = inflater.inflate(R.layout.fragment_single_movie, container, false);
         ctx = singleMovieView.getContext();
 
         ImageView rate = singleMovieView.findViewById(R.id.rate);
         rate.setImageBitmap(CircularImageBar.BuildNote(0));
-        if(movie.getVoteAvg() != -1){
-            rate.setImageBitmap(CircularImageBar.BuildNote((movie.getVoteAvg())));
+        if(movie.getVoteAverage() != null){
+            rate.setImageBitmap(CircularImageBar.BuildNote((movie.getVoteAverage())));
         }
 
         ImageView flag = singleMovieView.findViewById(R.id.flag);
         flag.setImageResource(R.drawable.ic_loading);
-        if (!movie.getOriginalLanguage().equals(Language.unknown)){
-            int imageResource = getResources().getIdentifier("@drawable/"+movie.getOriginalLanguage().name()+"_icon",null,ctx.getPackageName());
+        if (!Language.DEFAULT.equals(movie.getOriginalLanguage())){
+            int imageResource = getResources().getIdentifier("@drawable/"+movie.getOriginalLanguage().getName()+"_icon",null,ctx.getPackageName());
             flag.setImageResource(imageResource);
         }
 
@@ -114,12 +107,12 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
         RecyclerView recyclerReal = singleMovieView.findViewById(R.id.realisators);
         recyclerReal.setHasFixedSize(true);
         recyclerReal.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        recyclerReal.setAdapter(new ArtistsAdapter(singleMovieView.getContext(),this,movie.getDirectors()));
+        recyclerReal.setAdapter(new ArtistsAdapter(singleMovieView.getContext(),this, movie.getDirectors()));
 
         RecyclerView recyclerCast = singleMovieView.findViewById(R.id.cast);
         recyclerCast.setHasFixedSize(true);
         recyclerCast.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        recyclerCast.setAdapter(new ActorsAdapter(singleMovieView.getContext(),this,movie.getCast()));
+        recyclerCast.setAdapter(new ActorsAdapter(singleMovieView.getContext(),this, movie.getCredits().getCast()));
 
         if (movie.getRightVideo().getId() != null){
             YoutubeFragment fragment = new YoutubeFragment();
@@ -139,22 +132,28 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(int position) {
-        if(this.type.equals("network")){
-            //Content.currentNetwork = this.movie.getProductionCompanies().get(position);
-        }else if (this.type.equals("artist")){
-            Content.currentArtist = this.movie.getDirectors().get(position);
-            Intent intent = new Intent(ctx, ArtistActivity.class);
-            startActivity(intent);
-        }else if (this.type.equals("actor")){
-            Content.currentArtist = this.movie.getCast().get(position);
-            Intent intent = new Intent(ctx, ArtistActivity.class);
-            startActivity(intent);
+    public void onItemClick(Integer position) {
+        switch (this.type) {
+            case "network":
+                //Content.currentNetwork = this.movie.getProductionCompanies().get(position);
+                break;
+            case "artist": {
+                Content.currentArtist = this.movie.getDirectors().get(position);
+                Intent intent = new Intent(ctx, ArtistActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case "actor": {
+                Content.currentArtist = this.movie.getCredits().getCast().get(position);
+                Intent intent = new Intent(ctx, ArtistActivity.class);
+                startActivity(intent);
+                break;
+            }
         }
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
 
     }
 

@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Network;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
@@ -25,18 +25,18 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Network;
 public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.NetworksViewHolder>{
 
 
-    private ArrayList<Network> networks;
+    private List<Network> networks;
     private final ItemInterface mListener;
     private final Context ctx;
     private String type = "type";
 
-    public NetworksAdapter(Context ctx, ItemInterface listener, ArrayList<Network> data){
+    public NetworksAdapter(Context ctx, ItemInterface listener, List<Network> data){
         this.mListener = listener;
         this.ctx = ctx;
         this.setNetworks(data);
     }
 
-    public void setNetworks(ArrayList<Network> networks){
+    public void setNetworks(List<Network> networks){
         this.networks = networks;
     }
 

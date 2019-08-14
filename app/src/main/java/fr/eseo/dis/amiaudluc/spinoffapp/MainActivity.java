@@ -21,11 +21,9 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.HashMap;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.calendar.CalendarActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.calendar.CalendarFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.library.LibraryActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.OnAirMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.PopularMoviesFragment;
@@ -90,10 +88,10 @@ public class MainActivity extends AppCompatActivity
         });
         initializeButtons();
 
-        /**
+        /*
          * DEBUG MODE
          */
-        CacheManager.getInstance().removeAll(this);
+        //CacheManager.getInstance().removeAll(this);
         //AppDatabase.getAppDatabase(this).nukeDB();
     }
 
@@ -143,7 +141,6 @@ public class MainActivity extends AppCompatActivity
                 setActionBarTitle(currentFragment);
             }
         }
-        Content.currentFragment = currentFragment;
     }
 
     /**
@@ -226,7 +223,6 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
         setActionBarTitle(currentFragment);
-        Content.currentFragment = currentFragment;
     }
 
     @Override
@@ -279,25 +275,35 @@ public class MainActivity extends AppCompatActivity
          */
         switch (id) {
             case R.id.nav_movies:
-                if(currentFragment.substring(0,2).equals("To")){
-                    currentFragment = getString(R.string.fragment_top_rated_movies);
-                }else if(currentFragment.substring(0,2).equals("Po")){
-                    currentFragment = getString(R.string.fragment_popular_movies);
-                }else if(currentFragment.substring(0,2).equals("On")) {
-                    currentFragment = getString(R.string.fragment_on_air_movies);
-                }else{
-                    currentFragment = getString(R.string.fragment_top_rated_series);
+                switch (currentFragment.substring(0, 2)) {
+                    case "To":
+                        currentFragment = getString(R.string.fragment_top_rated_movies);
+                        break;
+                    case "Po":
+                        currentFragment = getString(R.string.fragment_popular_movies);
+                        break;
+                    case "On":
+                        currentFragment = getString(R.string.fragment_on_air_movies);
+                        break;
+                    default:
+                        currentFragment = getString(R.string.fragment_top_rated_series);
+                        break;
                 }
                 break;
             case R.id.nav_series:
-                if(currentFragment.substring(0,2).equals("To")){
-                    currentFragment = getString(R.string.fragment_top_rated_series);
-                }else if(currentFragment.substring(0,2).equals("Po")){
-                    currentFragment = getString(R.string.fragment_popular_series);
-                }else if(currentFragment.substring(0,2).equals("On")) {
-                    currentFragment = getString(R.string.fragment_on_air_series);
-                }else{
-                    currentFragment = getString(R.string.fragment_top_rated_series);
+                switch (currentFragment.substring(0, 2)) {
+                    case "To":
+                        currentFragment = getString(R.string.fragment_top_rated_series);
+                        break;
+                    case "Po":
+                        currentFragment = getString(R.string.fragment_popular_series);
+                        break;
+                    case "On":
+                        currentFragment = getString(R.string.fragment_on_air_series);
+                        break;
+                    default:
+                        currentFragment = getString(R.string.fragment_top_rated_series);
+                        break;
                 }
                 break;
             case R.id.nav_library:
@@ -305,8 +311,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.nav_calendar:
-                Intent intent2 = new Intent(this,CalendarActivity.class);
-                startActivity(intent2);
+                currentFragment = getString(R.string.fragment_my_calendar);
                 break;
         }
 

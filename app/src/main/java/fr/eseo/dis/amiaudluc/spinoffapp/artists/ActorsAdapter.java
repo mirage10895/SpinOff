@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.artists;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
@@ -24,30 +26,31 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
 
 public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistViewHolder>{
 
-    private ArrayList<Artist> artists;
+    private List<Artist> artists;
     private final ItemInterface mListener;
     private final Context ctx;
     private final String type = "actor";
 
-    public ActorsAdapter(Context ctx, ItemInterface listener, ArrayList<Artist> data){
+    public ActorsAdapter(Context ctx, ItemInterface listener, List<Artist> data){
         this.mListener = listener;
         this.ctx = ctx;
         this.setArtist(data);
     }
 
-    public void setArtist(ArrayList<Artist> artists){
+    public void setArtist(List<Artist> artists){
         this.artists = artists;
     }
 
+    @NonNull
     @Override
-    public ArtistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ArtistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View seasonView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_actor, parent, false);
         return new ArtistViewHolder(seasonView);
     }
 
     @Override
-    public void onBindViewHolder(ArtistViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ArtistViewHolder holder, int position) {
         if (getItemCount() != 0) {
             holder.name.setText(ctx.getResources().getString(R.string.emptyField));
             if (this.artists.get(position).getName() != null) {

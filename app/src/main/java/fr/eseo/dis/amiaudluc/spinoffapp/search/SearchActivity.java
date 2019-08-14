@@ -24,13 +24,15 @@ import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
+import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SearchViewModel;
 
 public class SearchActivity extends AppCompatActivity {
 
-    EditText queryText;
-    boolean loaded;
+    private SearchViewModel searchViewModel;
+    private EditText queryText;
     String currentFragment;
-    SearchFragment fragment = new SearchFragment();
+    SearchFragment fragment;
     FrameLayout content;
     RelativeLayout noMedia;
     private InputMethodManager imm;
@@ -41,9 +43,11 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_search);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        this.searchViewModel = new SearchViewModel(ApiRepository.getInstance());
+        this.fragment = SearchFragment.newInstance(1);
 
         ActionBar actionBar = getSupportActionBar();
 
@@ -58,8 +62,12 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         currentFragment = getString(R.string.fragment_search_medias);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                fragment, currentFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content,
+                        fragment,
+                        currentFragment
+                )
+                .commit();
 
         queryText = (EditText) this.findViewById(R.id.query);
 
@@ -85,7 +93,7 @@ public class SearchActivity extends AppCompatActivity {
                     content.setVisibility(View.GONE);
                     noText.setText(getString(R.string.search_for));
                     noMedia.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     onSearch(charSequence.toString());
                 }
             }
@@ -111,17 +119,30 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onSearch(String query) {
         findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        GetSearch MtastSearch = new GetSearch();
-        MtastSearch.setQuery(query);
-        MtastSearch.execute();
+        this.searchViewModel.initSearchByQuery(query);
+        this.searchViewModel.getMedias().observe(this, media -> {
+            if (media == null) {
+                noMedia.setVisibility(View.VISIBLE);
+                noText.setText(R.string.empty_desc_results);
+                Snackbar.make(fragment.getView(), R.string.no_results, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            } else if (media.isEmpty()) {
+                content.setVisibility(View.GONE);
+                noMedia.setVisibility(View.VISIBLE);
+                noText.setText("No results for your query \n Try again !");
+            } else {
+                noMedia.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
+                fragment.setMedias(media);
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -129,57 +150,5 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-    }
-
-    private class GetSearch extends android.os.AsyncTask<String, Void, String>{
-
-        private String query;
-
-        public String getQuery() {
-            return query;
-        }
-
-        public void setQuery(String query) {
-            this.query = query;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            HttpsHandler sh = new HttpsHandler();
-            String args = "&language=en-US&query="+this.getQuery();
-
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("search","multi",args);
-
-            return jsonStr;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            findViewById(R.id.progressBar).setVisibility(View.GONE);
-            ArrayList<Media> medias = WebServiceParser.multiMediasParser(result);
-            if(!result.isEmpty()) {
-                if (medias.isEmpty()){
-                    content.setVisibility(View.GONE);
-                    noMedia.setVisibility(View.VISIBLE);
-                    noText.setText("No results for your query \n Try again !");
-                }else {
-                    noMedia.setVisibility(View.GONE);
-                    content.setVisibility(View.VISIBLE);
-                    Content.searchedMedias.clear();
-                    Content.searchedSeries.clear();
-                    Content.searchedMovies.clear();
-                    Content.searchedArtists.clear();
-                    Content.searchedMedias.addAll(medias);
-                    fragment.setMedias(Content.searchedMedias);
-                    loaded = true;
-                }
-            }else{
-                noMedia.setVisibility(View.VISIBLE);
-                noText.setText(R.string.empty_desc_results);
-                Snackbar.make(fragment.getView(), R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
     }
 }

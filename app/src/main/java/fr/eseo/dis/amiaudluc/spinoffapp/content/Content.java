@@ -18,11 +18,11 @@ public class Content {
 
     public static String currentFragment;
 
-    public static ArrayList<Movie> movies = new ArrayList<>();
+    public static ArrayList<Movie> movies;
 
     public static Movie currentMovie;
 
-    public  static ArrayList<Serie> series = new ArrayList<>();
+    public  static ArrayList<Serie> series;
 
     public static Serie currentSerie;
 

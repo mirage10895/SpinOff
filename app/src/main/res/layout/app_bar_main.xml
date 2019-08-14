@@ -32,7 +32,7 @@
         fab:fab_labelStyle="@style/menu_labels_style"
         fab:fab_labelsPosition="left"
         fab:fab_addButtonColorNormal="@color/colorAccent"
-        fab:fab_addButtonColorPressed="@color/colorPrimary"
+        fab:fab_addButtonColorPressed="@color/colorPrimaryDark"
         fab:fab_addButtonSize="normal"
         fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_expandDirection="up"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_title="Top Rated"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_title="Popular"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_title="Current"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

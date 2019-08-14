@@ -51,7 +51,7 @@ public class HttpsHandler {
                 URL url = new URL(reqUrl);
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setDoInput(true);
-                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Content-MovieType", "application/json");
                 conn.setRequestMethod("GET");
                 if (conn.getResponseCode() > 400){
                     in = new BufferedInputStream(conn.getErrorStream());

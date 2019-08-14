@@ -1,9 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.library;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,20 +10,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.notifications.NotificationReceiver;
 
 public class LibraryActivity extends AppCompatActivity {
 
-    private AppDatabase db;
     private Fragment fragment;
     private String currentFragment;
 
@@ -66,7 +53,6 @@ public class LibraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
-        db = AppDatabase.getAppDatabase(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,9 +71,6 @@ public class LibraryActivity extends AppCompatActivity {
         fragment = new DashboardFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
         getSupportActionBar().setTitle(currentFragment);
-
-        GetDataFromDB mDataTask = new GetDataFromDB();
-        mDataTask.execute();
     }
 
     @Override
@@ -113,42 +96,6 @@ public class LibraryActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-    }
-
-    ///////////////////
-    // ALARM MANAGER //
-    ///////////////////
-
-    private AlarmManager alarmManager;
-
-    public void setAlarm(Calendar calendar, Episode episode) {
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager != null) {
-            Intent myIntent = new Intent(this, NotificationReceiver.class);
-            myIntent.putExtra(ConstUtils.BUNDLE_KEY_EPISODE, episode.getId());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, episode.getId(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            calendar.set(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),12,0);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }
-    }
-
-    private class GetDataFromDB extends AsyncTask<Void, Void, List<Season>> {
-
-        @Override
-        protected List<Season> doInBackground(Void... params) {
-            return db.seasonDAO().getAll();
-        }
-
-        @Override
-        protected void onPostExecute(List<Season> seasons) {
-            for (Season season : seasons) {
-                if (season.getFutureEpisode().getAirDate() != null) {
-                    Calendar cal = Calendar.getInstance(Locale.US);
-                    cal.setTime(season.getFutureEpisode().getAirDate());
-                    setAlarm(cal, season.getFutureEpisode());
-                }
-            }
-        }
     }
 
 }

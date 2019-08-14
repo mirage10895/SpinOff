@@ -8,43 +8,13 @@
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity"
     tools:showIn="@layout/activity_media">
 
-    <RelativeLayout
+    <include layout="@layout/no_data"
         android:id="@+id/no_media_display"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_margin="20dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/imgNoMedia"
-            android:layout_width="wrap_content"
-            android:layout_height="110dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="14dp"
-            android:src="@drawable/no_data" />
-
-        <TextView
-            android:id="@+id/tvListNothing"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imgNoMedia"
-            android:layout_marginBottom="14dp"
-            android:gravity="center"
-            android:text="@string/empty_results"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvListNothing2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvListNothing"
-            android:gravity="center"
-            android:text="@string/empty_desc_results"
-            android:textColor="@color/colorPrimary" />
-
-    </RelativeLayout>
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/content"

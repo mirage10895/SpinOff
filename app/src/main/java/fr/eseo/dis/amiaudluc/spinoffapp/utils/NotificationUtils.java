@@ -26,16 +26,6 @@ public class NotificationUtils {
 
     public void createNotification(Context context, String notificationTitle, String notificationText){
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_no_ticket)
-                .setContentTitle(notificationTitle)
-                .setContentText(notificationText)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
-        Notification notification = mBuilder.build();
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(0, notification);
     }
 
 }

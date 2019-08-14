@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.ContextMenu;
@@ -12,51 +13,39 @@ import fr.eseo.dis.amiaudluc.spinoffapp.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.series.SerieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 /**
  * Created by lucasamiaud on 28/12/2018.
  */
 
-public abstract class BaseSerieFragment extends BaseFragment{
+public abstract class BaseSerieFragment extends BaseFragment {
 
-    private View view;
+    public SerieViewModel serieViewModel;
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        this.view = view;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu_add:
-                if (!DatabaseTransactionManager.getAllSerieIds(db).contains(Content.currentSerie.getId())) {
-                    DatabaseTransactionManager.addSerieWithSeasons(db, Content.currentSerie);
-                    Snackbar.make(this.view, "This movie is already in your library", Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new DeleteSerieActionListener(db, Content.currentSerie)).show();
-                }else{
-                    Snackbar.make(this.view, "This serie is already in your library", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-                return true;
-            default:
-                break;
+        if (item.getItemId() == R.id.context_menu_add) {
+            //TODO refacto add to database
+            return true;
         }
         return false;
     }
 
     @Override
-    public void onItemClick(int position) {
-        Content.currentSerie = Content.series.get(position);
-
+    public void onItemClick(Integer id) {
         Intent intent = new Intent(getContext(), SerieActivity.class);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentSerie = Content.series.get(position);
-        onCreateContextMenu(contextMenu,v,menuInfo);
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
+        onCreateContextMenu(contextMenu, v, menuInfo);
     }
 }

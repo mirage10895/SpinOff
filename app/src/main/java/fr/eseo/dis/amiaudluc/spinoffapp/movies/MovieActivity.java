@@ -21,20 +21,20 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
+import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
 
-    private Movie movie = Content.currentMovie;
+    private MovieViewModel movieViewModel;
+    private Movie movie;
     private FrameLayout content;
     private RelativeLayout noMedia;
     private String currentFragment;
-    private SingleMovieFragment fragment = SingleMovieFragment.newInstance();
+    private SingleMovieFragment fragment;
     private AppDatabase db;
 
     @Override
@@ -43,50 +43,64 @@ public class MovieActivity extends AppCompatActivity {
         setContentView(R.layout.activity_media);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        db = AppDatabase.getAppDatabase(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            if (DatabaseTransactionManager.getAllMovieIds(db).contains(movie.getId())){
-                Snackbar.make(view,"Movie is already in your library",Snackbar.LENGTH_LONG)
-                        .setAction("Action",null).show();
-            }else{
-                DatabaseTransactionManager.addMovie(db, movie);
-                Snackbar.make(view,"Movie added to your library",Snackbar.LENGTH_LONG)
-                        .setAction("Action",null).show();
-            }
-        });
+        Integer id = getIntent().getIntExtra("id", 0);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
-            actionBar.setTitle(getString(R.string.emptyField));
-            if (movie.getTitle() != null) {
-                actionBar.setTitle(movie.getOriginalTitle());
-            }
-        }
-
-        setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
 
         content = findViewById(R.id.content);
-        content.setVisibility(View.GONE);
         noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
 
-        GetSingleMovie mTaskGetSMov = new GetSingleMovie();
-        mTaskGetSMov.setId(movie.getId());
-        mTaskGetSMov.execute();
+        this.db = AppDatabase.getAppDatabase(this);
+        this.fragment = SingleMovieFragment.newInstance();
+        this.movieViewModel = new MovieViewModel(ApiRepository.getInstance());
+
+        this.movieViewModel.initGetMovieById(id);
+        this.movieViewModel.getMovie().observe(this, movieResult -> {
+            if (movieResult != null) {
+                noMedia.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
+                this.movie = movieResult;
+                fragment.setMovie(movieResult);
+                currentFragment = getString(R.string.fragment_single_movie);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content,
+                        fragment, currentFragment).commit();
+                setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
+            } else {
+                noMedia.setVisibility(View.VISIBLE);
+                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(view ->
+                db.moviesDAO().getAllIds().observe(this, integers -> {
+                    if (integers != null && integers.contains(this.movie.getId())) {
+                        Snackbar.make(view, "Movie is already in your library", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    } else {
+                        DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().insertMovie(this.movie));
+                        Snackbar.make(view, "Movie added to your library", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                }));
 
     }
 
     /**
      * Get the backdrop picture for the top
+     *
      * @param link
      */
-    private void setBackground(String link){
+    private void setBackground(String link) {
         final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        final Target target = new Target(){
+        final Target target = new Target() {
 
             final ProgressBar progressBar = findViewById(R.id.progressBar);
+
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 progressBar.setVisibility(View.GONE);
@@ -116,59 +130,11 @@ public class MovieActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
-    }
-
-    private class GetSingleMovie extends android.os.AsyncTask<String, Void, String>{
-
-        private int id;
-
-        public String getId() {
-            return String.valueOf(id);
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-
-        @Override
-        protected String doInBackground(String... strings) {
-            HttpsHandler sh = new HttpsHandler();
-            String args = "&language=en-US&append_to_response=credits,videos";
-
-            // Making a request to url and getting response
-
-            return sh.makeServiceCall("movie", this.getId(),args);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if(!result.isEmpty()) {
-                Movie movie = WebServiceParser.singleMovieParser(result);
-                if (movie.getId() == -1){
-                    noMedia.setVisibility(View.VISIBLE);
-                }else {
-                    noMedia.setVisibility(View.GONE);
-                    content.setVisibility(View.VISIBLE);
-                    Content.currentMovie = movie;
-                    fragment.setMovie(movie);
-                    currentFragment = getString(R.string.fragment_single_movie);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                            fragment, currentFragment).commit();
-                }
-            }else{
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

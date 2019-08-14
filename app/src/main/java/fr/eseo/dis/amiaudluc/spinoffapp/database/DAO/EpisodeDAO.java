@@ -1,11 +1,13 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.EpisodeDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 
 /**
@@ -13,22 +15,22 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
  */
 
 @Dao
-public interface EpisodesDAO {
+public interface EpisodeDAO {
 
     @Insert
-    void insertEpisode(Episode episode);
+    void insertEpisode(EpisodeDatabase EPISODES);
 
     @Insert
-    void insertAll(List<Episode> episodes);
+    void insertAll(List<EpisodeDatabase> EPISODES);
 
-    @Query("SELECT * FROM episodes")
-    List<Episode> getAll();
+    @Query("SELECT * FROM EPISODES")
+    LiveData<List<EpisodeDatabase>> getAll();
 
     @Query("SELECT * FROM EPISODES where id = :id")
-    Episode getEpisodeById(int id);
+    LiveData<EpisodeDatabase> getEpisodeById(int id);
 
     @Query("Select * from EPISODES where season_id = :id")
-    List<Episode> getEpisodesBySeasonId(int id);
+    LiveData<List<EpisodeDatabase>> getEpisodesBySeasonId(int id);
 
     @Query("DELETE FROM EPISODES")
     void deleteAllEpisodes();

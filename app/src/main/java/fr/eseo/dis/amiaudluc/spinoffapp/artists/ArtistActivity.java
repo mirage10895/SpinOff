@@ -19,8 +19,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
 
 public class ArtistActivity extends AppCompatActivity {
 
-    private Artist artist = Content.currentArtist;
-    private Season season = Content.currentSeason;
+    private Artist artist;
     private FrameLayout content;
     private RelativeLayout noMedia;
     private String currentFragment;
@@ -99,7 +98,6 @@ public class ArtistActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            //findViewById(R.id.progressBarBody).setVisibility(View.GONE);
             if(!result.isEmpty()) {
                 Artist artist = WebServiceParser.singleArtistParser(result);
                 if (artist.getId() == -1){

@@ -65,7 +65,7 @@ public class MovieParser {
             movie.setVoteCount(c.getInt("vote_count"));
             movie.setId(c.getInt("id"));
             movie.setVideo(c.getBoolean("video"));
-            movie.setVoteAvg(c.getDouble("vote_average"));
+            movie.setVoteAverage(c.getDouble("vote_average"));
             movie.setTitle(c.getString("title"));
             movie.setPopularity(c.getDouble("popularity"));
             movie.setPosterPath(c.getString("poster_path"));
@@ -82,16 +82,16 @@ public class MovieParser {
                 movie.setGenres(WebServiceParser.multiGenresParser(c.getString("genres")));
             }
             if(c.has("budget")){
-                movie.setBudget(c.getInt("budget"));
+                //movie.setBudget(c.getInt("budget"));
             }
             if(c.has("credits")){
                 JSONObject castos = new JSONObject(c.getString("credits"));
-                movie.setCast(WebServiceParser.multiArtistsParser(castos.getString("cast")));
-                movie.setCrew(WebServiceParser.multiArtistsParser(castos.getString("crew")));
+                //movie.setCast(WebServiceParser.multiArtistsParser(castos.getString("cast")));
+                //movie.setCrew(WebServiceParser.multiArtistsParser(castos.getString("crew")));
             }
             if (c.has("videos")){
                 JSONObject videos = new JSONObject(c.getString("videos"));
-                movie.setVideos(WebServiceParser.multiVideosParser(videos.getString(RESULTS)));
+                //movie.setVideos(WebServiceParser.multiVideosParser(videos.getString(RESULTS)));
             }
             if (c.has("release_date")){
                 movie.setReleaseDate(DateUtils.getDateFromString(c.getString("release_date"),DateUtils.CLASSIC_DATE));

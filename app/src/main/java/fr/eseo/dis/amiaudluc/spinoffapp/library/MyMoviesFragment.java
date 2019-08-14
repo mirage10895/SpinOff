@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.library;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.movies.MoviesAdapter;
@@ -37,7 +39,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
 
     private MoviesAdapter moviesAdapter;
     private Context ctx;
-    private ArrayList<Movie> movies;
+    private List<MovieDatabase> movies;
     private AppDatabase db;
     private String type;
 
@@ -52,14 +54,14 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
         ctx = view.getContext();
         db = AppDatabase.getAppDatabase(ctx);
 
-        setDbMovies(DatabaseTransactionManager.getAllMovies(db));
+        db.moviesDAO().getAll().observe(this, this::setDbMovies);
 
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -75,8 +77,8 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         return view;
     }
 
-    private void setDbMovies(List<Movie> movies){
-        this.movies = new ArrayList<>(movies);
+    private void setDbMovies(List<MovieDatabase> movies){
+        this.movies = movies;
         if (moviesAdapter != null) {
             moviesAdapter.setMovies(this.movies);
             moviesAdapter.notifyDataSetChanged();
@@ -92,29 +94,21 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu_delete:
-                DatabaseTransactionManager.deleteMovie(db, Content.currentMovie);
-                setDbMovies(this.movies.stream()
-                        .filter(movie -> movie.getId() != Content.currentMovie.getId())
-                        .collect(Collectors.toList()));
-                return true;
-            default:
-                break;
+        if (item.getItemId() == R.id.context_menu_delete) {
+            //TODO refacto
         }
         return false;
     }
 
     @Override
-    public void onItemClick(int position) {
-        Content.currentMovie = this.movies.get(position);
+    public void onItemClick(Integer position) {
+        //Content.currentMovie = this.movies.get(position);
         Intent intent = new Intent(getContext(), MovieActivity.class);
         startActivity(intent);
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, int position) {
-        Content.currentMovie = movies.get(position);
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
         onCreateContextMenu(contextMenu,v,menuInfo);
     }
 
