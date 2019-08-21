@@ -111,15 +111,15 @@ public class WebServiceParser {
                 Media media;
                 if(c.getString("media_type").equals("movie")) {
                     media = singleMovieParser(c.toString());
-                    media.setMediaType(Media.MOVIE);
+                    //media.setMediaType(Media.MOVIE);
                     medias.add(media);
                 }else if(c.getString("media_type").equals("tv")){
                     media = singleSerieParser(c.toString());
-                    media.setMediaType(Media.SERIE);
+                    //media.setMediaType(Media.SERIE);
                     medias.add(media);
                 }else if (c.getString("media_type").equals("person")){
                     media = singleArtistParser(c.toString());
-                    media.setMediaType(Media.ARTIST);
+                    //media.setMediaType(Media.ARTIST);
                     medias.add(media);
                 } else{
                     Log.e("Other type",c.toString());

@@ -4,8 +4,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.DateAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.InterfaceAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import lombok.Getter;
 import okhttp3.HttpUrl;
@@ -33,9 +37,11 @@ public class ApiService<T> {
 
     public ApiService(Class<T> typeClass) {
         Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Media.class, new InterfaceAdapter<Media>())
+                .registerTypeAdapter(Date.class, new DateAdapter())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .setDateFormat("yyyy-MM-dd")
                 .create();
+
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

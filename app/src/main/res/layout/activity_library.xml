@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.library.LibraryActivity">
+    tools:context=".ui.library.LibraryActivity">
 
     <include
         android:id="@+id/appBar"

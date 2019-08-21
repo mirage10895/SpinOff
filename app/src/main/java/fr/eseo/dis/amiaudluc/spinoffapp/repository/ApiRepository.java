@@ -9,6 +9,7 @@ import java.util.List;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.ApiService;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
@@ -29,7 +30,7 @@ public class ApiRepository {
     }
 
     private ApiRepository() {
-        this.tmdbApiService = new ApiService(TMDBApi.class);
+        this.tmdbApiService = new ApiService<>(TMDBApi.class);
     }
 
     public LiveData<List<Movie>> getMoviesByType(String type, Integer page, List<Movie> previous) {
@@ -120,6 +121,27 @@ public class ApiRepository {
 
             @Override
             public void onFailure(@NonNull Call<Serie> call, @NonNull Throwable t) {
+                data.setValue(null);
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Artist> getArtistById(Integer id) {
+        Call<Artist> call = this.tmdbApiService.api.getArtistById(id, "tv_credits,movie_credits");
+        final MutableLiveData<Artist> data = new MutableLiveData<>();
+        call.enqueue(new Callback<Artist>() {
+            @Override
+            public void onResponse(@NonNull Call<Artist> call, @NonNull Response<Artist> response) {
+                if (response.body() != null) {
+                    data.setValue(response.body());
+                } else {
+                    data.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Artist> call, @NonNull Throwable t) {
                 data.setValue(null);
             }
         });

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.library.MyMoviesFragment">
+    tools:context=".ui.library.MyMoviesFragment">
 
     <include layout="@layout/layout_main" />
 

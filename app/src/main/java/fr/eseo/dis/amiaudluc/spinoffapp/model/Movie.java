@@ -39,7 +39,7 @@ public class Movie extends MovieDatabase implements Media {
     private Double voteAverage;
     private Integer voteCount;
     private String mediaType;
-    private Credits credits;
+    private Credits<Artist> credits;
     private ApiObjectResponse<Video> videos;
 
     public Movie(){
@@ -73,10 +73,5 @@ public class Movie extends MovieDatabase implements Media {
     @Override
     public String getMediaType() {
         return this.mediaType;
-    }
-
-    @Override
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
     }
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Credits {
+public class Credits<T> {
     private List<Artist> crew;
-    private List<Artist> cast;
+    private List<T> cast;
 }

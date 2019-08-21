@@ -1,6 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
-import java.util.ArrayList;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
@@ -13,19 +15,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Artist implements Media {
-    private int id;
+    private Integer id;
     private String name;
     private String profilePath;
     private String creditId;
     private String department;
     private String job;
     private String character;
-    private int gender;
-    private List<Movie> movies;
-    private List<Serie> series;
+    private Integer gender;
+    private List<String> alsoKnownAs;
     private String biography;
     private String placeOfBirth;
-    private String type;
+    private String mediaType;
+    private Date birthday;
+    @SerializedName("movie_credits")
+    private Credits<Movie> movies;
+    @SerializedName("tv_credits")
+    private Credits<Serie> series;
 
     public Artist() {
         this.id = 0;
@@ -35,11 +41,6 @@ public class Artist implements Media {
 
     @Override
     public String getMediaType() {
-        return this.type;
-    }
-
-    @Override
-    public void setMediaType(String mediaType) {
-        this.type = mediaType;
+        return this.mediaType;
     }
 }

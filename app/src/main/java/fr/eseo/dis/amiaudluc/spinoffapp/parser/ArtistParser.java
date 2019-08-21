@@ -61,10 +61,10 @@ class ArtistParser {
                 artist.setProfilePath(c.getString("profile_path"));
             }
             if(c.has("tv_credits")){
-                artist.setSeries(WebServiceParser.multiSeriesParser(c.getString("tv_credits")));
+                //artist.setSeries(WebServiceParser.multiSeriesParser(c.getString("tv_credits")));
             }
             if(c.has("movie_credits")){
-                artist.setMovies(MovieParser.multiMoviesParser((c.getString("movie_credits"))));
+                //artist.setMovies(MovieParser.multiMoviesParser((c.getString("movie_credits"))));
             }
             if(c.has("place_of_birth")){
                 artist.setPlaceOfBirth(c.getString("place_of_birth"));

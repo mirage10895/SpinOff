@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_primary_semi_opaq"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.library.DashboardFragment">
+    tools:context=".ui.library.DashboardFragment">
 
     <TextView
         android:id="@+id/title"

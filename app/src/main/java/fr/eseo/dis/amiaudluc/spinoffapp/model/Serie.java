@@ -71,9 +71,4 @@ public class Serie extends SerieDatabase implements Media {
     public String getMediaType() {
         return this.mediaType;
     }
-
-    @Override
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
-    }
 }
