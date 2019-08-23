@@ -4,6 +4,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -26,7 +27,10 @@ public interface TMDBApi {
     Call<ApiListResponse<Serie>> getSeries(@Path("type") String type, @Query("region") String region, @Query("page") Integer page);
 
     @GET("tv/{id}")
-    Call<Serie> getSerieById(@Path("id") Integer id);
+    Call<Serie> getSerieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
+
+    @GET("tv/{id}/season/{seasonNumber}")
+    Call<Season> getSeasonBySerieId(@Path("id") Integer id, @Path("seasonNumber") Integer seasonNumber, @Query("append_to_response") String appendToResponse);
 
     @GET("person/{id}")
     Call<Artist> getArtistById(@Path("id") Integer id, @Query("append_to_response") String append_to_response);

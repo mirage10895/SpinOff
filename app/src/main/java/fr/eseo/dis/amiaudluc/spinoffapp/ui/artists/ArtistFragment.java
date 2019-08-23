@@ -64,8 +64,8 @@ public class ArtistFragment extends Fragment implements SearchInterface {
                 .load(link)
                 .fit()
                 .centerInside()
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_foreground)
+                .placeholder(R.drawable.ic_unknown)
+                .error(R.drawable.ic_unknown)
                 .into(imageView);
 
         TextView textView = artistView.findViewById(R.id.name);

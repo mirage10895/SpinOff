@@ -11,50 +11,56 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
+import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 public class SeasonActivity extends AppCompatActivity {
 
-    private Serie serie = Content.currentSerie;
-    private Season season = Content.currentSeason;
+    private SerieViewModel serieViewModel;
+    private Season season;
     private FrameLayout content;
     private RelativeLayout noMedia;
-    private String currentFragment;
-    private SeasonFragment fragment = new SeasonFragment();
+    private SeasonFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_season);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Integer seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
+        Integer serieId = getIntent().getIntExtra("serieId", 0);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-
             actionBar.setTitle(getString(R.string.emptyField));
-            if (season.getName() != null) {
-                actionBar.setTitle(season.getName());
-            }
         }
-
+        this.fragment = new SeasonFragment();
+        this.content = findViewById(R.id.content);
+        this.noMedia = findViewById(R.id.no_media_display);
+        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+        this.serieViewModel.initGetSeasonBySerieId(serieId, seasonNumber);
         findViewById(R.id. fab).setVisibility(View.GONE);
-
-        content = findViewById(R.id.content);
         content.setVisibility(View.GONE);
-        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
-
-        GetSingleSeason mGetTaskSS = new GetSingleSeason();
-        mGetTaskSS.setTVId(this.serie.getId());
-        mGetTaskSS.setSeasonNumber(this.season.getSeasonNumber());
-        mGetTaskSS.execute();
-
+        this.serieViewModel.getSeason().observe(this, season -> {
+            if (season != null) {
+                this.season = season;
+                this.fragment.setSeason(season);
+                this.noMedia.setVisibility(View.GONE);
+                this.content.setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction().replace(R.id.content,
+                        fragment, getString(R.string.fragment_season)).commit();
+                if (season.getName() != null) {
+                    actionBar.setTitle(season.getName());
+                }
+            } else {
+                noMedia.setVisibility(View.VISIBLE);
+                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     @Override
@@ -72,62 +78,5 @@ public class SeasonActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-    }
-
-    public class GetSingleSeason extends android.os.AsyncTask<String, Void, String>{
-
-        private int tvId;
-        private int seasonNumber;
-
-        public String getTVId() {
-            return String.valueOf(tvId);
-        }
-
-        public void setTVId(int id) {
-            this.tvId = id;
-        }
-
-        public int getSeasonNumber() {
-            return seasonNumber;
-        }
-
-        public void setSeasonNumber(int seasonNumber) {
-            this.seasonNumber = seasonNumber;
-        }
-
-
-        @Override
-        protected String doInBackground(String... strings) {
-            HttpsHandler sh = new HttpsHandler();
-            String args = "&language=en-US&append_to_response=credits,videos";
-
-            // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall("tv",this.getTVId()+"/season/"+this.getSeasonNumber(),args);
-
-            return jsonStr;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //findViewById(R.id.progressBarBody).setVisibility(View.GONE);
-            if(!result.isEmpty()) {
-                Season season = WebServiceParser.singleSeasonParser(result);
-                if (serie.getId() == -1){
-                    noMedia.setVisibility(View.VISIBLE);
-                }else {
-                    Content.currentSeason = season;
-                    fragment.setSeason(season);
-                    noMedia.setVisibility(View.GONE);
-                    content.setVisibility(View.VISIBLE);
-                    currentFragment = getString(R.string.fragment_season);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                            fragment, currentFragment).commit();
-                }
-            }else{
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
     }
 }

@@ -81,11 +81,11 @@ class SeasonParser {
             }
             if(c.has("credits")){
                 JSONObject castos = new JSONObject(c.getString("credits"));
-                season.setCast(WebServiceParser.multiArtistsParser(castos.getString("cast")));
+                //season.setCast(WebServiceParser.multiArtistsParser(castos.getString("cast")));
             }
             if (c.has("videos")){
                 JSONObject videos = new JSONObject(c.getString("videos"));
-                season.setVideos(WebServiceParser.multiVideosParser(videos.getString(RESULTS)));
+                //season.setVideos(WebServiceParser.multiVideosParser(videos.getString(RESULTS)));
             }
             if (c.has("air_date")) {
                 season.setAirDate(DateUtils.getDateFromString(c.getString("air_date"),DateUtils.CLASSIC_DATE));

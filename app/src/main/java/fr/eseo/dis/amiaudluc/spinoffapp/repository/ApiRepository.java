@@ -12,6 +12,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +35,7 @@ public class ApiRepository {
     }
 
     public LiveData<List<Movie>> getMoviesByType(String type, Integer page, List<Movie> previous) {
-        Call<ApiListResponse<Movie>> call = this.tmdbApiService.api.getMovies(type, "fr", page);
+        Call<ApiListResponse<Movie>> call = this.tmdbApiService.api.getMovies(type, "FR", page);
         final MutableLiveData<List<Movie>> data = new MutableLiveData<>();
         call.enqueue(new Callback<ApiListResponse<Movie>>() {
             @Override
@@ -81,7 +82,7 @@ public class ApiRepository {
     }
 
     public LiveData<List<Serie>> getSeriesByType(String type, Integer page, List<Serie> previous) {
-        Call<ApiListResponse<Serie>> call = this.tmdbApiService.api.getSeries(type, "fr",page);
+        Call<ApiListResponse<Serie>> call = this.tmdbApiService.api.getSeries(type, "FR", page);
         final MutableLiveData<List<Serie>> data = new MutableLiveData<>();
         call.enqueue(new Callback<ApiListResponse<Serie>>() {
             @Override
@@ -107,7 +108,7 @@ public class ApiRepository {
     }
 
     public LiveData<Serie> getSerieById(Integer id) {
-        Call<Serie> call = this.tmdbApiService.api.getSerieById(id);
+        Call<Serie> call = this.tmdbApiService.api.getSerieById(id, "credits,videos");
         final MutableLiveData<Serie> data = new MutableLiveData<>();
         call.enqueue(new Callback<Serie>() {
             @Override
@@ -121,6 +122,27 @@ public class ApiRepository {
 
             @Override
             public void onFailure(@NonNull Call<Serie> call, @NonNull Throwable t) {
+                data.setValue(null);
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Season> getSeasonBySerieId(Integer id, Integer seasonNumber) {
+        Call<Season> call = this.tmdbApiService.api.getSeasonBySerieId(id, seasonNumber, "credits,videos");
+        final MutableLiveData<Season> data = new MutableLiveData<>();
+        call.enqueue(new Callback<Season>() {
+            @Override
+            public void onResponse(@NonNull Call<Season> call, @NonNull Response<Season> response) {
+                if (response.body() != null) {
+                    data.setValue(response.body());
+                } else {
+                    data.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Season> call, @NonNull Throwable t) {
                 data.setValue(null);
             }
         });

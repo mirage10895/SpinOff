@@ -126,7 +126,9 @@ public class EpisodeFragment extends Fragment implements SearchInterface{
             }
         };
         nestedScrollView.setTag(target);
-        Picasso.with(ctx).load(link).placeholder(R.drawable.ic_holder_poster).error(R.drawable.ic_holder_poster)
+        Picasso.with(ctx)
+                .load(link)
+                .error(R.drawable.ic_launcher_foreground)
                 .transform(new GrayscaleTransformation(Picasso.with(ctx))).into(target);
     }
 

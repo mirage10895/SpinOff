@@ -57,7 +57,9 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
             }
 
             String link = ctx.getResources().getString(R.string.base_url_poster_500) + this.artists.get(position).getProfilePath();
-            Picasso.with(ctx).load(link).placeholder(R.drawable.ic_unknown).error(R.drawable.ic_unknown)
+            Picasso.with(ctx)
+                    .load(link)
+                    .error(R.drawable.ic_unknown)
                     .into(holder.avatar);
         }else {
             Picasso.with(ctx).load(R.drawable.ic_unknown).into(holder.avatar);

@@ -108,7 +108,7 @@ public class SeasonFragment extends Fragment implements SearchInterface {
         RecyclerView recyclerGuest = seasonView.findViewById(R.id.guest_stars);
         recyclerGuest.setHasFixedSize(true);
         recyclerGuest.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        ActorsAdapter artistsAdapter = new ActorsAdapter(ctx,this,this.season.getCast());
+        ActorsAdapter artistsAdapter = new ActorsAdapter(ctx,this, this.season.getCredits().getCast());
         recyclerGuest.setAdapter(artistsAdapter);
 
         if (season.getRightVideo().getId() != null){
@@ -138,7 +138,7 @@ public class SeasonFragment extends Fragment implements SearchInterface {
             @Override
             public void onBitmapFailed(final Drawable errorDrawable) {
                 progressBar.setVisibility(View.GONE);
-                nestedScrollView.setBackground(ctx.getDrawable(R.drawable.ic_loading));
+                nestedScrollView.setBackground(ctx.getDrawable(R.drawable.ic_launcher_foreground));
                 Log.d("TAG", "FAILED");
             }
 
@@ -148,7 +148,10 @@ public class SeasonFragment extends Fragment implements SearchInterface {
             }
         };
         nestedScrollView.setTag(target);
-        Picasso.with(ctx).load(link).placeholder(R.drawable.ic_holder_poster).error(R.drawable.ic_holder_poster)
+        Picasso.with(ctx)
+                .load(link)
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_foreground)
                 .transform(new GrayscaleTransformation(Picasso.with(ctx))).into(target);
     }
 
@@ -164,7 +167,9 @@ public class SeasonFragment extends Fragment implements SearchInterface {
             startActivity(intent);
         } else if (this.getType().equals("episode")){
             Intent intent = new Intent(ctx, EpisodeActivity.class);
-            intent.putExtra("id", id);
+            intent.putExtra("serieId", id);
+            intent.putExtra("seasonNumber", id);
+            intent.putExtra("episodeNumber", id);
             startActivity(intent);
         }
     }

@@ -41,13 +41,13 @@ public class MovieActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Integer id = getIntent().getIntExtra("id", 0);
         ActionBar actionBar = getSupportActionBar();
 
         content = findViewById(R.id.content);
-        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
+        noMedia = findViewById(R.id.no_media_display);
 
         this.db = AppDatabase.getAppDatabase(this);
         this.fragment = SingleMovieFragment.newInstance();
@@ -64,10 +64,11 @@ public class MovieActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.content,
                         fragment, currentFragment).commit();
                 setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
+                actionBar.setTitle(movieResult.getTitle());
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("DAMN", view -> view.setVisibility(View.GONE)).show();
             }
         });
 
@@ -75,7 +76,7 @@ public class MovieActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view ->
                 db.moviesDAO().getAllIds().observe(this, integers -> {
                     if (integers != null && integers.contains(this.movie.getId())) {
@@ -96,7 +97,7 @@ public class MovieActivity extends AppCompatActivity {
      * @param link
      */
     private void setBackground(String link) {
-        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
         final Target target = new Target() {
 
             final ProgressBar progressBar = findViewById(R.id.progressBar);
@@ -110,7 +111,7 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onBitmapFailed(final Drawable errorDrawable) {
                 progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_cam_iris));
+                collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_launcher_foreground));
                 Log.d("TAG", "FAILED");
             }
 
@@ -121,7 +122,7 @@ public class MovieActivity extends AppCompatActivity {
             }
         };
         collapsingToolbarLayout.setTag(target);
-        Picasso.with(this).load(link).into(target);
+        Picasso.with(this).load(link).error(R.drawable.ic_launcher_foreground).into(target);
     }
 
     /**

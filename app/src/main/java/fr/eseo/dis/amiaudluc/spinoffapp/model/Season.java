@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiObjectResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SeasonDatabase;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +21,8 @@ public class Season extends SeasonDatabase {
     private int episodeCount;
     private List<Episode> episodes;
     private String overview;
-    private List<Artist> cast;
-    private List<Video> videos;
+    private Credits<Artist> credits;
+    private ApiObjectResponse<Video> videos;
 
     public Season(){
         super();
@@ -50,7 +51,7 @@ public class Season extends SeasonDatabase {
     }
 
     public Video getRightVideo(){
-        Optional<Video> video = this.videos.stream().filter(video1 -> video1.getSite().equals("YouTube")
+        Optional<Video> video = this.videos.getResults().stream().filter(video1 -> video1.getSite().equals("YouTube")
                 && video1.getType().equals("Trailer")).findFirst();
         return video.orElse(new Video());
     }

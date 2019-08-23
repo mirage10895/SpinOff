@@ -51,13 +51,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         if (getItemCount() != 0) {
             MovieDatabase movie = movies.get(position);
 
-            holder.moviePoster.setImageResource(R.drawable.ic_loading);
+            holder.moviePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if(movie.getPosterPath() != null){
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + movie.getPosterPath();
                 Picasso.with(ctx)
                         .load(link)
                         .fit()
-                        .error(R.drawable.ic_cam_iris)
+                        .error(R.drawable.ic_launcher_foreground)
                         .into(holder.moviePoster);
             }
         }

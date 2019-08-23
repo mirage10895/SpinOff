@@ -51,10 +51,10 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         if (getItemCount() != 0) {
             SerieDatabase serie = series.get(position);
 
-            holder.seriePoster.setImageResource(R.drawable.ic_loading);
+            holder.seriePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if(serie.getPosterPath() != null){
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + serie.getPosterPath();
-                Picasso.with(ctx).load(link).fit().error(R.drawable.ic_menu_gallery)
+                Picasso.with(ctx).load(link).fit().error(R.drawable.ic_launcher_foreground)
                         .into(holder.seriePoster);
             }
         }

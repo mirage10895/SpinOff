@@ -56,7 +56,11 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
             }
 
             String link = ctx.getResources().getString(R.string.base_url_poster_500) + this.networks.get(position).getLogoPath();
-            Picasso.with(ctx).load(link).fit().centerCrop().error(R.drawable.ic_unknown)
+            Picasso.with(ctx)
+                    .load(link)
+                    .fit()
+                    .centerCrop()
+                    .error(R.drawable.ic_launcher_foreground)
                     .into(holder.avatar);
         }
     }

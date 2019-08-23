@@ -50,10 +50,10 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
         if (getItemCount() != 0) {
             Episode episode = episodes.get(position);
 
-            holder.episodePoster.setImageResource(R.drawable.ic_loading);
+            holder.episodePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if(episode.getStillPath() != null){
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + episode.getStillPath();
-                Picasso.with(ctx).load(link).fit().centerCrop().error(R.drawable.ic_menu_gallery)
+                Picasso.with(ctx).load(link).fit().centerCrop().error(R.drawable.ic_launcher_foreground)
                         .into(holder.episodePoster);
             }
 

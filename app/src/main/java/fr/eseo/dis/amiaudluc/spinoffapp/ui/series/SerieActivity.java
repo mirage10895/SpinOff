@@ -65,10 +65,7 @@ public class SerieActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.content, fragment, currentFragment)
                         .commit();
-
-                if (actionBar != null) {
-                    actionBar.setTitle(this.serie.getName());
-                }
+                actionBar.setTitle(this.serie.getName());
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
@@ -112,7 +109,7 @@ public class SerieActivity extends AppCompatActivity {
             @Override
             public void onBitmapFailed(final Drawable errorDrawable) {
                 progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_loading));
+                collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_launcher_foreground));
                 Log.d("TAG", "FAILED");
             }
 

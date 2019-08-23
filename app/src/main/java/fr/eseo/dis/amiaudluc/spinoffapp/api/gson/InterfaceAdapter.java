@@ -18,7 +18,6 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 public class InterfaceAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {
 
     private static final String CLASSNAME = "media_type";
-    private static final String DATA = "gson.interface.adapter.data";
 
     @Override
     public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {

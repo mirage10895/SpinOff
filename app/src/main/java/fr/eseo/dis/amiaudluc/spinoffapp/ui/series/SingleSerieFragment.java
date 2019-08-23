@@ -61,7 +61,7 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
 
         ImageView flag = singleSerieView.findViewById(R.id.flag);
         flag.setImageResource(R.drawable.ic_cam_iris);
-        if (!serie.getOriginalLanguage().equals(Language.DEFAULT)){
+        if (!Language.DEFAULT.equals(serie.getOriginalLanguage())){
             int imageResource = getResources().getIdentifier("@drawable/" + serie.getOriginalLanguage().getName() + "_icon",null,ctx.getPackageName());
             flag.setImageResource(imageResource);
         }
@@ -114,7 +114,8 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
                 break;
             case "season": {
                 Intent intent = new Intent(ctx, SeasonActivity.class);
-                intent.putExtra("id", id);
+                intent.putExtra("serieId", serie.getId());
+                intent.putExtra("seasonNumber", id);
                 startActivity(intent);
                 break;
             }

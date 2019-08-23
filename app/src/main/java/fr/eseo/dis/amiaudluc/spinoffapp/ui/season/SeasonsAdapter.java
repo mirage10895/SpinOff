@@ -53,10 +53,13 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
         if (getItemCount() != 0) {
             Season season = seasons.get(position);
 
-            holder.seasonPoster.setImageResource(R.drawable.ic_loading);
+            holder.seasonPoster.setImageResource(R.drawable.ic_launcher_foreground);
             if(season.getPosterPath() != null){
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + season.getPosterPath();
-                Picasso.with(ctx).load(link).fit().error(R.drawable.ic_cam_iris)
+                Picasso.with(ctx)
+                        .load(link)
+                        .fit()
+                        .error(R.drawable.ic_launcher_foreground)
                         .into(holder.seasonPoster);
             }
 
@@ -114,7 +117,7 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
         public void onClick(View v) {
             frag.setType("season");
             Season season = seasons.get(getAdapterPosition());
-            mListener.onItemClick(season.getId());
+            mListener.onItemClick(season.getSeasonNumber());
         }
 
     }

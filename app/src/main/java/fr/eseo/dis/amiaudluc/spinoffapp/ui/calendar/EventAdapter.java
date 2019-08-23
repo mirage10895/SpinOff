@@ -61,7 +61,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
             if(event.getEpisode() != null){
                 //String posterpath = DatabaseTransactionManager.getSeasonById(db, event.getEpisode().getIdSeason()).getPosterPath();
                 String link = ctx.getResources().getString(R.string.base_url_poster_500);
-                Picasso.with(ctx).load(link).fit().error(R.drawable.ic_menu_gallery)
+                Picasso.with(ctx)
+                        .load(link)
+                        .fit()
+                        .error(R.drawable.ic_launcher_foreground)
                         .into(holder.seriePoster);
             }
 
