@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.EpisodeDAO;
@@ -19,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
  */
 
 @Database(entities = {MovieDatabase.class, SerieDatabase.class, SeasonDatabase.class, EpisodeDatabase.class}, version = 1)
+@TypeConverters({RoomTypeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;

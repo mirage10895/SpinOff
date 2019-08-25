@@ -22,19 +22,19 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
  * Created by lucasamiaud on 01/03/2018.
  */
 
-public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>{
+public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder> {
 
     private SearchInterface fragment;
     private List<SerieDatabase> series;
     private Context ctx;
 
-    public SeriesAdapter(Context ctx, SearchInterface fragment, List<SerieDatabase> data){
+    public SeriesAdapter(Context ctx, SearchInterface fragment, List<SerieDatabase> data) {
         this.ctx = ctx;
         this.fragment = fragment;
         setSeries(data);
     }
 
-    public void setSeries(List<SerieDatabase> series){
+    public void setSeries(List<SerieDatabase> series) {
         this.series = series;
     }
 
@@ -52,7 +52,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             SerieDatabase serie = series.get(position);
 
             holder.seriePoster.setImageResource(R.drawable.ic_launcher_foreground);
-            if(serie.getPosterPath() != null){
+            if (serie.getPosterPath() != null) {
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + serie.getPosterPath();
                 Picasso.with(ctx).load(link).fit().error(R.drawable.ic_launcher_foreground)
                         .into(holder.seriePoster);
@@ -65,7 +65,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         return series.size();
     }
 
-    class SeriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnCreateContextMenuListener {
+    class SeriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         private final View view;
 
@@ -91,7 +91,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             final SerieDatabase serieDatabase = series.get(getAdapterPosition());
-            fragment.onCreateCtxMenu(contextMenu,view,contextMenuInfo, serieDatabase.getId());
+            fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, serieDatabase.getId());
         }
     }
 }

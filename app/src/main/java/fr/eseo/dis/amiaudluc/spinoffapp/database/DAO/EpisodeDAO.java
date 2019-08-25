@@ -32,6 +32,11 @@ public interface EpisodeDAO {
     @Query("Select * from EPISODES where season_id = :id")
     LiveData<List<EpisodeDatabase>> getEpisodesBySeasonId(int id);
 
+    @Query("Select EPISODES.name, EPISODES.air_date, SERIES.posterPath, episodes.watched from EPISODES " +
+            "inner join SEASONS on SEASONS.id = EPISODES.season_id " +
+            "inner join SERIES on SERIES.id = SEASONS.serie_id")
+    LiveData<List<CalendarBean>> getAllEpisodesBySerie();
+
     @Query("DELETE FROM EPISODES")
     void deleteAllEpisodes();
 

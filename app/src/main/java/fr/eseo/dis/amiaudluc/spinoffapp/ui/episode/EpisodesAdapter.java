@@ -88,7 +88,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
         private final TextView episodeAirDate;
         private final TextView episodeNumber;
 
-        public EpisodesViewHolder(View view) {
+        EpisodesViewHolder(View view) {
             super(view);
             this.view = view;
 
@@ -103,7 +103,8 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
         @Override
         public void onClick(View v) {
             fragment.setType("episode");
-            fragment.onItemClick(getAdapterPosition());
+            Episode episode = episodes.get(getAdapterPosition());
+            fragment.onItemClick(episode.getEpisodeNumber());
         }
     }
 }

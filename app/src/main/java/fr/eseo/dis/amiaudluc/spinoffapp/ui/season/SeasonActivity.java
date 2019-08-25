@@ -47,6 +47,7 @@ public class SeasonActivity extends AppCompatActivity {
         this.serieViewModel.getSeason().observe(this, season -> {
             if (season != null) {
                 this.season = season;
+                season.setSerieId(serieId);
                 this.fragment.setSeason(season);
                 this.noMedia.setVisibility(View.GONE);
                 this.content.setVisibility(View.VISIBLE);

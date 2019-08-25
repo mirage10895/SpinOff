@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     private AppDatabase db;
 
     public MySeriesFragment(){
-        //NOthing
+        //Empty constructor required
     }
 
     @Override
@@ -59,7 +60,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(ctx));
 
-        seriesAdapter = new SeriesAdapter(ctx,this, series);
+        seriesAdapter = new SeriesAdapter(ctx,this, new ArrayList<>());
         recycler.setAdapter(seriesAdapter);
 
         return view;

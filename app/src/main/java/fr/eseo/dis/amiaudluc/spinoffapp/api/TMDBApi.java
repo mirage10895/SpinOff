@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.api;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
@@ -31,6 +32,9 @@ public interface TMDBApi {
 
     @GET("tv/{id}/season/{seasonNumber}")
     Call<Season> getSeasonBySerieId(@Path("id") Integer id, @Path("seasonNumber") Integer seasonNumber, @Query("append_to_response") String appendToResponse);
+
+    @GET("tv/{id}/season/{seasonNumber}/episode/{episodeNumber}")
+    Call<Episode> getEpisodeBySeasonNumberBySerieId(@Path("id") Integer id, @Path("seasonNumber") Integer seasonNumber, @Path("episodeNumber") Integer episodeNumber,  @Query("append_to_response") String appendToResponse);
 
     @GET("person/{id}")
     Call<Artist> getArtistById(@Path("id") Integer id, @Query("append_to_response") String append_to_response);

@@ -7,6 +7,8 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "episodes",
@@ -21,8 +23,16 @@ public class EpisodeDatabase {
     @NonNull
     private Integer id;
     private String name;
+    @ColumnInfo(name = "air_date")
+    private Date airDate;
     @ColumnInfo(name = "season_id")
     private Integer seasonId;
+    private Boolean watched;
+
+    public EpisodeDatabase () {
+        this.id = -1;
+        this.watched = false;
+    }
 
     @NonNull
     public Integer getId() {
@@ -33,8 +43,16 @@ public class EpisodeDatabase {
         return name;
     }
 
+    public Date getAirDate() {
+        return airDate;
+    }
+
     public Integer getSeasonId() {
         return seasonId;
+    }
+
+    public Boolean isWatched() {
+        return this.watched;
     }
 
     public void setId(@NonNull Integer id) {
@@ -47,5 +65,13 @@ public class EpisodeDatabase {
 
     public void setSeasonId(Integer seasonId) {
         this.seasonId = seasonId;
+    }
+
+    public void setAirDate(Date airDate) {
+        this.airDate = airDate;
+    }
+
+    public void setWatched(Boolean watched) {
+        this.watched = watched;
     }
 }

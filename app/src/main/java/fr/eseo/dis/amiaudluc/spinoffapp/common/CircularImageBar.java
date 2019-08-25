@@ -33,7 +33,7 @@ public class CircularImageBar {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(Color.parseColor("#FFFFFF"));
         paint.setTextSize(140);
-        canvas.drawText(""+size, 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150+(paint.getTextSize()/3), paint);
 
         return b;
     }
@@ -51,25 +51,24 @@ public class CircularImageBar {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(Color.parseColor("#FFFFFF"));
         paint.setTextSize(130);
-        canvas.drawText(""+size, 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150+(paint.getTextSize()/3), paint);
 
         return b;
     }
 
-    public static Bitmap BuildNumber(int size,int color,Context ctx){
+    public static Bitmap BuildNumber(int size, int color){
         Bitmap b = Bitmap.createBitmap(300, 300,Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
 
-        paint.setColor(ctx.getColor(color));
+        paint.setColor(color);
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
         paint.setTextAlign(Paint.Align.CENTER);
-        paint.setColor(ctx.getColor(color));
         paint.setTextSize(130);
-        canvas.drawText(""+size, 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize()/3), paint);
 
         return b;
     }
@@ -87,7 +86,7 @@ public class CircularImageBar {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(ctx.getColor(color));
         paint.setTextSize(130);
-        canvas.drawText(""+size, 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150+(paint.getTextSize()/3), paint);
 
         return b;
     }

@@ -74,6 +74,8 @@ public class MovieActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+
+            actionBar.setTitle(null);
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);

@@ -30,7 +30,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
     private SearchInterface fragment;
     private List<Event> events;
     private Context ctx;
-    private AppDatabase db;
 
     private static final String TAG = EventAdapter.class.getSimpleName();
 
@@ -38,7 +37,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         this.fragment = fragment;
         this.ctx = ctx;
         this.setEvent(eventList);
-        this.db = AppDatabase.getAppDatabase(ctx);
     }
 
     @NonNull
@@ -58,8 +56,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         if (getItemCount() != 0) {
             Event event = events.get(position);
 
-            if(event.getEpisode() != null){
-                //String posterpath = DatabaseTransactionManager.getSeasonById(db, event.getEpisode().getIdSeason()).getPosterPath();
+            if(event.getPosterPath() != null){
                 String link = ctx.getResources().getString(R.string.base_url_poster_500);
                 Picasso.with(ctx)
                         .load(link)
@@ -69,14 +66,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
             }
 
             holder.textEpisode.setText(R.string.emptyField);
-            if (!event.getEpisode().toString().equals("")){
-                holder.textEpisode.setText(event.getEpisode().toString());
+            if (!"".equals(event.getName())){
+                holder.textEpisode.setText(event.getName());
             }
 
             Calendar cal = Calendar.getInstance(Locale.US);
             holder.textAirDate.setText(R.string.emptyField);
-            if (event.getEpisode().getAirDate() != null){
-                holder.textAirDate.setText(DateUtils.getStringFromDate(event.getEpisode().getAirDate()));
+            if (event.getDate() != null){
+                holder.textAirDate.setText(DateUtils.getStringFromDate(event.getDate()));
             }
         }
     }

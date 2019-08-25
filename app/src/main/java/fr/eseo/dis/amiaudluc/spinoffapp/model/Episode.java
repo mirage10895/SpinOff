@@ -14,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Episode extends EpisodeDatabase {
-    private Date airDate;
     private List<Artist> crew;
     private Integer episodeNumber;
     private List<Artist> guestStars;
@@ -28,7 +27,6 @@ public class Episode extends EpisodeDatabase {
 
     @Override
     public String toString() {
-
         return "S" + seasonNumber +
                 "E" + episodeNumber +
                 ": " + super.getName();

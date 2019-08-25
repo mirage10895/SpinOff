@@ -18,17 +18,19 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.youtube.YoutubeFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Language;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,58 +63,52 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
 
         ImageView rate = singleMovieView.findViewById(R.id.rate);
         rate.setImageBitmap(CircularImageBar.BuildNote(0));
-        if(movie.getVoteAverage() != null){
+        if (movie.getVoteAverage() != null) {
             rate.setImageBitmap(CircularImageBar.BuildNote((movie.getVoteAverage())));
         }
 
         ImageView flag = singleMovieView.findViewById(R.id.flag);
-        flag.setImageResource(R.drawable.ic_loading);
-        if (!Language.DEFAULT.equals(movie.getOriginalLanguage())){
-            int imageResource = getResources().getIdentifier("@drawable/"+movie.getOriginalLanguage().getName()+"_icon",null,ctx.getPackageName());
+        flag.setImageResource(R.drawable.ic_launcher_foreground);
+        if (!Language.DEFAULT.equals(movie.getOriginalLanguage())) {
+            int imageResource = getResources().getIdentifier("@drawable/" + movie.getOriginalLanguage().getName() + "_icon", null, ctx.getPackageName());
             flag.setImageResource(imageResource);
         }
 
         Calendar cal = Calendar.getInstance(Locale.US);
         ImageView year = singleMovieView.findViewById(R.id.year);
         year.setImageBitmap(CircularImageBar.BuildSeasons(0));
-        if (movie.getReleaseDate() != null){
+        if (movie.getReleaseDate() != null) {
             cal.setTime(movie.getReleaseDate());
             year.setImageBitmap(CircularImageBar.BuildSeasons(cal.get(Calendar.YEAR)));
         }
 
         TextView textGenre = singleMovieView.findViewById(R.id.genres);
         textGenre.setText(R.string.emptyField);
-        if(!movie.getGenres().isEmpty()){
-            StringBuilder s = new StringBuilder(movie.getGenres().get(0).getName());
-            for (int i = 1;i<movie.getGenres().size();i++){
-                s.append(", ").append(movie.getGenres().get(i).getName());
-            }
-            textGenre.setText(s.toString());
-        }
+        textGenre.setText(movie.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", ")));
 
         TextView overview = singleMovieView.findViewById(R.id.overview);
         overview.setText(getResources().getString(R.string.emptyField));
-        if (movie.getOverview() != null){
+        if (movie.getOverview() != null) {
             overview.setText(movie.getOverview());
         }
 
         TextView budget = singleMovieView.findViewById(R.id.budget);
         budget.setText(getResources().getString(R.string.emptyField));
-        if (movie.getBudget() != 0){
+        if (movie.getBudget() != 0) {
             budget.setText(String.valueOf(movie.getBudget()));
         }
 
         RecyclerView recyclerReal = singleMovieView.findViewById(R.id.realisators);
         recyclerReal.setHasFixedSize(true);
-        recyclerReal.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        recyclerReal.setAdapter(new ArtistsAdapter(singleMovieView.getContext(),this, movie.getDirectors()));
+        recyclerReal.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        recyclerReal.setAdapter(new ArtistsAdapter(singleMovieView.getContext(), this, movie.getDirectors()));
 
         RecyclerView recyclerCast = singleMovieView.findViewById(R.id.cast);
         recyclerCast.setHasFixedSize(true);
-        recyclerCast.setLayoutManager(new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
-        recyclerCast.setAdapter(new ActorsAdapter(singleMovieView.getContext(),this, movie.getCredits().getCast()));
+        recyclerCast.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        recyclerCast.setAdapter(new ActorsAdapter(singleMovieView.getContext(), this, movie.getCredits().getCast()));
 
-        if (movie.getRightVideo().getId() != null){
+        if (movie.getRightVideo().getId() != null) {
             YoutubeFragment fragment = new YoutubeFragment();
             fragment.instanciate(movie.getRightVideo().getKey());
             FragmentManager manager = getFragmentManager();
@@ -125,7 +121,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
         return singleMovieView;
     }
 
-    public void setMovie(Movie movie){
+    public void setMovie(Movie movie) {
         this.movie = movie;
     }
 
@@ -135,7 +131,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
             case "network":
                 //Content.currentNetwork = this.movie.getProductionCompanies().get(position);
                 break;
-            case "artist": {
+            case Media.ARTIST: {
                 Intent intent = new Intent(ctx, ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);

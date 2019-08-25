@@ -43,8 +43,8 @@ public class SerieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media);
         content = findViewById(R.id.content);
-        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        noMedia = findViewById(R.id.no_media_display);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Integer id = getIntent().getIntExtra("id", 0);
         ActionBar actionBar = getSupportActionBar();
@@ -65,7 +65,7 @@ public class SerieActivity extends AppCompatActivity {
                         .beginTransaction()
                         .replace(R.id.content, fragment, currentFragment)
                         .commit();
-                actionBar.setTitle(this.serie.getName());
+                actionBar.setTitle(serieResult.getName());
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
@@ -75,6 +75,8 @@ public class SerieActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+
+            actionBar.setTitle(null);
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -96,7 +98,7 @@ public class SerieActivity extends AppCompatActivity {
      * @param link
      */
     private void setBackground(String link){
-        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
         final Target target = new Target(){
 
             final ProgressBar progressBar = findViewById(R.id.progressBar);

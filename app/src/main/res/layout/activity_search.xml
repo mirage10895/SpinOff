@@ -8,6 +8,7 @@
     tools:context=".ui.search.SearchActivity">
 
     <RelativeLayout
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -40,7 +41,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:onClick="onSearch"
-                android:src="@drawable/ic_search" />
+                android:src="@drawable/ic_search"
+                android:contentDescription="@string/search" />
 
 
         </android.support.v7.widget.Toolbar>
@@ -59,7 +61,8 @@
                 android:layout_height="130dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="14dp"
-                android:src="@drawable/ic_for_search" />
+                android:src="@drawable/ic_for_search"
+                android:contentDescription="@string/search" />
 
             <TextView
                 android:id="@+id/nothing_text"

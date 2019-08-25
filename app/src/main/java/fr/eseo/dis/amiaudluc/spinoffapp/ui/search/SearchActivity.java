@@ -46,10 +46,10 @@ public class SearchActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        noText = (TextView)findViewById(R.id.nothing_text);
-        content = (FrameLayout) findViewById(R.id.content);
+        noText = findViewById(R.id.nothing_text);
+        content = findViewById(R.id.content);
         content.setVisibility(View.GONE);
-        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
+        noMedia = findViewById(R.id.no_media_display);
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -63,7 +63,7 @@ public class SearchActivity extends AppCompatActivity {
                 )
                 .commit();
 
-        queryText = (EditText) this.findViewById(R.id.query);
+        queryText = this.findViewById(R.id.query);
 
         queryText.setOnKeyListener((view, keyCode, keyEvent) -> {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){

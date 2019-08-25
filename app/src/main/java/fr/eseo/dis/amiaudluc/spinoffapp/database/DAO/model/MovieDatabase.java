@@ -11,9 +11,10 @@ public class MovieDatabase {
     private Integer id;
     private String title;
     private String posterPath;
-    private boolean watched;
+    private Boolean watched;
 
     public MovieDatabase() {
+        this.watched = false;
         this.id = -1;
     }
 
@@ -30,7 +31,7 @@ public class MovieDatabase {
         return posterPath;
     }
 
-    public boolean isWatched() {
+    public Boolean getWatched() {
         return watched;
     }
 

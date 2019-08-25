@@ -79,9 +79,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
 
         // Set the adapter
         Context context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_movies);
-        RecyclerView recyclerView_serie = (RecyclerView) view.findViewById(R.id.recycler_series);
-        RecyclerView recyclerView_parson = (RecyclerView) view.findViewById(R.id.recycler_artists);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_movies);
+        RecyclerView recyclerView_serie = view.findViewById(R.id.recycler_series);
+        RecyclerView recyclerView_parson = view.findViewById(R.id.recycler_artists);
         recyclerView.setHasFixedSize(true);
         recyclerView_serie.setHasFixedSize(true);
         recyclerView_parson.setHasFixedSize(true);

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
@@ -34,8 +35,8 @@ public class CalendarFragment extends Fragment implements SearchInterface {
     private Context ctx;
     private AppDatabase db;
     private EventAdapter eventAdapter;
-    private ArrayList<Event> events;
-    private ArrayList<Event> today = new ArrayList<>();
+    private List<Event> events;
+    private List<Event> today;
     private String type;
     private MaterialCalendarView materialCalendarView;
 
@@ -51,7 +52,13 @@ public class CalendarFragment extends Fragment implements SearchInterface {
             this.ctx = myCalendarView.getContext();
             db = AppDatabase.getAppDatabase(ctx);
             this.events = new ArrayList<>();
-
+            db.episodeDAO().getAllEpisodesBySerie().observe(this, calendarBeans -> {
+                if (calendarBeans!= null) {
+                    events = calendarBeans.stream()
+                            .map(episodeDatabase -> new Event(episodeDatabase.getAirDate(), episodeDatabase.getSeriePosterPath(), episodeDatabase.getEpisodeName(), episodeDatabase. getWatched()))
+                            .collect(Collectors.toList());
+                }
+            });
             this.materialCalendarView = myCalendarView.findViewById(R.id.calendar);
             final RecyclerView recycler = myCalendarView.findViewById(R.id.events);
             recycler.setHasFixedSize(true);
@@ -61,7 +68,9 @@ public class CalendarFragment extends Fragment implements SearchInterface {
             recycler.setVisibility(View.GONE);
 
             materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
-                today = events.stream().filter(event -> event.getDate().equals(date.getDate())).collect(Collectors.toCollection(ArrayList::new));
+                today = events.stream().filter(event -> event.getDate()
+                        .equals(date.getDate()))
+                        .collect(Collectors.toCollection(ArrayList::new));
                 eventAdapter.setEvent(today);
                 eventAdapter.notifyDataSetChanged();
                 recycler.setVisibility(View.VISIBLE);
@@ -78,7 +87,6 @@ public class CalendarFragment extends Fragment implements SearchInterface {
         @Override
         public void onItemClick (Integer position){
             if (this.type.equals("event")) {
-                Content.currentEpisode = this.today.get(position).getEpisode();
                 //Content.currentSeason = DatabaseTransactionManager.getSeasonById(db, this.today.get(position).getEpisode().getIdSeason());
                 //Content.currentSerie = DatabaseTransactionManager.getSerieById(db, Content.currentSeason.getSerieId());
                 Intent intent = new Intent(ctx, EpisodeActivity.class);

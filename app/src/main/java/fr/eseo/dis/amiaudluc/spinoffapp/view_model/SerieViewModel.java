@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.enums.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
@@ -17,6 +18,7 @@ public class SerieViewModel extends ViewModel {
     private LiveData<List<Serie>> series;
     private LiveData<Serie> serie;
     private LiveData<Season> season;
+    private LiveData<Episode> episode;
 
     private ApiRepository apiRepository;
 
@@ -45,6 +47,10 @@ public class SerieViewModel extends ViewModel {
         this.season = this.apiRepository.getSeasonBySerieId(id, seasonNumber);
     }
 
+    public void initGetEpisodeBySeasonNumberBySerieId(Integer id, Integer seasonNumber, Integer episodeNumber) {
+        this.episode = this.apiRepository.getEpisodeBySeasonNumberBySerieId(id, seasonNumber, episodeNumber);
+    }
+
     @NonNull
     public LiveData<List<Serie>> getSeries() {
         return series;
@@ -56,5 +62,9 @@ public class SerieViewModel extends ViewModel {
 
     public LiveData<Season> getSeason() {
         return season;
+    }
+
+    public LiveData<Episode> getEpisode() {
+        return episode;
     }
 }

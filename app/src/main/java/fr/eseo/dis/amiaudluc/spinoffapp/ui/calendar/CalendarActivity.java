@@ -11,15 +11,13 @@ import fr.eseo.dis.amiaudluc.spinoffapp.R;
 
 public class CalendarActivity extends AppCompatActivity {
 
-    private String currentFragment;
     private CalendarFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -28,10 +26,9 @@ public class CalendarActivity extends AppCompatActivity {
 
         findViewById(R.id.fab).setVisibility(View.GONE);
 
-        currentFragment = getString(R.string.fragment_my_calendar);
-        fragment = new CalendarFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
-        getSupportActionBar().setTitle(currentFragment);
+        this.fragment = new CalendarFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, getString(R.string.fragment_my_calendar)).commit();
+        getSupportActionBar().setTitle(getString(R.string.fragment_my_calendar));
 
     }
 

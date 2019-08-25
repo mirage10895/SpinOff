@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
@@ -66,7 +67,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         int columns = getResources().getInteger(R.integer.scripts_columns);
         recycler.setLayoutManager(new GridLayoutManager(ctx, columns));
 
-        moviesAdapter = new MoviesAdapter(ctx,this, movies);
+        this.moviesAdapter = new MoviesAdapter(ctx,this, new ArrayList<>());
         recycler.setAdapter(moviesAdapter);
 
         return view;

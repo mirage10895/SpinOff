@@ -10,6 +10,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.ApiService;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
@@ -143,6 +144,27 @@ public class ApiRepository {
 
             @Override
             public void onFailure(@NonNull Call<Season> call, @NonNull Throwable t) {
+                data.setValue(null);
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Episode> getEpisodeBySeasonNumberBySerieId(Integer id, Integer seasonNumber, Integer episodeNumber) {
+        Call<Episode> call = this.tmdbApiService.api.getEpisodeBySeasonNumberBySerieId(id, seasonNumber, episodeNumber, "credits,videos");
+        final MutableLiveData<Episode> data = new MutableLiveData<>();
+        call.enqueue(new Callback<Episode>() {
+            @Override
+            public void onResponse(@NonNull Call<Episode> call, @NonNull Response<Episode> response) {
+                if (response.body() != null) {
+                    data.setValue(response.body());
+                } else {
+                    data.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Episode> call, @NonNull Throwable t) {
                 data.setValue(null);
             }
         });

@@ -50,7 +50,7 @@
     <string name="seek_to_hint">Seconds</string>
 
 
-    <string name="details_overview">Overview:</string>
+    <string name="details_overview">Overview</string>
     <string name="imdb_rating">iMDB Rating</string>
     <string name="language">Language</string>
     <string name="year">Year</string>
@@ -66,7 +66,7 @@
     <string name="menu_library">Library</string>
 
     <string name="empty_results">Nothing to show</string>
-    <string name="empty_desc_results">There is no medias to display ! \n By the way, check your network connexion ;)</string>
+    <string name="empty_desc_results">There\'s no medias to display ! \n Check your network connexion</string>
     <string name="search_for">Search for movies, TV shows ..</string>
 
     <string name="details_budget">Budget</string>

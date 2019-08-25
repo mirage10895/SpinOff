@@ -20,52 +20,6 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 
 public class RoomTypeConverter {
 
-    private static Gson gson = new Gson();
-
-    @TypeConverter
-    public static ArrayList<Season> stringToSeasonList(String data) {
-        if (data == null) {
-            return new ArrayList<>();
-        }
-        Type listType = new TypeToken<ArrayList<Season>>() {}.getType();
-        return gson.fromJson(data, listType);
-    }
-
-    @TypeConverter
-    public static String seasonToString(ArrayList<Season> someObjects) {
-        return gson.toJson(someObjects);
-    }
-
-    @TypeConverter
-    public static ArrayList<ProductionCompany> stringToProductionList(String data) {
-        if (data == null) {
-            return new ArrayList<>();
-        }
-        Type listType = new TypeToken<List<ProductionCompany>>() {}.getType();
-
-        return gson.fromJson(data, listType);
-    }
-
-    @TypeConverter
-    public static String productionToString(ArrayList<ProductionCompany> someObjects) {
-        return gson.toJson(someObjects);
-    }
-
-    @TypeConverter
-    public static ArrayList<Episode> stringToEpisodeList(String data) {
-        if (data == null) {
-            return new ArrayList<>();
-        }
-        Type listType = new TypeToken<ArrayList<Episode>>() {}.getType();
-
-        return gson.fromJson(data, listType);
-    }
-
-    @TypeConverter
-    public static String episodeToString(ArrayList<Episode> someObjects) {
-        return gson.toJson(someObjects);
-    }
-
     @TypeConverter
     public static Date toDate(Long value) {
         return value == null ? null : new Date(value);
