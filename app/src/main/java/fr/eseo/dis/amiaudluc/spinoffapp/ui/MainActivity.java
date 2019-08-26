@@ -2,8 +2,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -22,8 +22,8 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import java.util.HashMap;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar.CalendarFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar.CalendarFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.library.LibraryActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.OnAirMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.PopularMoviesFragment;
@@ -37,15 +37,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String ARGUMENT = "FRAGMENT";
-    private String currentFragment;
     private HashMap<String, Fragment> fragments = new HashMap<>();
     private FloatingActionsMenu fam;
+    private FamManager famMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         fragments.put(getString(R.string.fragment_popular_movies), new PopularMoviesFragment());
@@ -56,26 +56,29 @@ public class MainActivity extends AppCompatActivity
         fragments.put(getString(R.string.fragment_on_air_series), new OnAirSeriesFragment());
         fragments.put(getString(R.string.fragment_my_calendar), new CalendarFragment());
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_movies);
 
         ActionBar actionBar = getSupportActionBar();
 
-        initializeActionBarTitle(actionBar,savedInstanceState);
+        initializeActionBarTitle(actionBar, savedInstanceState);
 
-        fam = (FloatingActionsMenu) findViewById(R.id.fab);
-        findViewById(R.id.button_pop).setVisibility(View.GONE);
+        famMenu = new FamManager();
+        famMenu.updateVisibility();
+
+        fam = findViewById(R.id.fab);
         fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
-                setVisibility();
+                famMenu.updateVisibility();
             }
 
             /**
@@ -83,10 +86,9 @@ public class MainActivity extends AppCompatActivity
              */
             @Override
             public void onMenuCollapsed() {
-                setVisibility();
+                famMenu.updateVisibility();
             }
         });
-        initializeButtons();
 
         /*
          * DEBUG MODE
@@ -95,46 +97,27 @@ public class MainActivity extends AppCompatActivity
         //AppDatabase.getAppDatabase(this).nukeDB();
     }
 
-    private void setVisibility(){
-        FloatingActionButton fabTop = (FloatingActionButton) findViewById(R.id.button_top_rated);
-        FloatingActionButton fabPop = (FloatingActionButton) findViewById(R.id.button_pop);
-        FloatingActionButton fabOnA = (FloatingActionButton) findViewById(R.id.button_on_air);
-        switch (currentFragment.substring(0,3)){
-            case "Top":
-                fabTop.setVisibility(View.GONE);
-                fabPop.setVisibility(View.VISIBLE);
-                fabOnA.setVisibility(View.VISIBLE);
-                break;
-            case "Pop":
-                fabTop.setVisibility(View.VISIBLE);
-                fabPop.setVisibility(View.GONE);
-                fabOnA.setVisibility(View.VISIBLE);
-                break;
-            case "On ":
-                fabTop.setVisibility(View.VISIBLE);
-                fabPop.setVisibility(View.VISIBLE);
-                fabOnA.setVisibility(View.GONE);
-                break;
-        }
-    }
-
     /**
      * Initializes the action bar title
+     *
      * @param actionBar
      * @param savedInstanceState
      */
-    private void initializeActionBarTitle(ActionBar actionBar, Bundle savedInstanceState){
-
+    private void initializeActionBarTitle(ActionBar actionBar, Bundle savedInstanceState) {
+        String currentFragment;
         if (savedInstanceState != null) {
             currentFragment = savedInstanceState.getString(ARGUMENT, getString(R.string.fragment_popular_movies));
-            getSupportFragmentManager().beginTransaction().replace(R.id.content,
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content,
                     fragments.get(currentFragment), currentFragment).commit();
             if (actionBar != null) {
                 setActionBarTitle(currentFragment);
             }
         } else {
             currentFragment = getString(R.string.fragment_popular_movies);
-            getSupportFragmentManager().beginTransaction().replace(R.id.content,
+            getSupportFragmentManager()
+                    .beginTransaction().replace(R.id.content,
                     fragments.get(currentFragment), currentFragment).commit();
 
             if (actionBar != null) {
@@ -146,94 +129,28 @@ public class MainActivity extends AppCompatActivity
     /**
      * sets action bar title
      * Can be accessed from the frags
+     *
      * @param title
      */
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
 
-    /**
-     * Initializes the floating menu buttons
-     */
-    private void initializeButtons(){
-
-        FloatingActionButton fabTop = (FloatingActionButton) findViewById(R.id.button_top_rated);
-        fabTop.setIcon(R.drawable.ic_thumb_up_yellow);
-        fabTop.setOnClickListener(view -> {
-            //The switch is here to redirect on the right page
-            //If you coming from Movies you go to top rated movies
-            //If you coming from Series you go to top rated series
-            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
-                case "Movies":
-                    currentFragment = getString(R.string.fragment_top_rated_movies);
-                    break;
-                case "Series":
-                    currentFragment = getString(R.string.fragment_top_rated_series);
-                    break;
-                default:
-                    Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-            }
-            switchFragment(fragments.get(currentFragment));
-            fam.collapse();
-            fam.collapse();
-        });
-
-        FloatingActionButton fabPop = (FloatingActionButton) findViewById(R.id.button_pop);
-        fabPop.setIcon(R.drawable.ic_star_yellow);
-        fabPop.setOnClickListener(view -> {
-            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
-                case "Movies":
-                    currentFragment = getString(R.string.fragment_popular_movies);
-                    break;
-                case "Series":
-                    currentFragment = getString(R.string.fragment_popular_series);
-                    break;
-                default:
-                    Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-            }
-            //resetEndlessScroll((ItemInterface)fragments.get(previousFragment));
-            switchFragment(fragments.get(currentFragment));
-            fam.collapse();
-            fam.collapse();
-        });
-
-        FloatingActionButton fabNew = (FloatingActionButton) findViewById(R.id.button_on_air);
-        fabNew.setIcon(R.drawable.ic_alert_circle);
-        fabNew.setOnClickListener(view -> {
-            switch(currentFragment.substring(currentFragment.length() - 6,currentFragment.length())){
-                case "Movies":
-                    currentFragment = getString(R.string.fragment_on_air_movies);
-                    break;
-                case "Series":
-                    currentFragment = getString(R.string.fragment_on_air_series);
-                    break;
-                default:
-                    Snackbar.make(view, "Action à rajouter", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-            }
-            //resetEndlessScroll((ItemInterface)fragments.get(previousFragment));
-            switchFragment(fragments.get(currentFragment));
-            fam.collapse();
-        });
-    }
-
-    public void switchFragment(Fragment fragment){
+    public void switchFragment(String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
-        setActionBarTitle(currentFragment);
+        fragmentManager.beginTransaction().replace(R.id.content, fragments.get(tag), tag).commit();
+        setActionBarTitle(tag);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         FloatingActionsMenu fam = findViewById(R.id.fab);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (fam.isExpanded()){
+        } else if (fam.isExpanded()) {
             fam.collapse();
-        } else{
+        } else {
             super.onBackPressed();
         }
     }
@@ -256,8 +173,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.filter_king_menu) {
             findViewById(R.id.filterKing).setVisibility(View.VISIBLE);
             return true;
-        }else if(id == R.id.action_search){
-            Intent intent = new Intent(this,SearchActivity.class);
+        } else if (id == R.id.action_search) {
+            Intent intent = new Intent(this, SearchActivity.class);
             this.startActivity(intent);
             return true;
         }
@@ -266,59 +183,121 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        /**
-         * This to stay on Movie theme or on Serie theme whatever we wanna go
+        /*
+         * This to stay on Movie theme or on Serie theme wherever we wanna go
          */
         switch (id) {
             case R.id.nav_movies:
-                switch (currentFragment.substring(0, 2)) {
-                    case "To":
-                        currentFragment = getString(R.string.fragment_top_rated_movies);
-                        break;
-                    case "Po":
-                        currentFragment = getString(R.string.fragment_popular_movies);
-                        break;
-                    case "On":
-                        currentFragment = getString(R.string.fragment_on_air_movies);
-                        break;
-                    default:
-                        currentFragment = getString(R.string.fragment_top_rated_series);
-                        break;
-                }
+                this.famMenu.setFamTheme("Movies");
+                this.famMenu.updateFragment();
                 break;
             case R.id.nav_series:
-                switch (currentFragment.substring(0, 2)) {
-                    case "To":
-                        currentFragment = getString(R.string.fragment_top_rated_series);
-                        break;
-                    case "Po":
-                        currentFragment = getString(R.string.fragment_popular_series);
-                        break;
-                    case "On":
-                        currentFragment = getString(R.string.fragment_on_air_series);
-                        break;
-                    default:
-                        currentFragment = getString(R.string.fragment_top_rated_series);
-                        break;
-                }
+                this.famMenu.setFamTheme("Series");
+                this.famMenu.updateFragment();
                 break;
             case R.id.nav_library:
-                Intent intent = new Intent(this,LibraryActivity.class);
+                Intent intent = new Intent(this, LibraryActivity.class);
                 startActivity(intent);
                 break;
             case R.id.nav_calendar:
-                currentFragment = getString(R.string.fragment_my_calendar);
+                switchFragment(getString(R.string.fragment_my_calendar));
                 break;
         }
 
-        switchFragment(fragments.get(currentFragment));
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private class FamManager {
+        private final FloatingActionButton fabTop;
+        private final FloatingActionButton fabPop;
+        private final FloatingActionButton fabOnA;
+        private String famTheme;
+        private FamType famType;
+
+
+        FamManager() {
+            fabTop = findViewById(R.id.button_top_rated);
+            fabPop = findViewById(R.id.button_pop);
+            fabOnA = findViewById(R.id.button_on_air);
+            famTheme = "Movies";
+            famType = FamType.POPULAR;
+
+            fabTop.setIcon(R.drawable.ic_thumb_up_yellow);
+            fabTop.setOnClickListener(view -> {
+                this.setFamType(FamType.TOP_RATED);
+                this.updateFragment();
+                fam.collapse();
+            });
+
+            fabPop.setIcon(R.drawable.ic_star_yellow);
+            fabPop.setOnClickListener(view -> {
+                this.setFamType(FamType.POPULAR);
+                this.updateFragment();
+                fam.collapse();
+            });
+
+            fabOnA.setIcon(R.drawable.ic_alert_circle);
+            fabOnA.setOnClickListener(view -> {
+                this.setFamType(FamType.ON_AIR);
+                this.updateFragment();
+                fam.collapse();
+            });
+        }
+
+        void setFamTheme(String famTheme) {
+            this.famTheme = famTheme;
+        }
+
+        void setFamType(FamType famType) {
+            this.famType = famType;
+        }
+
+        void updateVisibility() {
+            this.fabOnA.setVisibility(this.famType == FamType.ON_AIR ? View.GONE : View.VISIBLE);
+            this.fabTop.setVisibility(this.famType == FamType.TOP_RATED ? View.GONE : View.VISIBLE);
+            this.fabPop.setVisibility(this.famType == FamType.POPULAR ? View.GONE : View.VISIBLE);
+        }
+
+        void updateFragment() {
+            String fragment;
+            if ("Movies".equals(this.famTheme)) {
+                fragment = getString(this.famType.getMovieFragment());
+            } else {
+                fragment = getString(this.famType.getSerieFragment());
+            }
+            switchFragment(fragment);
+            updateVisibility();
+        }
+    }
+
+    private enum FamType {
+        POPULAR("Popular", R.string.fragment_popular_movies, R.string.fragment_popular_series),
+        TOP_RATED("Top Rated", R.string.fragment_top_rated_movies, R.string.fragment_top_rated_series),
+        ON_AIR("On Air", R.string.fragment_on_air_movies, R.string.fragment_on_air_series);
+
+        String name;
+        int movieFragment;
+        int serieFragment;
+
+        FamType(String name, int movieFragment, int serieFragment) {
+            this.name = name;
+            this.movieFragment = movieFragment;
+            this.serieFragment = serieFragment;
+        }
+
+        public int getMovieFragment() {
+            return this.movieFragment;
+        }
+
+        public int getSerieFragment() {
+            return serieFragment;
+        }
     }
 
     //When killing the app to remove all the caches files

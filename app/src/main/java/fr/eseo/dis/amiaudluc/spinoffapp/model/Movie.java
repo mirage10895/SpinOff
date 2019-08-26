@@ -57,9 +57,8 @@ public class Movie extends MovieDatabase implements Media {
     }
 
     public Video getRightVideo(){
-        Optional<Video> video = this.videos.getResults().stream().filter(video1 -> video1.getSite().equals("YouTube")
-                && video1.getType().equals("Trailer")).findFirst();
-        return video.orElse(new Video());
+        return this.videos.getResults().stream().filter(video -> video.getSite().equals("YouTube")
+                && video.getType().equals("Trailer")).findFirst().orElse(new Video());
     }
 
     public MovieDatabase toDatabaseFormat() {
