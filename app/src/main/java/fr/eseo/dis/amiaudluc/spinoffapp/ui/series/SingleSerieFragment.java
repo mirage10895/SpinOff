@@ -110,8 +110,6 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     @Override
     public void onItemClick(Integer id) {
         switch (this.type) {
-            case "network":
-                break;
             case "season": {
                 Intent intent = new Intent(ctx, SeasonActivity.class);
                 intent.putExtra("serieId", serie.getId());
@@ -125,6 +123,8 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
                 startActivity(intent);
                 break;
             }
+            default:
+                break;
         }
     }
 

@@ -31,8 +31,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
     private List<Event> events;
     private Context ctx;
 
-    private static final String TAG = EventAdapter.class.getSimpleName();
-
     EventAdapter(SearchInterface fragment, Context ctx, List<Event> eventList){
         this.fragment = fragment;
         this.ctx = ctx;
@@ -57,7 +55,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
             Event event = events.get(position);
 
             if(event.getPosterPath() != null){
-                String link = ctx.getResources().getString(R.string.base_url_poster_500);
+                String link = ctx.getResources().getString(R.string.base_url_poster_500) + event.getPosterPath();
                 Picasso.with(ctx)
                         .load(link)
                         .fit()
@@ -70,7 +68,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
                 holder.textEpisode.setText(event.getName());
             }
 
-            Calendar cal = Calendar.getInstance(Locale.US);
             holder.textAirDate.setText(R.string.emptyField);
             if (event.getDate() != null){
                 holder.textAirDate.setText(DateUtils.getStringFromDate(event.getDate()));
@@ -89,7 +86,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         private final View view;
 
         private final ImageView seriePoster;
-        private final TextView textName;
         private final TextView textEpisode;
         private final TextView textAirDate;
 
@@ -98,10 +94,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
             this.view = view;
 
             seriePoster = view.findViewById(R.id.poster_ic);
-            textName = view.findViewById(R.id.text_tv);
             textEpisode = view.findViewById(R.id.episode);
             textAirDate = view.findViewById(R.id.air_date);
-
 
             view.setOnClickListener(this);
         }

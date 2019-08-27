@@ -4,14 +4,15 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="110dp"
-    android:layout_marginBottom="1dp"
+    android:layout_marginBottom="5dp"
     android:layout_marginEnd="1dp"
     android:layout_marginStart="1dp"
     android:layout_marginTop="1dp"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="@color/color_primary_semi_opaq"
+    card_view:cardBackgroundColor="@color/colorPrimaryDark"
     card_view:cardCornerRadius="5dp"
     card_view:layout_collapseMode="pin"
+    card_view:cardElevation="8dp"
     android:clickable="true"
     android:focusable="true">
 
@@ -25,7 +26,8 @@
             android:layout_height="80dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:contentDescription="@string/trailer_text" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,17 +45,18 @@
                     android:id="@+id/text_number_season"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:text="@string/text_season"/>
 
                 <TextView
                     android:id="@+id/season"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="41dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:layout_alignParentEnd="true"/>
+                    android:textColor="@color/white" />
 
             </RelativeLayout>
 
@@ -67,7 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/number_of_episodes"
-                    android:textColor="@color/colorAccent"/>
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/episodes"
@@ -89,7 +92,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/air_date"
-                    android:textColor="@color/colorAccent"/>
+                    android:textColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/air_date"

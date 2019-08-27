@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.networks;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,6 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
     private List<Network> networks;
     private final ItemInterface mListener;
     private final Context ctx;
-    private String type = "type";
 
     public NetworksAdapter(Context ctx, ItemInterface listener, List<Network> data){
         this.mListener = listener;
@@ -36,19 +36,20 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
         this.setNetworks(data);
     }
 
-    public void setNetworks(List<Network> networks){
+    private void setNetworks(List<Network> networks){
         this.networks = networks;
     }
 
+    @NonNull
     @Override
-    public NetworksViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NetworksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View seasonView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_realisator, parent, false);
         return new NetworksViewHolder(seasonView);
     }
 
     @Override
-    public void onBindViewHolder(NetworksViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NetworksViewHolder holder, int position) {
         if (getItemCount() != 0) {
             holder.name.setText(ctx.getResources().getString(R.string.emptyField));
             if (this.networks.get(position).getName() != null) {
@@ -78,7 +79,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
         final ImageView avatar;
         final TextView name;
 
-        public NetworksViewHolder(View view) {
+        NetworksViewHolder(View view) {
             super(view);
             this.view = view;
 

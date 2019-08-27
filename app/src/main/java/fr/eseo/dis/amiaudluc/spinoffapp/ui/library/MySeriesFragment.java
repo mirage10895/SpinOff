@@ -35,9 +35,10 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 public class MySeriesFragment extends Fragment implements SearchInterface {
 
     private SeriesAdapter seriesAdapter;
-    private Context ctx;
     private List<SerieDatabase> series;
     private AppDatabase db;
+    private String type;
+    private Integer selectedSerieId;
 
     public MySeriesFragment(){
         //Empty constructor required
@@ -46,9 +47,8 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
-        ctx = view.getContext();
+        Context ctx = view.getContext();
         db = AppDatabase.getAppDatabase(ctx);
 
         db.serieDAO().getAll().observe(this, this::setDbSeries);
@@ -84,30 +84,28 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_delete) {
-            DatabaseTransactionManager.executeAsync(() -> db.serieDAO().deleteSerie(Content.currentSerie));
-            setDbSeries(this.series.stream()
-                    .filter(serie -> !serie.getId().equals(Content.currentSerie.getId()))
-                    .collect(Collectors.toList()));
+            DatabaseTransactionManager.executeAsync(() -> db.serieDAO().deleteSerieById(this.selectedSerieId));
+            db.serieDAO().getAll().observe(this, this::setDbSeries);
             return true;
         }
         return false;
     }
 
     @Override
-    public void onItemClick(Integer position) {
-        //Content.currentSerie = this.series.get(position);
+    public void onItemClick(Integer id) {
         Intent intent = new Intent(getContext(), SerieActivity.class);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
-        //Content.currentSerie = series.get(position);
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer serieId) {
+        this.selectedSerieId = serieId;
         onCreateContextMenu(contextMenu, v, menuInfo);
     }
 
     @Override
     public void setType(String type) {
-
+        this.type = type;
     }
 }

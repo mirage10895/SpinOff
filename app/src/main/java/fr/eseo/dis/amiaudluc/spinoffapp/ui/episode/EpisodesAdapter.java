@@ -1,6 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.episode;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,15 +39,16 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
         this.episodes = episodes;
     }
 
+    @NonNull
     @Override
-    public EpisodesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public EpisodesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View episodeView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_episode, parent, false);
+                .inflate(R.layout.item_season, parent, false);
         return new EpisodesAdapter.EpisodesViewHolder(episodeView);
     }
 
     @Override
-    public void onBindViewHolder(EpisodesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EpisodesViewHolder holder, int position) {
         if (getItemCount() != 0) {
             Episode episode = episodes.get(position);
 
@@ -93,9 +95,9 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
             this.view = view;
 
             episodePoster = view.findViewById(R.id.poster_ic);
-            episodeName = view.findViewById(R.id.name);
+            episodeName = view.findViewById(R.id.season);
             episodeAirDate = view.findViewById(R.id.air_date);
-            episodeNumber = view.findViewById(R.id.episode_number);
+            episodeNumber = view.findViewById(R.id.episodes);
 
             view.setOnClickListener(this);
         }

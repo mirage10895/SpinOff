@@ -13,8 +13,8 @@ import android.graphics.RectF;
 
 public class CircularImageBar {
 
-    public static Bitmap BuildNote(double size){
-        Bitmap b = Bitmap.createBitmap(300, 300,Bitmap.Config.ARGB_8888);
+    public static Bitmap BuildNote(double size) {
+        Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
 
@@ -27,19 +27,19 @@ public class CircularImageBar {
         paint.setStyle(Paint.Style.FILL);
         final RectF oval = new RectF();
         paint.setStyle(Paint.Style.STROKE);
-        oval.set(10,10,290,290);
-        canvas.drawArc(oval, 270, (float) (((size)*360)/10), false, paint);
+        oval.set(10, 10, 290, 290);
+        canvas.drawArc(oval, 270, (float) (((size) * 360) / 10), false, paint);
         paint.setStrokeWidth(5);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(Color.parseColor("#FFFFFF"));
         paint.setTextSize(140);
-        canvas.drawText(String.valueOf(size), 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
         return b;
     }
 
-    public static Bitmap BuildSeasons(int size){
-        Bitmap b = Bitmap.createBitmap(300, 300,Bitmap.Config.ARGB_8888);
+    public static Bitmap BuildSeasons(int size) {
+        Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
 
@@ -51,13 +51,13 @@ public class CircularImageBar {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(Color.parseColor("#FFFFFF"));
         paint.setTextSize(130);
-        canvas.drawText(String.valueOf(size), 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
         return b;
     }
 
-    public static Bitmap BuildNumber(int size, int color){
-        Bitmap b = Bitmap.createBitmap(300, 300,Bitmap.Config.ARGB_8888);
+    public static Bitmap BuildNumber(int size, int color) {
+        Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
 
@@ -68,13 +68,13 @@ public class CircularImageBar {
         paint.setStrokeWidth(5);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(130);
-        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
         return b;
     }
 
-    public static Bitmap BuildString(String size,int color,Context ctx){
-        Bitmap b = Bitmap.createBitmap(500, 500,Bitmap.Config.ARGB_8888);
+    public static Bitmap BuildString(String size, int color, Context ctx) {
+        Bitmap b = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
 
@@ -86,7 +86,7 @@ public class CircularImageBar {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(ctx.getColor(color));
         paint.setTextSize(130);
-        canvas.drawText(String.valueOf(size), 150, 150+(paint.getTextSize()/3), paint);
+        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
         return b;
     }

@@ -44,6 +44,9 @@ public interface SerieDAO {
     @Query("DELETE FROM series")
     void deleteAllSeries();
 
+    @Query("DELETE FROM series where id = :id")
+    void deleteSerieById(Integer id);
+
     @Query("SELECT * FROM SERIES where id = :id")
     LiveData<SerieDatabase> getSerieById(int id);
 }

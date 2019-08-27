@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:orientation="vertical">
 
         <ProgressBar
@@ -40,8 +42,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/season_container"
                     android:layout_width="100dp"
-                    android:layout_height="70dp"
-                    android:layout_margin="15dp">
+                    android:layout_height="70dp">
 
                     <TextView
                         android:id="@+id/text_air_date"
@@ -49,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/air_date_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/air_date"
@@ -66,11 +67,10 @@
                     android:id="@+id/season_container"
                     android:layout_width="100dp"
                     android:layout_height="70dp"
-                    android:layout_marginStart="36dp"
-                    android:layout_marginTop="15dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintStart_toEndOf="@id/air_date_container"
-                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toStartOf="@id/episodes_container">
 
                     <TextView
                         android:id="@+id/text_season"
@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/season_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/number_of_season"
@@ -91,13 +91,13 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/episodes_container"
                     app:layout_constraintStart_toEndOf="@id/season_container"
                     app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
                     app:layout_constraintTop_toTopOf="@id/lil_caracteritics"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     android:layout_width="100dp"
-                    android:layout_height="70dp"
-                    android:layout_margin="15dp">
+                    android:layout_height="70dp">
 
                     <TextView
                         android:id="@+id/episodes_text"
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/episodes_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/episodes"

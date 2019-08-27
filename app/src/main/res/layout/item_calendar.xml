@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccent"
-                    android:text="Next Episode !"/>
+                    android:text="@string/next_episode"/>
 
                 <TextView
                     android:id="@+id/tv"
@@ -65,7 +65,7 @@
                     android:id="@+id/text_episode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Episode"
+                    android:text="@string/episode_text"
                     android:textColor="@color/colorAccent"/>
 
                 <TextView
