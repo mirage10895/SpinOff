@@ -25,6 +25,7 @@ public class YoutubeFragment extends Fragment {
     public String id;
 
     public YoutubeFragment() {
+        //empty constructor
     }
 
     public void instanciate(String id){

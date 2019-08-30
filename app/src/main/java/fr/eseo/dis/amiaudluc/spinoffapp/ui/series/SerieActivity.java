@@ -48,7 +48,9 @@ public class SerieActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Integer id = getIntent().getIntExtra("id", 0);
         ActionBar actionBar = getSupportActionBar();
+        FloatingActionButton fab = findViewById(R.id.fab);
 
+        fab.setEnabled(false);
         this.db = AppDatabase.getAppDatabase(this);
         this.fragment = new SingleSerieFragment();
         this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
@@ -69,7 +71,14 @@ public class SerieActivity extends AppCompatActivity {
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("DAMN", view -> view.setVisibility(View.GONE)).show();
+            }
+        });
+        db.serieDAO().getAllIds().observe(this, integers -> {
+            if (integers != null && !integers.contains(id)) {
+                fab.setEnabled(true);
+            } else if (integers != null && integers.contains(id)) {
+                fab.setEnabled(false);
             }
         });
 
@@ -78,30 +87,26 @@ public class SerieActivity extends AppCompatActivity {
 
             actionBar.setTitle(null);
         }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> db.serieDAO().getAllIds().observe(this, integers -> {
-            if (integers != null && integers.contains(this.serie.getId())){
-                Snackbar.make(view, "You already got this serie on your library !", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            } else {
-                DatabaseTransactionManager.addSerieWithSeasons(db, this.serie);
-                Snackbar.make(view, "Serie added to your library !", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", new DeleteSerieActionListener(db, this.serie)).show();
-            }
-        }));
+        fab.setOnClickListener(view -> {
+            fab.setEnabled(false);
+            DatabaseTransactionManager.addSerieWithSeasons(db, this.serie);
+            Snackbar.make(view, "Serie added to your library !", Snackbar.LENGTH_LONG)
+                    .setAction("Undo", new DeleteSerieActionListener(db, this.serie)).show();
+        });
 
     }
 
     /**
      * Get the backdrop picture for the top
+     *
      * @param link
      */
-    private void setBackground(String link){
+    private void setBackground(String link) {
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        final Target target = new Target(){
+        final Target target = new Target() {
 
             final ProgressBar progressBar = findViewById(R.id.progressBar);
+
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 progressBar.setVisibility(View.GONE);

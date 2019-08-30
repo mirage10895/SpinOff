@@ -24,11 +24,17 @@ public interface TMDBApi {
     @GET("movie/{id}")
     Call<Movie> getMovieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
 
+    @GET("movie/{id}/recommendations")
+    Call<Serie> getRecommandationByMovieId(@Path("id") Integer id);
+
     @GET("tv/{type}")
     Call<ApiListResponse<Serie>> getSeries(@Path("type") String type, @Query("region") String region, @Query("page") Integer page);
 
     @GET("tv/{id}")
     Call<Serie> getSerieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
+
+    @GET("tv/{id}/recommendations")
+    Call<Serie> getRecommandationBySerieId(@Path("id") Integer id);
 
     @GET("tv/{id}/season/{seasonNumber}")
     Call<Season> getSeasonBySerieId(@Path("id") Integer id, @Path("seasonNumber") Integer seasonNumber, @Query("append_to_response") String appendToResponse);

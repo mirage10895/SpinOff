@@ -61,21 +61,20 @@ public class SeasonFragment extends Fragment implements SearchInterface {
         Calendar cal = Calendar.getInstance(Locale.US);
         if(season.getAirDate() != null){
             cal.setTime(season.getAirDate());
-            air_date.setImageBitmap(CircularImageBar.BuildNumber(cal.get(Calendar.YEAR), ctx.getColor(R.color.colorAccent)));
+            air_date.setImageBitmap(CircularImageBar.BuildNumber(cal.get(Calendar.YEAR), ctx.getColor(R.color.white)));
         }
 
         ImageView seasonNumber = seasonView.findViewById(R.id.number_of_season);
         seasonNumber.setImageBitmap(CircularImageBar.BuildNumber(0, ctx.getColor(R.color.colorAccent)));
         if(season.getSeasonNumber() != -1){
-            seasonNumber.setImageBitmap(CircularImageBar.BuildNumber(season.getSeasonNumber(), ctx.getColor(R.color.colorAccent)));
+            seasonNumber.setImageBitmap(CircularImageBar.BuildNumber(season.getSeasonNumber(), ctx.getColor(R.color.white)));
         }
 
         ImageView episode = seasonView.findViewById(R.id.episodes);
         episode.setImageBitmap(CircularImageBar.BuildNumber(0, ctx.getColor(R.color.colorAccent)));
         if(!season.getEpisodes().isEmpty()){
-            episode.setImageBitmap(CircularImageBar.BuildNumber(season.getEpisodes().size(), ctx.getColor(R.color.colorAccent)));
+            episode.setImageBitmap(CircularImageBar.BuildNumber(season.getEpisodes().size(), ctx.getColor(R.color.white)));
         }
-
 
         TextView overview = seasonView.findViewById(R.id.overview);
         overview.setText(R.string.emptyField);

@@ -30,7 +30,16 @@ public class DateUtils {
         cal.setTime(date);
         return String.valueOf(cal.get(Calendar.DATE))
                 .concat(" - "+String.valueOf(cal.get(Calendar.MONTH)+1)
-                        .concat(" - "+String.valueOf(cal.get(Calendar.YEAR))));
+                        .concat(" - "+ cal.get(Calendar.YEAR)));
+    }
+
+    public static String toDisplayString(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int year  = cal.get(Calendar.YEAR);
+        String month = cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US);
+        int day   = cal.get(Calendar.DAY_OF_MONTH);
+        return String.valueOf(month).concat(", " + day).concat(" "+ year);
     }
 
     public static String getStringFromDate(Date date){

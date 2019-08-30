@@ -18,7 +18,7 @@ public enum Language {
     US("USA","us"),
     @SerializedName("gb")
     GB("Great Britain","gb"),
-    DEFAULT("UNKNOWN","unknown");
+    DEFAULT("Unknown","unknown");
 
     private String fullName;
     private String name;

@@ -13,23 +13,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_margin="15dp"
         android:orientation="vertical">
-
-        <ProgressBar
-            android:id="@+id/progressBarBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone" />
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            card_view:cardBackgroundColor="@color/colorPrimaryDark">
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/lil_caracteritics"
@@ -38,12 +35,12 @@
 
                 <RelativeLayout
                     android:id="@+id/air_date_container"
-                    app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
-                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics"
+                    android:layout_width="100dp"
+                    android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/season_container"
-                    android:layout_width="100dp"
-                    android:layout_height="70dp">
+                    app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
                         android:id="@+id/text_air_date"
@@ -51,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/air_date_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/air_date"
@@ -69,9 +66,9 @@
                     android:layout_width="100dp"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toStartOf="@id/episodes_container"
                     app:layout_constraintStart_toEndOf="@id/air_date_container"
-                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics"
-                    app:layout_constraintEnd_toStartOf="@id/episodes_container">
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
                         android:id="@+id/text_season"
@@ -79,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/season_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/number_of_season"
@@ -93,12 +90,12 @@
 
                 <RelativeLayout
                     android:id="@+id/episodes_container"
-                    app:layout_constraintStart_toEndOf="@id/season_container"
-                    app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
-                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics"
-                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     android:layout_width="100dp"
-                    android:layout_height="70dp">
+                    android:layout_height="70dp"
+                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
+                    app:layout_constraintStart_toEndOf="@id/season_container"
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
                         android:id="@+id/episodes_text"
@@ -106,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/episodes_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/white" />
 
                     <ImageView
                         android:id="@+id/episodes"
@@ -123,123 +120,98 @@
 
         </android.support.v7.widget.CardView>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/season_text"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal"
-            android:background="@color/color_primary_semi_opaq"
-            android:visibility="gone">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/tv_season"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/text_genre"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/genres_text"
-                android:textColor="@color/colorAccent" />
-
-            <TextView
-                android:id="@+id/genres"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="30dp" />
-
-        </LinearLayout>
-
-        <RelativeLayout
-            android:background="@color/color_primary_semi_opaq"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
-            <TextView
-                android:id="@+id/text_guest_stars"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="@string/cast_text"
-                android:textColor="@color/colorAccent" />
+                android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/guest_stars"
-                android:layout_width="match_parent"
-                android:layout_height="155dp"
-                android:layout_margin="10dp"
-                android:layout_below="@id/text_guest_stars"
-                android:background="@color/colorPrimaryDark"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:scrollbarStyle="outsideInset"
-                android:scrollbars="horizontal">
+                <TextView
+                    android:id="@+id/text_guest_stars"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/cast_text"
+                    android:textColor="@color/colorAccent" />
 
-            </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/guest_stars"
+                    android:layout_width="match_parent"
+                    android:layout_height="155dp"
+                    android:layout_margin="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:scrollbarStyle="outsideInset"
+                    android:scrollbars="horizontal">
 
-        </RelativeLayout>
+                </android.support.v7.widget.RecyclerView>
 
-        <RelativeLayout
-            android:id="@+id/overview_block"
-            android:background="@color/color_primary_semi_opaq"
+                <TextView
+                    android:id="@+id/text_overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/details_overview"
+                    android:textColor="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/text_episodes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/episodes_text"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/text_overview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="@string/details_overview"
-                android:textColor="@color/colorAccent" />
-
-            <TextView
-                android:id="@+id/overview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_overview"
-                android:layout_margin="@dimen/text_margin"
-                android:layout_marginStart="15dp"
-                android:background="@color/colorPrimaryDark"
-                android:padding="@dimen/text_margin"
-                android:textColor="@color/colorAccent" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:background="@color/color_primary_semi_opaq"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/episodes_recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/text_episodes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="@string/episodes_text"
-                android:textColor="@color/colorAccent" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/episodes_recycler"
-                android:layout_below="@id/text_episodes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:layout_margin="@dimen/text_margin"
-                android:layout_marginStart="15dp" />
-
-        </RelativeLayout>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/teaser_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@string/trailer_text"
-            android:textColor="@color/colorAccent" />
+            android:gravity="center_horizontal"
+            android:text="@string/teaser_txt"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
-        <FrameLayout
-            android:id="@+id/youtube_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp">
-
-        </FrameLayout>
+        <include layout="@layout/fragment_youtube" />
 
     </LinearLayout>
 

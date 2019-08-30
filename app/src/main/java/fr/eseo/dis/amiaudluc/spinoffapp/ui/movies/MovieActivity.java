@@ -25,6 +25,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
@@ -46,8 +48,10 @@ public class MovieActivity extends AppCompatActivity {
         Integer id = getIntent().getIntExtra("id", 0);
         ActionBar actionBar = getSupportActionBar();
 
-        content = findViewById(R.id.content);
-        noMedia = findViewById(R.id.no_media_display);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setEnabled(false);
+        this.content = findViewById(R.id.content);
+        this.noMedia = findViewById(R.id.no_media_display);
 
         this.db = AppDatabase.getAppDatabase(this);
         this.fragment = SingleMovieFragment.newInstance();
@@ -71,6 +75,13 @@ public class MovieActivity extends AppCompatActivity {
                         .setAction("DAMN", view -> view.setVisibility(View.GONE)).show();
             }
         });
+        db.moviesDAO().getAllIds().observe(this, integers -> {
+            if (integers != null && !integers.contains(id)) {
+                fab.setEnabled(true);
+            } else if (integers != null && integers.contains(id)) {
+                fab.setEnabled(false);
+            }
+        });
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -78,18 +89,12 @@ public class MovieActivity extends AppCompatActivity {
             actionBar.setTitle(null);
         }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view ->
-                db.moviesDAO().getAllIds().observe(this, integers -> {
-                    if (integers != null && integers.contains(this.movie.getId())) {
-                        Snackbar.make(view, "Movie is already in your library", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    } else {
-                        DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().insertMovie(this.movie));
-                        Snackbar.make(view, "Movie added to your library", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                }));
+        fab.setOnClickListener(view -> {
+            fab.setEnabled(false);
+            DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().insertMovie(this.movie));
+            Snackbar.make(view, "Movie added to your library", Snackbar.LENGTH_LONG)
+                    .setAction("Undo", new DeleteMovieActionListener(db, this.movie)).show();
+        });
 
     }
 

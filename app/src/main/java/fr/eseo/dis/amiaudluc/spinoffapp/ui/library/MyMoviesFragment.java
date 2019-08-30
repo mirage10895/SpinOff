@@ -21,6 +21,7 @@ import java.util.List;
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
@@ -38,6 +39,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     private List<MovieDatabase> movies;
     private AppDatabase db;
     private String type;
+    private Integer selectedMovieId;
 
 
     public MyMoviesFragment() {
@@ -91,20 +93,23 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_delete) {
-            //TODO refacto
+            DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().deleteMovieById(this.selectedMovieId));
+            db.moviesDAO().getAll().observe(this, this::setDbMovies);
+            return true;
         }
         return false;
     }
 
     @Override
-    public void onItemClick(Integer position) {
-        //Content.currentMovie = this.movies.get(position);
+    public void onItemClick(Integer id) {
         Intent intent = new Intent(getContext(), MovieActivity.class);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer movieId) {
+        this.selectedMovieId = movieId;
         onCreateContextMenu(contextMenu,v,menuInfo);
     }
 

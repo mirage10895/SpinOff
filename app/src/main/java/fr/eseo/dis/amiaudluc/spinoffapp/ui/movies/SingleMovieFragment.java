@@ -67,11 +67,10 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
             rate.setImageBitmap(CircularImageBar.BuildNote((movie.getVoteAverage())));
         }
 
-        ImageView flag = singleMovieView.findViewById(R.id.flag);
-        flag.setImageResource(R.drawable.ic_launcher_foreground);
-        if (!Language.DEFAULT.equals(movie.getOriginalLanguage())) {
-            int imageResource = getResources().getIdentifier("@drawable/" + movie.getOriginalLanguage().getName() + "_icon", null, ctx.getPackageName());
-            flag.setImageResource(imageResource);
+        TextView flag = singleMovieView.findViewById(R.id.language);
+        flag.setText(getString(R.string.no_results));
+        if (movie.getOriginalLanguage() != null){
+            flag.setText(movie.getOriginalLanguage().getFullName());
         }
 
         Calendar cal = Calendar.getInstance(Locale.US);

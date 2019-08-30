@@ -1,98 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="15dp"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/movies_layer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="240dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_movies"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_marginStart="@dimen/text_margin"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:layout_margin="@dimen/text_margin"
+            android:gravity="center_horizontal"
             android:text="@string/menu_movie"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_movies"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:scrollbarStyle="outsideInset"
-            android:scrollbars="horizontal"
-            android:layout_below="@+id/text_movies" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/text_margin"
+            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
-    </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_movies"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_below="@+id/text_movies"
+                android:layout_margin="10dp"
+                android:layout_gravity="center_vertical"
+                android:scrollbarStyle="outsideInset"
+                android:scrollbars="horizontal" />
 
-    <RelativeLayout
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/series_layer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="240dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_series"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_marginStart="@dimen/text_margin"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:layout_margin="@dimen/text_margin"
+            android:gravity="center_horizontal"
             android:text="@string/menu_series"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_series"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:scrollbarStyle="outsideInset"
-            android:scrollbars="horizontal"
-            android:layout_below="@+id/text_series" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/text_margin"
+            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
-    </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_series"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_margin="10dp"
+                android:layout_gravity="center_vertical"
+                android:scrollbarStyle="outsideInset"
+                android:scrollbars="horizontal" />
 
-    <RelativeLayout
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/artists_layer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="180dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_persons"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_marginStart="@dimen/text_margin"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:text="@string/fragment_artist"
-            android:textColor="@color/colorAccent"
+            android:layout_margin="@dimen/text_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/menu_artists"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_artists"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
-            android:scrollbarStyle="outsideInset"
-            android:scrollbars="horizontal"
-            android:layout_below="@+id/text_persons" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/text_margin"
+            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
-    </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_artists"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_margin="10dp"
+                android:scrollbarStyle="outsideInset"
+                android:layout_gravity="center_vertical"
+                android:scrollbars="horizontal" />
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
 
 </LinearLayout>

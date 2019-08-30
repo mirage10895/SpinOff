@@ -37,7 +37,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_search);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         this.searchViewModel = new SearchViewModel(ApiRepository.getInstance());
@@ -85,7 +85,6 @@ public class SearchActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().equals("")) {
                     content.setVisibility(View.GONE);
-                    noText.setText(getString(R.string.search_for));
                     noMedia.setVisibility(View.VISIBLE);
                 } else {
                     onSearch(charSequence.toString());
@@ -113,6 +112,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onSearch(String query) {
         findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        noMedia.setVisibility(View.GONE);
         this.searchViewModel.initSearchByQuery(query);
         this.searchViewModel.getMedias().observe(this, media -> {
             findViewById(R.id.progressBar).setVisibility(View.GONE);

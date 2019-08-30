@@ -28,6 +28,7 @@ public class Artist implements Media {
     private String placeOfBirth;
     private String mediaType;
     private Date birthday;
+    private String homepage;
     @SerializedName("movie_credits")
     private Credits<Movie> movies;
     @SerializedName("tv_credits")

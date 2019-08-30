@@ -18,13 +18,14 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
@@ -33,6 +34,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,7 +46,7 @@ public class ArtistFragment extends Fragment implements SearchInterface {
     private MoviesAdapter moviesAdapter;
     private SeriesAdapter seriesAdapter;
     private SearchInterface mListener;
-    private String type = "";
+    private String type;
 
     public ArtistFragment() {
         // Required empty public constructor
@@ -83,21 +85,36 @@ public class ArtistFragment extends Fragment implements SearchInterface {
             artistView.findViewById(R.id.movies_layer).setVisibility(View.GONE);
         }
         if (!artist.getSeries().getCast().isEmpty()) {
-            RecyclerView recyclerView_serie = (RecyclerView) artistView.findViewById(R.id.recycler_series);
-            recyclerView_serie.setHasFixedSize(true);
-            recyclerView_serie.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
+            RecyclerView recyclerViewSerie = artistView.findViewById(R.id.recycler_series);
+            recyclerViewSerie.setHasFixedSize(true);
+            recyclerViewSerie.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
                     false));
             seriesAdapter = new SeriesAdapter(ctx, mListener, artist.getSeries().getCast().stream().map(Serie::toDataBaseFormat).collect(Collectors.toList()));
-            recyclerView_serie.setAdapter(seriesAdapter);
+            recyclerViewSerie.setAdapter(seriesAdapter);
         } else {
             artistView.findViewById(R.id.series_layer).setVisibility(View.GONE);
         }
         artistView.findViewById(R.id.artists_layer).setVisibility(View.GONE);
 
-        TextView whoAreYou = (TextView) artistView.findViewById(R.id.who_are_you);
+        TextView whoAreYou = artistView.findViewById(R.id.who_are_you);
         whoAreYou.setText(R.string.emptyField);
         if (artist.getBiography() != null) {
             whoAreYou.setText(artist.getBiography());
+        }
+
+        TextView birthday = artistView.findViewById(R.id.birthday);
+        birthday.setText(R.string.emptyField);
+        if (artist.getBirthday() != null) {
+            String birthDate = DateUtils.toDisplayString(artist.getBirthday());
+            String birthPlace = artist.getPlaceOfBirth();
+            String stringBuilder = birthDate + " (" + birthPlace + ")";
+            birthday.setText(stringBuilder);
+        }
+
+        TextView seeMore = artistView.findViewById(R.id.see_more);
+        seeMore.setText(R.string.emptyField);
+        if (artist.getHomepage() != null) {
+            seeMore.setText(artist.getHomepage());
         }
 
         return artistView;
@@ -112,17 +129,13 @@ public class ArtistFragment extends Fragment implements SearchInterface {
         this.type = type;
     }
 
-    public String getType() {
-        return this.type;
-    }
-
     @Override
     public void onItemClick(Integer id) {
-        if (Media.MOVIE.equals(getType())) {
+        if (Media.MOVIE.equals(this.type)) {
             Intent intent = new Intent(getContext(), MovieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (Media.SERIE.equals(getType())) {
+        } else if (Media.SERIE.equals(this.type)) {
             Intent intent = new Intent(getContext(), SerieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);

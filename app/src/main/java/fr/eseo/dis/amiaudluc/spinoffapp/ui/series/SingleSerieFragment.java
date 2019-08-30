@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
@@ -59,11 +60,10 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
             rate.setImageBitmap(CircularImageBar.BuildNote((serie.getVoteAverage())));
         }
 
-        ImageView flag = singleSerieView.findViewById(R.id.flag);
-        flag.setImageResource(R.drawable.ic_cam_iris);
-        if (!Language.DEFAULT.equals(serie.getOriginalLanguage())){
-            int imageResource = getResources().getIdentifier("@drawable/" + serie.getOriginalLanguage().getName() + "_icon",null,ctx.getPackageName());
-            flag.setImageResource(imageResource);
+        TextView flag = singleSerieView.findViewById(R.id.language);
+        flag.setText(getString(R.string.no_results));
+        if (serie.getOriginalLanguage() != null){
+            flag.setText(serie.getOriginalLanguage().getFullName());
         }
 
         ImageView season = singleSerieView.findViewById(R.id.number_of_season);
@@ -117,7 +117,7 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
                 startActivity(intent);
                 break;
             }
-            case "artist": {
+            case Media.ARTIST: {
                 Intent intent = new Intent(ctx, ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);

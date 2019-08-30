@@ -1,76 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_primary_semi_opaq"
-    android:id="@+id/nested_view"
+    android:background="@color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.artists.ArtistActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            android:id="@+id/producer_pic"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:elevation="10dp"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            app:cardCornerRadius="70dp">
 
-        <ProgressBar
-            android:id="@+id/progressBarBody"
+            <ImageView
+                android:id="@+id/poster_ic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/fragment_artist"
+                android:scaleType="centerCrop" />
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone"/>
+            android:layout_marginTop="@dimen/text_margin"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp" />
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/producer_pic"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:background="@null"
-                android:elevation="10dp"
-                android:innerRadius="0dp"
-                android:layout_gravity="center"
-                android:shape="ring"
-                app:cardCornerRadius="70dp">
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
-                <ImageView
-                    android:id="@+id/poster_ic"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_born"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/fragment_artist" />
-            </android.support.v7.widget.CardView>
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/birthday_text"
+                    android:textColor="@color/colorAccent" />
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_margin"
-                android:layout_gravity="center"
-                android:textSize="25sp"
-                android:textColor="@color/colorAccent"/>
+                <TextView
+                    android:id="@+id/birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:textColor="@color/white" />
 
-            <TextView
-                android:id="@+id/who_are_you"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_margin"
-                android:gravity="center"
-                android:textColor="@color/white"/>
+                <TextView
+                    android:id="@+id/text_biography"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/biography_text"
+                    android:textColor="@color/colorAccent" />
 
-            <include layout="@layout/fragment_search_main"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"/>
+                <TextView
+                    android:id="@+id/who_are_you"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:gravity="center"
+                    android:textColor="@color/white" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/text_see_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/see_more_text"
+                    android:textColor="@color/colorAccent" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/see_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:linksClickable="true"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <include
+            layout="@layout/fragment_search_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

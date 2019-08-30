@@ -40,6 +40,9 @@ public interface MovieDAO {
     @Delete
     void deleteMovie(MovieDatabase MOVIES);
 
+    @Query("DELETE FROM MOVIES WHERE id = :id")
+    void deleteMovieById(Integer id);
+
     @Query("DELETE FROM MOVIES")
     void deleteAllMovies();
 
