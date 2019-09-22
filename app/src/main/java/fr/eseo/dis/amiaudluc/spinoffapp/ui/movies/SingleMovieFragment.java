@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -25,8 +26,6 @@ import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.youtube.YoutubeFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Language;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
@@ -42,7 +41,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     private View singleMovieView;
     private Context ctx;
     private Movie movie;
-    private String type;
+    private FragmentType type;
 
     public SingleMovieFragment() {
         // Required empty public constructor
@@ -58,8 +57,9 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        singleMovieView = inflater.inflate(R.layout.fragment_single_movie, container, false);
-        ctx = singleMovieView.getContext();
+        super.onCreateView(inflater, container, savedInstanceState);
+        this.singleMovieView = inflater.inflate(R.layout.fragment_single_movie, container, false);
+        this.ctx = singleMovieView.getContext();
 
         ImageView rate = singleMovieView.findViewById(R.id.rate);
         rate.setImageBitmap(CircularImageBar.BuildNote(0));
@@ -68,8 +68,8 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
         }
 
         TextView flag = singleMovieView.findViewById(R.id.language);
-        flag.setText(getString(R.string.no_results));
-        if (movie.getOriginalLanguage() != null){
+        flag.setText(getString(R.string.emptyField));
+        if (movie.getOriginalLanguage() != null) {
             flag.setText(movie.getOriginalLanguage().getFullName());
         }
 
@@ -94,7 +94,9 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
         TextView budget = singleMovieView.findViewById(R.id.budget);
         budget.setText(getResources().getString(R.string.emptyField));
         if (movie.getBudget() != 0) {
-            budget.setText(String.valueOf(movie.getBudget()));
+            DecimalFormat decimalFormat = new DecimalFormat("#,###");
+            String numberAsString = decimalFormat.format(movie.getBudget()) + "€";
+            budget.setText(numberAsString);
         }
 
         RecyclerView recyclerReal = singleMovieView.findViewById(R.id.realisators);
@@ -107,7 +109,12 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
         recyclerCast.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
         recyclerCast.setAdapter(new ActorsAdapter(singleMovieView.getContext(), this, movie.getCredits().getCast()));
 
-        if (movie.getRightVideo().getId() != null) {
+        RecyclerView recyclerRecommendations = singleMovieView.findViewById(R.id.recycler_recommendations);
+        recyclerRecommendations.setHasFixedSize(true);
+        recyclerRecommendations.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        recyclerRecommendations.setAdapter(new MoviesAdapter(singleMovieView.getContext(), this, this.movie.getRecommendations().getResults().stream().map(Movie::toDatabaseFormat).collect(Collectors.toList())));
+
+        if (movie.getRightVideo() != null) {
             YoutubeFragment fragment = new YoutubeFragment();
             fragment.instanciate(movie.getRightVideo().getKey());
             FragmentManager manager = getFragmentManager();
@@ -127,21 +134,33 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     @Override
     public void onItemClick(Integer id) {
         switch (this.type) {
-            case "network":
+            case NETWORK:
                 //Content.currentNetwork = this.movie.getProductionCompanies().get(position);
                 break;
-            case Media.ARTIST: {
+            case ARTIST: {
                 Intent intent = new Intent(ctx, ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
                 break;
             }
-            case "actor": {
+            case MOVIE: {
+                Intent intent = new Intent(ctx, MovieActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+                break;
+            }
+            case ACTOR: {
                 Intent intent = new Intent(ctx, ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
                 break;
             }
+            case SERIE:
+                break;
+            case DEFAULT:
+                break;
+            default:
+                break;
         }
     }
 
@@ -151,7 +170,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
     }
 }

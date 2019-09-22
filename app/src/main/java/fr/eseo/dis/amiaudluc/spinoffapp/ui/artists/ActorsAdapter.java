@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
@@ -28,7 +29,6 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
     private List<Artist> artists;
     private final ItemInterface mListener;
     private final Context ctx;
-    private final String type = "actor";
 
     public ActorsAdapter(Context ctx, ItemInterface listener, List<Artist> data){
         this.mListener = listener;
@@ -72,18 +72,12 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
         }
     }
 
-    public String getType() {
-        return type;
-    }
-
     @Override
     public int getItemCount() {
         return artists.size();
     }
 
     public class ArtistViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final View view;
 
         final ImageView avatar;
         final TextView name;
@@ -93,7 +87,6 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
 
         ArtistViewHolder(View view) {
             super(view);
-            this.view = view;
 
             avatar = view.findViewById(R.id.avatar);
             name = view.findViewById(R.id.name);
@@ -105,7 +98,7 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
         @Override
         public void onClick(View v) {
             Artist artist = artists.get(getAdapterPosition());
-            frag.setType(ConstUtils.ACTOR);
+            frag.setType(SearchInterface.FragmentType.ACTOR);
             mListener.onItemClick(artist.getId());
         }
 

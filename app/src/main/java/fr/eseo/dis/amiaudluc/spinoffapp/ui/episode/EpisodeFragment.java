@@ -29,12 +29,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EpisodeFragment extends Fragment implements SearchInterface{
+public class EpisodeFragment extends Fragment implements SearchInterface {
 
-    View episodeView;
+    protected View episodeView;
     private Context ctx;
     private Episode episode;
-    private String type;
+    private FragmentType type;
 
     public EpisodeFragment() {
         // Required empty public constructor
@@ -92,13 +92,13 @@ public class EpisodeFragment extends Fragment implements SearchInterface{
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
     }
 
     @Override
     public void onItemClick(Integer id) {
-        if (this.type.equals("actor")){
+        if (this.type.equals(FragmentType.ACTOR)){
             Intent intent = new Intent(ctx, ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);

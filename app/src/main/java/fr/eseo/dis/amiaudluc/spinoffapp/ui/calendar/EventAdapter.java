@@ -11,14 +11,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
 
 /**
@@ -83,15 +80,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
 
     class EventsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final View view;
-
         private final ImageView seriePoster;
         private final TextView textEpisode;
         private final TextView textAirDate;
 
         EventsViewHolder(View view) {
             super(view);
-            this.view = view;
 
             seriePoster = view.findViewById(R.id.poster_ic);
             textEpisode = view.findViewById(R.id.episode);
@@ -102,7 +96,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
 
         @Override
         public void onClick(View v) {
-            fragment.setType("event");
+            fragment.setType(SearchInterface.FragmentType.EVENT);
             fragment.onItemClick(getAdapterPosition());
         }
     }

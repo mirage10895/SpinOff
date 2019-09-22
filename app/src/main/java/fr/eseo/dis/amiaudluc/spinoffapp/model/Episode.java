@@ -1,6 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
-import java.util.Date;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.EpisodeDatabase;

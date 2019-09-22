@@ -104,7 +104,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
 
         @Override
         public void onClick(View v) {
-            fragment.setType("episode");
+            fragment.setType(SearchInterface.FragmentType.EPISODE);
             Episode episode = episodes.get(getAdapterPosition());
             fragment.onItemClick(episode.getEpisodeNumber());
         }

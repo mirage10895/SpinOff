@@ -69,16 +69,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     }
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnCreateContextMenuListener {
-
-        private final View view;
-
         private final ImageView moviePoster;
 
         MoviesViewHolder(View view) {
             super(view);
-            this.view = view;
 
-            moviePoster = view.findViewById(R.id.poster_ic);
+            this.moviePoster = view.findViewById(R.id.poster_ic);
 
             view.setOnClickListener(this);
             view.setOnCreateContextMenuListener(this);
@@ -87,7 +83,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         @Override
         public void onClick(View v) {
             final MovieDatabase movieDatabase = movies.get(getAdapterPosition());
-            fragment.setType(Media.MOVIE);
+            fragment.setType(SearchInterface.FragmentType.MOVIE);
             fragment.onItemClick(movieDatabase.getId());
         }
 

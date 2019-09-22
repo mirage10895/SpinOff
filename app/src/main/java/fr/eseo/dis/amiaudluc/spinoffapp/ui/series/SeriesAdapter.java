@@ -84,7 +84,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         @Override
         public void onClick(View v) {
             final SerieDatabase serieDatabase = series.get(getAdapterPosition());
-            fragment.setType(Media.SERIE);
+            fragment.setType(SearchInterface.FragmentType.SERIE);
             fragment.onItemClick(serieDatabase.getId());
         }
 

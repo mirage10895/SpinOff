@@ -1,10 +1,12 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -42,8 +44,8 @@ public class SeasonActivity extends AppCompatActivity {
         this.noMedia = findViewById(R.id.no_media_display);
         this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
         this.serieViewModel.initGetSeasonBySerieId(serieId, seasonNumber);
-        findViewById(R.id. fab).setVisibility(View.GONE);
-        content.setVisibility(View.GONE);
+        this.findViewById(R.id. fab).setVisibility(View.GONE);
+        this.content.setVisibility(View.GONE);
         this.serieViewModel.getSeason().observe(this, season -> {
             if (season != null) {
                 this.season = season;
@@ -62,6 +64,11 @@ public class SeasonActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override

@@ -107,5 +107,6 @@
     <string name="number_of_movies_txt">Number of Movies</string>
     <string name="teaser_txt">Teaser</string>
     <string name="trailer_text">Trailer</string>
+    <string name="recommendations_text">Recommendations</string>
     <string name="next_episode">Next Episode !</string>
 </resources>

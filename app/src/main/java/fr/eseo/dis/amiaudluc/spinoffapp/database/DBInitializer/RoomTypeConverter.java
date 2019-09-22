@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer;
+package fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer;
 
 import android.arch.persistence.room.TypeConverter;
 

@@ -1,5 +1,9 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +45,7 @@ public class Movie extends MovieDatabase implements Media {
     private String mediaType;
     private Credits<Artist> credits;
     private ApiObjectResponse<Video> videos;
+    private ApiObjectResponse<Movie> recommendations;
 
     public Movie(){
         super();
@@ -56,9 +61,10 @@ public class Movie extends MovieDatabase implements Media {
         return directors;
     }
 
+    @Nullable
     public Video getRightVideo(){
         return this.videos.getResults().stream().filter(video -> video.getSite().equals("YouTube")
-                && video.getType().equals("Trailer")).findFirst().orElse(new Video());
+                && video.getType().equals("Trailer")).findFirst().orElse(null);
     }
 
     public MovieDatabase toDatabaseFormat() {

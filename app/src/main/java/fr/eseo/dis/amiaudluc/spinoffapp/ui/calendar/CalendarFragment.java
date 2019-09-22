@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
 
@@ -37,8 +36,7 @@ public class CalendarFragment extends Fragment implements SearchInterface {
     private EventAdapter eventAdapter;
     private List<Event> events;
     private List<Event> today;
-    private String type;
-    private MaterialCalendarView materialCalendarView;
+    private FragmentType type;
 
 
     public CalendarFragment() {
@@ -59,7 +57,7 @@ public class CalendarFragment extends Fragment implements SearchInterface {
                             .collect(Collectors.toList());
                 }
             });
-            this.materialCalendarView = myCalendarView.findViewById(R.id.calendar);
+        MaterialCalendarView materialCalendarView = myCalendarView.findViewById(R.id.calendar);
             final RecyclerView recycler = myCalendarView.findViewById(R.id.events);
             recycler.setHasFixedSize(true);
             recycler.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.VERTICAL, false));
@@ -80,7 +78,7 @@ public class CalendarFragment extends Fragment implements SearchInterface {
         }
 
         @Override
-        public void setType (String type){
+        public void setType (FragmentType type){
             this.type = type;
         }
 

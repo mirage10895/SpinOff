@@ -46,7 +46,7 @@ public class ArtistFragment extends Fragment implements SearchInterface {
     private MoviesAdapter moviesAdapter;
     private SeriesAdapter seriesAdapter;
     private SearchInterface mListener;
-    private String type;
+    private FragmentType type;
 
     public ArtistFragment() {
         // Required empty public constructor
@@ -125,22 +125,20 @@ public class ArtistFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
     }
 
     @Override
     public void onItemClick(Integer id) {
-        if (Media.MOVIE.equals(this.type)) {
+        if (FragmentType.MOVIE.equals(this.type)) {
             Intent intent = new Intent(getContext(), MovieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (Media.SERIE.equals(this.type)) {
+        } else if (FragmentType.SERIE.equals(this.type)) {
             Intent intent = new Intent(getContext(), SerieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else {
-            Log.e("NOT", "WORKING");
         }
     }
 

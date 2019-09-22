@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 
 /**
  * A simple {@link Fragment} subclass.

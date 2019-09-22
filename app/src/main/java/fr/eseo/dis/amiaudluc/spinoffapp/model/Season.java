@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
+import android.support.annotation.Nullable;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +52,9 @@ public class Season extends SeasonDatabase {
                 .collect(Collectors.toList());
     }
 
+    @Nullable
     public Video getRightVideo(){
-        Optional<Video> video = this.videos.getResults().stream().filter(video1 -> video1.getSite().equals("YouTube")
-                && video1.getType().equals("Trailer")).findFirst();
-        return video.orElse(new Video());
+        return this.videos.getResults().stream().filter(video1 -> video1.getSite().equals("YouTube")
+                && video1.getType().equals("Trailer")).findFirst().orElse(null);
     }
 }

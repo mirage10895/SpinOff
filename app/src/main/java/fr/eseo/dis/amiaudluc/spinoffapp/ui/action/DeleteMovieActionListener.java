@@ -3,8 +3,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.action;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 
 /**

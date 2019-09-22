@@ -21,12 +21,11 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {

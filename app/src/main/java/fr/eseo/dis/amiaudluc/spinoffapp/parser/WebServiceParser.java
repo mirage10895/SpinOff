@@ -26,8 +26,10 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Video;
 
 /**
  * Created by lucasamiaud on 22/03/2018.
+ * Will be deleted in a future release
  */
 
+@Deprecated
 public class WebServiceParser {
 
     static Gson gson = new Gson();

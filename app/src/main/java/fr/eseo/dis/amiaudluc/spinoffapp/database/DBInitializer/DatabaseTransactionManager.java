@@ -1,20 +1,12 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer;
+package fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SeasonDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;

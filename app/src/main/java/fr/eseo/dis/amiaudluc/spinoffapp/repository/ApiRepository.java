@@ -62,7 +62,7 @@ public class ApiRepository {
     }
 
     public LiveData<Movie> getMovieById(Integer id) {
-        Call<Movie> call = this.tmdbApiService.api.getMovieById(id, "credits,videos");
+        Call<Movie> call = this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations");
         final MutableLiveData<Movie> data = new MutableLiveData<>();
         call.enqueue(new Callback<Movie>() {
             @Override
@@ -76,6 +76,27 @@ public class ApiRepository {
 
             @Override
             public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
+                data.setValue(null);
+            }
+        });
+        return data;
+    }
+
+    public LiveData<List<Movie>> getMovieRecommendationById(Integer id) {
+        Call<ApiListResponse<Movie>> call = this.tmdbApiService.api.getRecommandationsByMovieId(id);
+        final MutableLiveData<List<Movie>> data = new MutableLiveData<>();
+        call.enqueue(new Callback<ApiListResponse<Movie>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiListResponse<Movie>> call, @NonNull Response<ApiListResponse<Movie>> response) {
+                if (response.body() != null) {
+                    data.setValue(response.body().getResults());
+                } else {
+                    data.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiListResponse<Movie>> call, @NonNull Throwable t) {
                 data.setValue(null);
             }
         });

@@ -46,7 +46,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
     private SeriesAdapter seriesAdapter;
     private ArtistsAdapter artistsAdapter;
     private List<Media> medias;
-    private String type;
+    private FragmentType type;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -165,30 +165,24 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
         mListener = null;
     }
 
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
-    }
-
-    public String getType() {
-        return type;
     }
 
     @Override
     public void onItemClick(Integer id) {
-        if (Media.MOVIE.equals(getType())){
+        if (this.type.equals(FragmentType.MOVIE)){
             Intent intent = new Intent(getContext(), MovieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (Media.SERIE.equals(getType())){
+        } else if (this.type.equals(FragmentType.SERIE)){
             Intent intent = new Intent(getContext(), SerieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (Media.ARTIST.equals(getType())){
+        } else if (this.type.equals(FragmentType.ARTIST)){
             Intent intent = new Intent(getContext(), ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        }else{
-            Log.e("NOT","WORKING");
         }
     }
 

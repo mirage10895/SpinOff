@@ -35,10 +35,9 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodesAdapter;
  */
 public class SeasonFragment extends Fragment implements SearchInterface {
 
-    View seasonView;
     private Context ctx;
     private Season season;
-    private String type;
+    private FragmentType type;
 
     public SeasonFragment() {
         // Required empty public constructor
@@ -53,7 +52,8 @@ public class SeasonFragment extends Fragment implements SearchInterface {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        seasonView = inflater.inflate(R.layout.fragment_season, container, false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        View seasonView = inflater.inflate(R.layout.fragment_season, container, false);
         ctx = seasonView.getContext();
 
         ImageView air_date = seasonView.findViewById(R.id.air_date);
@@ -95,7 +95,7 @@ public class SeasonFragment extends Fragment implements SearchInterface {
         ActorsAdapter artistsAdapter = new ActorsAdapter(ctx,this, this.season.getCredits().getCast());
         recyclerGuest.setAdapter(artistsAdapter);
 
-        if (season.getRightVideo().getId() != null){
+        if (season.getRightVideo() != null){
             YoutubeFragment fragment = new YoutubeFragment();
             fragment.instanciate(season.getRightVideo().getKey());
             FragmentManager manager = getFragmentManager();
@@ -114,11 +114,11 @@ public class SeasonFragment extends Fragment implements SearchInterface {
 
     @Override
     public void onItemClick(Integer id) {
-        if (this.getType().equals("actor")){
+        if (this.type.equals(FragmentType.ACTOR)){
             Intent intent = new Intent(ctx, ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (this.getType().equals("episode")){
+        } else if (this.type.equals(FragmentType.EPISODE)){
             Intent intent = new Intent(ctx, EpisodeActivity.class);
             intent.putExtra("serieId", season.getSerieId());
             intent.putExtra("seasonNumber", season.getSeasonNumber());
@@ -133,12 +133,8 @@ public class SeasonFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
-    }
-
-    public String getType(){
-        return this.type;
     }
 
 

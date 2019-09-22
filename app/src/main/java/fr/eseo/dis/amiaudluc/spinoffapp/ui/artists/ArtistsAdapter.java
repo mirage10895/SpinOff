@@ -97,7 +97,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
 
         @Override
         public void onClick(View v) {
-            frag.setType(Media.ARTIST);
+            frag.setType(SearchInterface.FragmentType.ARTIST);
             Artist artist = artists.get(getAdapterPosition());
             mListener.onItemClick(artist.getId());
         }

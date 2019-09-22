@@ -17,13 +17,11 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.DBInitializer.DatabaseTransactionManager;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
@@ -37,7 +35,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     private SeriesAdapter seriesAdapter;
     private List<SerieDatabase> series;
     private AppDatabase db;
-    private String type;
+    private FragmentType type;
     private Integer selectedSerieId;
 
     public MySeriesFragment(){
@@ -105,7 +103,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
     }
 }

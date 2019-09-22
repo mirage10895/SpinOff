@@ -18,15 +18,12 @@ import android.widget.TextView;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Language;
+import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
@@ -40,7 +37,7 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     View singleSerieView;
     private Context ctx;
     private Serie serie;
-    private String type;
+    private FragmentType type;
 
     public SingleSerieFragment() {
         // Required empty public constructor
@@ -110,19 +107,29 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     @Override
     public void onItemClick(Integer id) {
         switch (this.type) {
-            case "season": {
+            case SEASON: {
                 Intent intent = new Intent(ctx, SeasonActivity.class);
                 intent.putExtra("serieId", serie.getId());
                 intent.putExtra("seasonNumber", id);
                 startActivity(intent);
                 break;
             }
-            case Media.ARTIST: {
+            case ARTIST: {
                 Intent intent = new Intent(ctx, ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
                 break;
             }
+            case MOVIE:
+                break;
+            case SERIE:
+                break;
+            case ACTOR:
+                break;
+            case NETWORK:
+                break;
+            case DEFAULT:
+                break;
             default:
                 break;
         }
@@ -134,7 +141,7 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(String type) {
+    public void setType(FragmentType type) {
         this.type = type;
     }
 }

@@ -115,7 +115,7 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
 
         @Override
         public void onClick(View v) {
-            frag.setType("season");
+            frag.setType(SearchInterface.FragmentType.SEASON);
             Season season = seasons.get(getAdapterPosition());
             mListener.onItemClick(season.getSeasonNumber());
         }
