@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 
 /**
@@ -44,8 +47,13 @@ public class DashboardFragment extends Fragment {
         TextView seriesLength = view.findViewById(R.id.series_length);
         TextView moviesLength = view.findViewById(R.id.movies_length);
         
-        db.moviesDAO().getAll().observe(this, movieDatabases -> moviesCunt.setText(String.valueOf(movieDatabases.size())));
-        db.serieDAO().getAll().observe(this, serieDatabases -> moviesCunt.setText(String.valueOf(serieDatabases.size())));
+        db.moviesDAO().getAll().observe(this, movieDatabases -> {
+            moviesCunt.setText(String.valueOf(movieDatabases.size()));
+        });
+        db.serieDAO().getAll().observe(this, serieDatabases -> {
+            moviesCunt.setText(String.valueOf(serieDatabases.size()));
+            moviesLength.setText(String.valueOf(serieDatabases.stream().collect(Collectors.summarizingDouble(SerieDatabase::getTotalRunTime)).getSum()));
+        });
 
         return view;
     }

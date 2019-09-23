@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.action;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
@@ -21,10 +22,11 @@ public class DeleteSerieActionListener implements View.OnClickListener {
         this.db = db;
         this.serie = serie;
     }
+
     @Override
     public void onClick(View v) {
         DatabaseTransactionManager.executeAsync(() -> db.serieDAO().deleteSerie(serie));
-        Snackbar.make(v,"Serie deleted from your library", Snackbar.LENGTH_LONG)
-                .setAction("Action",null).show();
+        Snackbar.make(v, R.string.serie_deleted, Snackbar.LENGTH_LONG)
+                .setAction("Undo", new AddSerieActionListener(this.db, this.serie)).show();
     }
 }

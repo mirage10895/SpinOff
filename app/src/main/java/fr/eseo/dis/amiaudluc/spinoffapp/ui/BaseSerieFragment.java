@@ -20,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransacti
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.MediaTransactionObserver;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
@@ -53,8 +54,11 @@ public abstract class BaseSerieFragment extends BaseFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_add) {
-            DatabaseTransactionManager.executeAsync(() -> super.db.serieDAO().deleteSerieById(super.selectedContextId));
-            return true;
+            this.serieViewModel.initGetSerieById(super.selectedContextId);
+            this.serieViewModel.getSerie().observe(this, new MediaTransactionObserver<>(super.db, this.view, false));
+        } else if (item.getItemId() == R.id.context_menu_delete) {
+            this.serieViewModel.initGetSerieById(super.selectedContextId);
+            this.serieViewModel.getSerie().observe(this, new MediaTransactionObserver<>(super.db, this.view, true));
         }
         return false;
     }
@@ -90,7 +94,14 @@ public abstract class BaseSerieFragment extends BaseFragment {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
-        onCreateContextMenu(contextMenu, v, menuInfo);
-        this.selectedContextId = selectedContextId;
+        super.db.serieDAO().getAllIds().observe(this, integers -> {
+            if (integers != null && integers.contains(selectedContextId)) {
+                contextMenu.removeItem(R.id.context_menu_add);
+            } else {
+                contextMenu.removeItem(R.id.context_menu_delete);
+            }
+            super.selectedContextId = selectedContextId;
+        });
+        super.onCreateContextMenu(contextMenu, v, menuInfo);
     }
 }

@@ -22,10 +22,9 @@ import com.squareup.picasso.Target;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
@@ -59,15 +58,16 @@ public class MovieActivity extends AppCompatActivity {
         this.movieViewModel.initGetMovieById(id);
         this.movieViewModel.getMovie().observe(this, movieResult -> {
             if (movieResult != null) {
+                this.movie = movieResult;
                 noMedia.setVisibility(View.GONE);
                 content.setVisibility(View.VISIBLE);
-                this.movie = movieResult;
                 fragment.setMovie(movieResult);
                 currentFragment = getString(R.string.fragment_single_movie);
                 getSupportFragmentManager().beginTransaction().replace(R.id.content,
                         fragment, currentFragment).commit();
                 setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
                 actionBar.setTitle(movieResult.getTitle());
+                fab.setOnClickListener(new AddMovieActionListener(this.db, movieResult));
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
@@ -84,23 +84,12 @@ public class MovieActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-
             actionBar.setTitle(null);
         }
-
-        fab.setOnClickListener(view -> {
-            fab.setEnabled(false);
-            DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().insertMovie(this.movie));
-            Snackbar.make(view, "Movie added to your library", Snackbar.LENGTH_LONG)
-                    .setAction("Undo", new DeleteMovieActionListener(db, this.movie)).show();
-        });
-
     }
 
     /**
      * Get the backdrop picture for the top
-     *
-     * @param link
      */
     private void setBackground(String link) {
         final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);

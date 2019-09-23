@@ -32,7 +32,6 @@ public class Serie extends SerieDatabase implements Media {
     private Episode lastEpisodeToAir;
     private Episode nextEpisodeToAir;
     private List<Network> networks;
-    private Integer numberOfEpisodes;
     private Integer numberOfSeasons;
     private List<Language> originCountry;
     private Language originalLanguage;

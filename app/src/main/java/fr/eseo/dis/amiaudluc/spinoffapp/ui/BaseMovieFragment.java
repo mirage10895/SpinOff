@@ -19,6 +19,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.MediaTransactionObserver;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
@@ -53,7 +54,11 @@ public abstract class BaseMovieFragment extends BaseFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_add) {
-
+            this.movieViewModel.initGetMovieById(super.selectedContextId);
+            this.movieViewModel.getMovie().observe(this, new MediaTransactionObserver<>(super.db, this.view, false));
+        } else if (item.getItemId() == R.id.context_menu_delete) {
+            this.movieViewModel.initGetMovieById(super.selectedContextId);
+            this.movieViewModel.getMovie().observe(this, new MediaTransactionObserver<>(super.db, this.view, true));
         }
         return false;
     }
@@ -89,7 +94,14 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
-        onCreateContextMenu(contextMenu, v, menuInfo);
-        super.selectedContextId = selectedContextId;
+        super.db.moviesDAO().getAllIds().observe(this, integers -> {
+            if (integers != null && integers.contains(selectedContextId)) {
+                contextMenu.removeItem(R.id.context_menu_add);
+            } else {
+                contextMenu.removeItem(R.id.context_menu_delete);
+            }
+            super.selectedContextId = selectedContextId;
+        });
+        super.onCreateContextMenu(contextMenu, v, menuInfo);
     }
 }

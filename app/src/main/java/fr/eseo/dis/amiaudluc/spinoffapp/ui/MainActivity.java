@@ -99,9 +99,6 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Initializes the action bar title
-     *
-     * @param actionBar
-     * @param savedInstanceState
      */
     private void initializeActionBarTitle(ActionBar actionBar, Bundle savedInstanceState) {
         String currentFragment;
@@ -129,8 +126,6 @@ public class MainActivity extends AppCompatActivity
     /**
      * sets action bar title
      * Can be accessed from the frags
-     *
-     * @param title
      */
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
@@ -157,7 +152,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -169,7 +163,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.filter_king_menu) {
             findViewById(R.id.filterKing).setVisibility(View.VISIBLE);
             return true;

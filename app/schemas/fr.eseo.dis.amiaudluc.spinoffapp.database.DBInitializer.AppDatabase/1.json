@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "154824a4dc4d705afebe9573540e74a6",
+    "identityHash": "7bc3df2e463d6792019a9954e6f4c5cc",
     "entities": [
       {
         "tableName": "movies",
@@ -44,7 +44,7 @@
       },
       {
         "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `posterPath` TEXT, `seasonsNumber` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `poster_path` TEXT, `seasons_number` INTEGER, `average_episode_run_time` REAL, `number_of_episodes` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -60,13 +60,25 @@
           },
           {
             "fieldPath": "posterPath",
-            "columnName": "posterPath",
+            "columnName": "poster_path",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "seasonsNumber",
-            "columnName": "seasonsNumber",
+            "columnName": "seasons_number",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "averageEpisodeRunTime",
+            "columnName": "average_episode_run_time",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numberOfEpisodes",
+            "columnName": "number_of_episodes",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -213,7 +225,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"154824a4dc4d705afebe9573540e74a6\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7bc3df2e463d6792019a9954e6f4c5cc\")"
     ]
   }
 }

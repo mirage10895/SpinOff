@@ -11,6 +11,7 @@
     <string name="fragment_top_rated_series">Top Rated Series</string>
     <string name="fragment_on_air_movies">On Air Movies</string>
     <string name="fragment_on_air_series">On Air Series</string>
+    <string name="fragment_library">Library</string>
     <string name="fragment_my_calendar">My Calendar</string>
 
     <string name="fragment_search_medias">Search Media</string>
@@ -109,4 +110,12 @@
     <string name="trailer_text">Trailer</string>
     <string name="recommendations_text">Recommendations</string>
     <string name="next_episode">Next Episode !</string>
+
+    <string name="context_menu_add">Add to library</string>
+    <string name="context_menu_delete">Delete from library</string>
+    <string name="movie_added">Movie added to your library</string>
+    <string name="movie_deleted">Movie deleted from library</string>
+    <string name="serie_added">Serie added to your library</string>
+    <string name="serie_deleted">Serie deleted from library</string>
+    <string name="error_library_transaction">A problem occurred. Try again or reach an administrator.</string>
 </resources>

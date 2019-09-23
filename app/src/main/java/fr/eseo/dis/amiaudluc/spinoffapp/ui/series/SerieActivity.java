@@ -21,11 +21,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
@@ -68,6 +67,7 @@ public class SerieActivity extends AppCompatActivity {
                         .replace(R.id.content, fragment, currentFragment)
                         .commit();
                 actionBar.setTitle(serieResult.getName());
+                fab.setOnClickListener(new AddSerieActionListener(this.db, serieResult));
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
@@ -87,12 +87,6 @@ public class SerieActivity extends AppCompatActivity {
 
             actionBar.setTitle(null);
         }
-        fab.setOnClickListener(view -> {
-            fab.setEnabled(false);
-            DatabaseTransactionManager.addSerieWithSeasons(db, this.serie);
-            Snackbar.make(view, "Serie added to your library !", Snackbar.LENGTH_LONG)
-                    .setAction("Undo", new DeleteSerieActionListener(db, this.serie)).show();
-        });
 
     }
 
