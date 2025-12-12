@@ -14,8 +14,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 
 public class DeleteSerieActionListener implements View.OnClickListener {
 
-    private AppDatabase db;
-    private Serie serie;
+    private final AppDatabase db;
+    private final Serie serie;
 
 
     public DeleteSerieActionListener(AppDatabase db, Serie serie) {

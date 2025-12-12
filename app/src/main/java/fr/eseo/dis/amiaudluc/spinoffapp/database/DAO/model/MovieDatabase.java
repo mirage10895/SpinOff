@@ -11,6 +11,7 @@ public class MovieDatabase {
     private Integer id;
     private String title;
     private String posterPath;
+    private Integer runtime;
     private Boolean watched;
 
     public MovieDatabase() {
@@ -35,6 +36,10 @@ public class MovieDatabase {
         return watched;
     }
 
+    public Integer getRuntime() {
+        return runtime;
+    }
+
     public void setId(@NonNull Integer id) {
         this.id = id;
     }
@@ -49,5 +54,9 @@ public class MovieDatabase {
 
     public void setWatched(boolean watched) {
         this.watched = watched;
+    }
+
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
     }
 }

@@ -30,6 +30,7 @@
     <string name="no_results">Nothing to show. Check your internet connection.</string>
 
     <!-- POSTER URLS -->
+    <string name="poster">poster</string>
     <string name="base_url_poster_185">https://image.tmdb.org/t/p/w185</string>
     <string name="base_url_poster_300">https://image.tmdb.org/t/p/w300</string>
     <string name="base_url_poster_780">https://image.tmdb.org/t/p/w780</string>
@@ -55,7 +56,8 @@
     <string name="details_overview">Overview</string>
     <string name="imdb_rating">iMDB Rating</string>
     <string name="language">Language</string>
-    <string name="year">Year</string>
+    <string name="runtime">Runtime</string>
+    <string name="release_date">Release date</string>
     <string name="search">Search</string>
     <string name="txt_search">Type your search here …</string>
     <string name="search_title">Search</string>

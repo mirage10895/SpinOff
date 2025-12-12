@@ -18,7 +18,7 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="1dp"
@@ -38,7 +38,7 @@
                     android:layout_width="100dp"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
-                    app:layout_constraintEnd_toStartOf="@id/year_container"
+                    app:layout_constraintEnd_toStartOf="@id/release_date_container"
                     app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
                     app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
@@ -62,7 +62,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/year_container"
+                    android:id="@+id/release_date_container"
                     android:layout_width="100dp"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
@@ -71,20 +71,23 @@
                     app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
-                        android:id="@+id/text_year"
+                        android:id="@+id/text_release_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/year"
+                        android:text="@string/release_date"
                         android:textColor="@color/white" />
 
-                    <ImageView
-                        android:id="@+id/year"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_below="@id/text_year"
+                    <TextView
+                        android:id="@+id/release_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textSize="15sp"
+                        android:layout_below="@id/text_release_date"
                         android:layout_centerHorizontal="true"
-                        android:contentDescription="@string/year" />
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:contentDescription="@string/release_date" />
 
                 </RelativeLayout>
 
@@ -94,23 +97,23 @@
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
-                    app:layout_constraintStart_toEndOf="@id/year_container"
+                    app:layout_constraintStart_toEndOf="@id/release_date_container"
                     app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
-                        android:id="@+id/language_text"
+                        android:id="@+id/runtime_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/language"
+                        android:text="@string/runtime"
                         android:textColor="@color/white" />
 
                     <TextView
-                        android:id="@+id/language"
+                        android:id="@+id/runtime"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:textSize="20sp"
-                        android:layout_below="@id/language_text"
+                        android:layout_below="@id/runtime_text"
                         android:gravity="center"
                         android:textColor="@color/white" />
 
@@ -290,10 +293,13 @@
             android:textSize="20sp"
             android:textColor="@color/colorPrimary" />
 
-        <include layout="@layout/fragment_youtube" />
+        <include
+            layout="@layout/fragment_youtube"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/series_layer"
+            android:id="@+id/recommandation_movies_layer"
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:orientation="vertical">

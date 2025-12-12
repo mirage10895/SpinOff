@@ -25,17 +25,13 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
 public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodesViewHolder>{
 
 
-    private SearchInterface fragment;
-    private List<Episode> episodes;
-    private Context ctx;
+    private final SearchInterface fragment;
+    private final Context ctx;
+    private final List<Episode> episodes;
 
-    public EpisodesAdapter(Context ctx, SearchInterface fragment, List<Episode> data){
+    public EpisodesAdapter(Context ctx, SearchInterface fragment, List<Episode> episodes){
         this.ctx = ctx;
         this.fragment = fragment;
-        setEpisodes(data);
-    }
-
-    public void setEpisodes(List<Episode> episodes){
         this.episodes = episodes;
     }
 
@@ -66,7 +62,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
 
             holder.episodeAirDate.setText(R.string.emptyField);
             if (episode.getAirDate() != null){
-                holder.episodeAirDate.setText(DateUtils.getStringFromDate(episode.getAirDate()));
+                holder.episodeAirDate.setText(DateUtils.toDisplayString(episode.getAirDate()));
             }
 
             holder.episodeName.setText(R.string.emptyField);

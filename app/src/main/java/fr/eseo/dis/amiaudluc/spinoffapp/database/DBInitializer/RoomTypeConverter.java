@@ -2,17 +2,10 @@ package fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer;
 
 import android.arch.persistence.room.TypeConverter;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.ProductionCompany;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 
 /**
  * Created by lucasamiaud on 10/03/2018.
@@ -21,13 +14,23 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
 public class RoomTypeConverter {
 
     @TypeConverter
-    public static Date toDate(Long value) {
-        return value == null ? null : new Date(value);
+    public static LocalDate toDate(Long timestamp) {
+        LocalDate ldt;
+        if (timestamp == null){
+            return null;
+        }else{
+            ldt = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+        return ldt;
     }
 
     @TypeConverter
-    public static Long toLong(Date value) {
-        return value == null ? null : value.getTime();
+    public static Long toTimestamp(LocalDate date) {
+        if (date == null){
+            return  null;
+        }else {
+            return date.getLong(ChronoField.DAY_OF_MONTH);
+        }
     }
 
 }

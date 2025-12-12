@@ -7,15 +7,11 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "episodes",
-        foreignKeys = @ForeignKey(entity = SeasonDatabase.class,
-                parentColumns = "id",
-                childColumns = "season_id",
-                onDelete = CASCADE),
         indices = {@Index("season_id")}
 )
 public class EpisodeDatabase {
@@ -24,7 +20,7 @@ public class EpisodeDatabase {
     private Integer id;
     private String name;
     @ColumnInfo(name = "air_date")
-    private Date airDate;
+    private LocalDate airDate;
     @ColumnInfo(name = "season_id")
     private Integer seasonId;
     private Boolean watched;
@@ -43,7 +39,7 @@ public class EpisodeDatabase {
         return name;
     }
 
-    public Date getAirDate() {
+    public LocalDate getAirDate() {
         return airDate;
     }
 
@@ -67,7 +63,7 @@ public class EpisodeDatabase {
         this.seasonId = seasonId;
     }
 
-    public void setAirDate(Date airDate) {
+    public void setAirDate(LocalDate airDate) {
         this.airDate = airDate;
     }
 

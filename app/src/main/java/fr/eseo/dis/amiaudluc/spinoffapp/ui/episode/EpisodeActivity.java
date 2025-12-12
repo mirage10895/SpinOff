@@ -23,7 +23,6 @@ public class EpisodeActivity extends AppCompatActivity {
     private SerieViewModel serieViewModel;
     private FrameLayout content;
     private RelativeLayout noMedia;
-    private EpisodeFragment fragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,46 +30,59 @@ public class EpisodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_season);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+
+        this.findViewById(R.id.fab).setVisibility(View.GONE);
+        this.content = this.findViewById(R.id.content);
+        this.content.setVisibility(View.GONE);
+        this.noMedia = this.findViewById(R.id.no_media_display);
+
+        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.emptyField));
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ActionBar actionBar = getSupportActionBar();
+
         Integer episodeNumber = getIntent().getIntExtra("episodeNumber", 0);
         Integer seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
         Integer serieId = getIntent().getIntExtra("serieId", 0);
-        ActionBar actionBar = getSupportActionBar();
-        findViewById(R.id.fab).setVisibility(View.GONE);
-        this.content = findViewById(R.id.content);
-        this.content.setVisibility(View.GONE);
-        this.noMedia = findViewById(R.id.no_media_display);
-        this.fragment = new EpisodeFragment();
-        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+
+        EpisodeFragment fragment = new EpisodeFragment();
         this.serieViewModel.initGetEpisodeBySeasonNumberBySerieId(serieId, seasonNumber, episodeNumber);
         this.serieViewModel.getEpisode().observe(this, episode -> {
             if (episode != null) {
                 fragment.setEpisode(episode);
-                noMedia.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                        fragment, getString(R.string.fragment_episode)).commit();
-                actionBar.setTitle(episode.getName());
+                this.noMedia.setVisibility(View.GONE);
+                this.content.setVisibility(View.VISIBLE);
+                this.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content, fragment, getString(R.string.fragment_episode))
+                        .commit();
+                if (actionBar != null) {
+                    actionBar.setTitle(episode.getName());
+                }
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
-            actionBar.setTitle(getString(R.string.emptyField));
-        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.menu.options_menu:
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (itemId == R.menu.options_menu) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

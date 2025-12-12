@@ -1,9 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import lombok.Getter;
@@ -23,17 +22,17 @@ public class Serie extends SerieDatabase implements Media {
     private String backdropPath;
     private ArrayList<Artist> createdBy;
     private List<Integer> episodeRunTime;
-    private Date firstAirDate;
+    private LocalDate firstAirDate;
     private List<Genre> genres;
     private String homepage;
     private Boolean inProduction;
     private List<Language> languages;
-    private Date lastAirDate;
+    private LocalDate lastAirDate;
     private Episode lastEpisodeToAir;
     private Episode nextEpisodeToAir;
     private List<Network> networks;
     private Integer numberOfSeasons;
-    private List<Language> originCountry;
+    private List<String> originCountry;
     private Language originalLanguage;
     private String originalName;
     private String overview;
@@ -56,14 +55,6 @@ public class Serie extends SerieDatabase implements Media {
         serieDatabase.setName(this.getName());
         serieDatabase.setPosterPath(this.getPosterPath());
         return serieDatabase;
-    }
-
-    public List<String> getSeasonsNumbers(){
-        List<String> numbers = new ArrayList<>();
-        if (seasons != null) {
-             numbers = seasons.stream().map(Season::getSeasonNumber).map(String::valueOf).collect(Collectors.toList());
-        }
-        return numbers;
     }
 
     @Override

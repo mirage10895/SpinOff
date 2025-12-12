@@ -23,6 +23,7 @@ public class Episode extends EpisodeDatabase {
     private String stillPath;
     private Double voteAverage;
     private Integer voteCount;
+    private Integer runtime;
 
     @Override
     public String toString() {

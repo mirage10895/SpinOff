@@ -5,9 +5,9 @@ package fr.eseo.dis.amiaudluc.spinoffapp.model;
  */
 
 public interface Media {
-    String MOVIE =  "movie";
+    String MOVIE = "movie";
     String SERIE = "tv";
-    String ARTIST= "person";
+    String ARTIST = "person";
 
     String getMediaType();
 }

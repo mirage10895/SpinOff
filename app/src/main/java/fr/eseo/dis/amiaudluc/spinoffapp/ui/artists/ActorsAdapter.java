@@ -83,7 +83,7 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
         final TextView name;
         final TextView characterName;
 
-        private SearchInterface frag = (SearchInterface) mListener;
+        private final SearchInterface frag = (SearchInterface) mListener;
 
         ArtistViewHolder(View view) {
             super(view);

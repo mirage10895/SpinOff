@@ -28,14 +28,5 @@ public interface SearchInterface extends ItemInterface {
         public String getName() {
             return name;
         }
-
-        public static FragmentType getValueOf(String name) {
-            for (int i = 0; i < FragmentType.values().length; i++) {
-                if (name.equals(FragmentType.values()[i].name)) {
-                    return FragmentType.values()[i];
-                }
-            }
-            return FragmentType.DEFAULT;
-        }
     }
 }

@@ -20,7 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 public interface MovieDAO {
 
     @Insert
-    void insertMovie(MovieDatabase MOVIES);
+    void insertMovie(MovieDatabase movie);
 
     @Query("SELECT * FROM MOVIES")
     LiveData<List<MovieDatabase>> getAll();

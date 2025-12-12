@@ -22,13 +22,14 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
  * Created by lucasamiaud on 16/03/2018.
  */
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHolder>{
+public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHolder> {
 
-    private SearchInterface fragment;
+    private final SearchInterface fragment;
+    private final Context ctx;
+
     private List<Event> events;
-    private Context ctx;
 
-    EventAdapter(SearchInterface fragment, Context ctx, List<Event> eventList){
+    EventAdapter(SearchInterface fragment, Context ctx, List<Event> eventList) {
         this.fragment = fragment;
         this.ctx = ctx;
         this.setEvent(eventList);
@@ -42,7 +43,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         return new EventsViewHolder(mySerieView);
     }
 
-    public void setEvent(List<Event> events){
+    public void setEvent(List<Event> events) {
         this.events = events;
     }
 
@@ -51,7 +52,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
         if (getItemCount() != 0) {
             Event event = events.get(position);
 
-            if(event.getPosterPath() != null){
+            if (event.getPosterPath() != null) {
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + event.getPosterPath();
                 Picasso.with(ctx)
                         .load(link)
@@ -61,13 +62,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
             }
 
             holder.textEpisode.setText(R.string.emptyField);
-            if (!"".equals(event.getName())){
+            if (!"".equals(event.getName())) {
                 holder.textEpisode.setText(event.getName());
             }
 
             holder.textAirDate.setText(R.string.emptyField);
-            if (event.getDate() != null){
-                holder.textAirDate.setText(DateUtils.getStringFromDate(event.getDate()));
+            if (event.getDate() != null) {
+                holder.textAirDate.setText(DateUtils.toDisplayString(event.getDate()));
             }
         }
     }

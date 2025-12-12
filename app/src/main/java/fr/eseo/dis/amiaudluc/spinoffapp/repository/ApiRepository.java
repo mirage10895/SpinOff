@@ -20,7 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ApiRepository {
-    private ApiService<TMDBApi> tmdbApiService;
+    private final ApiService<TMDBApi> tmdbApiService;
 
     private static ApiRepository INSTANCE;
 

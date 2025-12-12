@@ -1,8 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.EpisodeDatabase;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,12 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Event {
-    private Date date;
+    private LocalDate date;
     private String posterPath;
     private String name;
     private Boolean watched;
 
-    public Event(Date date, String posterPath, String name, Boolean watched){
+    public Event(LocalDate date, String posterPath, String name, Boolean watched){
         this.date = date;
         this.posterPath = posterPath;
         this.name = name;

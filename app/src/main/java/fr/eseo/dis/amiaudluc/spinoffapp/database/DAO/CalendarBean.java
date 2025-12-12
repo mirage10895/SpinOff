@@ -2,13 +2,13 @@ package fr.eseo.dis.amiaudluc.spinoffapp.database.DAO;
 
 import android.arch.persistence.room.ColumnInfo;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class CalendarBean {
     @ColumnInfo(name = "name")
     private String episodeName;
     @ColumnInfo(name = "air_date")
-    private Date airDate;
+    private LocalDate airDate;
     @ColumnInfo(name = "poster_path")
     private String seriePosterPath;
     @ColumnInfo(name = "watched")
@@ -22,11 +22,11 @@ public class CalendarBean {
         this.episodeName = episodeName;
     }
 
-    public Date getAirDate() {
+    public LocalDate getAirDate() {
         return airDate;
     }
 
-    public void setAirDate(Date airDate) {
+    public void setAirDate(LocalDate airDate) {
         this.airDate = airDate;
     }
 

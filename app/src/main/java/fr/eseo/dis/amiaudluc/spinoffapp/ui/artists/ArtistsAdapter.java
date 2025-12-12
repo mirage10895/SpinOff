@@ -29,13 +29,13 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
     private final ItemInterface mListener;
     private final Context ctx;
 
-    public ArtistsAdapter(Context ctx, ItemInterface listener, List<Artist> data){
+    public ArtistsAdapter(Context ctx, ItemInterface listener, List<Artist> data) {
         this.mListener = listener;
         this.ctx = ctx;
         this.setArtist(data);
     }
 
-    public void setArtist(List<Artist> artists){
+    public void setArtist(List<Artist> artists) {
         this.artists = artists;
     }
 
@@ -61,7 +61,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
                     .load(link)
                     .error(R.drawable.ic_unknown)
                     .into(holder.avatar);
-        }else {
+        } else {
             Picasso.with(ctx).load(R.drawable.ic_unknown).into(holder.avatar);
             holder.name.setText(ctx.getResources().getString(R.string.emptyField));
         }
@@ -83,7 +83,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ArtistVi
         final ImageView avatar;
         final TextView name;
 
-        private SearchInterface frag = (SearchInterface) mListener;
+        private final SearchInterface frag = (SearchInterface) mListener;
 
         ArtistViewHolder(View view) {
             super(view);

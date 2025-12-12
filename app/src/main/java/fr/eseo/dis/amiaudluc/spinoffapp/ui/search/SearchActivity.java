@@ -25,10 +25,10 @@ public class SearchActivity extends AppCompatActivity {
 
     private SearchViewModel searchViewModel;
     private EditText queryText;
-    String currentFragment;
-    SearchFragment fragment;
-    FrameLayout content;
-    RelativeLayout noMedia;
+    private String currentFragment;
+    private SearchFragment fragment;
+    private FrameLayout content;
+    private RelativeLayout noMedia;
     private InputMethodManager imm;
     private TextView noText;
 
@@ -83,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().equals("")) {
+                if ("".equals(charSequence.toString())) {
                     content.setVisibility(View.GONE);
                     noMedia.setVisibility(View.VISIBLE);
                 } else {

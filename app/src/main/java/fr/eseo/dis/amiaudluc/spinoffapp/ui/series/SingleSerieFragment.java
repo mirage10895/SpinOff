@@ -52,21 +52,21 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
         singleSerieView.setBackgroundColor(ctx.getColor(R.color.color_primary_semi_opaq));
 
         ImageView rate = singleSerieView.findViewById(R.id.rate);
-        rate.setImageBitmap(CircularImageBar.BuildNote(0));
+        rate.setImageBitmap(CircularImageBar.buildNote(0));
         if(serie.getVoteAverage() != -1){
-            rate.setImageBitmap(CircularImageBar.BuildNote((serie.getVoteAverage())));
+            rate.setImageBitmap(CircularImageBar.buildNote((serie.getVoteAverage())));
         }
 
         TextView flag = singleSerieView.findViewById(R.id.language);
-        flag.setText(getString(R.string.no_results));
-        if (serie.getOriginalLanguage() != null){
-            flag.setText(serie.getOriginalLanguage().getFullName());
+        flag.setText(R.string.emptyField);
+        if (serie.getOriginCountry() != null){
+            flag.setText(serie.getOriginCountry().stream().findFirst().orElse("N/A"));
         }
 
-        ImageView season = singleSerieView.findViewById(R.id.number_of_season);
-        season.setImageBitmap(CircularImageBar.BuildSeasons(0));
+        TextView season = singleSerieView.findViewById(R.id.number_of_season);
+        season.setText("0");
         if (serie.getNumberOfSeasons() != -1){
-            season.setImageBitmap(CircularImageBar.BuildSeasons(serie.getNumberOfSeasons()));
+            season.setText(serie.getNumberOfSeasons().toString());
         }
 
         TextView textGenre = singleSerieView.findViewById(R.id.genres);

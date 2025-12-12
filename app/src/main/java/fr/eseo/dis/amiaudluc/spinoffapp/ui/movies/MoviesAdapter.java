@@ -21,22 +21,22 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 /**
  * Created by lucasamiaud on 28/02/2018.
  */
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
 
-    private final String TAG = MoviesAdapter.class.getSimpleName();
+    private final SearchInterface fragment;
+    private final Context ctx;
 
-    private SearchInterface fragment;
     private List<MovieDatabase> movies;
-    private Context ctx;
 
-    public MoviesAdapter(Context ctx, SearchInterface fragment, List<MovieDatabase> data) {
+    public MoviesAdapter(Context ctx, SearchInterface fragment, List<MovieDatabase> movies) {
         this.ctx = ctx;
         this.fragment = fragment;
-        setMovies(data);
+        this.movies = movies;
     }
 
-    public void setMovies(List<MovieDatabase> movies){this.movies = movies;}
+    public void setMovies(List<MovieDatabase> movies) {
+        this.movies = movies;
+    }
 
     @NonNull
     @Override
@@ -52,7 +52,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             MovieDatabase movie = movies.get(position);
 
             holder.moviePoster.setImageResource(R.drawable.ic_launcher_foreground);
-            if(movie.getPosterPath() != null){
+            if (movie.getPosterPath() != null) {
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + movie.getPosterPath();
                 Picasso.with(ctx)
                         .load(link)
@@ -68,7 +68,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         return movies.size();
     }
 
-    class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnCreateContextMenuListener {
+    class MoviesViewHolder
+            extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnCreateContextMenuListener
+    {
         private final ImageView moviePoster;
 
         MoviesViewHolder(View view) {

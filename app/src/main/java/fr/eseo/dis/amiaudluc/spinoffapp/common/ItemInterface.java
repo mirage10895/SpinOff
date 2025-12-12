@@ -8,7 +8,7 @@ import android.view.View;
  */
 
 public interface ItemInterface {
-    // This function will simply return the position of the selected item in the RecyclerView.
+    // This function will return the position of the selected item in the RecyclerView.
     void onItemClick(Integer id);
 
     void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer id);

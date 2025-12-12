@@ -18,7 +18,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 public interface SerieDAO {
 
     @Insert
-    public void insertSerie(SerieDatabase serie);
+    void insertSerie(SerieDatabase serie);
 
     @Query("SELECT * FROM series")
     LiveData<List<SerieDatabase>> getAll();

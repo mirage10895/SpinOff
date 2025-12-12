@@ -4,11 +4,11 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.DateAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.InterfaceAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.LocalDateAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import lombok.Getter;
@@ -34,14 +34,12 @@ public class ApiService<T> {
     private static final String BASE_URL = "https://api.themoviedb.org/3/";
 
 
-
     public ApiService(Class<T> typeClass) {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Media.class, new InterfaceAdapter<Media>())
-                .registerTypeAdapter(Date.class, new DateAdapter())
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
-
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -60,19 +58,15 @@ public class ApiService<T> {
                                     Request original = chain.request();
                                     HttpUrl originalHttpUrl = original.url();
 
-                                    HttpUrl url =
-                                            originalHttpUrl
-                                                    .newBuilder()
-                                                    .addQueryParameter("api_key", ConstUtils.API_KEY)
-                                                    .addQueryParameter("language", "en-US")
-                                                    .build();
+                                    HttpUrl url = originalHttpUrl.newBuilder()
+                                            .addQueryParameter("api_key", ConstUtils.API_KEY)
+                                            .addQueryParameter("language", "en-US")
+                                            .build();
 
-                                    Request request =
-                                            original
-                                                    .newBuilder()
-                                                    .url(url)
-                                                    .addHeader(CONTENT_TYPE_HEADER, APPLICATION_JSON_CHARSET_UTF8)
-                                                    .build();
+                                    Request request = original.newBuilder()
+                                            .url(url)
+                                            .addHeader(CONTENT_TYPE_HEADER, APPLICATION_JSON_CHARSET_UTF8)
+                                            .build();
 
                                     return chain.proceed(request);
                                 })

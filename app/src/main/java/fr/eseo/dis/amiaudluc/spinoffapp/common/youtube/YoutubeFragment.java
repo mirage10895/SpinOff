@@ -20,9 +20,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.R;
  * A simple {@link Fragment} subclass.
  */
 public class YoutubeFragment extends Fragment {
-
-
     private final static String API_KEY = Config.YOUTUBE_API_KEY;
+
     public String id;
 
     public YoutubeFragment() {
@@ -34,8 +33,11 @@ public class YoutubeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
         View rootView = inflater.inflate(R.layout.fragment_youtube, container, false);
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();

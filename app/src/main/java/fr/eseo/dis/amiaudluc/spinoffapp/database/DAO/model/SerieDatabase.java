@@ -5,8 +5,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import java.util.Date;
-
 @Entity(tableName = "series")
 public class SerieDatabase {
     @PrimaryKey
@@ -73,9 +71,5 @@ public class SerieDatabase {
 
     public void setNumberOfEpisodes(Integer numberOfEpisodes) {
         this.numberOfEpisodes = numberOfEpisodes;
-    }
-
-    public Double getTotalRunTime() {
-        return this.averageEpisodeRunTime * this.numberOfEpisodes;
     }
 }

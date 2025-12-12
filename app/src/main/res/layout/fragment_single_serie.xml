@@ -77,13 +77,16 @@
                         android:text="@string/number_seasons"
                         android:textColor="@color/white" />
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/number_of_season"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
                         android:layout_below="@id/text_season"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
+                        android:gravity="center"
                         android:contentDescription="@string/season_text" />
 
                 </RelativeLayout>

@@ -2,13 +2,12 @@ package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
 import android.support.annotation.Nullable;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiObjectResponse;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SeasonDatabase;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,43 +17,55 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Season extends SeasonDatabase {
-    private Date airDate;
+public class Season {
+    private Integer id;
+    private String name;
+    private Integer seasonNumber;
+    private String posterPath;
+    private Integer serieId;
+    private LocalDate airDate;
     private int episodeCount;
     private List<Episode> episodes;
     private String overview;
     private Credits<Artist> credits;
     private ApiObjectResponse<Video> videos;
 
-    public Season(){
+    public Season() {
         super();
-        this.airDate = new Date();
+        this.airDate = LocalDate.now();
         this.episodeCount = 0;
     }
 
-    public Episode getFutureEpisode(){
-        final long now = System.currentTimeMillis();
-        Optional<Episode> episode = this.episodes.stream().filter(episode1 -> episode1.getAirDate() != null
-                && episode1.getAirDate().getTime() >= now).findFirst();
+    public Episode getFutureEpisode() {
+        Optional<Episode> episode = this.episodes.stream()
+                .filter(episode1 -> episode1.getAirDate() != null
+                        && episode1.getAirDate().isAfter(LocalDate.now())
+                )
+                .findFirst();
         return episode.orElse(new Episode());
     }
 
-    public List<Episode> getOldEpisodes(){
-        return this.episodes.stream().filter(s -> s.getAirDate() != null)
-                .filter(s -> fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils.isDayBefore(s.getAirDate()))
+    public List<Episode> getOldEpisodes() {
+        return this.episodes.stream()
+                .filter(s -> s.getAirDate() != null)
+                .filter(s -> LocalDate.now().isAfter(s.getAirDate()))
                 .collect(Collectors.toList());
     }
 
-    public List<Episode> getFutureEpisodes(){
+    public List<Episode> getFutureEpisodes() {
         return this.episodes.stream()
                 .filter(s -> s.getAirDate() != null
-                        && !fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils.isDayBefore(s.getAirDate()))
+                        && LocalDate.now().isBefore(s.getAirDate())
+                )
                 .collect(Collectors.toList());
     }
 
     @Nullable
-    public Video getRightVideo(){
-        return this.videos.getResults().stream().filter(video1 -> video1.getSite().equals("YouTube")
-                && video1.getType().equals("Trailer")).findFirst().orElse(null);
+    public Video getRightVideo() {
+        return this.videos.getResults().stream()
+                .filter(video1 -> "YouTube".equals(video1.getSite())
+                        && "Trailer".equals(video1.getType()))
+                .findFirst()
+                .orElse(null);
     }
 }

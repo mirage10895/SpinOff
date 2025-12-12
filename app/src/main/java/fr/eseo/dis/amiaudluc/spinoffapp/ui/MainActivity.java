@@ -22,7 +22,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import java.util.HashMap;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.CacheManager;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar.CalendarFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.library.LibraryActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.OnAirMoviesFragment;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String ARGUMENT = "FRAGMENT";
-    private HashMap<String, Fragment> fragments = new HashMap<>();
+    private final HashMap<String, Fragment> fragments = new HashMap<>();
     private FloatingActionsMenu fam;
     private FamManager famMenu;
 
@@ -104,22 +103,16 @@ public class MainActivity extends AppCompatActivity
         String currentFragment;
         if (savedInstanceState != null) {
             currentFragment = savedInstanceState.getString(ARGUMENT, getString(R.string.fragment_popular_movies));
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content,
-                    fragments.get(currentFragment), currentFragment).commit();
-            if (actionBar != null) {
-                setActionBarTitle(currentFragment);
-            }
         } else {
             currentFragment = getString(R.string.fragment_popular_movies);
-            getSupportFragmentManager()
-                    .beginTransaction().replace(R.id.content,
-                    fragments.get(currentFragment), currentFragment).commit();
 
-            if (actionBar != null) {
-                setActionBarTitle(currentFragment);
-            }
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content,
+                fragments.get(currentFragment), currentFragment).commit();
+        if (actionBar != null) {
+            setActionBarTitle(currentFragment);
         }
     }
 
@@ -163,10 +156,7 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.filter_king_menu) {
-            findViewById(R.id.filterKing).setVisibility(View.VISIBLE);
-            return true;
-        } else if (id == R.id.action_search) {
+        if (id == R.id.action_search) {
             Intent intent = new Intent(this, SearchActivity.class);
             this.startActivity(intent);
             return true;
@@ -183,22 +173,17 @@ public class MainActivity extends AppCompatActivity
         /*
          * This to stay on Movie theme or on Serie theme wherever we wanna go
          */
-        switch (id) {
-            case R.id.nav_movies:
-                this.famMenu.setFamTheme("Movies");
-                this.famMenu.updateFragment();
-                break;
-            case R.id.nav_series:
-                this.famMenu.setFamTheme("Series");
-                this.famMenu.updateFragment();
-                break;
-            case R.id.nav_library:
-                Intent intent = new Intent(this, LibraryActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_calendar:
-                switchFragment(getString(R.string.fragment_my_calendar));
-                break;
+        if (id == R.id.nav_movies) {
+            this.famMenu.setFamTheme("Movies");
+            this.famMenu.updateFragment();
+        } else if (id == R.id.nav_series) {
+            this.famMenu.setFamTheme("Series");
+            this.famMenu.updateFragment();
+        } else if (id == R.id.nav_library) {
+            Intent intent = new Intent(this, LibraryActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_calendar) {
+            switchFragment(getString(R.string.fragment_my_calendar));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -291,12 +276,5 @@ public class MainActivity extends AppCompatActivity
         public int getSerieFragment() {
             return serieFragment;
         }
-    }
-
-    //When killing the app to remove all the caches files
-    @Override
-    protected void onDestroy() {
-        CacheManager.getInstance().removeAll(this);
-        super.onDestroy();
     }
 }

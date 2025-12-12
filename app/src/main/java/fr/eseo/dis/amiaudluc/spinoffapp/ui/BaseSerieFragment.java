@@ -94,6 +94,7 @@ public abstract class BaseSerieFragment extends BaseFragment {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
+        super.onCreateContextMenu(contextMenu, v, menuInfo);
         super.db.serieDAO().getAllIds().observe(this, integers -> {
             if (integers != null && integers.contains(selectedContextId)) {
                 contextMenu.removeItem(R.id.context_menu_add);
@@ -102,6 +103,5 @@ public abstract class BaseSerieFragment extends BaseFragment {
             }
             super.selectedContextId = selectedContextId;
         });
-        super.onCreateContextMenu(contextMenu, v, menuInfo);
     }
 }

@@ -24,25 +24,32 @@ public class LibraryActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_lib_movie:
-                    currentFragment = "My Movies";
-                    fragment = new MyMoviesFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
-                    getSupportActionBar().setTitle(currentFragment);
-                    return true;
-                case R.id.navigation_dashboard:
-                    currentFragment = "Dashboard";
-                    fragment = new DashboardFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
-                    getSupportActionBar().setTitle(currentFragment);
-                    return true;
-                case R.id.navigation_lib_serie:
-                    currentFragment = "My Series";
-                    fragment = new MySeriesFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
-                    getSupportActionBar().setTitle(currentFragment);
-                    return true;
+            int itemId = item.getItemId();
+            if (itemId == R.id.navigation_lib_movie) {
+                currentFragment = "My Movies";
+                fragment = new MyMoviesFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content, fragment, currentFragment)
+                        .commit();
+                getSupportActionBar().setTitle(currentFragment);
+                return true;
+            } else if (itemId == R.id.navigation_dashboard) {
+                currentFragment = "Dashboard";
+                fragment = new DashboardFragment();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content, fragment, currentFragment)
+                        .commit();
+                getSupportActionBar().setTitle(currentFragment);
+                return true;
+            } else if (itemId == R.id.navigation_lib_serie) {
+                currentFragment = "My Series";
+                fragment = new MySeriesFragment();
+                getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.content, fragment, currentFragment)
+                        .commit();
+                getSupportActionBar().setTitle(currentFragment);
+                return true;
             }
             return false;
         }
@@ -74,12 +81,12 @@ public class LibraryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.menu.options_menu:
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (itemId == R.menu.options_menu) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

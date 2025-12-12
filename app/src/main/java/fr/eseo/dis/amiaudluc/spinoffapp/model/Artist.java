@@ -2,7 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class Artist implements Media {
     private String biography;
     private String placeOfBirth;
     private String mediaType;
-    private Date birthday;
+    private LocalDate birthday;
     private String homepage;
     @SerializedName("movie_credits")
     private Credits<Movie> movies;

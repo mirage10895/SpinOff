@@ -13,11 +13,11 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 
 public class MediaTransactionObserver<T extends Media> implements Observer<T> {
-    private AppDatabase db;
-    private View view;
-    private Boolean shouldDelete;
+    private final AppDatabase db;
+    private final View view;
+    private final boolean shouldDelete;
 
-    public MediaTransactionObserver(AppDatabase db, View view, Boolean shouldDelete) {
+    public MediaTransactionObserver(AppDatabase db, View view, boolean shouldDelete) {
         this.db = db;
         this.view = view;
         this.shouldDelete = shouldDelete;

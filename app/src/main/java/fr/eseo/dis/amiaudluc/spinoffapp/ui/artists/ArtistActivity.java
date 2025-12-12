@@ -11,10 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.content.Content;
-import fr.eseo.dis.amiaudluc.spinoffapp.https.HttpsHandler;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.parser.WebServiceParser;
 import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.ArtistViewModel;
 

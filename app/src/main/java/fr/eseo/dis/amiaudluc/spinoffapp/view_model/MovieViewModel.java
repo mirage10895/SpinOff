@@ -16,7 +16,7 @@ public class MovieViewModel extends ViewModel {
     private LiveData<List<Movie>> movies;
     private LiveData<Movie> movie;
 
-    private ApiRepository apiRepository;
+    private final ApiRepository apiRepository;
 
     public MovieViewModel(ApiRepository apiRepository) {
         this.movies = new MutableLiveData<>();

@@ -31,11 +31,14 @@ public class MovieActivity extends AppCompatActivity {
 
     private MovieViewModel movieViewModel;
     private Movie movie;
+    private AppDatabase db;
+
+    // layout
     private FrameLayout content;
     private RelativeLayout noMedia;
     private String currentFragment;
     private SingleMovieFragment fragment;
-    private AppDatabase db;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,42 +46,50 @@ public class MovieActivity extends AppCompatActivity {
         setContentView(R.layout.activity_media);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Integer id = getIntent().getIntExtra("id", 0);
-        ActionBar actionBar = getSupportActionBar();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setEnabled(false);
+        this.fab = findViewById(R.id.fab);
+        this.fab.setEnabled(false);
         this.content = findViewById(R.id.content);
         this.noMedia = findViewById(R.id.no_media_display);
 
         this.db = AppDatabase.getAppDatabase(this);
         this.fragment = SingleMovieFragment.newInstance();
         this.movieViewModel = new MovieViewModel(ApiRepository.getInstance());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Integer id = getIntent().getIntExtra("id", 0);
+        ActionBar actionBar = getSupportActionBar();
 
         this.movieViewModel.initGetMovieById(id);
-        this.movieViewModel.getMovie().observe(this, movieResult -> {
-            if (movieResult != null) {
-                this.movie = movieResult;
-                noMedia.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                fragment.setMovie(movieResult);
-                currentFragment = getString(R.string.fragment_single_movie);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                        fragment, currentFragment).commit();
-                setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
-                actionBar.setTitle(movieResult.getTitle());
-                fab.setOnClickListener(new AddMovieActionListener(this.db, movieResult));
-            } else {
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("DAMN", view -> view.setVisibility(View.GONE)).show();
-            }
-        });
-        db.moviesDAO().getAllIds().observe(this, integers -> {
+        this.movieViewModel.getMovie().observe(
+                this,
+                movieResult -> {
+                    if (movieResult != null) {
+                        this.movie = movieResult;
+                        noMedia.setVisibility(View.GONE);
+                        content.setVisibility(View.VISIBLE);
+                        fragment.setMovie(movieResult);
+                        currentFragment = getString(R.string.fragment_single_movie);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
+                        setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
+                        actionBar.setTitle(movieResult.getTitle());
+                        this.fab.setOnClickListener(new AddMovieActionListener(this.db, movieResult));
+                    } else {
+                        noMedia.setVisibility(View.VISIBLE);
+                        Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
+                                .setAction("DAMN", view -> view.setVisibility(View.GONE))
+                                .show();
+                    }
+                }
+        );
+        this.db.moviesDAO().getAllIds().observe(this, integers -> {
             if (integers != null && !integers.contains(id)) {
-                fab.setEnabled(true);
+                this.fab.setEnabled(true);
             } else if (integers != null && integers.contains(id)) {
-                fab.setEnabled(false);
+                this.fab.setEnabled(false);
             }
         });
 

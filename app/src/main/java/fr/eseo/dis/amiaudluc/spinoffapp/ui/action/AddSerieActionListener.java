@@ -10,8 +10,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
 
 public class AddSerieActionListener implements View.OnClickListener {
 
-    private AppDatabase db;
-    private Serie serie;
+    private final AppDatabase db;
+    private final Serie serie;
 
 
     public AddSerieActionListener(AppDatabase db, Serie serie) {
@@ -21,7 +21,12 @@ public class AddSerieActionListener implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        this.serie.setAverageEpisodeRunTime(serie.getEpisodeRunTime().stream().mapToDouble(Integer::doubleValue).average().orElse(0D));
+        this.serie.setAverageEpisodeRunTime(
+                serie.getEpisodeRunTime().stream()
+                        .mapToDouble(Integer::doubleValue)
+                        .average()
+                        .orElse(0D)
+        );
         DatabaseTransactionManager.executeAsync(() -> db.serieDAO().insertSerie(serie));
         Snackbar.make(view, R.string.serie_added, Snackbar.LENGTH_LONG)
                 .setAction("Undo", new DeleteSerieActionListener(this.db, this.serie)).show();

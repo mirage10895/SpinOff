@@ -1,10 +1,11 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 /**
@@ -15,47 +16,28 @@ public class DateUtils {
 
     public static final String CLASSIC_DATE = "yyyy-MM-dd";
 
-    public static Date getDateFromString(String strDate, String strFormat){
-        DateFormat format = new SimpleDateFormat(strFormat, Locale.US);
-        try {
-            return format.parse(strDate);
-        } catch (ParseException e) {
-            LogUtils.e(LogUtils.DEBUG_TAG,"Error !",e);
-            return null;
-        }
+    public static String toString(LocalDate date) {
+        return date.getDayOfMonth()
+                + " - " + date.getMonth().getValue()
+                + " - " + date.getYear();
     }
 
-    public static String toString(Date date){
-        Calendar cal = Calendar.getInstance(Locale.US);
-        cal.setTime(date);
-        return String.valueOf(cal.get(Calendar.DATE))
-                .concat(" - "+String.valueOf(cal.get(Calendar.MONTH)+1)
-                        .concat(" - "+ cal.get(Calendar.YEAR)));
+    public static String toDisplayString(LocalDate date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return date.format(dateTimeFormatter);
     }
 
-    public static String toDisplayString(Date date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        int year  = cal.get(Calendar.YEAR);
-        String month = cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.US);
-        int day   = cal.get(Calendar.DAY_OF_MONTH);
-        return String.valueOf(month).concat(", " + day).concat(" "+ year);
-    }
-
-    public static String getStringFromDate(Date date){
+    public static String getStringFromDate(LocalDate date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.CLASSIC_DATE, Locale.US);
         return dateFormat.format(date);
     }
 
-    private static boolean isToday(Date date) {
-        return android.text.format.DateUtils.isToday(date.getTime());
+    public static String hoursFromMinutes(int minutes) {
+        Duration duration = Duration.ofMinutes(minutes);
+        if (duration.minus(Duration.of(59, ChronoUnit.MINUTES)).getSeconds() < 0) {
+            // minutes
+            return minutes +  " min.";
+        }
+        return LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("HH:mm"));
     }
-
-    public static boolean isDayBefore(Date date) {
-        Long now = System.currentTimeMillis();
-        Calendar calendar = Calendar.getInstance(Locale.US);
-        calendar.setTimeInMillis(now);
-        return !isToday(date) && date.before(calendar.getTime());
-    }
-
 }

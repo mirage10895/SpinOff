@@ -49,13 +49,15 @@
                         android:text="@string/air_date_text"
                         android:textColor="@color/white" />
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/air_date"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
                         android:layout_below="@id/text_air_date"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
+                        android:gravity="center"
                         android:contentDescription="@string/air_date" />
 
                 </RelativeLayout>
@@ -77,12 +79,15 @@
                         android:text="@string/season_text"
                         android:textColor="@color/white" />
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/number_of_season"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
                         android:layout_below="@id/text_season"
                         android:layout_centerHorizontal="true"
+                        android:gravity="center"
                         android:contentDescription="@string/season_text" />
 
                 </RelativeLayout>
@@ -101,17 +106,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/episode_text"
+                        android:text="@string/runtime"
                         android:textColor="@color/white" />
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/episodes"
-                        android:layout_width="50dp"
+                        android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/white"
                         android:layout_below="@id/episodes_text"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:contentDescription="@string/episode_text" />
+                        android:gravity="center"
+                        android:contentDescription="@string/runtime" />
 
                 </RelativeLayout>
 

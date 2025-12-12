@@ -1,13 +1,10 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiObjectResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
@@ -33,9 +30,8 @@ public class Movie extends MovieDatabase implements Media {
     private Double popularity;
     private List<ProductionCompany> productionCompanies;
     private List<ProductionCountry> productionCountry;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private Long revenue;
-    private Integer runtime;
     private List<SpokenLanguage> spokenLanguages;
     private String status;
     private String tagline;
@@ -47,24 +43,24 @@ public class Movie extends MovieDatabase implements Media {
     private ApiObjectResponse<Video> videos;
     private ApiObjectResponse<Movie> recommendations;
 
-    public Movie(){
+    public Movie() {
         super();
     }
 
     public List<Artist> getDirectors() {
-        List<Artist> directors = new ArrayList<>();
-        this.credits.getCrew().forEach(artist -> {
-            if (artist.getJob().equals("Director")){
-                directors.add(artist);
-            }
-        });
-        return directors;
+        return this.credits.getCrew()
+                .stream()
+                .filter(artist -> "Director".equals(artist.getJob()))
+                .collect(Collectors.toList());
     }
 
     @Nullable
-    public Video getRightVideo(){
-        return this.videos.getResults().stream().filter(video -> video.getSite().equals("YouTube")
-                && video.getType().equals("Trailer")).findFirst().orElse(null);
+    public Video getRightVideo() {
+        return this.videos.getResults().stream()
+                .filter(video -> "YouTube".equals(video.getSite())
+                        && "Trailer".equals(video.getType()))
+                .findFirst()
+                .orElse(null);
     }
 
     public MovieDatabase toDatabaseFormat() {
@@ -72,6 +68,7 @@ public class Movie extends MovieDatabase implements Media {
         movieDatabase.setId(this.getId());
         movieDatabase.setTitle(this.getTitle());
         movieDatabase.setPosterPath(this.getPosterPath());
+        movieDatabase.setRuntime(this.getRuntime());
         return movieDatabase;
     }
 

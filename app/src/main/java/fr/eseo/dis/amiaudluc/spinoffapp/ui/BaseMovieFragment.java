@@ -70,7 +70,11 @@ public abstract class BaseMovieFragment extends BaseFragment {
             this.view.findViewById(R.id.cardList).setVisibility(View.VISIBLE);
             this.view.findViewById(R.id.no_media_display).setVisibility(View.GONE);
             if (movies != null) {
-                loadMovies(movies.stream().map(Movie::toDatabaseFormat).collect(Collectors.toList()));
+                loadMovies(
+                        movies.stream()
+                                .map(Movie::toDatabaseFormat)
+                                .collect(Collectors.toList())
+                );
             } else {
                 this.view.findViewById(R.id.cardList).setVisibility(View.GONE);
                 this.view.findViewById(R.id.no_media_display).setVisibility(View.VISIBLE);
@@ -94,6 +98,7 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
+        super.onCreateContextMenu(contextMenu, v, menuInfo);
         super.db.moviesDAO().getAllIds().observe(this, integers -> {
             if (integers != null && integers.contains(selectedContextId)) {
                 contextMenu.removeItem(R.id.context_menu_add);
@@ -102,6 +107,5 @@ public abstract class BaseMovieFragment extends BaseFragment {
             }
             super.selectedContextId = selectedContextId;
         });
-        super.onCreateContextMenu(contextMenu, v, menuInfo);
     }
 }

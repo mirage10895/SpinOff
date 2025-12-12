@@ -10,8 +10,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 
 public class AddMovieActionListener implements View.OnClickListener {
 
-    private AppDatabase db;
-    private Movie movie;
+    private final AppDatabase db;
+    private final Movie movie;
 
 
     public AddMovieActionListener(AppDatabase db, Movie movie) {

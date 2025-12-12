@@ -20,8 +20,8 @@ public enum Language {
     GB("Great Britain","gb"),
     DEFAULT("Unknown","unknown");
 
-    private String fullName;
-    private String name;
+    private final String fullName;
+    private final String name;
 
     Language(String fullName, String majThis){
         this.fullName = fullName;

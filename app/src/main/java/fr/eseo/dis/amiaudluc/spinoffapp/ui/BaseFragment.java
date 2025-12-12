@@ -77,7 +77,7 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
 
     @Override
     public void setType(FragmentType type) {
-        //
+        // STUB
     }
 
     public abstract void onRecyclerLoadMore(Integer page);

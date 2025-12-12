@@ -53,9 +53,11 @@ public class ArtistFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
         View artistView = inflater.inflate(R.layout.fragment_artist, container, false);
         ctx = artistView.getContext();
         this.mListener = this;
@@ -79,7 +81,14 @@ public class ArtistFragment extends Fragment implements SearchInterface {
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
                     false));
-            moviesAdapter = new MoviesAdapter(ctx, mListener, artist.getMovies().getCast().stream().map(Movie::toDatabaseFormat).collect(Collectors.toList()));
+            moviesAdapter = new MoviesAdapter(
+                    ctx,
+                    mListener,
+                    artist.getMovies().getCast()
+                            .stream()
+                            .map(Movie::toDatabaseFormat)
+                            .collect(Collectors.toList())
+            );
             recyclerView.setAdapter(moviesAdapter);
         } else {
             artistView.findViewById(R.id.movies_layer).setVisibility(View.GONE);

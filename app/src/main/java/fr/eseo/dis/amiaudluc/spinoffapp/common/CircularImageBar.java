@@ -7,13 +7,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by lucasamiaud on 01/03/2018.
  */
 
 public class CircularImageBar {
 
-    public static Bitmap BuildNote(double size) {
+    public static Bitmap buildNote(double size) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
         Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
@@ -33,12 +36,12 @@ public class CircularImageBar {
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(Color.parseColor("#FFFFFF"));
         paint.setTextSize(140);
-        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
+        canvas.drawText(decimalFormat.format(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
         return b;
     }
 
-    public static Bitmap BuildSeasons(int size) {
+    public static Bitmap buildSeasons(int size) {
         Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
@@ -56,7 +59,7 @@ public class CircularImageBar {
         return b;
     }
 
-    public static Bitmap BuildNumber(int size, int color) {
+    public static Bitmap buildNumber(int size, int color) {
         Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();
@@ -73,7 +76,7 @@ public class CircularImageBar {
         return b;
     }
 
-    public static Bitmap BuildString(String size, int color, Context ctx) {
+    public static Bitmap buildString(String size, int color, Context ctx) {
         Bitmap b = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
         Paint paint = new Paint();

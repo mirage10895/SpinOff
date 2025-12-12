@@ -14,8 +14,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 
 public class DeleteMovieActionListener implements View.OnClickListener {
 
-    private AppDatabase db;
-    private Movie movie;
+    private final AppDatabase db;
+    private final Movie movie;
 
 
     public DeleteMovieActionListener(AppDatabase db, Movie movie) {

@@ -11,32 +11,31 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
  */
 
-public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonViewHolder>{
+public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonViewHolder> {
 
     private List<Season> seasons;
     private final ItemInterface mListener;
     private final Context ctx;
 
-    public SeasonsAdapter(Context ctx, ItemInterface listener, List<Season> data){
+    public SeasonsAdapter(Context ctx, ItemInterface listener, List<Season> data) {
         this.mListener = listener;
         this.ctx = ctx;
         this.setSeasons(data);
     }
 
-    public void setSeasons(List<Season> seasons){
+    public void setSeasons(List<Season> seasons) {
         this.seasons = seasons;
     }
 
@@ -54,7 +53,7 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
             Season season = seasons.get(position);
 
             holder.seasonPoster.setImageResource(R.drawable.ic_launcher_foreground);
-            if(season.getPosterPath() != null){
+            if (season.getPosterPath() != null) {
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + season.getPosterPath();
                 Picasso.with(ctx)
                         .load(link)
@@ -64,23 +63,17 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
             }
 
             holder.seasonNumber.setText(R.string.emptyField);
-            if (season.getSeasonNumber() != -1){
+            if (season.getSeasonNumber() != -1) {
                 holder.seasonNumber.setText(String.valueOf(season.getSeasonNumber()));
             }
 
             holder.seasonNumberEpisodes.setText(R.string.emptyField);
-            if (season.getEpisodeCount() != -1){
+            if (season.getEpisodeCount() != -1) {
                 holder.seasonNumberEpisodes.setText(String.valueOf(season.getEpisodeCount()));
             }
-
-            Calendar cal = Calendar.getInstance(Locale.US);
             holder.seasonAirDate.setText(R.string.emptyField);
-            if (season.getAirDate() != null){
-                cal.setTime(season.getAirDate());
-                String date = String.valueOf(cal.get(Calendar.DATE))
-                        .concat(" - " + cal.get(Calendar.MONTH))
-                                .concat(" - " + cal.get(Calendar.YEAR));
-                holder.seasonAirDate.setText(date);
+            if (season.getAirDate() != null) {
+                holder.seasonAirDate.setText(DateUtils.toDisplayString(season.getAirDate()));
             }
         }
     }
@@ -93,7 +86,7 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
     class SeasonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final View view;
-        private SearchInterface frag = (SearchInterface) mListener;
+        private final SearchInterface frag = (SearchInterface) mListener;
 
         private final ImageView seasonPoster;
         private final TextView seasonAirDate;
