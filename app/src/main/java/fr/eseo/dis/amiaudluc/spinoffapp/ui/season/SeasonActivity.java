@@ -2,19 +2,20 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 public class SeasonActivity extends AppCompatActivity {
@@ -42,9 +43,9 @@ public class SeasonActivity extends AppCompatActivity {
         this.fragment = new SeasonFragment();
         this.content = findViewById(R.id.content);
         this.noMedia = findViewById(R.id.no_media_display);
-        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+        this.serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
         this.serieViewModel.initGetSeasonBySerieId(serieId, seasonNumber);
-        this.findViewById(R.id. fab).setVisibility(View.GONE);
+        this.findViewById(R.id.fab).setVisibility(View.GONE);
         this.content.setVisibility(View.GONE);
         this.serieViewModel.getSeason().observe(this, season -> {
             if (season != null) {
@@ -73,12 +74,12 @@ public class SeasonActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.menu.options_menu:
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (itemId == R.menu.options_menu) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -86,5 +87,6 @@ public class SeasonActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        super.onBackPressed();
     }
 }

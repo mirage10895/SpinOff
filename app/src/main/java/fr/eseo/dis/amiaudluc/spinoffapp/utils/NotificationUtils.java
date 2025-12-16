@@ -1,12 +1,11 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.media.RingtoneManager;
-import android.support.v4.app.NotificationCompat;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import androidx.core.app.NotificationCompat;
+
+import fr.eseo.dis.amiaudluc.R;
 
 /**
  * Created by lucasamiaud on 05/04/2018.

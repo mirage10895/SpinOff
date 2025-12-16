@@ -1,16 +1,20 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.library;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
+import java.util.Objects;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,7 +23,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
  */
 public class DashboardFragment extends Fragment {
 
-    private AppDatabase db;
+    private MovieViewModel movieViewModel;
+    private SerieViewModel serieViewModel;
 
     // view
     private TextView seriesCunt;
@@ -32,11 +37,18 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        this.db = AppDatabase.getAppDatabase(view.getContext());
+        this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
+        this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
+
+        this.movieViewModel.initDatabaseMovies();
+        this.serieViewModel.initDatabaseSeries();
 
         this.seriesCunt = view.findViewById(R.id.nb_series);
         this.moviesCunt = view.findViewById(R.id.nb_movies);
@@ -50,7 +62,7 @@ public class DashboardFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        this.db.moviesDAO().getAll().observe(this, movieDatabases -> {
+        this.movieViewModel.getDatabaseMovies().observe(this, movieDatabases -> {
             if (movieDatabases != null) {
                 this.moviesLength.setText(
                         String.valueOf(movieDatabases.stream().mapToDouble(MovieDatabase::getRuntime).sum())
@@ -58,11 +70,16 @@ public class DashboardFragment extends Fragment {
                 this.moviesCunt.setText(String.valueOf(movieDatabases.size()));
             }
         });
-        this.db.serieDAO().getAll().observe(this, serieDatabases -> {
+        this.serieViewModel.getDatabaseSeries().observe(this, serieDatabases -> {
             if (serieDatabases != null) {
                 this.seriesCunt.setText(String.valueOf(serieDatabases.size()));
                 this.seriesLength.setText(
-                        String.valueOf(serieDatabases.stream().mapToDouble(SerieDatabase::getAverageEpisodeRunTime).sum())
+                        String.valueOf(
+                                serieDatabases.stream()
+                                        .mapToInt(SerieDatabase::getRuntime)
+                                        .filter(Objects::nonNull)
+                                        .sum()
+                        )
                 );
             }
         });

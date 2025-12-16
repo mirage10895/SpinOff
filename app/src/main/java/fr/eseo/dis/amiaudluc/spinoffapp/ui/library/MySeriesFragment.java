@@ -3,10 +3,6 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.library;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -18,13 +14,18 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 /**
  * Created by lucasamiaud on 08/03/2018.
@@ -32,48 +33,66 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 
 public class MySeriesFragment extends Fragment implements SearchInterface {
 
+    private SerieViewModel serieViewModel;
     private SeriesAdapter seriesAdapter;
-    private List<SerieDatabase> series;
-    private AppDatabase db;
-    private FragmentType type;
     private Integer selectedSerieId;
 
-    public MySeriesFragment(){
+    public MySeriesFragment() {
         //Empty constructor required
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
+        this.serieViewModel.initDatabaseSeries();
+    }
+
+    @Override
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
+            Bundle savedInstanceState
+    ) {
         View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
         Context ctx = view.getContext();
-        db = AppDatabase.getAppDatabase(ctx);
 
-        db.serieDAO().getAll().observe(this, this::setDbSeries);
+        this.serieViewModel.getDatabaseSeries().observe(
+                requireActivity(),
+                serieDatabases -> this.setSeries(
+                        serieDatabases.stream()
+                                .map(ss -> SerieAdapterData.of(
+                                        ss.getId(),
+                                        ss.getPosterPath()
+                                ))
+                                .toList()
+                )
+        );
 
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
         RecyclerView recycler = view.findViewById(R.id.cardList);
         recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(ctx));
+        int columns = getResources().getInteger(R.integer.scripts_columns);
+        recycler.setLayoutManager(new GridLayoutManager(ctx, columns));
 
-        seriesAdapter = new SeriesAdapter(ctx,this, new ArrayList<>());
+
+        seriesAdapter = new SeriesAdapter(ctx, this, new ArrayList<>(), false);
         recycler.setAdapter(seriesAdapter);
 
         return view;
     }
 
-    private void setDbSeries(List<SerieDatabase> series){
-        this.series = series;
+    private void setSeries(List<SerieAdapterData> series) {
         if (seriesAdapter != null) {
-            seriesAdapter.setSeries(this.series);
+            seriesAdapter.setSeries(series);
             seriesAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater menuInflater = getActivity().getMenuInflater();
         menuInflater.inflate(R.menu.context_menu_library, menu);
@@ -82,8 +101,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_delete) {
-            DatabaseTransactionManager.executeAsync(() -> db.serieDAO().deleteSerieById(this.selectedSerieId));
-            db.serieDAO().getAll().observe(this, this::setDbSeries);
+            this.serieViewModel.deleteById(this.selectedSerieId);
             return true;
         }
         return false;
@@ -104,6 +122,6 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
 
     @Override
     public void setType(FragmentType type) {
-        this.type = type;
+        // stub
     }
 }

@@ -2,43 +2,44 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.MediaTransactionObserver;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 /**
  * Created by lucasamiaud on 04/04/2018.
  */
 
 public abstract class BaseMovieFragment extends BaseFragment {
-
-    public MovieViewModel movieViewModel;
     protected MoviesAdapter moviesAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        this.movieViewModel = new MovieViewModel(ApiRepository.getInstance());
-        this.moviesAdapter = new MoviesAdapter(this.getContext(),this, new ArrayList<>());
+        this.moviesAdapter = new MoviesAdapter(
+                this.getContext(),
+                this,
+                new ArrayList<>(),
+                false
+        );
 
         super.recycler.setAdapter(this.moviesAdapter);
 
@@ -55,10 +56,16 @@ public abstract class BaseMovieFragment extends BaseFragment {
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_add) {
             this.movieViewModel.initGetMovieById(super.selectedContextId);
-            this.movieViewModel.getMovie().observe(this, new MediaTransactionObserver<>(super.db, this.view, false));
+            this.movieViewModel.getMovie()
+                    .observe(this, new MediaTransactionObserver<>(
+                            super.movieViewModel, super.serieViewModel, this.view, false
+                    ));
         } else if (item.getItemId() == R.id.context_menu_delete) {
             this.movieViewModel.initGetMovieById(super.selectedContextId);
-            this.movieViewModel.getMovie().observe(this, new MediaTransactionObserver<>(super.db, this.view, true));
+            this.movieViewModel.getMovie()
+                    .observe(this, new MediaTransactionObserver<>(
+                            super.movieViewModel, super.serieViewModel, this.view, true
+                    ));
         }
         return false;
     }
@@ -99,8 +106,8 @@ public abstract class BaseMovieFragment extends BaseFragment {
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
         super.onCreateContextMenu(contextMenu, v, menuInfo);
-        super.db.moviesDAO().getAllIds().observe(this, integers -> {
-            if (integers != null && integers.contains(selectedContextId)) {
+        super.movieViewModel.getDatabaseMovies().observe(this, movies -> {
+            if (movies != null && movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(selectedContextId))) {
                 contextMenu.removeItem(R.id.context_menu_add);
             } else {
                 contextMenu.removeItem(R.id.context_menu_delete);

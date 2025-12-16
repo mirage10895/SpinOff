@@ -7,9 +7,9 @@ import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.InterfaceAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.LocalDateAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
 import lombok.Getter;
 import okhttp3.HttpUrl;

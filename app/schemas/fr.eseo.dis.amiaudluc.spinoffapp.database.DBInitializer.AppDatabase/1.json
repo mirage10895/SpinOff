@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8d7c154790aa2456a9eb8182104aab74",
+    "identityHash": "e02b89419ac2b4a428d59753b9c5f06d",
     "entities": [
       {
         "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `posterPath` TEXT, `runtime` INTEGER, `watched` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `poster_path` TEXT, `runtime` INTEGER, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -22,7 +22,7 @@
           },
           {
             "fieldPath": "posterPath",
-            "columnName": "posterPath",
+            "columnName": "poster_path",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -36,21 +36,21 @@
             "fieldPath": "watched",
             "columnName": "watched",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `poster_path` TEXT, `seasons_number` INTEGER, `average_episode_run_time` REAL, `number_of_episodes` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `poster_path` TEXT, `runtime` INTEGER NOT NULL, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -71,36 +71,30 @@
             "notNull": false
           },
           {
-            "fieldPath": "seasonsNumber",
-            "columnName": "seasons_number",
+            "fieldPath": "runtime",
+            "columnName": "runtime",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
-            "fieldPath": "averageEpisodeRunTime",
-            "columnName": "average_episode_run_time",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "numberOfEpisodes",
-            "columnName": "number_of_episodes",
+            "fieldPath": "watched",
+            "columnName": "watched",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `air_date` INTEGER, `season_id` INTEGER, `watched` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `air_date` INTEGER, `season_id` INTEGER, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -130,14 +124,14 @@
             "fieldPath": "watched",
             "columnName": "watched",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -146,15 +140,17 @@
             "columnNames": [
               "season_id"
             ],
-            "createSql": "CREATE  INDEX `index_episodes_season_id` ON `${TABLE_NAME}` (`season_id`)"
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_episodes_season_id` ON `${TABLE_NAME}` (`season_id`)"
           }
         ],
         "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8d7c154790aa2456a9eb8182104aab74\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e02b89419ac2b4a428d59753b9c5f06d')"
     ]
   }
 }

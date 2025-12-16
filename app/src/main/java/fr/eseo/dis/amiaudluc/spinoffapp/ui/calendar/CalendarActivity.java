@@ -1,13 +1,13 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -55,5 +55,6 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        super.onBackPressed();
     }
 }

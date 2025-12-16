@@ -1,8 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +13,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 
 /**
  * Created by lucasamiaud on 28/02/2018.
@@ -25,13 +24,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     private final SearchInterface fragment;
     private final Context ctx;
-
+    private final boolean isHorizontal;
     private List<MovieDatabase> movies;
 
-    public MoviesAdapter(Context ctx, SearchInterface fragment, List<MovieDatabase> movies) {
+    public MoviesAdapter(
+            Context ctx,
+            SearchInterface fragment,
+            List<MovieDatabase> movies,
+            boolean isHorizontal
+    ) {
         this.ctx = ctx;
         this.fragment = fragment;
         this.movies = movies;
+        this.isHorizontal = isHorizontal;
     }
 
     public void setMovies(List<MovieDatabase> movies) {
@@ -41,8 +46,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (!isHorizontal) {
+            View myMovieView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_media, parent, false);
+            return new MoviesViewHolder(myMovieView);
+        }
         View myMovieView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_media, parent, false);
+                .inflate(R.layout.item_media_horizontal, parent, false);
         return new MoviesViewHolder(myMovieView);
     }
 
@@ -54,7 +64,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             holder.moviePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if (movie.getPosterPath() != null) {
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + movie.getPosterPath();
-                Picasso.with(ctx)
+                Picasso.get()
                         .load(link)
                         .fit()
                         .error(R.drawable.ic_launcher_foreground)
@@ -85,14 +95,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
         @Override
         public void onClick(View v) {
-            final MovieDatabase movieDatabase = movies.get(getAdapterPosition());
+            final MovieDatabase movieDatabase = movies.get(getAbsoluteAdapterPosition());
             fragment.setType(SearchInterface.FragmentType.MOVIE);
             fragment.onItemClick(movieDatabase.getId());
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            final MovieDatabase movieDatabase = movies.get(getAdapterPosition());
+            final MovieDatabase movieDatabase = movies.get(getAbsoluteAdapterPosition());
             fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, movieDatabase.getId());
         }
     }

@@ -1,17 +1,18 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.episode;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 /**
@@ -37,7 +38,7 @@ public class EpisodeActivity extends AppCompatActivity {
         this.content.setVisibility(View.GONE);
         this.noMedia = this.findViewById(R.id.no_media_display);
 
-        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+        this.serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -90,5 +91,6 @@ public class EpisodeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        super.onBackPressed();
     }
 }

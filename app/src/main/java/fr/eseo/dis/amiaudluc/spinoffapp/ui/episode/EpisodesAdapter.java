@@ -1,8 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.episode;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +13,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
 
 /**
  * Created by lucasamiaud on 09/03/2018.
@@ -51,7 +51,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
             holder.episodePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if(episode.getStillPath() != null){
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + episode.getStillPath();
-                Picasso.with(ctx).load(link).fit().centerCrop().error(R.drawable.ic_launcher_foreground)
+                Picasso.get().load(link).fit().centerCrop().error(R.drawable.ic_launcher_foreground)
                         .into(holder.episodePoster);
             }
 

@@ -1,34 +1,28 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.action;
 
-import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import com.google.android.material.snackbar.Snackbar;
+
+import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 public class AddSerieActionListener implements View.OnClickListener {
 
-    private final AppDatabase db;
+    private final SerieViewModel serieViewModel;
     private final Serie serie;
 
 
-    public AddSerieActionListener(AppDatabase db, Serie serie) {
-        this.db = db;
+    public AddSerieActionListener(SerieViewModel serieViewModel, Serie serie) {
+        this.serieViewModel = serieViewModel;
         this.serie = serie;
     }
 
     @Override
     public void onClick(View view) {
-        this.serie.setAverageEpisodeRunTime(
-                serie.getEpisodeRunTime().stream()
-                        .mapToDouble(Integer::doubleValue)
-                        .average()
-                        .orElse(0D)
-        );
-        DatabaseTransactionManager.executeAsync(() -> db.serieDAO().insertSerie(serie));
+        this.serieViewModel.insert(serie.getId());
         Snackbar.make(view, R.string.serie_added, Snackbar.LENGTH_LONG)
-                .setAction("Undo", new DeleteSerieActionListener(this.db, this.serie)).show();
+                .setAction("Undo", new DeleteSerieActionListener(this.serieViewModel, this.serie)).show();
     }
 }

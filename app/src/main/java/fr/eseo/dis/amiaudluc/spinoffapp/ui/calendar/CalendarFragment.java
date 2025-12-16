@@ -4,10 +4,6 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Event;
+import fr.eseo.dis.amiaudluc.spinoffapp.services.model.Event;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 
 /**
@@ -101,8 +101,6 @@ public class CalendarFragment extends Fragment implements SearchInterface {
     @Override
     public void onItemClick(Integer position) {
         if (this.type.equals(FragmentType.EVENT)) {
-            //Content.currentSeason = DatabaseTransactionManager.getSeasonById(db, this.today.get(position).getEpisode().getIdSeason());
-            //Content.currentSerie = DatabaseTransactionManager.getSerieById(db, Content.currentSeason.getSerieId());
             Intent intent = new Intent(ctx, EpisodeActivity.class);
             startActivity(intent);
         }

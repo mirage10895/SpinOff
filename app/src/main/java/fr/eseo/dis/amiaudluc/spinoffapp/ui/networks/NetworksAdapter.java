@@ -1,8 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.networks;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +13,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Network;
-import fr.eseo.dis.amiaudluc.spinoffapp.utils.ConstUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Network;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
@@ -57,7 +56,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
             }
 
             String link = ctx.getResources().getString(R.string.base_url_poster_500) + this.networks.get(position).getLogoPath();
-            Picasso.with(ctx)
+            Picasso.get()
                     .load(link)
                     .fit()
                     .centerCrop()

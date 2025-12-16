@@ -1,12 +1,11 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.action;
 
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.DatabaseTransactionManager;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
+import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
 /**
  * Created by lucasamiaud on 27/12/2018.
@@ -14,19 +13,19 @@ import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
 
 public class DeleteMovieActionListener implements View.OnClickListener {
 
-    private final AppDatabase db;
+    private final MovieViewModel movieViewModel;
     private final Movie movie;
 
 
-    public DeleteMovieActionListener(AppDatabase db, Movie movie) {
-        this.db = db;
+    public DeleteMovieActionListener(MovieViewModel movieViewModel, Movie movie) {
+        this.movieViewModel = movieViewModel;
         this.movie = movie;
     }
 
     @Override
     public void onClick(View v) {
-        DatabaseTransactionManager.executeAsync(() -> db.moviesDAO().deleteMovie(movie));
+        this.movieViewModel.deleteMovieById(movie.getId());
         Snackbar.make(v, R.string.movie_deleted, Snackbar.LENGTH_LONG)
-                .setAction("Undo", new AddMovieActionListener(this.db, this.movie)).show();
+                .setAction("Undo", new AddMovieActionListener(this.movieViewModel, this.movie)).show();
     }
 }

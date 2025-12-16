@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,7 +16,7 @@
         android:layout_margin="15dp"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
@@ -28,7 +28,7 @@
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lil_caracteritics"
                 android:layout_width="match_parent"
                 android:layout_height="100dp">
@@ -119,9 +119,9 @@
 
                 </RelativeLayout>
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:layout_width="match_parent"
@@ -132,7 +132,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
@@ -186,7 +186,7 @@
                         android:text="@string/realisators_text"
                         android:textColor="@color/colorAccent" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/realisators"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
@@ -194,7 +194,7 @@
                         android:scrollbarStyle="outsideInset"
                         android:scrollbars="horizontal">
 
-                    </android.support.v7.widget.RecyclerView>
+                    </androidx.recyclerview.widget.RecyclerView>
 
                 </LinearLayout>
 
@@ -247,7 +247,7 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/text_cast"
@@ -259,7 +259,7 @@
             android:textSize="20sp"
             android:textColor="@color/colorPrimary" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
@@ -271,7 +271,7 @@
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cast"
                 android:layout_width="match_parent"
                 android:layout_height="155dp"
@@ -279,9 +279,9 @@
                 android:scrollbarStyle="outsideInset"
                 android:scrollbars="horizontal">
 
-            </android.support.v7.widget.RecyclerView>
+            </androidx.recyclerview.widget.RecyclerView>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/teaser_text"
@@ -314,7 +314,7 @@
                 android:textSize="20sp"
                 android:textColor="@color/colorPrimary" />
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/text_margin"
@@ -323,7 +323,7 @@
                 card_view:cardElevation="8dp"
                 card_view:layout_collapseMode="pin">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_recommendations"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
@@ -332,10 +332,10 @@
                     android:scrollbarStyle="outsideInset"
                     android:scrollbars="horizontal" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

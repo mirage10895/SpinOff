@@ -4,12 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +11,19 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
 
@@ -31,7 +31,6 @@ public class MovieActivity extends AppCompatActivity {
 
     private MovieViewModel movieViewModel;
     private Movie movie;
-    private AppDatabase db;
 
     // layout
     private FrameLayout content;
@@ -52,9 +51,8 @@ public class MovieActivity extends AppCompatActivity {
         this.content = findViewById(R.id.content);
         this.noMedia = findViewById(R.id.no_media_display);
 
-        this.db = AppDatabase.getAppDatabase(this);
         this.fragment = SingleMovieFragment.newInstance();
-        this.movieViewModel = new MovieViewModel(ApiRepository.getInstance());
+        this.movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
     }
 
     @Override
@@ -64,6 +62,7 @@ public class MovieActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         this.movieViewModel.initGetMovieById(id);
+        this.movieViewModel.initDatabaseMovies();
         this.movieViewModel.getMovie().observe(
                 this,
                 movieResult -> {
@@ -76,7 +75,7 @@ public class MovieActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
                         setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
                         actionBar.setTitle(movieResult.getTitle());
-                        this.fab.setOnClickListener(new AddMovieActionListener(this.db, movieResult));
+                        this.fab.setOnClickListener(new AddMovieActionListener(this.movieViewModel, movieResult));
                     } else {
                         noMedia.setVisibility(View.VISIBLE);
                         Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
@@ -85,12 +84,9 @@ public class MovieActivity extends AppCompatActivity {
                     }
                 }
         );
-        this.db.moviesDAO().getAllIds().observe(this, integers -> {
-            if (integers != null && !integers.contains(id)) {
-                this.fab.setEnabled(true);
-            } else if (integers != null && integers.contains(id)) {
-                this.fab.setEnabled(false);
-            }
+        this.movieViewModel.getDatabaseMovies().observe(this, movies -> {
+            boolean hasTheId = movies.stream().map(MovieDatabase::getId).anyMatch(mid -> mid.equals(id));
+            this.fab.setEnabled(hasTheId);
         });
 
         if (actionBar != null) {
@@ -115,7 +111,7 @@ public class MovieActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onBitmapFailed(final Drawable errorDrawable) {
+            public void onBitmapFailed(Exception e, final Drawable errorDrawable) {
                 progressBar.setVisibility(View.GONE);
                 collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_launcher_foreground));
                 Log.d("TAG", "FAILED");
@@ -128,7 +124,7 @@ public class MovieActivity extends AppCompatActivity {
             }
         };
         collapsingToolbarLayout.setTag(target);
-        Picasso.with(this).load(link).error(R.drawable.ic_launcher_foreground).into(target);
+        Picasso.get().load(link).error(R.drawable.ic_launcher_foreground).into(target);
     }
 
     /**

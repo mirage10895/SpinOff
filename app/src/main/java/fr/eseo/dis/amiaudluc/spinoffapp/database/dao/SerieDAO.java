@@ -1,0 +1,29 @@
+package fr.eseo.dis.amiaudluc.spinoffapp.database.dao;
+
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+
+/**
+ * Created by lucasamiaud on 08/03/2018.
+ */
+
+@Dao
+public interface SerieDAO {
+
+    @Insert
+    void insertSerie(SerieDatabase serie);
+
+    @Query("SELECT * FROM series")
+    LiveData<List<SerieDatabase>> getAll();
+
+    @Query("DELETE FROM series where id = :id")
+    void deleteSerieById(Integer id);
+
+    @Query("SELECT * FROM series where id = :id")
+    LiveData<SerieDatabase> getSerieById(int id);
+}

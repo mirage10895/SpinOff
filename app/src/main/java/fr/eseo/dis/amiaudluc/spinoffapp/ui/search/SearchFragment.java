@@ -3,11 +3,13 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DAO.model.SerieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 
 /**
@@ -37,7 +40,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
  * <p/>
  * interface.
  */
-public class SearchFragment extends android.support.v4.app.Fragment implements SearchInterface {
+public class SearchFragment extends Fragment implements SearchInterface {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
@@ -86,19 +89,28 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
         recyclerView_serie.setHasFixedSize(true);
         recyclerView_parson.setHasFixedSize(true);
         if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                    false));
-            recyclerView_serie.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                    false));
-            recyclerView_parson.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                    false));
+            recyclerView.setLayoutManager(
+                    new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            );
+            recyclerView_serie.setLayoutManager(
+                    new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            );
+            recyclerView_parson.setLayoutManager(
+                    new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            );
         } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL,false));
-            recyclerView_serie.setLayoutManager(new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL,false));
-            recyclerView_parson.setLayoutManager(new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL,false));
+            recyclerView.setLayoutManager(
+                    new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL, false)
+            );
+            recyclerView_serie.setLayoutManager(
+                    new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL, false)
+            );
+            recyclerView_parson.setLayoutManager(
+                    new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL, false)
+            );
         }
-        moviesAdapter = new MoviesAdapter(context, mListener, new ArrayList<>());
-        seriesAdapter = new SeriesAdapter(context, mListener, new ArrayList<>());
+        moviesAdapter = new MoviesAdapter(context, mListener, new ArrayList<>(), true);
+        seriesAdapter = new SeriesAdapter(context, mListener, new ArrayList<>(), true);
         artistsAdapter = new ArtistsAdapter(context, mListener, new ArrayList<>());
 
         recyclerView.setAdapter(moviesAdapter);
@@ -108,7 +120,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
         return view;
     }
 
-    public void loadData(List<MovieDatabase> movies, List<SerieDatabase> series, List<Artist> artists){
+    public void loadData(List<MovieDatabase> movies, List<SerieAdapterData> series, List<Artist> artists) {
         moviesAdapter.setMovies(movies);
         seriesAdapter.setSeries(series);
         artistsAdapter.setArtist(artists);
@@ -117,7 +129,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
         artistsAdapter.notifyDataSetChanged();
     }
 
-    public void setMedias(List<Media> medias){
+    public void setMedias(List<Media> medias) {
         List<Movie> movies = new ArrayList<>();
         List<Serie> series = new ArrayList<>();
         List<Artist> artists = new ArrayList<>();
@@ -125,7 +137,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
         this.getView().findViewById(R.id.series_layer).setVisibility(View.VISIBLE);
         this.getView().findViewById(R.id.artists_layer).setVisibility(View.VISIBLE);
         this.medias = medias;
-        for(Media media : this.medias){
+        for (Media media : this.medias) {
             switch (media.getMediaType()) {
                 case Media.MOVIE:
                     movies.add((Movie) media);
@@ -138,19 +150,21 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
                     break;
             }
         }
-        if (movies.isEmpty()){
+        if (movies.isEmpty()) {
             this.getView().findViewById(R.id.movies_layer).setVisibility(View.GONE);
         }
-        if(series.isEmpty()){
+        if (series.isEmpty()) {
             this.getView().findViewById(R.id.series_layer).setVisibility(View.GONE);
         }
-        if (artists.isEmpty()){
+        if (artists.isEmpty()) {
             this.getView().findViewById(R.id.artists_layer).setVisibility(View.GONE);
         }
 
-        loadData(movies.stream().map(Movie::toDatabaseFormat).collect(Collectors.toList()),
-                series.stream().map(Serie::toDataBaseFormat).collect(Collectors.toList()),
-                artists);
+        loadData(
+                movies.stream().map(Movie::toDatabaseFormat).collect(Collectors.toList()),
+                series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()),
+                artists
+        );
     }
 
 
@@ -171,15 +185,15 @@ public class SearchFragment extends android.support.v4.app.Fragment implements S
 
     @Override
     public void onItemClick(Integer id) {
-        if (this.type.equals(FragmentType.MOVIE)){
+        if (this.type.equals(FragmentType.MOVIE)) {
             Intent intent = new Intent(getContext(), MovieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (this.type.equals(FragmentType.SERIE)){
+        } else if (this.type.equals(FragmentType.SERIE)) {
             Intent intent = new Intent(getContext(), SerieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (this.type.equals(FragmentType.ARTIST)){
+        } else if (this.type.equals(FragmentType.ARTIST)) {
             Intent intent = new Intent(getContext(), ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);

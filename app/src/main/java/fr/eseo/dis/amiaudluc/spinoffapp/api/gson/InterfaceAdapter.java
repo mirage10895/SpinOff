@@ -10,10 +10,10 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 
 public class InterfaceAdapter<T> implements JsonSerializer<T>, JsonDeserializer<T> {
 

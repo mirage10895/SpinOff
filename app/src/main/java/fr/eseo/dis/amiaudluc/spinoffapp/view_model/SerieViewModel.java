@@ -1,30 +1,38 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.view_model;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
+import android.app.Application;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.enums.SerieType;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
 
-public class SerieViewModel extends ViewModel {
-    @NonNull
+public class SerieViewModel extends AndroidViewModel {
     private LiveData<List<Serie>> series;
     private LiveData<Serie> serie;
     private LiveData<Season> season;
     private LiveData<Episode> episode;
+    private LiveData<List<SerieDatabase>> databaseSeries;
 
-    private ApiRepository apiRepository;
+    private final ApiRepository apiRepository;
+    private final SerieRepository serieRepository;
 
-    public SerieViewModel(ApiRepository apiRepository) {
+    public SerieViewModel(@NonNull Application application) {
+        super(application);
         this.series = new MutableLiveData<>();
-        this.apiRepository = apiRepository;
+        this.serie = new MutableLiveData<>();
+        this.databaseSeries = new MutableLiveData<>();
+        this.apiRepository = ApiRepository.getInstance();
+        this.serieRepository = new SerieRepository(application);
     }
 
     public void initPopularSeries(Integer page) {
@@ -51,7 +59,18 @@ public class SerieViewModel extends ViewModel {
         this.episode = this.apiRepository.getEpisodeBySeasonNumberBySerieId(id, seasonNumber, episodeNumber);
     }
 
-    @NonNull
+    public void initDatabaseSeries() {
+        this.databaseSeries = this.serieRepository.fetchAll();
+    }
+
+    public void insert(int serieId) {
+        this.serieRepository.insert(serieId);
+    }
+
+    public void deleteById(int id) {
+        this.serieRepository.deleteById(id);
+    }
+
     public LiveData<List<Serie>> getSeries() {
         return series;
     }
@@ -66,5 +85,9 @@ public class SerieViewModel extends ViewModel {
 
     public LiveData<Episode> getEpisode() {
         return episode;
+    }
+
+    public LiveData<List<SerieDatabase>> getDatabaseSeries() {
+        return databaseSeries;
     }
 }

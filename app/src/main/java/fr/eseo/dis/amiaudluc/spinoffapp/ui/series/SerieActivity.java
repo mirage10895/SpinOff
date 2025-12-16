@@ -4,12 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,25 +11,27 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
 
     private SerieViewModel serieViewModel;
-    private Serie serie;
     private FrameLayout content;
     private RelativeLayout noMedia;
     private String currentFragment;
     private SingleSerieFragment fragment;
-    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +46,13 @@ public class SerieActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
 
         fab.setEnabled(false);
-        this.db = AppDatabase.getAppDatabase(this);
         this.fragment = new SingleSerieFragment();
-        this.serieViewModel = new SerieViewModel(ApiRepository.getInstance());
+        this.serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
         this.serieViewModel.initGetSerieById(id);
+        this.serieViewModel.initDatabaseSeries();
+
         this.serieViewModel.getSerie().observe(this, serieResult -> {
             if (serieResult != null) {
-                this.serie = serieResult;
                 setBackground(this.getResources().getString(R.string.base_url_poster_original) + serieResult.getBackdropPath());
                 fragment.setSerie(serieResult);
                 noMedia.setVisibility(View.GONE);
@@ -67,19 +63,15 @@ public class SerieActivity extends AppCompatActivity {
                         .replace(R.id.content, fragment, currentFragment)
                         .commit();
                 actionBar.setTitle(serieResult.getName());
-                fab.setOnClickListener(new AddSerieActionListener(this.db, serieResult));
+                fab.setOnClickListener(new AddSerieActionListener(this.serieViewModel, serieResult));
             } else {
                 noMedia.setVisibility(View.VISIBLE);
                 Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
                         .setAction("DAMN", view -> view.setVisibility(View.GONE)).show();
             }
         });
-        db.serieDAO().getAllIds().observe(this, integers -> {
-            if (integers != null && !integers.contains(id)) {
-                fab.setEnabled(true);
-            } else if (integers != null && integers.contains(id)) {
-                fab.setEnabled(false);
-            }
+        serieViewModel.getDatabaseSeries().observe(this, series -> {
+            fab.setEnabled(series.stream().noneMatch(i -> i.getId().equals(id)));
         });
 
         if (actionBar != null) {
@@ -108,7 +100,7 @@ public class SerieActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onBitmapFailed(final Drawable errorDrawable) {
+            public void onBitmapFailed(Exception e, final Drawable errorDrawable) {
                 progressBar.setVisibility(View.GONE);
                 collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_launcher_foreground));
                 Log.d("TAG", "FAILED");
@@ -121,7 +113,7 @@ public class SerieActivity extends AppCompatActivity {
             }
         };
         collapsingToolbarLayout.setTag(target);
-        Picasso.with(this).load(link).into(target);
+        Picasso.get().load(link).into(target);
     }
 
     /**

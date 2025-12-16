@@ -1,22 +1,24 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
 
 /**
  * Created by lucasamiaud on 19/03/2018.
@@ -24,10 +26,10 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 
 public abstract class BaseFragment extends Fragment implements SearchInterface {
 
-
     public EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     public SwipeRefreshLayout swipeContainer;
-    public AppDatabase db;
+    public SerieViewModel serieViewModel;
+    public MovieViewModel movieViewModel;
     public View view;
     public RecyclerView recycler;
 
@@ -38,8 +40,11 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         this.view = inflater.inflate(R.layout.layout_main, container, false);
-        this.db = AppDatabase.getAppDatabase(this.getContext());
+        this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
+        this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
 
+        this.movieViewModel.initDatabaseMovies();
+        this.serieViewModel.initDatabaseSeries();
         this.recycler = this.view.findViewById(R.id.cardList);
         this.recycler.setHasFixedSize(true);
         int columns = getResources().getInteger(R.integer.scripts_columns);

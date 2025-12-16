@@ -4,11 +4,11 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +19,12 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.youtube.YoutubeFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
@@ -124,7 +124,8 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
                                 .getResults()
                                 .stream()
                                 .map(Movie::toDatabaseFormat)
-                                .collect(Collectors.toList())
+                                .collect(Collectors.toList()),
+                        true
                 )
         );
         this.rate.setImageBitmap(CircularImageBar.buildNote(0));

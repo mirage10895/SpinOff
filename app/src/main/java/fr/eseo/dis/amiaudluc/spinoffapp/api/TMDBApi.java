@@ -1,12 +1,12 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

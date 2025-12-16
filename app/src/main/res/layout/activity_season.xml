@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.season.SeasonActivity">
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity">
 
     <include layout="@layout/app_bar_main"/>
 
@@ -11,4 +11,4 @@
         android:id="@+id/nested"
         layout="@layout/content_media"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

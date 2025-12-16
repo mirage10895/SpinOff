@@ -1,24 +1,27 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.view_model;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
+import android.app.Application;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
 
-public class SearchViewModel extends ViewModel {
+public class SearchViewModel extends AndroidViewModel {
     @NonNull
     private LiveData<List<Media>> medias;
 
-    private ApiRepository apiRepository;
+    private final ApiRepository apiRepository;
 
-    public SearchViewModel(ApiRepository apiRepository) {
+    public SearchViewModel(@NonNull Application application) {
+        super(application);
+        this.apiRepository = ApiRepository.getInstance();
         this.medias = new MutableLiveData<>();
-        this.apiRepository = apiRepository;
     }
 
     public void initSearchByQuery(String query) {

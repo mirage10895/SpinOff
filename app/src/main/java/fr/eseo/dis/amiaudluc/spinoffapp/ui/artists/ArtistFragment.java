@@ -4,11 +4,10 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.artists;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,18 +17,13 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.model.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
@@ -64,7 +58,7 @@ public class ArtistFragment extends Fragment implements SearchInterface {
 
         ImageView imageView = artistView.findViewById(R.id.poster_ic);
         String link = getResources().getString(R.string.base_url_poster_500) + this.artist.getProfilePath();
-        Picasso.with(ctx)
+        Picasso.get()
                 .load(link)
                 .fit()
                 .centerInside()
@@ -77,7 +71,7 @@ public class ArtistFragment extends Fragment implements SearchInterface {
 
 
         if (!artist.getMovies().getCast().isEmpty()) {
-            RecyclerView recyclerView = (RecyclerView) artistView.findViewById(R.id.recycler_movies);
+            RecyclerView recyclerView = artistView.findViewById(R.id.recycler_movies);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
                     false));
@@ -87,7 +81,8 @@ public class ArtistFragment extends Fragment implements SearchInterface {
                     artist.getMovies().getCast()
                             .stream()
                             .map(Movie::toDatabaseFormat)
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()),
+                    true
             );
             recyclerView.setAdapter(moviesAdapter);
         } else {
@@ -98,7 +93,12 @@ public class ArtistFragment extends Fragment implements SearchInterface {
             recyclerViewSerie.setHasFixedSize(true);
             recyclerViewSerie.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
                     false));
-            seriesAdapter = new SeriesAdapter(ctx, mListener, artist.getSeries().getCast().stream().map(Serie::toDataBaseFormat).collect(Collectors.toList()));
+            seriesAdapter = new SeriesAdapter(
+                    ctx,
+                    mListener,
+                    artist.getSeries().getCast().stream().map(Serie::toAdapterFormat).collect(Collectors.toList()),
+                    true
+            );
             recyclerViewSerie.setAdapter(seriesAdapter);
         } else {
             artistView.findViewById(R.id.series_layer).setVisibility(View.GONE);

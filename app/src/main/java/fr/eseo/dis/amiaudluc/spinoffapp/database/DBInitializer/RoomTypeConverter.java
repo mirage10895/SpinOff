@@ -1,6 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer;
 
-import android.arch.persistence.room.TypeConverter;
+import androidx.room.TypeConverter;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -16,9 +16,9 @@ public class RoomTypeConverter {
     @TypeConverter
     public static LocalDate toDate(Long timestamp) {
         LocalDate ldt;
-        if (timestamp == null){
+        if (timestamp == null) {
             return null;
-        }else{
+        } else {
             ldt = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
         }
         return ldt;
@@ -26,9 +26,9 @@ public class RoomTypeConverter {
 
     @TypeConverter
     public static Long toTimestamp(LocalDate date) {
-        if (date == null){
-            return  null;
-        }else {
+        if (date == null) {
+            return null;
+        } else {
             return date.getLong(ChronoField.DAY_OF_MONTH);
         }
     }

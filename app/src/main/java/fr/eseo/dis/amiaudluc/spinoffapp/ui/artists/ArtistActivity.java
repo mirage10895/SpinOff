@@ -1,17 +1,18 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.artists;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.ArtistViewModel;
 
 public class ArtistActivity extends AppCompatActivity {
@@ -27,7 +28,7 @@ public class ArtistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_artist);
         Integer id = getIntent().getIntExtra("id", 0);
         this.fragment = new ArtistFragment();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -36,7 +37,7 @@ public class ArtistActivity extends AppCompatActivity {
             actionBar.setTitle(getString(R.string.emptyField));
         }
 
-        this.artistViewModel = new ArtistViewModel(ApiRepository.getInstance());
+        this.artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
         this.artistViewModel.initGetArtistById(id);
         this.artistViewModel.getArtist().observe(this, artist -> {
             if (artist != null) {
@@ -67,12 +68,12 @@ public class ArtistActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            case R.menu.options_menu:
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (itemId == R.menu.options_menu) {
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -80,5 +81,6 @@ public class ArtistActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        super.onBackPressed();
     }
 }

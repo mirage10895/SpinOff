@@ -2,9 +2,9 @@ package fr.eseo.dis.amiaudluc.spinoffapp.common.youtube;
 
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
+import fr.eseo.dis.amiaudluc.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,8 +42,8 @@ public class YoutubeFragment extends Fragment {
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.youtube_content, youTubePlayerFragment).commit();
+        //FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        //transaction.add(R.id.youtube_content, youTubePlayerFragment).commit();
 
         youTubePlayerFragment.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
 

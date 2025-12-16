@@ -1,10 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -17,8 +13,13 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.ApiRepository;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SearchViewModel;
 
 public class SearchActivity extends AppCompatActivity {
@@ -40,12 +41,12 @@ public class SearchActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        this.searchViewModel = new SearchViewModel(ApiRepository.getInstance());
+        this.searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         this.fragment = SearchFragment.newInstance(1);
 
         ActionBar actionBar = getSupportActionBar();
 
-        imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         noText = findViewById(R.id.nothing_text);
         content = findViewById(R.id.content);
         content.setVisibility(View.GONE);
@@ -66,7 +67,7 @@ public class SearchActivity extends AppCompatActivity {
         queryText = this.findViewById(R.id.query);
 
         queryText.setOnKeyListener((view, keyCode, keyEvent) -> {
-            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 onSearch(queryText.getText().toString());
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -101,6 +102,7 @@ public class SearchActivity extends AppCompatActivity {
     /**
      * This is the method called from the button
      * cf related xml file
+     *
      * @param view
      */
     public void onSearch(View view) {

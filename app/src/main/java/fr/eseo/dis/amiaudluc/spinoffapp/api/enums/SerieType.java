@@ -4,7 +4,7 @@ public enum SerieType {
     POPULAR("popular"),
     TOP_RATED("top_rated"),
     ON_AIR("on_the_air"),
-            ;
+    ;
 
     String name;
 
