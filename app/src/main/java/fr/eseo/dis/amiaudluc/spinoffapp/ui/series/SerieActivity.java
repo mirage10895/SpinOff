@@ -23,7 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddSerieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
 

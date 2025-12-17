@@ -11,21 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 /**
  * Created by lucasamiaud on 08/03/2018.
@@ -65,7 +67,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
                                         ss.getId(),
                                         ss.getPosterPath()
                                 ))
-                                .toList()
+                                .collect(Collectors.toList())
                 )
         );
 

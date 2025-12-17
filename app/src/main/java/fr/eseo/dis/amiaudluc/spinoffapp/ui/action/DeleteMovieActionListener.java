@@ -5,7 +5,7 @@ import android.view.View;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 /**
  * Created by lucasamiaud on 27/12/2018.

@@ -10,8 +10,8 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class MediaTransactionObserver<T extends Media> implements Observer<T> {
     private final MovieViewModel movieViewModel;

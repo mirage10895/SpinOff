@@ -80,7 +80,7 @@ public class ArtistFragment extends Fragment implements SearchInterface {
                     mListener,
                     artist.getMovies().getCast()
                             .stream()
-                            .map(Movie::toDatabaseFormat)
+                            .map(Movie::toAdapterFormat)
                             .collect(Collectors.toList()),
                     true
             );

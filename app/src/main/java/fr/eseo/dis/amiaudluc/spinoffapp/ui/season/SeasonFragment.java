@@ -3,11 +3,6 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.youtube.YoutubeFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
@@ -104,17 +103,6 @@ public class SeasonFragment extends Fragment implements SearchInterface {
         if (!"".equals(this.season.getOverview())) {
             this.overview.setTextColor(ctx.getColor(R.color.white));
             this.overview.setText(season.getOverview());
-        }
-        if (this.season.getRightVideo() != null) {
-            FragmentManager manager = getFragmentManager();
-            if (manager != null) {
-                YoutubeFragment fragment = new YoutubeFragment();
-                fragment.instanciate(this.season.getRightVideo().getKey());
-                manager.beginTransaction()
-                        .replace(R.id.youtube_content, fragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
         }
     }
 

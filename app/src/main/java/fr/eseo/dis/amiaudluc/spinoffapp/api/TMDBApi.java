@@ -28,9 +28,6 @@ public interface TMDBApi {
     @GET("movie/{id}")
     Call<Movie> getMovieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
 
-    @GET("movie/{id}/recommendations")
-    Call<ApiListResponse<Movie>> getRecommandationsByMovieId(@Path("id") Integer id);
-
     @GET("tv/{type}")
     Call<ApiListResponse<Serie>> getSeries(
             @Path("type") String type,

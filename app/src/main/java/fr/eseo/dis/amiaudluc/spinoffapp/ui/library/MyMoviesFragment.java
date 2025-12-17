@@ -11,20 +11,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +39,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     private MovieViewModel movieViewModel;
     private MoviesAdapter moviesAdapter;
     private Context ctx;
-    private List<MovieDatabase> movies;
+    private List<MovieAdapterData> movies;
     private Integer selectedMovieId;
 
 
@@ -62,7 +64,17 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
         ctx = view.getContext();
 
-        this.movieViewModel.getDatabaseMovies().observe(requireActivity(), this::setDbMovies);
+        this.movieViewModel.getDatabaseMovies().observe(
+                requireActivity(),
+                movieDatabases -> this.setDbMovies(
+                        movieDatabases.stream()
+                                .map(m -> MovieAdapterData.of(
+                                        m.getId(),
+                                        m.getPosterPath()
+                                ))
+                                .collect(Collectors.toList())
+                )
+        );
 
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -83,7 +95,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         return view;
     }
 
-    private void setDbMovies(List<MovieDatabase> movies) {
+    private void setDbMovies(List<MovieAdapterData> movies) {
         this.movies = movies;
         if (moviesAdapter != null) {
             moviesAdapter.setMovies(this.movies);

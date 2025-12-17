@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e02b89419ac2b4a428d59753b9c5f06d",
+    "identityHash": "2b7702fbc4cc0e212361a6adb92217fe",
     "entities": [
       {
-        "tableName": "movies",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `poster_path` TEXT, `runtime` INTEGER, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "movie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT, `poster_path` TEXT, `runtime` INTEGER, `watched` INTEGER NOT NULL, `last_synchronisation_time` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -37,6 +37,12 @@
             "columnName": "watched",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastSynchronisationTime",
+            "columnName": "last_synchronisation_time",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -49,8 +55,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `poster_path` TEXT, `runtime` INTEGER NOT NULL, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "serie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `poster_path` TEXT, `runtime` INTEGER NOT NULL, `watched` INTEGER NOT NULL, `last_synchronisation_time` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -81,6 +87,12 @@
             "columnName": "watched",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "lastSynchronisationTime",
+            "columnName": "last_synchronisation_time",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -93,12 +105,24 @@
         "foreignKeys": []
       },
       {
-        "tableName": "episodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT, `air_date` INTEGER, `season_id` INTEGER, `watched` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "tableName": "serie_episode",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`serie_id` INTEGER NOT NULL, `season_number` INTEGER NOT NULL, `number` INTEGER NOT NULL, `name` TEXT, `air_date` INTEGER, PRIMARY KEY(`serie_id`, `season_number`, `number`), FOREIGN KEY(`serie_id`) REFERENCES `movie`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "serieId",
+            "columnName": "serie_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "seasonNumber",
+            "columnName": "season_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -113,44 +137,36 @@
             "columnName": "air_date",
             "affinity": "INTEGER",
             "notNull": false
-          },
-          {
-            "fieldPath": "seasonId",
-            "columnName": "season_id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "watched",
-            "columnName": "watched",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "id"
+            "serie_id",
+            "season_number",
+            "number"
           ]
         },
-        "indices": [
+        "indices": [],
+        "foreignKeys": [
           {
-            "name": "index_episodes_season_id",
-            "unique": false,
-            "columnNames": [
-              "season_id"
+            "table": "movie",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "serie_id"
             ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_episodes_season_id` ON `${TABLE_NAME}` (`season_id`)"
+            "referencedColumns": [
+              "id"
+            ]
           }
-        ],
-        "foreignKeys": []
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e02b89419ac2b4a428d59753b9c5f06d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2b7702fbc4cc0e212361a6adb92217fe')"
     ]
   }
 }

@@ -4,6 +4,11 @@ import androidx.room.ColumnInfo;
 
 import java.time.LocalDate;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CalendarBean {
     @ColumnInfo(name = "name")
     private String episodeName;
@@ -13,36 +18,4 @@ public class CalendarBean {
     private String seriePosterPath;
     @ColumnInfo(name = "watched")
     private boolean watched;
-
-    public String getEpisodeName() {
-        return episodeName;
-    }
-
-    public void setEpisodeName(String episodeName) {
-        this.episodeName = episodeName;
-    }
-
-    public LocalDate getAirDate() {
-        return airDate;
-    }
-
-    public void setAirDate(LocalDate airDate) {
-        this.airDate = airDate;
-    }
-
-    public String getSeriePosterPath() {
-        return seriePosterPath;
-    }
-
-    public void setSeriePosterPath(String seriePosterPath) {
-        this.seriePosterPath = seriePosterPath;
-    }
-
-    public boolean getWatched() {
-        return watched;
-    }
-
-    public void setWatched(boolean watched) {
-        this.watched = watched;
-    }
 }

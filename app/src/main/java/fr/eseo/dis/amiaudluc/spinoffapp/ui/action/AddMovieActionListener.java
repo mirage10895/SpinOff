@@ -5,13 +5,12 @@ import android.view.View;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 public class AddMovieActionListener implements View.OnClickListener {
 
     private final MovieViewModel movieViewModel;
     private final Movie movie;
-
 
     public AddMovieActionListener(MovieViewModel movieViewModel, Movie movie) {
         this.movieViewModel = movieViewModel;

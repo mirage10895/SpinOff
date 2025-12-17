@@ -1,8 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.annotation.NonNull;
 
 import java.util.List;
 
@@ -64,7 +64,7 @@ public class ApiRepository {
     public LiveData<Movie> getMovieById(Integer id) {
         Call<Movie> call = this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations");
         final MutableLiveData<Movie> data = new MutableLiveData<>();
-        call.enqueue(new Callback<Movie>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
                 if (response.body() != null) {
@@ -76,27 +76,6 @@ public class ApiRepository {
 
             @Override
             public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
-    }
-
-    public LiveData<List<Movie>> getMovieRecommendationById(Integer id) {
-        Call<ApiListResponse<Movie>> call = this.tmdbApiService.api.getRecommandationsByMovieId(id);
-        final MutableLiveData<List<Movie>> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiListResponse<Movie>> call, @NonNull Response<ApiListResponse<Movie>> response) {
-                if (response.body() != null) {
-                    data.setValue(response.body().getResults());
-                } else {
-                    data.setValue(null);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiListResponse<Movie>> call, @NonNull Throwable t) {
                 data.setValue(null);
             }
         });
@@ -130,7 +109,7 @@ public class ApiRepository {
     }
 
     public LiveData<Serie> getSerieById(Integer id) {
-        Call<Serie> call = this.tmdbApiService.api.getSerieById(id, "credits,videos");
+        Call<Serie> call = this.tmdbApiService.api.getSerieById(id, "credits,videos,recommendations");
         final MutableLiveData<Serie> data = new MutableLiveData<>();
         call.enqueue(new Callback<>() {
             @Override

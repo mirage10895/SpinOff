@@ -19,13 +19,14 @@ import com.squareup.picasso.Target;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddMovieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
 
@@ -86,7 +87,7 @@ public class MovieActivity extends AppCompatActivity {
         );
         this.movieViewModel.getDatabaseMovies().observe(this, movies -> {
             boolean hasTheId = movies.stream().map(MovieDatabase::getId).anyMatch(mid -> mid.equals(id));
-            this.fab.setEnabled(hasTheId);
+            this.fab.setEnabled(!hasTheId);
         });
 
         if (actionBar != null) {
@@ -113,7 +114,7 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onBitmapFailed(Exception e, final Drawable errorDrawable) {
                 progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_launcher_foreground));
+                collapsingToolbarLayout.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_launcher_foreground));
                 Log.d("TAG", "FAILED");
             }
 

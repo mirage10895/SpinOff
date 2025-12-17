@@ -14,16 +14,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 @Dao
 public interface SerieDAO {
-
     @Insert
     void insertSerie(SerieDatabase serie);
-
-    @Query("SELECT * FROM series")
+    @Query("SELECT * FROM serie")
     LiveData<List<SerieDatabase>> getAll();
-
-    @Query("DELETE FROM series where id = :id")
+    @Query("DELETE FROM serie where id = :id")
     void deleteSerieById(Integer id);
-
-    @Query("SELECT * FROM series where id = :id")
+    @Query("SELECT * FROM serie where id = :id")
     LiveData<SerieDatabase> getSerieById(int id);
 }

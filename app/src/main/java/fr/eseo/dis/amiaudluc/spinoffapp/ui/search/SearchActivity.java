@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SearchViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -84,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if ("".equals(charSequence.toString())) {
+                if (charSequence.toString().isEmpty()) {
                     content.setVisibility(View.GONE);
                     noMedia.setVisibility(View.VISIBLE);
                 } else {
@@ -147,5 +147,6 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        super.onBackPressed();
     }
 }

@@ -1,13 +1,12 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
 
-import androidx.annotation.Nullable;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,7 +43,6 @@ public class Movie implements Media {
     private Boolean video;
     private Double voteAverage;
     private Integer voteCount;
-    private String mediaType;
     private Credits<Artist> credits;
     private ApiObjectResponse<Video> videos;
     private ApiObjectResponse<Movie> recommendations;
@@ -56,13 +54,11 @@ public class Movie implements Media {
                 .collect(Collectors.toList());
     }
 
-    @Nullable
-    public Video getRightVideo() {
-        return this.videos.getResults().stream()
-                .filter(video -> "YouTube".equals(video.getSite())
-                        && "Trailer".equals(video.getType()))
-                .findFirst()
-                .orElse(null);
+    public MovieAdapterData toAdapterFormat() {
+        return MovieAdapterData.of(
+                id,
+                posterPath
+        );
     }
 
     public MovieDatabase toDatabaseFormat() {

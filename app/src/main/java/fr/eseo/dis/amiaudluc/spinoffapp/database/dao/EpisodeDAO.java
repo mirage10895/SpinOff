@@ -20,15 +20,9 @@ public interface EpisodeDAO {
     @Insert
     void insertEpisode(EpisodeDatabase episode);
 
-    @Query("SELECT * FROM EPISODES")
-    LiveData<List<EpisodeDatabase>> getAll();
+    @Query("select * FROM serie_episode where serie_id = :serieId")
+    LiveData<List<EpisodeDatabase>> fetchWatchedEpisodesBySerieId(long serieId);
 
-    @Query("SELECT * FROM EPISODES where id = :id")
-    LiveData<EpisodeDatabase> getEpisodeById(int id);
-
-    @Query("Select * from EPISODES where season_id = :id")
-    LiveData<List<EpisodeDatabase>> getEpisodesBySeasonId(int id);
-
-    @Query("Select name, air_date, watched from EPISODES ")
+    @Query("select serie_episode.name, serie_episode.air_date, serie.poster_path, 'true' as watched from serie_episode join serie on serie_id = serie.id")
     LiveData<List<CalendarBean>> getAllEpisodesBySerie();
 }

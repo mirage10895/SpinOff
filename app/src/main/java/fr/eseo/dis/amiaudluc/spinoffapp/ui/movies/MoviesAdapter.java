@@ -1,13 +1,14 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
@@ -15,7 +16,6 @@ import java.util.List;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 
 /**
  * Created by lucasamiaud on 28/02/2018.
@@ -25,12 +25,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     private final SearchInterface fragment;
     private final Context ctx;
     private final boolean isHorizontal;
-    private List<MovieDatabase> movies;
+    private List<MovieAdapterData> movies;
 
     public MoviesAdapter(
             Context ctx,
             SearchInterface fragment,
-            List<MovieDatabase> movies,
+            List<MovieAdapterData> movies,
             boolean isHorizontal
     ) {
         this.ctx = ctx;
@@ -39,7 +39,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         this.isHorizontal = isHorizontal;
     }
 
-    public void setMovies(List<MovieDatabase> movies) {
+    public void setMovies(List<MovieAdapterData> movies) {
         this.movies = movies;
     }
 
@@ -59,7 +59,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
         if (getItemCount() != 0) {
-            MovieDatabase movie = movies.get(position);
+            MovieAdapterData movie = movies.get(position);
 
             holder.moviePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if (movie.getPosterPath() != null) {
@@ -95,14 +95,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
         @Override
         public void onClick(View v) {
-            final MovieDatabase movieDatabase = movies.get(getAbsoluteAdapterPosition());
+            final MovieAdapterData movieDatabase = movies.get(getAbsoluteAdapterPosition());
             fragment.setType(SearchInterface.FragmentType.MOVIE);
             fragment.onItemClick(movieDatabase.getId());
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            final MovieDatabase movieDatabase = movies.get(getAbsoluteAdapterPosition());
+            final MovieAdapterData movieDatabase = movies.get(getAbsoluteAdapterPosition());
             fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, movieDatabase.getId());
         }
     }

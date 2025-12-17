@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.ArtistViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.ArtistViewModel;
 
 public class ArtistActivity extends AppCompatActivity {
 
@@ -63,7 +63,7 @@ public class ArtistActivity extends AppCompatActivity {
 
         content = findViewById(R.id.content);
         content.setVisibility(View.GONE);
-        noMedia = (RelativeLayout) findViewById(R.id.no_media_display);
+        noMedia = findViewById(R.id.no_media_display);
     }
 
     @Override

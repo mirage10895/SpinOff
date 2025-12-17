@@ -2,22 +2,23 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.navigation.NavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
 
@@ -88,12 +89,6 @@ public class MainActivity extends AppCompatActivity
                 famMenu.updateVisibility();
             }
         });
-
-        /*
-         * DEBUG MODE
-         */
-        //CacheManager.getInstance().removeAll(this);
-        //AppDatabase.getAppDatabase(this).nukeDB();
     }
 
     /**
@@ -245,9 +240,9 @@ public class MainActivity extends AppCompatActivity
         void updateFragment() {
             String fragment;
             if ("Movies".equals(this.famTheme)) {
-                fragment = getString(this.famType.getMovieFragment());
+                fragment = getString(this.famType.movieFragment);
             } else {
-                fragment = getString(this.famType.getSerieFragment());
+                fragment = getString(this.famType.serieFragment);
             }
             switchFragment(fragment);
             updateVisibility();
@@ -259,22 +254,14 @@ public class MainActivity extends AppCompatActivity
         TOP_RATED("Top Rated", R.string.fragment_top_rated_movies, R.string.fragment_top_rated_series),
         ON_AIR("On Air", R.string.fragment_on_air_movies, R.string.fragment_on_air_series);
 
-        String name;
-        int movieFragment;
-        int serieFragment;
+        final String name;
+        final int movieFragment;
+        final int serieFragment;
 
         FamType(String name, int movieFragment, int serieFragment) {
             this.name = name;
             this.movieFragment = movieFragment;
             this.serieFragment = serieFragment;
-        }
-
-        public int getMovieFragment() {
-            return this.movieFragment;
-        }
-
-        public int getSerieFragment() {
-            return serieFragment;
         }
     }
 }

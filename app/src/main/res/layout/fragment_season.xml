@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.movies.MovieActivity">
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -206,26 +206,6 @@
             android:id="@+id/episodes_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="30dp">
-
-            <TextView
-                android:id="@+id/teaser_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:gravity="center_horizontal"
-                android:text="@string/teaser_txt"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp" />
-
-            <include layout="@layout/fragment_youtube" />
-
-        </LinearLayout>
 
     </LinearLayout>
 

@@ -4,11 +4,6 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +11,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.text.DecimalFormat;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.youtube.YoutubeFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
+import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
@@ -123,7 +122,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
                         this.movie.getRecommendations()
                                 .getResults()
                                 .stream()
-                                .map(Movie::toDatabaseFormat)
+                                .map(Movie::toAdapterFormat)
                                 .collect(Collectors.toList()),
                         true
                 )
@@ -158,18 +157,6 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
             DecimalFormat decimalFormat = new DecimalFormat("#,###");
             String numberAsString = decimalFormat.format(movie.getBudget()) + "€";
             this.budget.setText(numberAsString);
-        }
-
-        if (this.movie.getRightVideo() != null) {
-            FragmentManager manager = getFragmentManager();
-            if (manager != null) {
-                YoutubeFragment fragment = new YoutubeFragment();
-                fragment.instanciate(this.movie.getRightVideo().getKey());
-                manager.beginTransaction()
-                        .replace(R.id.youtube_content, fragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
         }
     }
 

@@ -23,7 +23,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.MediaTransactionObserver;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.view_model.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 /**
  * Created by lucasamiaud on 28/12/2018.

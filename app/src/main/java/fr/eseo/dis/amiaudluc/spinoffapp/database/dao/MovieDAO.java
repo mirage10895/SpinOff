@@ -7,7 +7,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 
 /**
@@ -16,16 +15,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 @Dao
 public interface MovieDAO {
-
     @Insert
     void insertMovie(MovieDatabase movie);
-
-    @Query("SELECT * FROM MOVIES")
+    @Query("select * from movie")
     LiveData<List<MovieDatabase>> getAll();
-
-    @Query("DELETE FROM MOVIES WHERE id = :id")
+    @Query("DELETE FROM movie WHERE id = :id")
     void deleteMovieById(Integer id);
-
-    @Query("SELECT * FROM movies where id = :id")
+    @Query("select * from movie where id = :id")
     LiveData<MovieDatabase> fetchMovieById(int id);
 }

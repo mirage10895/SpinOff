@@ -9,6 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.time.LocalDate;
@@ -16,10 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
@@ -30,8 +31,6 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
  * A simple {@link Fragment} subclass.
  */
 public class CalendarFragment extends Fragment implements SearchInterface {
-
-    private static final String TAG = CalendarFragment.class.getSimpleName();
     private Context ctx;
     private AppDatabase db;
 
@@ -70,7 +69,7 @@ public class CalendarFragment extends Fragment implements SearchInterface {
                                 episodeDatabase.getAirDate(),
                                 episodeDatabase.getSeriePosterPath(),
                                 episodeDatabase.getEpisodeName(),
-                                episodeDatabase.getWatched()
+                                episodeDatabase.isWatched()
                         ))
                         .collect(Collectors.toList());
             }

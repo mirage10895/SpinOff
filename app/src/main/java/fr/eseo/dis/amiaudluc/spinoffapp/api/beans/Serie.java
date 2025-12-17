@@ -42,6 +42,7 @@ public class Serie implements Media {
     private String type;
     private Double voteAverage;
     private Integer voteCount;
+    private ApiObjectResponse<Movie> recommendations;
 
     public Serie() {
         super();

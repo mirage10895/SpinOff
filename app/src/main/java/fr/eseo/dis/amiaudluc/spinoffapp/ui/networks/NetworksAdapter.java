@@ -72,7 +72,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
 
     class NetworksViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private SearchInterface frag = (SearchInterface) mListener;
+        private final SearchInterface frag = (SearchInterface) mListener;
 
         final ImageView avatar;
         final TextView name;
@@ -89,7 +89,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
         @Override
         public void onClick(View v) {
             frag.setType(SearchInterface.FragmentType.NETWORK);
-            mListener.onItemClick(getAdapterPosition());
+            mListener.onItemClick(getAbsoluteAdapterPosition());
         }
 
     }

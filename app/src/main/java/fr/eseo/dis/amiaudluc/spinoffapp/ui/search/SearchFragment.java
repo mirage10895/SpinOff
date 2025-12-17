@@ -3,6 +3,10 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -10,26 +14,20 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
@@ -120,7 +118,7 @@ public class SearchFragment extends Fragment implements SearchInterface {
         return view;
     }
 
-    public void loadData(List<MovieDatabase> movies, List<SerieAdapterData> series, List<Artist> artists) {
+    public void loadData(List<MovieAdapterData> movies, List<SerieAdapterData> series, List<Artist> artists) {
         moviesAdapter.setMovies(movies);
         seriesAdapter.setSeries(series);
         artistsAdapter.setArtist(artists);
@@ -161,7 +159,7 @@ public class SearchFragment extends Fragment implements SearchInterface {
         }
 
         loadData(
-                movies.stream().map(Movie::toDatabaseFormat).collect(Collectors.toList()),
+                movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()),
                 series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()),
                 artists
         );
@@ -169,7 +167,7 @@ public class SearchFragment extends Fragment implements SearchInterface {
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
 
