@@ -3,7 +3,6 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.library;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -36,15 +35,6 @@ public class LibraryActivity extends AppCompatActivity {
                         .commit();
                 getSupportActionBar().setTitle(currentFragment);
                 return true;
-            } else if (itemId == R.id.navigation_dashboard) {
-                currentFragment = "Dashboard";
-                fragment = new DashboardFragment();
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content, fragment, currentFragment)
-                        .commit();
-                getSupportActionBar().setTitle(currentFragment);
-                return true;
             } else if (itemId == R.id.navigation_lib_serie) {
                 currentFragment = "My Series";
                 fragment = new MySeriesFragment();
@@ -70,14 +60,12 @@ public class LibraryActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        findViewById(R.id.fab).setVisibility(View.GONE);
-
         navigation = findViewById(R.id.navigation);
         navigation.setOnItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_dashboard);
+        navigation.setSelectedItemId(R.id.navigation_lib_movie);
 
-        currentFragment = "Dashboard";
-        fragment = new DashboardFragment();
+        currentFragment = "My Movies";
+        fragment = new MyMoviesFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
         getSupportActionBar().setTitle(currentFragment);
 

@@ -6,12 +6,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.MainActivity">
 
-    <include
-        layout="@layout/app_bar_main"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/app_bar_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/content_main" />
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            app:fab_labelStyle="@style/menu_labels_style"
+            app:fab_labelsPosition="left"
+            app:fab_addButtonColorNormal="@color/colorAccent"
+            app:fab_addButtonColorPressed="@color/colorPrimaryDark"
+            app:fab_addButtonSize="normal"
+            app:fab_addButtonPlusIconColor="@color/white"
+            app:fab_expandDirection="up"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_top_rated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_colorPressed="@color/colorPrimaryDark"
+                app:fab_title="Top Rated"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_pop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_colorPressed="@color/colorPrimaryDark"
+                app:fab_title="Popular"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/button_on_air"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/white"
+                app:fab_colorPressed="@color/colorPrimaryDark"
+                app:fab_title="Current"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
