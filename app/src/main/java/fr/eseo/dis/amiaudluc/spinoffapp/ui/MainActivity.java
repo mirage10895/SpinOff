@@ -15,14 +15,21 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.services.UpdateSeriesWorker;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar.CalendarFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.library.LibraryActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.OnAirMoviesFragment;
@@ -89,6 +96,26 @@ public class MainActivity extends AppCompatActivity
                 famMenu.updateVisibility();
             }
         });
+
+        scheduleBackgroundTasks();
+    }
+
+    private void scheduleBackgroundTasks() {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
+                .build();
+
+        PeriodicWorkRequest updateSeriesRequest =
+                new PeriodicWorkRequest.Builder(UpdateSeriesWorker.class, 1, TimeUnit.DAYS)
+                        .setConstraints(constraints)
+                        .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "UpdateSeriesWork",
+                ExistingPeriodicWorkPolicy.KEEP,
+                updateSeriesRequest
+        );
     }
 
     /**

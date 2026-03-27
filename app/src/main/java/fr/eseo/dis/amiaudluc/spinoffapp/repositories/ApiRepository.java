@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.ApiService;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
@@ -36,180 +39,97 @@ public class ApiRepository {
     }
 
     public LiveData<List<Movie>> getMoviesByType(String type, Integer page, List<Movie> previous) {
-        Call<ApiListResponse<Movie>> call = this.tmdbApiService.api.getMovies(type, "FR", page);
-        final MutableLiveData<List<Movie>> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiListResponse<Movie>> call, @NonNull Response<ApiListResponse<Movie>> response) {
-                if (response.body() != null) {
-                    if (response.body().getPage() == 1) {
-                        data.setValue(response.body().getResults());
-                    } else {
-                        previous.addAll(response.body().getResults());
-                        data.setValue(previous);
+        return executeAsync(
+                this.tmdbApiService.api.getMovies(type, "FR", page),
+                response -> {
+                    if (response.getPage() == 1) {
+                        return response.getResults();
                     }
-                } else {
-                    data.setValue(null);
+                    previous.addAll(response.getResults());
+                    return previous;
                 }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiListResponse<Movie>> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+        );
     }
 
     public LiveData<Movie> getMovieById(Integer id) {
-        Call<Movie> call = this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations");
-        final MutableLiveData<Movie> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
-                if (response.body() != null) {
-                    data.setValue(response.body());
-                } else {
-                    data.setValue(null);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Movie> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+        return executeAsync(this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations"));
     }
 
     public LiveData<List<Serie>> getSeriesByType(String type, Integer page, List<Serie> previous) {
-        Call<ApiListResponse<Serie>> call = this.tmdbApiService.api.getSeries(type, "FR", page);
-        final MutableLiveData<List<Serie>> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiListResponse<Serie>> call, @NonNull Response<ApiListResponse<Serie>> response) {
-                if (response.body() != null) {
-                    if (response.body().getPage() == 1) {
-                        data.setValue(response.body().getResults());
-                    } else {
-                        previous.addAll(response.body().getResults());
-                        data.setValue(previous);
+        return executeAsync(
+                this.tmdbApiService.api.getSeries(type, "FR", page),
+                response -> {
+                    if (response.getPage() == 1) {
+                        return response.getResults();
                     }
-                } else {
-                    data.setValue(null);
+                    previous.addAll(response.getResults());
+                    return previous;
                 }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiListResponse<Serie>> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+        );
     }
 
     public LiveData<Serie> getSerieById(Integer id) {
-        Call<Serie> call = this.tmdbApiService.api.getSerieById(id, "credits,videos,recommendations");
-        final MutableLiveData<Serie> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Serie> call, @NonNull Response<Serie> response) {
-                if (response.body() != null) {
-                    data.setValue(response.body());
-                } else {
-                    data.setValue(null);
-                }
-            }
+        return executeAsync(this.tmdbApiService.api.getSerieById(id, "credits,videos,recommendations"));
+    }
 
-            @Override
-            public void onFailure(@NonNull Call<Serie> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+    public Optional<Serie> getSerieByIdSync(Integer id) {
+        return execute(this.tmdbApiService.api.getSerieById(id, "credits,videos,recommendations"));
     }
 
     public LiveData<Season> getSeasonBySerieId(Integer id, Integer seasonNumber) {
-        Call<Season> call = this.tmdbApiService.api.getSeasonBySerieId(id, seasonNumber, "credits,videos");
-        final MutableLiveData<Season> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Season> call, @NonNull Response<Season> response) {
-                if (response.body() != null) {
-                    data.setValue(response.body());
-                } else {
-                    data.setValue(null);
-                }
-            }
+        return executeAsync(this.tmdbApiService.api.getSeasonBySerieId(id, seasonNumber, "credits,videos"));
+    }
 
-            @Override
-            public void onFailure(@NonNull Call<Season> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+    public Optional<Season> getSeasonBySerieIdSync(Integer id, Integer seasonNumber) {
+        return execute(this.tmdbApiService.api.getSeasonBySerieId(id, seasonNumber, "credits,videos"));
     }
 
     public LiveData<Episode> getEpisodeBySeasonNumberBySerieId(Integer id, Integer seasonNumber, Integer episodeNumber) {
-        Call<Episode> call = this.tmdbApiService.api.getEpisodeBySeasonNumberBySerieId(id, seasonNumber, episodeNumber, "credits,videos");
-        final MutableLiveData<Episode> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Episode> call, @NonNull Response<Episode> response) {
-                if (response.body() != null) {
-                    data.setValue(response.body());
-                } else {
-                    data.setValue(null);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Episode> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+        return executeAsync(this.tmdbApiService.api.getEpisodeBySeasonNumberBySerieId(id, seasonNumber, episodeNumber, "credits,videos"));
     }
 
     public LiveData<Artist> getArtistById(Integer id) {
-        Call<Artist> call = this.tmdbApiService.api.getArtistById(id, "tv_credits,movie_credits");
-        final MutableLiveData<Artist> data = new MutableLiveData<>();
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<Artist> call, @NonNull Response<Artist> response) {
-                if (response.body() != null) {
-                    data.setValue(response.body());
-                } else {
-                    data.setValue(null);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Artist> call, @NonNull Throwable t) {
-                data.setValue(null);
-            }
-        });
-        return data;
+        return executeAsync(this.tmdbApiService.api.getArtistById(id, "tv_credits,movie_credits"));
     }
 
     public LiveData<List<Media>> getSearchByQuery(String query) {
-        Call<ApiListResponse<Media>> call = this.tmdbApiService.api.getSearchByQuery(query);
-        final MutableLiveData<List<Media>> data = new MutableLiveData<>();
+        return executeAsync(this.tmdbApiService.api.getSearchByQuery(query), ApiListResponse::getResults);
+    }
+
+    private static <T> Optional<T> execute(Call<T> call) {
+        try {
+            Response<T> response = call.execute();
+            if (response.isSuccessful()) {
+                return Optional.ofNullable(response.body());
+            }
+            return Optional.empty();
+        } catch (IOException e) {
+            return Optional.empty();
+        }
+    }
+
+    private static <T> LiveData<T> executeAsync(Call<T> call) {
+        return executeAsync(call, Function.identity());
+    }
+
+    private static <T, R> LiveData<R> executeAsync(Call<T> call, Function<T, R> mapper) {
+        final MutableLiveData<R> data = new MutableLiveData<>();
         call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<ApiListResponse<Media>> call, @NonNull Response<ApiListResponse<Media>> response) {
+            public void onResponse(@NonNull Call<T> call, @NonNull Response<T> response) {
                 if (response.body() != null) {
-                    data.setValue(response.body().getResults());
+                    data.setValue(mapper.apply(response.body()));
                 } else {
                     data.setValue(null);
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<ApiListResponse<Media>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<T> call, @NonNull Throwable t) {
                 data.setValue(null);
             }
         });
         return data;
     }
+
 }

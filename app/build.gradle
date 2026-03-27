@@ -57,6 +57,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata:2.8.6'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.8.6'
 
+    // WorkManager
+    implementation 'androidx.work:work-runtime:2.9.0'
+
     // Lombok (still valid)
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'

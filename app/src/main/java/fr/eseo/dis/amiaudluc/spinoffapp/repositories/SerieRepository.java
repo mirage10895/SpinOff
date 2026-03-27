@@ -2,14 +2,15 @@ package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
@@ -33,76 +34,73 @@ public class SerieRepository {
     }
 
     public void insert(int serieId) {
-        computeSerieDatabase(serieId, false)
-                .observeForever(this::insert);
+        executor.execute(() -> {
+            SerieDatabase result = computeSerieDatabaseSync(serieId, false);
+            if (result != null) {
+                this.insert(result);
+            }
+        });
     }
 
-    public void updateAllSeries() {
-        this.fetchAll()
-                .observeForever(series -> {
-                    for (SerieDatabase serieDatabase: series) {
-                        if (serieDatabase.getLastSynchronisationTime().isAfter(Instant.now().minus(10, ChronoUnit.DAYS))) {
-                            this.computeSerieDatabase(serieDatabase.getId(), serieDatabase.isWatched())
-                                    .observeForever(this::update);
-                        }
-                    }
-                });
+    /**
+     * Synchronous version for background tasks.
+     */
+    public void updateAllSeriesSync() {
+        List<SerieDatabase> series = this.serieDAO.getAllSync();
+        for (SerieDatabase serieDatabase : series) {
+            // Only update if last sync was more than 10 days ago
+            if (serieDatabase.getLastSynchronisationTime() == null ||
+                    serieDatabase.getLastSynchronisationTime().isBefore(Instant.now().minus(10, ChronoUnit.DAYS))) {
+
+                SerieDatabase updated = computeSerieDatabaseSync(serieDatabase.getId(), serieDatabase.isWatched());
+                if (updated != null) {
+                    this.serieDAO.updateSerie(updated);
+                }
+            }
+        }
     }
 
-    private LiveData<SerieDatabase> computeSerieDatabase(int serieId, boolean isWatched) {
-        MutableLiveData<SerieDatabase> liveSerieDatabase = new MutableLiveData<>();
-        this.apiRepository.getSerieById(serieId)
-                .observeForever(apiSerie -> {
-                    SerieDatabase serieDatabase = new SerieDatabase();
-                    serieDatabase.setId(apiSerie.getId());
-                    serieDatabase.setName(apiSerie.getName());
-                    serieDatabase.setPosterPath(apiSerie.getPosterPath());
-                    serieDatabase.setWatched(isWatched);
-                    serieDatabase.setLastSynchronisationTime(Instant.now());
+    /**
+     * Synchronous version containing the source of truth for the logic.
+     */
+    private SerieDatabase computeSerieDatabaseSync(int serieId, boolean isWatched) {
+        Optional<Serie> apiSerie = this.apiRepository.getSerieByIdSync(serieId);
+        if (apiSerie.isEmpty()) {
+            return null;
+        }
 
-                    if (apiSerie.getNumberOfSeasons() == null || apiSerie.getNumberOfSeasons() == 0) {
-                        liveSerieDatabase.setValue(serieDatabase);
-                        return;
-                    }
-                    if (apiSerie.getEpisodeRunTime().isEmpty()) {
-                        // runtime of the first season episodes * the number of episodes
-                        this.apiRepository.getSeasonBySerieId(apiSerie.getId(), 1)
-                                .observeForever(season -> {
-                                    serieDatabase.setRuntime(
-                                            Season.computeEpisodesAverageRuntime(season) * apiSerie.getNumberOfEpisodes()
-                                    );
-                                    liveSerieDatabase.setValue(serieDatabase);
-                                });
-                        return;
-                    }
-                    serieDatabase.setRuntime(Serie.computeTotalRuntime(apiSerie));
-                    liveSerieDatabase.setValue(serieDatabase);
-                });
-        return liveSerieDatabase;
+        SerieDatabase serieDatabase = new SerieDatabase();
+        serieDatabase.setId(apiSerie.get().getId());
+        serieDatabase.setName(apiSerie.get().getName());
+        serieDatabase.setPosterPath(apiSerie.get().getPosterPath());
+        serieDatabase.setWatched(isWatched);
+        serieDatabase.setLastSynchronisationTime(Instant.now());
+
+        if (apiSerie.get().getNumberOfSeasons() == null || apiSerie.get().getNumberOfSeasons() == 0) {
+            return serieDatabase;
+        }
+
+        if (apiSerie.get().getEpisodeRunTime() == null || apiSerie.get().getEpisodeRunTime().isEmpty()) {
+            Optional<Season> season = this.apiRepository.getSeasonBySerieIdSync(apiSerie.get().getId(), 1);
+            season.ifPresent(value -> serieDatabase.setRuntime(
+                    Season.computeEpisodesAverageRuntime(value) * apiSerie.get().getNumberOfEpisodes()
+            ));
+        } else {
+            serieDatabase.setRuntime(Serie.computeTotalRuntime(apiSerie.get()));
+        }
+        return serieDatabase;
     }
 
     public void deleteById(int id) {
-        executor.execute(() -> {
-            this.serieDAO.deleteSerieById(id);
-        });
+        executor.execute(() -> this.serieDAO.deleteSerieById(id));
     }
 
 
     public void toggleSerieIsWatched(int id) {
-        executor.execute(() -> {
-            this.serieDAO.toggleSerieIsWatched(id);
-        });
-    }
-
-    private void update(SerieDatabase serieDatabase) {
-        executor.execute(() -> {
-            this.serieDAO.updateSerie(serieDatabase);
-        });
+        executor.execute(() -> this.serieDAO.toggleSerieIsWatched(id));
     }
 
     private void insert(SerieDatabase serieDatabase) {
-        executor.execute(() -> {
-            this.serieDAO.insertSerie(serieDatabase);
-        });
+        executor.execute(() -> this.serieDAO.insertSerie(serieDatabase));
     }
 }

@@ -19,10 +19,10 @@ public interface SerieDAO {
     void insertSerie(SerieDatabase serie);
     @Query("SELECT * FROM serie")
     LiveData<List<SerieDatabase>> getAll();
+    @Query("SELECT * FROM serie")
+    List<SerieDatabase> getAllSync();
     @Query("DELETE FROM serie where id = :id")
     void deleteSerieById(Integer id);
-    @Query("SELECT * FROM serie where id = :id")
-    LiveData<SerieDatabase> getSerieById(int id);
     @Query("update serie set watched = not watched where id = :id")
     void toggleSerieIsWatched(int id);
     @Update
