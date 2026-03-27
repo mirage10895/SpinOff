@@ -1,6 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -9,16 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.FragmentSearchMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
@@ -27,33 +27,27 @@ import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * interface.
+ * A fragment representing a search result list.
  */
 public class SearchFragment extends Fragment implements SearchInterface {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
-    private SearchInterface mListener;
+    private FragmentSearchMainBinding binding;
+    private SearchViewModel searchViewModel;
     private MoviesAdapter moviesAdapter;
     private SeriesAdapter seriesAdapter;
     private ArtistsAdapter artistsAdapter;
-    private List<Media> medias;
     private FragmentType type;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public SearchFragment() {
+    private SearchFragment() {
+        // Required empty public constructor
     }
 
     public static SearchFragment newInstance(int columnCount) {
@@ -67,8 +61,6 @@ public class SearchFragment extends Fragment implements SearchInterface {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        this.mListener = this;
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -76,66 +68,54 @@ public class SearchFragment extends Fragment implements SearchInterface {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search_main, container, false);
+        binding = FragmentSearchMainBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        // Set the adapter
-        Context context = view.getContext();
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_movies);
-        RecyclerView recyclerView_serie = view.findViewById(R.id.recycler_series);
-        RecyclerView recyclerView_parson = view.findViewById(R.id.recycler_artists);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        searchViewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
+
+        setupRecyclerViews();
+        observeViewModel();
+    }
+
+    private void setupRecyclerViews() {
+        setupLayoutManager(binding.recyclerMovies);
+        setupLayoutManager(binding.recyclerSeries);
+        setupLayoutManager(binding.recyclerArtists);
+
+        moviesAdapter = new MoviesAdapter(requireContext(), this, new ArrayList<>(), true);
+        seriesAdapter = new SeriesAdapter(requireContext(), this, new ArrayList<>(), true);
+        artistsAdapter = new ArtistsAdapter(requireContext(), this, new ArrayList<>());
+
+        binding.recyclerMovies.setAdapter(moviesAdapter);
+        binding.recyclerSeries.setAdapter(seriesAdapter);
+        binding.recyclerArtists.setAdapter(artistsAdapter);
+    }
+
+    private void setupLayoutManager(androidx.recyclerview.widget.RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        recyclerView_serie.setHasFixedSize(true);
-        recyclerView_parson.setHasFixedSize(true);
         if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(
-                    new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            );
-            recyclerView_serie.setLayoutManager(
-                    new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            );
-            recyclerView_parson.setLayoutManager(
-                    new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            );
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         } else {
-            recyclerView.setLayoutManager(
-                    new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL, false)
-            );
-            recyclerView_serie.setLayoutManager(
-                    new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL, false)
-            );
-            recyclerView_parson.setLayoutManager(
-                    new GridLayoutManager(context, mColumnCount, LinearLayoutManager.VERTICAL, false)
-            );
+            recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), mColumnCount));
         }
-        moviesAdapter = new MoviesAdapter(context, mListener, new ArrayList<>(), true);
-        seriesAdapter = new SeriesAdapter(context, mListener, new ArrayList<>(), true);
-        artistsAdapter = new ArtistsAdapter(context, mListener, new ArrayList<>());
-
-        recyclerView.setAdapter(moviesAdapter);
-        recyclerView_serie.setAdapter(seriesAdapter);
-        recyclerView_parson.setAdapter(artistsAdapter);
-
-        return view;
     }
 
-    public void loadData(List<MovieAdapterData> movies, List<SerieAdapterData> series, List<Artist> artists) {
-        moviesAdapter.setMovies(movies);
-        seriesAdapter.setSeries(series);
-        artistsAdapter.setArtist(artists);
-        moviesAdapter.notifyDataSetChanged();
-        seriesAdapter.notifyDataSetChanged();
-        artistsAdapter.notifyDataSetChanged();
+    private void observeViewModel() {
+        searchViewModel.getMedias().observe(getViewLifecycleOwner(), this::updateMedias);
     }
 
-    public void setMedias(List<Media> medias) {
+    private void updateMedias(List<Media> medias) {
+        if (medias == null || binding == null) return;
+
         List<Movie> movies = new ArrayList<>();
         List<Serie> series = new ArrayList<>();
         List<Artist> artists = new ArrayList<>();
-        this.getView().findViewById(R.id.movies_layer).setVisibility(View.VISIBLE);
-        this.getView().findViewById(R.id.series_layer).setVisibility(View.VISIBLE);
-        this.getView().findViewById(R.id.artists_layer).setVisibility(View.VISIBLE);
-        this.medias = medias;
-        for (Media media : this.medias) {
+
+        for (Media media : medias) {
             switch (media.getMediaType()) {
                 case Media.MOVIE:
                     movies.add((Movie) media);
@@ -148,51 +128,49 @@ public class SearchFragment extends Fragment implements SearchInterface {
                     break;
             }
         }
-        if (movies.isEmpty()) {
-            this.getView().findViewById(R.id.movies_layer).setVisibility(View.GONE);
-        }
-        if (series.isEmpty()) {
-            this.getView().findViewById(R.id.series_layer).setVisibility(View.GONE);
-        }
-        if (artists.isEmpty()) {
-            this.getView().findViewById(R.id.artists_layer).setVisibility(View.GONE);
-        }
 
-        loadData(
-                movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()),
-                series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()),
-                artists
-        );
-    }
+        binding.moviesLayer.setVisibility(movies.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.seriesLayer.setVisibility(series.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.artistsLayer.setVisibility(artists.isEmpty() ? View.GONE : View.VISIBLE);
 
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+        moviesAdapter.setMovies(movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()));
+        seriesAdapter.setSeries(series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()));
+        artistsAdapter.setArtist(artists);
+        
+        moviesAdapter.notifyDataSetChanged();
+        seriesAdapter.notifyDataSetChanged();
+        artistsAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
+    @Override
     public void setType(FragmentType type) {
         this.type = type;
     }
 
     @Override
     public void onItemClick(Integer id) {
-        if (this.type.equals(FragmentType.MOVIE)) {
-            Intent intent = new Intent(getContext(), MovieActivity.class);
-            intent.putExtra("id", id);
-            startActivity(intent);
-        } else if (this.type.equals(FragmentType.SERIE)) {
-            Intent intent = new Intent(getContext(), SerieActivity.class);
-            intent.putExtra("id", id);
-            startActivity(intent);
-        } else if (this.type.equals(FragmentType.ARTIST)) {
-            Intent intent = new Intent(getContext(), ArtistActivity.class);
+        if (this.type == null) return;
+        
+        Intent intent = null;
+        switch (this.type) {
+            case MOVIE:
+                intent = new Intent(requireContext(), MovieActivity.class);
+                break;
+            case SERIE:
+                intent = new Intent(requireContext(), SerieActivity.class);
+                break;
+            case ARTIST:
+                intent = new Intent(requireContext(), ArtistActivity.class);
+                break;
+        }
+
+        if (intent != null) {
             intent.putExtra("id", id);
             startActivity(intent);
         }
@@ -200,6 +178,5 @@ public class SearchFragment extends Fragment implements SearchInterface {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
-
     }
 }

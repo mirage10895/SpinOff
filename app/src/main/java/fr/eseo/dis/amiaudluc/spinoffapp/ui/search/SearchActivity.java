@@ -6,147 +6,120 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.ActivitySearchBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private ActivitySearchBinding binding;
     private SearchViewModel searchViewModel;
-    private EditText queryText;
-    private String currentFragment;
-    private SearchFragment fragment;
-    private FrameLayout content;
-    private RelativeLayout noMedia;
     private InputMethodManager imm;
-    private TextView noText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-        setContentView(R.layout.activity_search);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        binding = ActivitySearchBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        this.searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-        this.fragment = SearchFragment.newInstance(1);
-
-        ActionBar actionBar = getSupportActionBar();
-
-        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        noText = findViewById(R.id.nothing_text);
-        content = findViewById(R.id.content);
-        content.setVisibility(View.GONE);
-        noMedia = findViewById(R.id.no_media_display);
-
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        currentFragment = getString(R.string.fragment_search_medias);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content,
-                        fragment,
-                        currentFragment
-                )
-                .commit();
+        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
-        queryText = this.findViewById(R.id.query);
+        binding.contentMain.content.setVisibility(View.GONE);
 
-        queryText.setOnKeyListener((view, keyCode, keyEvent) -> {
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.content, SearchFragment.newInstance(1), "SearchFragment")
+                    .commit();
+        }
+
+        setupListeners();
+        setupObservers();
+    }
+
+    private void setupListeners() {
+        binding.query.setOnKeyListener((view, keyCode, keyEvent) -> {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                onSearch(queryText.getText().toString());
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
+                onSearch(binding.query.getText().toString());
+                hideKeyboard(view);
                 return true;
             }
             return false;
         });
 
-        queryText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+        binding.query.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().isEmpty()) {
-                    content.setVisibility(View.GONE);
-                    noMedia.setVisibility(View.VISIBLE);
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().isEmpty()) {
+                    binding.contentMain.progressBar.setVisibility(View.GONE);
+                    binding.contentMain.content.setVisibility(View.GONE);
+                    binding.noMediaDisplay.setVisibility(View.VISIBLE);
+                    binding.nothingText.setText(R.string.search_for);
                 } else {
-                    onSearch(charSequence.toString());
+                    onSearch(s.toString());
                 }
             }
+        });
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+        binding.searchButton.setOnClickListener(v -> {
+            onSearch(binding.query.getText().toString());
+            hideKeyboard(v);
+        });
+    }
 
+    private void setupObservers() {
+        searchViewModel.getMedias().observe(this, medias -> {
+            binding.contentMain.progressBar.setVisibility(View.GONE);
+            if (medias == null) {
+                binding.noMediaDisplay.setVisibility(View.VISIBLE);
+                binding.nothingText.setText(R.string.empty_desc_results);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
+            } else if (medias.isEmpty()) {
+                binding.contentMain.content.setVisibility(View.GONE);
+                binding.noMediaDisplay.setVisibility(View.VISIBLE);
+                binding.nothingText.setText(R.string.no_results);
+            } else {
+                binding.noMediaDisplay.setVisibility(View.GONE);
+                binding.contentMain.content.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    /**
-     * This is the method called from the button
-     * cf related xml file
-     *
-     * @param view
-     */
-    public void onSearch(View view) {
-        onSearch(queryText.getText().toString());
+    private void onSearch(String query) {
+        binding.contentMain.progressBar.setVisibility(View.VISIBLE);
+        binding.noMediaDisplay.setVisibility(View.GONE);
+        searchViewModel.initSearchByQuery(query);
+    }
+
+    private void hideKeyboard(View view) {
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    public void onSearch(String query) {
-        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        noMedia.setVisibility(View.GONE);
-        this.searchViewModel.initSearchByQuery(query);
-        this.searchViewModel.getMedias().observe(this, media -> {
-            findViewById(R.id.progressBar).setVisibility(View.GONE);
-            if (media == null) {
-                noMedia.setVisibility(View.VISIBLE);
-                noText.setText(R.string.empty_desc_results);
-                Snackbar.make(fragment.getView(), R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            } else if (media.isEmpty()) {
-                content.setVisibility(View.GONE);
-                noMedia.setVisibility(View.VISIBLE);
-                noText.setText("No results for your query \n Try again !");
-            } else {
-                noMedia.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                fragment.setMedias(media);
-            }
-        });
-    }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
     }
 }

@@ -1,21 +1,20 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.FragmentSeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
@@ -23,111 +22,108 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SeasonFragment extends Fragment implements SearchInterface {
 
-    private Context ctx;
-    private Season season;
+    private static final String ARG_SERIE_ID = "serie_id";
+    private static final String ARG_SEASON_NUMBER = "season_number";
+
+    private FragmentSeasonBinding binding;
+    private SerieViewModel serieViewModel;
     private FragmentType type;
-    private View seasonView;
+    private int serieId;
+    private int seasonNumber;
 
-    // recyclers
-    private RecyclerView recyclerEpisodes;
-    private RecyclerView recyclerGuest;
-
-    // views
-    private ImageView airDate;
-    private TextView seasonNumber;
-    private TextView episode;
-    private TextView overview;
-
-    public SeasonFragment() {
+    private SeasonFragment() {
         // Required empty public constructor
     }
 
+    public static SeasonFragment newInstance(int serieId, int seasonNumber) {
+        SeasonFragment fragment = new SeasonFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SERIE_ID, serieId);
+        args.putInt(ARG_SEASON_NUMBER, seasonNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            serieId = getArguments().getInt(ARG_SERIE_ID);
+            seasonNumber = getArguments().getInt(ARG_SEASON_NUMBER);
+        }
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        this.seasonView = inflater.inflate(R.layout.fragment_season, container, false);
-        this.ctx = seasonView.getContext();
-
-        this.recyclerEpisodes = seasonView.findViewById(R.id.episodes_recycler);
-        this.recyclerGuest = seasonView.findViewById(R.id.guest_stars);
-
-        this.airDate = seasonView.findViewById(R.id.air_date);
-        this.seasonNumber = seasonView.findViewById(R.id.number_of_season);
-        this.episode = seasonView.findViewById(R.id.episodes);
-        this.overview = seasonView.findViewById(R.id.overview);
-
-        return seasonView;
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentSeasonBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
+        
+        setupRecyclerViews();
+        observeViewModel();
+    }
 
-        this.recyclerEpisodes.setHasFixedSize(true);
-        this.recyclerEpisodes.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.VERTICAL, false));
-        this.recyclerEpisodes.setNestedScrollingEnabled(false);
-        this.recyclerEpisodes.setAdapter(new EpisodesAdapter(this.seasonView.getContext(), this, season.getEpisodes()));
+    private void setupRecyclerViews() {
+        binding.episodesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.episodesRecycler.setHasFixedSize(true);
+        binding.episodesRecycler.setNestedScrollingEnabled(false);
 
-        this.recyclerGuest.setHasFixedSize(true);
-        this.recyclerGuest.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
-        ActorsAdapter artistsAdapter = new ActorsAdapter(ctx, this, this.season.getCredits().getCast());
-        this.recyclerGuest.setAdapter(artistsAdapter);
+        binding.guestStars.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.guestStars.setHasFixedSize(true);
+    }
 
-        this.airDate.setImageBitmap(CircularImageBar.buildNumber(0, ctx.getColor(R.color.colorAccent)));
-        if (this.season.getAirDate() != null) {
-            this.airDate.setImageBitmap(
+    private void observeViewModel() {
+        serieViewModel.getSeason().observe(getViewLifecycleOwner(), this::updateUI);
+    }
+
+    private void updateUI(Season season) {
+        if (season == null || binding == null) return;
+
+        // CircularImageBar for Air Date (Year)
+        binding.airDate.setImageBitmap(CircularImageBar.buildNumber(0, requireContext().getColor(R.color.colorAccent)));
+        if (season.getAirDate() != null) {
+            binding.airDate.setImageBitmap(
                     CircularImageBar.buildNumber(
-                            this.season.getAirDate().getYear(),
-                            this.ctx.getColor(R.color.white)
+                            season.getAirDate().getYear(),
+                            requireContext().getColor(R.color.white)
                     )
             );
         }
-        this.seasonNumber.setText("0");
-        if (this.season.getSeasonNumber() != -1) {
-            this.seasonNumber.setText(season.getSeasonNumber().toString());
-        }
-        this.episode.setText("0");
-        if (!this.season.getEpisodes().isEmpty()) {
-            this.episode.setText(String.valueOf(this.season.getEpisodes().size()));
-        }
-        this.overview.setText(R.string.emptyField);
-        if (!"".equals(this.season.getOverview())) {
-            this.overview.setTextColor(ctx.getColor(R.color.white));
-            this.overview.setText(season.getOverview());
-        }
-    }
 
-    public void setSeason(Season season) {
-        this.season = season;
-    }
+        binding.numberOfSeason.setText(season.getSeasonNumber() != -1 ? String.valueOf(season.getSeasonNumber()) : "0");
+        
+        if (season.getEpisodes() != null) {
+            binding.episodes.setText(String.valueOf(season.getEpisodes().size()));
+            binding.episodesRecycler.setAdapter(new EpisodesAdapter(requireContext(), this, season.getEpisodes()));
+        } else {
+            binding.episodes.setText("0");
+        }
 
-    @Override
-    public void onItemClick(Integer id) {
-        if (this.type.equals(FragmentType.ACTOR)) {
-            Intent intent = new Intent(ctx, ArtistActivity.class);
-            intent.putExtra("id", id);
-            startActivity(intent);
-        } else if (this.type.equals(FragmentType.EPISODE)) {
-            Intent intent = new Intent(ctx, EpisodeActivity.class);
-            intent.putExtra("serieId", season.getSerieId());
-            intent.putExtra("seasonNumber", season.getSeasonNumber());
-            intent.putExtra("episodeNumber", id);
-            startActivity(intent);
+        if (season.getOverview() != null && !season.getOverview().isEmpty()) {
+            binding.overview.setTextColor(requireContext().getColor(R.color.white));
+            binding.overview.setText(season.getOverview());
+        } else {
+            binding.overview.setText(R.string.emptyField);
+        }
+
+        if (season.getCredits() != null && season.getCredits().getCast() != null) {
+            binding.guestStars.setAdapter(new ActorsAdapter(requireContext(), this, season.getCredits().getCast()));
         }
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
-
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
@@ -135,5 +131,24 @@ public class SeasonFragment extends Fragment implements SearchInterface {
         this.type = type;
     }
 
+    @Override
+    public void onItemClick(Integer id) {
+        if (type == null) return;
+        
+        if (type == FragmentType.ACTOR) {
+            Intent intent = new Intent(requireContext(), ArtistActivity.class);
+            intent.putExtra("id", id);
+            startActivity(intent);
+        } else if (type == FragmentType.EPISODE) {
+            Intent intent = new Intent(requireContext(), EpisodeActivity.class);
+            intent.putExtra("serieId", serieId);
+            intent.putExtra("seasonNumber", seasonNumber);
+            intent.putExtra("episodeNumber", id);
+            startActivity(intent);
+        }
+    }
 
+    @Override
+    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
+    }
 }

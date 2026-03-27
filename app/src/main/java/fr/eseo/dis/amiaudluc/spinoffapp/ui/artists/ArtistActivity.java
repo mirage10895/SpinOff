@@ -3,84 +3,72 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.artists;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.ActivityArtistBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.ArtistViewModel;
 
 public class ArtistActivity extends AppCompatActivity {
 
+    private ActivityArtistBinding binding;
     private ArtistViewModel artistViewModel;
-    private FrameLayout content;
-    private RelativeLayout noMedia;
-    private ArtistFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artist);
-        Integer id = getIntent().getIntExtra("id", 0);
-        this.fragment = new ArtistFragment();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        binding = ActivityArtistBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-            actionBar.setTitle(getString(R.string.emptyField));
+        setSupportActionBar(binding.appBarMain.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.emptyField);
         }
 
-        this.artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
-        this.artistViewModel.initGetArtistById(id);
-        this.artistViewModel.getArtist().observe(this, artist -> {
+        binding.content.content.setVisibility(View.GONE);
+
+        artistViewModel = new ViewModelProvider(this).get(ArtistViewModel.class);
+        int artistId = getIntent().getIntExtra("id", 0);
+
+        if (savedInstanceState == null) {
+            artistViewModel.initGetArtistById(artistId);
+            
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.content, ArtistFragment.newInstance(artistId), "ArtistFragment")
+                    .commit();
+        }
+
+        setupObservers();
+    }
+
+    private void setupObservers() {
+        artistViewModel.getArtist().observe(this, artist -> {
             if (artist != null) {
-                this.fragment.setArtist(artist);
-                noMedia.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content,
-                        fragment, getString(R.string.fragment_artist))
-                        .commit();
-                if (artist.getName() != null) {
-                    actionBar.setTitle(artist.getName());
+                binding.content.noMediaDisplay.getRoot().setVisibility(View.GONE);
+                binding.content.content.setVisibility(View.VISIBLE);
+                if (getSupportActionBar() != null && artist.getName() != null) {
+                    getSupportActionBar().setTitle(artist.getName());
                 }
             } else {
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
             }
         });
-
-        findViewById(R.id.fab).setVisibility(View.GONE);
-
-        content = findViewById(R.id.content);
-        content.setVisibility(View.GONE);
-        noMedia = findViewById(R.id.no_media_display);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (itemId == R.menu.options_menu) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
     }
 }

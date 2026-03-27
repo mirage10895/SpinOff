@@ -1,136 +1,156 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.artists;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.databinding.FragmentArtistBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.ArtistViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ArtistFragment extends Fragment implements SearchInterface {
 
-    private Artist artist;
-    private Context ctx;
-    private MoviesAdapter moviesAdapter;
-    private SeriesAdapter seriesAdapter;
-    private SearchInterface mListener;
+    private static final String ARG_ARTIST_ID = "artist_id";
+
+    private FragmentArtistBinding binding;
+    private ArtistViewModel artistViewModel;
     private FragmentType type;
+    private int artistId;
 
     public ArtistFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        View artistView = inflater.inflate(R.layout.fragment_artist, container, false);
-        ctx = artistView.getContext();
-        this.mListener = this;
+    public static ArtistFragment newInstance(int artistId) {
+        ArtistFragment fragment = new ArtistFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_ARTIST_ID, artistId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
-        ImageView imageView = artistView.findViewById(R.id.poster_ic);
-        String link = getResources().getString(R.string.base_url_poster_500) + this.artist.getProfilePath();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            artistId = getArguments().getInt(ARG_ARTIST_ID);
+        }
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentArtistBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        artistViewModel = new ViewModelProvider(requireActivity()).get(ArtistViewModel.class);
+        
+        setupRecyclerViews();
+        observeViewModel();
+    }
+
+    private void setupRecyclerViews() {
+        binding.mediaMain.recyclerMovies.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.mediaMain.recyclerMovies.setHasFixedSize(true);
+
+        binding.mediaMain.recyclerSeries.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.mediaMain.recyclerSeries.setHasFixedSize(true);
+        
+        binding.mediaMain.artistsLayer.setVisibility(View.GONE);
+    }
+
+    private void observeViewModel() {
+        artistViewModel.getArtist().observe(getViewLifecycleOwner(), this::updateUI);
+    }
+
+    private void updateUI(Artist artist) {
+        if (artist == null || binding == null) return;
+
+        String link = getString(R.string.base_url_poster_500) + artist.getProfilePath();
         Picasso.get()
                 .load(link)
                 .fit()
                 .centerInside()
                 .placeholder(R.drawable.ic_unknown)
                 .error(R.drawable.ic_unknown)
-                .into(imageView);
+                .into(binding.posterIc);
 
-        TextView textView = artistView.findViewById(R.id.name);
-        textView.setText(this.artist.getName());
+        binding.name.setText(artist.getName());
 
-
-        if (!artist.getMovies().getCast().isEmpty()) {
-            RecyclerView recyclerView = artistView.findViewById(R.id.recycler_movies);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
-                    false));
-            moviesAdapter = new MoviesAdapter(
-                    ctx,
-                    mListener,
-                    artist.getMovies().getCast()
-                            .stream()
+        if (artist.getMovies() != null && artist.getMovies().getCast() != null && !artist.getMovies().getCast().isEmpty()) {
+            binding.mediaMain.moviesLayer.setVisibility(View.VISIBLE);
+            binding.mediaMain.recyclerMovies.setAdapter(new MoviesAdapter(
+                    requireContext(),
+                    this,
+                    artist.getMovies().getCast().stream()
                             .map(Movie::toAdapterFormat)
                             .collect(Collectors.toList()),
                     true
-            );
-            recyclerView.setAdapter(moviesAdapter);
+            ));
         } else {
-            artistView.findViewById(R.id.movies_layer).setVisibility(View.GONE);
+            binding.mediaMain.moviesLayer.setVisibility(View.GONE);
         }
-        if (!artist.getSeries().getCast().isEmpty()) {
-            RecyclerView recyclerViewSerie = artistView.findViewById(R.id.recycler_series);
-            recyclerViewSerie.setHasFixedSize(true);
-            recyclerViewSerie.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL,
-                    false));
-            seriesAdapter = new SeriesAdapter(
-                    ctx,
-                    mListener,
-                    artist.getSeries().getCast().stream().map(Serie::toAdapterFormat).collect(Collectors.toList()),
+
+        if (artist.getSeries() != null && artist.getSeries().getCast() != null && !artist.getSeries().getCast().isEmpty()) {
+            binding.mediaMain.seriesLayer.setVisibility(View.VISIBLE);
+            binding.mediaMain.recyclerSeries.setAdapter(new SeriesAdapter(
+                    requireContext(),
+                    this,
+                    artist.getSeries().getCast().stream()
+                            .map(Serie::toAdapterFormat)
+                            .collect(Collectors.toList()),
                     true
-            );
-            recyclerViewSerie.setAdapter(seriesAdapter);
+            ));
         } else {
-            artistView.findViewById(R.id.series_layer).setVisibility(View.GONE);
-        }
-        artistView.findViewById(R.id.artists_layer).setVisibility(View.GONE);
-
-        TextView whoAreYou = artistView.findViewById(R.id.who_are_you);
-        whoAreYou.setText(R.string.emptyField);
-        if (artist.getBiography() != null) {
-            whoAreYou.setText(artist.getBiography());
+            binding.mediaMain.seriesLayer.setVisibility(View.GONE);
         }
 
-        TextView birthday = artistView.findViewById(R.id.birthday);
-        birthday.setText(R.string.emptyField);
+        binding.whoAreYou.setText(artist.getBiography() != null ? artist.getBiography() : getString(R.string.emptyField));
+
         if (artist.getBirthday() != null) {
             String birthDate = DateUtils.toDisplayString(artist.getBirthday());
-            String birthPlace = artist.getPlaceOfBirth();
-            String stringBuilder = birthDate + " (" + birthPlace + ")";
-            birthday.setText(stringBuilder);
+            String birthPlace = artist.getPlaceOfBirth() != null ? artist.getPlaceOfBirth() : "";
+            String stringBuilder = birthDate + (birthPlace.isEmpty() ? "" : " (" + birthPlace + ")");
+            binding.birthday.setText(stringBuilder);
+        } else {
+            binding.birthday.setText(R.string.emptyField);
         }
 
-        TextView seeMore = artistView.findViewById(R.id.see_more);
-        seeMore.setText(R.string.emptyField);
-        if (artist.getHomepage() != null) {
-            seeMore.setText(artist.getHomepage());
-        }
-
-        return artistView;
+        binding.seeMore.setText(artist.getHomepage() != null ? artist.getHomepage() : getString(R.string.emptyField));
     }
 
-    public void setArtist(Artist artist) {
-        this.artist = artist;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
@@ -140,12 +160,14 @@ public class ArtistFragment extends Fragment implements SearchInterface {
 
     @Override
     public void onItemClick(Integer id) {
-        if (FragmentType.MOVIE.equals(this.type)) {
-            Intent intent = new Intent(getContext(), MovieActivity.class);
+        if (type == null) return;
+        
+        if (type == FragmentType.MOVIE) {
+            Intent intent = new Intent(requireContext(), MovieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
-        } else if (FragmentType.SERIE.equals(this.type)) {
-            Intent intent = new Intent(getContext(), SerieActivity.class);
+        } else if (type == FragmentType.SERIE) {
+            Intent intent = new Intent(requireContext(), SerieActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
         }
@@ -153,6 +175,5 @@ public class ArtistFragment extends Fragment implements SearchInterface {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
-
     }
 }

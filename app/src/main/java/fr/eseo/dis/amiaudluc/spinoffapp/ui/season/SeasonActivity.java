@@ -1,92 +1,76 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
+import fr.eseo.dis.amiaudluc.databinding.ActivitySeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SeasonActivity extends AppCompatActivity {
 
+    private ActivitySeasonBinding binding;
     private SerieViewModel serieViewModel;
-    private Season season;
-    private FrameLayout content;
-    private RelativeLayout noMedia;
-    private SeasonFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_season);
-        Integer seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
-        Integer serieId = getIntent().getIntExtra("serieId", 0);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        binding = ActivitySeasonBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.emptyField));
+        setSupportActionBar(binding.appBarMain.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.emptyField);
         }
-        this.fragment = new SeasonFragment();
-        this.content = findViewById(R.id.content);
-        this.noMedia = findViewById(R.id.no_media_display);
-        this.serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
-        this.serieViewModel.initGetSeasonBySerieId(serieId, seasonNumber);
-        this.findViewById(R.id.fab).setVisibility(View.GONE);
-        this.content.setVisibility(View.GONE);
-        this.serieViewModel.getSeason().observe(this, season -> {
+
+        binding.contentMedia.content.setVisibility(View.GONE);
+
+        serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
+
+        int seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
+        int serieId = getIntent().getIntExtra("serieId", 0);
+
+        if (savedInstanceState == null) {
+            serieViewModel.initGetSeasonBySerieId(serieId, seasonNumber);
+            
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.content, SeasonFragment.newInstance(serieId, seasonNumber), "SeasonFragment")
+                    .commit();
+        }
+
+        setupObservers();
+    }
+
+    private void setupObservers() {
+        serieViewModel.getSeason().observe(this, season -> {
             if (season != null) {
-                this.season = season;
-                season.setSerieId(serieId);
-                this.fragment.setSeason(season);
-                this.noMedia.setVisibility(View.GONE);
-                this.content.setVisibility(View.VISIBLE);
-                getSupportFragmentManager().beginTransaction().replace(R.id.content,
-                        fragment, getString(R.string.fragment_season)).commit();
-                if (season.getName() != null) {
-                    actionBar.setTitle(season.getName());
+                binding.contentMedia.noMediaDisplay.getRoot().setVisibility(View.GONE);
+                binding.contentMedia.content.setVisibility(View.VISIBLE);
+                if (getSupportActionBar() != null && season.getName() != null) {
+                    getSupportActionBar().setTitle(season.getName());
                 }
             } else {
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                binding.contentMedia.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == android.R.id.home) {
-            onBackPressed();
-            return true;
-        } else if (itemId == R.menu.options_menu) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
     }
 }

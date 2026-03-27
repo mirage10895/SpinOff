@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
@@ -17,43 +18,49 @@ import fr.eseo.dis.amiaudluc.spinoffapp.repositories.MovieRepository;
 import lombok.Getter;
 
 public class MovieViewModel extends AndroidViewModel {
-    @Getter
-    private LiveData<List<Movie>> movies;
-    @Getter
-    private LiveData<Movie> movie;
-    @Getter
-    private LiveData<List<MovieDatabase>> databaseMovies;
+    
+    private final MutableLiveData<Integer> movieIdTrigger = new MutableLiveData<>();
+    private final MutableLiveData<MovieRequest> moviesListTrigger = new MutableLiveData<>();
+
+    @Getter private final LiveData<List<Movie>> movies;
+    @Getter private final LiveData<Movie> movie;
+    @Getter private final LiveData<List<MovieDatabase>> databaseMovies;
 
     private final ApiRepository apiRepository;
     private final MovieRepository movieRepository;
 
     public MovieViewModel(@NonNull Application application) {
         super(application);
-        this.movies = new MutableLiveData<>();
-        this.movie = new MutableLiveData<>();
-        this.databaseMovies = new MutableLiveData<>();
         this.apiRepository = ApiRepository.getInstance();
         this.movieRepository = new MovieRepository(application);
+
+        this.movie = Transformations.switchMap(movieIdTrigger, apiRepository::getMovieById);
+        
+        this.movies = Transformations.switchMap(moviesListTrigger, req -> 
+            apiRepository.getMoviesByType(req.type, req.page, req.previous)
+        );
+
+        this.databaseMovies = movieRepository.fetchAll();
     }
 
     public void initPopularMovies(Integer page) {
-        this.movies = this.apiRepository.getMoviesByType(MovieType.POPULAR.getName(), page, this.movies.getValue());
+        moviesListTrigger.setValue(new MovieRequest(MovieType.POPULAR.getName(), page, movies.getValue()));
     }
 
     public void initTopRatedMovies(Integer page) {
-        this.movies = this.apiRepository.getMoviesByType(MovieType.TOP_RATED.getName(), page, this.movies.getValue());
+        moviesListTrigger.setValue(new MovieRequest(MovieType.TOP_RATED.getName(), page, movies.getValue()));
     }
 
     public void initOnAirMovies(Integer page) {
-        this.movies = this.apiRepository.getMoviesByType(MovieType.ON_AIR.getName(), page, this.movies.getValue());
+        moviesListTrigger.setValue(new MovieRequest(MovieType.ON_AIR.getName(), page, movies.getValue()));
     }
 
     public void initGetMovieById(Integer id) {
-        this.movie = this.apiRepository.getMovieById(id);
+        movieIdTrigger.setValue(id);
     }
 
     public void initDatabaseMovies() {
-        this.databaseMovies = this.movieRepository.fetchAll();
+        // fetchAll() is already wired in constructor
     }
 
     public void insert(MovieDatabase movie) {
@@ -66,5 +73,10 @@ public class MovieViewModel extends AndroidViewModel {
 
     public void toggleMovieIsWatched(int id) {
         this.movieRepository.toggleMovieIsWatched(id);
+    }
+
+    private static class MovieRequest {
+        String type; Integer page; List<Movie> previous;
+        MovieRequest(String t, Integer p, List<Movie> prev) { type=t; page=p; previous=prev; }
     }
 }

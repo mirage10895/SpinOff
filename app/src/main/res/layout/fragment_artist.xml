@@ -113,6 +113,7 @@
         </androidx.cardview.widget.CardView>
 
         <include
+            android:id="@+id/media_main"
             layout="@layout/fragment_search_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
