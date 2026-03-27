@@ -1,12 +1,10 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
 /**
  * Created by lucasamiaud on 05/04/2018.
@@ -27,17 +25,18 @@ public class DateUtils {
         return date.format(dateTimeFormatter);
     }
 
-    public static String getStringFromDate(LocalDate date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.CLASSIC_DATE, Locale.US);
-        return dateFormat.format(date);
-    }
-
-    public static String hoursFromMinutes(int minutes) {
+    public static String displayDuration(int minutes) {
         Duration duration = Duration.ofMinutes(minutes);
         if (duration.minus(Duration.of(59, ChronoUnit.MINUTES)).getSeconds() < 0) {
             // minutes
             return minutes +  " min.";
         }
-        return LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("HH:mm"));
+        if (duration.minus(Duration.of(24, ChronoUnit.HOURS)).getSeconds() < 0) {
+            // heures
+            return LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("H'h'mm"));
+        }
+        long jours = minutes / 1440;
+        int heures = (minutes % 1440) / 60;
+        return jours + "j. " + heures + "h.";
     }
 }

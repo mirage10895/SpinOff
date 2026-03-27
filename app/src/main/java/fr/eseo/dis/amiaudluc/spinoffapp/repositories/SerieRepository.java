@@ -3,11 +3,13 @@ package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
 import android.app.Application;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
@@ -31,17 +33,35 @@ public class SerieRepository {
     }
 
     public void insert(int serieId) {
+        computeSerieDatabase(serieId, false)
+                .observeForever(this::insert);
+    }
+
+    public void updateAllSeries() {
+        this.fetchAll()
+                .observeForever(series -> {
+                    for (SerieDatabase serieDatabase: series) {
+                        if (serieDatabase.getLastSynchronisationTime().isAfter(Instant.now().minus(10, ChronoUnit.DAYS))) {
+                            this.computeSerieDatabase(serieDatabase.getId(), serieDatabase.isWatched())
+                                    .observeForever(this::update);
+                        }
+                    }
+                });
+    }
+
+    private LiveData<SerieDatabase> computeSerieDatabase(int serieId, boolean isWatched) {
+        MutableLiveData<SerieDatabase> liveSerieDatabase = new MutableLiveData<>();
         this.apiRepository.getSerieById(serieId)
                 .observeForever(apiSerie -> {
                     SerieDatabase serieDatabase = new SerieDatabase();
                     serieDatabase.setId(apiSerie.getId());
                     serieDatabase.setName(apiSerie.getName());
                     serieDatabase.setPosterPath(apiSerie.getPosterPath());
-                    serieDatabase.setWatched(false);
+                    serieDatabase.setWatched(isWatched);
                     serieDatabase.setLastSynchronisationTime(Instant.now());
 
                     if (apiSerie.getNumberOfSeasons() == null || apiSerie.getNumberOfSeasons() == 0) {
-                        insert(serieDatabase);
+                        liveSerieDatabase.setValue(serieDatabase);
                         return;
                     }
                     if (apiSerie.getEpisodeRunTime().isEmpty()) {
@@ -51,18 +71,32 @@ public class SerieRepository {
                                     serieDatabase.setRuntime(
                                             Season.computeEpisodesAverageRuntime(season) * apiSerie.getNumberOfEpisodes()
                                     );
-                                    insert(serieDatabase);
+                                    liveSerieDatabase.setValue(serieDatabase);
                                 });
                         return;
                     }
                     serieDatabase.setRuntime(Serie.computeTotalRuntime(apiSerie));
-                    insert(serieDatabase);
+                    liveSerieDatabase.setValue(serieDatabase);
                 });
+        return liveSerieDatabase;
     }
 
     public void deleteById(int id) {
         executor.execute(() -> {
             this.serieDAO.deleteSerieById(id);
+        });
+    }
+
+
+    public void toggleSerieIsWatched(int id) {
+        executor.execute(() -> {
+            this.serieDAO.toggleSerieIsWatched(id);
+        });
+    }
+
+    private void update(SerieDatabase serieDatabase) {
+        executor.execute(() -> {
+            this.serieDAO.updateSerie(serieDatabase);
         });
     }
 

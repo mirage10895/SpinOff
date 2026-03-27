@@ -23,4 +23,7 @@ public interface MovieDAO {
     void deleteMovieById(Integer id);
     @Query("select * from movie where id = :id")
     LiveData<MovieDatabase> fetchMovieById(int id);
+
+    @Query("update movie set watched = not watched where id = :id")
+    void toggleMovieIsWatched(int id);
 }

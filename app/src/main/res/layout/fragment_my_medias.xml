@@ -1,9 +1,194 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="15dp"
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.library.MyMoviesFragment">
 
-    <include layout="@layout/layout_main" />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/library_movies"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/lil_caracteritics_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        card_view:cardBackgroundColor="@color/colorPrimaryDark"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="8dp"
+        card_view:layout_collapseMode="pin">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lil_caracteritics"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <RelativeLayout
+                android:id="@+id/media_number_container"
+                android:layout_width="110dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                app:layout_constraintEnd_toStartOf="@id/media_seen_number_container"
+                app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
+                app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                <TextView
+                    android:id="@+id/media_number_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/library_media_number"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/media_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/media_number_text"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/media_seen_number_container"
+                android:layout_width="110dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                app:layout_constraintEnd_toStartOf="@id/media_runtime_container"
+                app:layout_constraintStart_toEndOf="@id/media_number_container"
+                app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                <TextView
+                    android:id="@+id/text_media_seen_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/library_media_seen_number"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/media_seen_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/text_media_seen_number"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/season_text"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/media_runtime_container"
+                android:layout_width="110dp"
+                android:layout_height="70dp"
+                app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
+                app:layout_constraintStart_toEndOf="@id/media_seen_number_container"
+                app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                <TextView
+                    android:id="@+id/media_runtime_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/library_media_runtime"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/media_runtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/media_runtime_text"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/media_to_see_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/library_to_see"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/media_to_see_container"
+        app:layout_constraintTop_toBottomOf="@id/lil_caracteritics_container" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/media_to_see_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/text_margin"
+        android:padding="@dimen/text_margin"
+        app:layout_constraintTop_toBottomOf="@id/media_to_see_title"
+        card_view:cardBackgroundColor="@color/colorPrimaryDark"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="8dp"
+        card_view:layout_collapseMode="pin">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/media_to_see"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            app:layout_constraintTop_toBottomOf="@id/media_to_see_title" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/media_seen_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/library_media_seen_number"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/media_to_see_container" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/media_seen_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/text_margin"
+        android:layout_marginVertical="@dimen/text_margin"
+        app:layout_constraintTop_toBottomOf="@id/media_seen_title"
+        card_view:cardBackgroundColor="@color/colorPrimaryDark"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="8dp"
+        card_view:layout_collapseMode="pin">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/media_seen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            app:layout_constraintTop_toBottomOf="@id/media_seen_title" />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

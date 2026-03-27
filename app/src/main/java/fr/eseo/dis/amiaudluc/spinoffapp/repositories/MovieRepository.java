@@ -35,4 +35,10 @@ public class MovieRepository {
             this.movieDao.deleteMovieById(id);
         });
     }
+
+    public void toggleMovieIsWatched(int id) {
+        executor.execute(() -> {
+            this.movieDao.toggleMovieIsWatched(id);
+        });
+    }
 }

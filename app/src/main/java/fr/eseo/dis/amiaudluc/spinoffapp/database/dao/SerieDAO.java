@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 /**
@@ -22,4 +23,8 @@ public interface SerieDAO {
     void deleteSerieById(Integer id);
     @Query("SELECT * FROM serie where id = :id")
     LiveData<SerieDatabase> getSerieById(int id);
+    @Query("update serie set watched = not watched where id = :id")
+    void toggleSerieIsWatched(int id);
+    @Update
+    void updateSerie(SerieDatabase serie);
 }

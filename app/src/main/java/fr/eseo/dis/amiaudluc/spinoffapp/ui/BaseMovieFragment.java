@@ -107,13 +107,14 @@ public abstract class BaseMovieFragment extends BaseFragment {
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
         super.onCreateContextMenu(contextMenu, v, menuInfo);
+        super.selectedContextId = selectedContextId;
         super.movieViewModel.getDatabaseMovies().observe(this, movies -> {
-            if (movies != null && movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(selectedContextId))) {
+            boolean isPresent = movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(selectedContextId));
+            if (isPresent) {
                 contextMenu.removeItem(R.id.context_menu_add);
             } else {
                 contextMenu.removeItem(R.id.context_menu_delete);
             }
-            super.selectedContextId = selectedContextId;
         });
     }
 }

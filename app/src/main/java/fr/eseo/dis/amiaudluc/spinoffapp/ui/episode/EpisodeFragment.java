@@ -82,7 +82,7 @@ public class EpisodeFragment extends Fragment implements SearchInterface {
         }
         this.episodeVV.setText("0");
         if (this.episode.getEpisodeNumber() != -1) {
-            this.episodeVV.setText(DateUtils.hoursFromMinutes(this.episode.getRuntime()));
+            this.episodeVV.setText(DateUtils.displayDuration(this.episode.getRuntime()));
         }
         this.overview.setText(R.string.emptyField);
         if (!"".equals(this.episode.getOverview())) {

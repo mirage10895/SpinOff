@@ -21,6 +21,7 @@ public class MovieDatabase {
     @ColumnInfo(name = "poster_path")
     private String posterPath;
     private Integer runtime;
+    @ColumnInfo(name = "watched")
     private boolean watched;
     @ColumnInfo(name = "last_synchronisation_time")
     private Instant lastSynchronisationTime;

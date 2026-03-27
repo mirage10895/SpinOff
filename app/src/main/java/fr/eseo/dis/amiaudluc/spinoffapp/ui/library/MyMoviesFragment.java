@@ -9,23 +9,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 /**
@@ -37,7 +38,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 public class MyMoviesFragment extends Fragment implements SearchInterface {
 
     private MovieViewModel movieViewModel;
-    private MoviesAdapter moviesAdapter;
+    private MoviesAdapter seenMoviesAdapter;
+    private MoviesAdapter toSeeMoviesAdapter;
     private Context ctx;
     private List<MovieAdapterData> movies;
     private Integer selectedMovieId;
@@ -64,50 +66,108 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
         ctx = view.getContext();
 
-        this.movieViewModel.getDatabaseMovies().observe(
-                requireActivity(),
-                movieDatabases -> this.setDbMovies(
-                        movieDatabases.stream()
-                                .map(m -> MovieAdapterData.of(
-                                        m.getId(),
-                                        m.getPosterPath()
-                                ))
-                                .collect(Collectors.toList())
-                )
-        );
+        View toSeeContainer = view.findViewById(R.id.media_to_see_container);
+        View seenContainer = view.findViewById(R.id.media_seen_container);
+        TextView title = view.findViewById(R.id.title);
+        TextView mediaNumber = view.findViewById(R.id.media_number);
+        TextView seenNumber = view.findViewById(R.id.media_seen_number);
+        TextView runtime = view.findViewById(R.id.media_runtime);
 
-        ProgressBar progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
+        title.setText(R.string.library_movies);
 
-        RecyclerView recycler = view.findViewById(R.id.cardList);
-        recycler.setHasFixedSize(true);
-        int columns = getResources().getInteger(R.integer.scripts_columns);
-        recycler.setLayoutManager(new GridLayoutManager(ctx, columns));
+        RecyclerView recyclerToSee = view.findViewById(R.id.media_to_see);
+        recyclerToSee.setHasFixedSize(true);
+        recyclerToSee.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 
-        this.moviesAdapter = new MoviesAdapter(
+        this.toSeeMoviesAdapter = new MoviesAdapter(
                 ctx,
                 this,
                 new ArrayList<>(),
-                false
+                true
         );
-        recycler.setAdapter(moviesAdapter);
+        recyclerToSee.setAdapter(toSeeMoviesAdapter);
+
+        RecyclerView recyclerSeen = view.findViewById(R.id.media_seen);
+        recyclerSeen.setHasFixedSize(true);
+        recyclerSeen.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+
+        this.seenMoviesAdapter = new MoviesAdapter(
+                ctx,
+                this,
+                new ArrayList<>(),
+                true
+        );
+        recyclerSeen.setAdapter(seenMoviesAdapter);
+
+        this.movieViewModel.getDatabaseMovies().observe(
+                requireActivity(),
+                movieDatabases -> {
+                    List<MovieDatabase> seen = movieDatabases.stream()
+                            .filter(MovieDatabase::isWatched)
+                            .collect(Collectors.toList());
+
+                    List<MovieAdapterData> toSee = movieDatabases.stream()
+                            .filter(movieDatabase -> !movieDatabase.isWatched())
+                            .map(m -> MovieAdapterData.of(
+                                    m.getId(),
+                                    m.getPosterPath()
+                            ))
+                            .collect(Collectors.toList());
+
+                    mediaNumber.setText(String.valueOf(movieDatabases.size()));
+                    seenNumber.setText(String.valueOf(seen.size()));
+                    int seenRuntime = seen.stream()
+                            .mapToInt(MovieDatabase::getRuntime)
+                            .sum();
+                    runtime.setText(DateUtils.displayDuration(seenRuntime));
+
+                    seenContainer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
+                    toSeeContainer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
+
+                    this.setMovies(
+                            seen
+                                    .stream()
+                                    .map(m -> MovieAdapterData.of(
+                                            m.getId(),
+                                            m.getPosterPath()
+                                    ))
+                                    .collect(Collectors.toList()),
+                            toSee
+                    );
+                }
+        );
 
         return view;
     }
 
-    private void setDbMovies(List<MovieAdapterData> movies) {
-        this.movies = movies;
-        if (moviesAdapter != null) {
-            moviesAdapter.setMovies(this.movies);
-            moviesAdapter.notifyDataSetChanged();
-        }
+    private void setMovies(
+            List<MovieAdapterData> seenMovies,
+            List<MovieAdapterData> toSeeMovies
+    ) {
+        toSeeMoviesAdapter.setMovies(toSeeMovies);
+        seenMoviesAdapter.setMovies(seenMovies);
+        toSeeMoviesAdapter.notifyDataSetChanged();
+        seenMoviesAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(
+            @NonNull ContextMenu menu,
+            @NonNull View v,
+            ContextMenu.ContextMenuInfo menuInfo
+    ) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater menuInflater = getActivity().getMenuInflater();
         menuInflater.inflate(R.menu.context_menu_library, menu);
+
+        boolean hasBeenWatched = this.movieViewModel.getDatabaseMovies().getValue()
+                .stream()
+                .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedMovieId));
+        if (hasBeenWatched) {
+            menu.removeItem(R.id.context_menu_mark_as);
+        } else {
+            menu.removeItem(R.id.context_menu_mark_as_not);
+        }
     }
 
     @Override
@@ -116,7 +176,14 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
             this.movieViewModel.deleteMovieById(this.selectedMovieId);
             return true;
         }
-        return false;
+        if (
+                item.getItemId() == R.id.context_menu_mark_as
+                || item.getItemId() == R.id.context_menu_mark_as_not
+        ) {
+            this.movieViewModel.toggleMovieIsWatched(this.selectedMovieId);
+            return true;
+        }
+        return true;
     }
 
     @Override

@@ -134,7 +134,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
         this.runtime.setText(getString(R.string.emptyField));
         if (this.movie.getRuntime() != null) {
             this.runtime.setText(
-                    DateUtils.hoursFromMinutes(this.movie.getRuntime())
+                    DateUtils.displayDuration(this.movie.getRuntime())
             );
         }
         this.releaseDate.setText(R.string.emptyField);

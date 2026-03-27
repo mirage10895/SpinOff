@@ -63,4 +63,8 @@ public class MovieViewModel extends AndroidViewModel {
     public void deleteMovieById(int id) {
         this.movieRepository.deleteMovieById(id);
     }
+
+    public void toggleMovieIsWatched(int id) {
+        this.movieRepository.toggleMovieIsWatched(id);
+    }
 }

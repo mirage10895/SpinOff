@@ -70,11 +70,19 @@ public class SerieViewModel extends AndroidViewModel {
         this.databaseSeries = this.serieRepository.fetchAll();
     }
 
+    public void updateAllSeries() {
+        this.serieRepository.updateAllSeries();
+    }
+
     public void insert(int serieId) {
         this.serieRepository.insert(serieId);
     }
 
     public void deleteById(int id) {
         this.serieRepository.deleteById(id);
+    }
+
+    public void toggleSerieIsWatched(int id) {
+        this.serieRepository.toggleSerieIsWatched(id);
     }
 }
