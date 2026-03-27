@@ -83,7 +83,6 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     private void loadMovies(List<MovieAdapterData> movies) {
         this.moviesAdapter.setMovies(movies);
-        this.moviesAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -95,8 +94,8 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     @Override
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
-        super.onCreateContextMenu(contextMenu, v, menuInfo);
         super.selectedContextId = selectedContextId;
+        super.onCreateContextMenu(contextMenu, v, menuInfo);
         super.movieViewModel.getDatabaseMovies().observe(getViewLifecycleOwner(), movies -> {
             boolean isPresent = movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(selectedContextId));
             if (isPresent) {

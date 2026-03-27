@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
@@ -141,8 +141,6 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     ) {
         toSeeSeriesAdapter.setSeries(toSeeSeries);
         seenSeriesAdapter.setSeries(seenSeries);
-        toSeeSeriesAdapter.notifyDataSetChanged();
-        seenSeriesAdapter.notifyDataSetChanged();
     }
 
     @Override

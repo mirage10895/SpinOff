@@ -23,7 +23,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
@@ -46,7 +46,7 @@ public class SearchFragment extends Fragment implements SearchInterface {
     private ArtistsAdapter artistsAdapter;
     private FragmentType type;
 
-    private SearchFragment() {
+    public SearchFragment() {
         // Required empty public constructor
     }
 
@@ -136,10 +136,6 @@ public class SearchFragment extends Fragment implements SearchInterface {
         moviesAdapter.setMovies(movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()));
         seriesAdapter.setSeries(series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()));
         artistsAdapter.setArtist(artists);
-        
-        moviesAdapter.notifyDataSetChanged();
-        seriesAdapter.notifyDataSetChanged();
-        artistsAdapter.notifyDataSetChanged();
     }
 
     @Override

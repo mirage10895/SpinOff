@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
@@ -146,8 +146,6 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     ) {
         toSeeMoviesAdapter.setMovies(toSeeMovies);
         seenMoviesAdapter.setMovies(seenMovies);
-        toSeeMoviesAdapter.notifyDataSetChanged();
-        seenMoviesAdapter.notifyDataSetChanged();
     }
 
     @Override

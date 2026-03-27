@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.LayoutMainBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.EndlessRecyclerViewScrollListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
@@ -51,7 +51,6 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
         this.movieViewModel.initDatabaseMovies();
         this.serieViewModel.initDatabaseSeries();
 
-        binding.cardList.setHasFixedSize(true);
         int columns = getResources().getInteger(R.integer.scripts_columns);
         binding.cardList.setLayoutManager(new GridLayoutManager(requireContext(), columns));
 

@@ -8,102 +8,116 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 
 /**
- * Created by lucasamiaud on 28/02/2018.
+ * Modernized MoviesAdapter using ListAdapter and DiffUtil.
  */
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
+public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.MoviesViewHolder> {
 
     private final SearchInterface fragment;
     private final Context ctx;
     private final boolean isHorizontal;
-    private List<MovieAdapterData> movies;
+
+    private static final DiffUtil.ItemCallback<MovieAdapterData> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull MovieAdapterData oldItem, @NonNull MovieAdapterData newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull MovieAdapterData oldItem, @NonNull MovieAdapterData newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
     public MoviesAdapter(
             Context ctx,
             SearchInterface fragment,
-            List<MovieAdapterData> movies,
+            List<MovieAdapterData> initialData,
             boolean isHorizontal
     ) {
+        super(DIFF_CALLBACK);
         this.ctx = ctx;
         this.fragment = fragment;
-        this.movies = movies;
         this.isHorizontal = isHorizontal;
+        if (initialData != null) {
+            submitList(new ArrayList<>(initialData));
+        }
     }
 
     public void setMovies(List<MovieAdapterData> movies) {
-        this.movies = movies;
+        // ListAdapter needs a NEW list instance to detect changes reliably
+        submitList(movies != null ? new ArrayList<>(movies) : null);
     }
 
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (!isHorizontal) {
-            View myMovieView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_media, parent, false);
-            return new MoviesViewHolder(myMovieView);
-        }
-        View myMovieView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_media_horizontal, parent, false);
-        return new MoviesViewHolder(myMovieView);
+        int layoutId = isHorizontal ? R.layout.item_media_horizontal : R.layout.item_media;
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+        return new MoviesViewHolder(view, fragment, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder holder, int position) {
-        if (getItemCount() != 0) {
-            MovieAdapterData movie = movies.get(position);
+        MovieAdapterData movie = getItem(position);
 
-            holder.moviePoster.setImageResource(R.drawable.ic_launcher_foreground);
-            if (movie.getPosterPath() != null) {
-                String link = ctx.getResources().getString(R.string.base_url_poster_500) + movie.getPosterPath();
-                Picasso.get()
-                        .load(link)
-                        .fit()
-                        .error(R.drawable.ic_launcher_foreground)
-                        .into(holder.moviePoster);
-            }
+        holder.moviePoster.setImageResource(R.drawable.ic_launcher_foreground);
+        if (movie.getPosterPath() != null) {
+            String link = ctx.getResources().getString(R.string.base_url_poster_500) + movie.getPosterPath();
+            Picasso.get()
+                    .load(link)
+                    .fit()
+                    .error(R.drawable.ic_launcher_foreground)
+                    .into(holder.moviePoster);
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return movies.size();
-    }
+    public static class MoviesViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnCreateContextMenuListener {
 
-    class MoviesViewHolder
-            extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnCreateContextMenuListener
-    {
         private final ImageView moviePoster;
+        private final SearchInterface fragment;
+        private final MoviesAdapter adapter;
 
-        MoviesViewHolder(View view) {
+        MoviesViewHolder(View view, SearchInterface fragment, MoviesAdapter adapter) {
             super(view);
-
             this.moviePoster = view.findViewById(R.id.poster_ic);
-
+            this.fragment = fragment;
+            this.adapter = adapter;
             view.setOnClickListener(this);
             view.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            final MovieAdapterData movieDatabase = movies.get(getAbsoluteAdapterPosition());
-            fragment.setType(SearchInterface.FragmentType.MOVIE);
-            fragment.onItemClick(movieDatabase.getId());
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                MovieAdapterData movie = adapter.getItem(pos);
+                fragment.setType(SearchInterface.FragmentType.MOVIE);
+                fragment.onItemClick(movie.getId());
+            }
         }
 
         @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            final MovieAdapterData movieDatabase = movies.get(getAbsoluteAdapterPosition());
-            fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, movieDatabase.getId());
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                MovieAdapterData movie = adapter.getItem(pos);
+                fragment.onCreateCtxMenu(menu, v, menuInfo, movie.getId());
+            }
         }
     }
 }

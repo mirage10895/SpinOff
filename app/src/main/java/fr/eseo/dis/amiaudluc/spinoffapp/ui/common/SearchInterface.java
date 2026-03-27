@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.common;
+package fr.eseo.dis.amiaudluc.spinoffapp.ui.common;
 
 /**
  * Created by lucasamiaud on 06/03/2018.

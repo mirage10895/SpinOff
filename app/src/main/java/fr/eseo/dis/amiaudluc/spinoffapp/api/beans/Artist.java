@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.time.LocalDate;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Artist implements Media {
-    private Integer id;
+    private int id;
     private String name;
     private String profilePath;
     private String creditId;
@@ -39,5 +41,10 @@ public class Artist implements Media {
     @Override
     public String getMediaType() {
         return Media.ARTIST;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return super.equals(obj);
     }
 }

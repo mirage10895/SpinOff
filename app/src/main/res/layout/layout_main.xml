@@ -16,9 +16,7 @@
             android:layout_height="wrap_content"
             android:clipToPadding="true"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
         <ProgressBar
             android:id="@+id/progressBar"

@@ -1,41 +1,59 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.artists;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.ItemInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 
 /**
  * Created by lucasamiaud on 21/03/2018.
  */
 
-public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistViewHolder>{
-
-    private List<Artist> artists;
-    private final ItemInterface mListener;
+public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewHolder> {
+    private final SearchInterface mListener;
     private final Context ctx;
 
-    public ActorsAdapter(Context ctx, ItemInterface listener, List<Artist> data){
+    private static final DiffUtil.ItemCallback<Artist> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Artist oldItem, @NonNull Artist newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull Artist oldItem, @NonNull Artist newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
+
+    public ActorsAdapter(
+            Context ctx,
+            SearchInterface listener,
+            List<Artist> initialData
+    ) {
+        super(DIFF_CALLBACK);
         this.mListener = listener;
         this.ctx = ctx;
-        this.setArtist(data);
-    }
-
-    public void setArtist(List<Artist> artists){
-        this.artists = artists;
+        if (initialData != null) {
+            submitList(new ArrayList<>(initialData));
+        }
     }
 
     @NonNull
@@ -43,21 +61,22 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
     public ArtistViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View seasonView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_actor, parent, false);
-        return new ArtistViewHolder(seasonView);
+        return new ArtistViewHolder(seasonView, mListener, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ArtistViewHolder holder, int position) {
-        if (getItemCount() != 0) {
+        Artist artist = getItem(position);
+        if (artist != null) {
             holder.name.setText(ctx.getResources().getString(R.string.emptyField));
-            if (this.artists.get(position).getName() != null) {
+            if (artist.getName() != null) {
                 holder.name.setTextColor(ctx.getColor(R.color.colorAccent));
-                holder.name.setText(this.artists.get(position).getName());
+                holder.name.setText(artist.getName());
                 holder.characterName.setTextColor(ctx.getColor(R.color.white));
-                holder.characterName.setText(this.artists.get(position).getCharacter());
+                holder.characterName.setText(artist.getCharacter());
             }
 
-            String link = ctx.getResources().getString(R.string.base_url_poster_500) + this.artists.get(position).getProfilePath();
+            String link = ctx.getResources().getString(R.string.base_url_poster_500) + artist.getProfilePath();
             Picasso.get()
                     .load(link)
                     .error(R.drawable.ic_unknown)
@@ -70,35 +89,50 @@ public class ActorsAdapter extends RecyclerView.Adapter<ActorsAdapter.ArtistView
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return artists.size();
-    }
-
-    public class ArtistViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ArtistViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         final ImageView avatar;
         final TextView name;
         final TextView characterName;
+        final SearchInterface fragment;
+        final ActorsAdapter adapter;
 
-        private final SearchInterface frag = (SearchInterface) mListener;
-
-        ArtistViewHolder(View view) {
+        ArtistViewHolder(
+                View view,
+                SearchInterface fragment,
+                ActorsAdapter adapter
+        ) {
             super(view);
+
+            this.fragment = fragment;
+            this.adapter = adapter;
 
             avatar = view.findViewById(R.id.avatar);
             name = view.findViewById(R.id.name);
             characterName = view.findViewById(R.id.character_name);
 
             view.setOnClickListener(this);
+            view.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Artist artist = artists.get(getAdapterPosition());
-            frag.setType(SearchInterface.FragmentType.ACTOR);
-            mListener.onItemClick(artist.getId());
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                Artist artist = adapter.getItem(pos);
+                fragment.setType(SearchInterface.FragmentType.ARTIST);
+                fragment.onItemClick(artist.getId());
+            }
         }
 
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                Artist artiste = adapter.getItem(pos);
+                fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, artiste.getId());
+            }
+        }
     }
 }

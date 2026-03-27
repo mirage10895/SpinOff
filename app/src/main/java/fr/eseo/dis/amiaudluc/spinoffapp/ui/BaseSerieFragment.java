@@ -76,7 +76,6 @@ public abstract class BaseSerieFragment extends BaseFragment {
 
     private void loadSeries(List<SerieAdapterData> serieDatabaseList){
         this.seriesAdapter.setSeries(serieDatabaseList);
-        this.seriesAdapter.notifyDataSetChanged();
     }
 
     @Override

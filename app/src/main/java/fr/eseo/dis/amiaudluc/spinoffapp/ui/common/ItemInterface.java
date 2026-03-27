@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.common;
+package fr.eseo.dis.amiaudluc.spinoffapp.ui.common;
 
 import android.view.ContextMenu;
 import android.view.View;

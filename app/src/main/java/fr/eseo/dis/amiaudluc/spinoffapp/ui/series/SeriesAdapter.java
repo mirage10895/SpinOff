@@ -7,99 +7,113 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 
 /**
  * Created by lucasamiaud on 01/03/2018.
  */
-
-public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder> {
+public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.SeriesViewHolder> {
 
     private final SearchInterface fragment;
     private final Context ctx;
     private final boolean isHorizontal;
-    private List<SerieAdapterData> series;
+
+    private static final DiffUtil.ItemCallback<SerieAdapterData> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull SerieAdapterData oldItem, @NonNull SerieAdapterData newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull SerieAdapterData oldItem, @NonNull SerieAdapterData newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
     public SeriesAdapter(
             Context ctx,
             SearchInterface fragment,
-            List<SerieAdapterData> data,
+            List<SerieAdapterData> initialData,
             boolean isHorizontal
     ) {
+        super(DIFF_CALLBACK);
         this.ctx = ctx;
         this.fragment = fragment;
-        this.series = data;
         this.isHorizontal = isHorizontal;
+        if (initialData != null) {
+            submitList(new ArrayList<>(initialData));
+        }
     }
 
     public void setSeries(List<SerieAdapterData> series) {
-        this.series = series;
+        submitList(series != null ? new ArrayList<>(series) : null);
     }
 
     @NonNull
     @Override
     public SeriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (isHorizontal) {
-            View mySerieView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_media_horizontal, parent, false);
-            return new SeriesAdapter.SeriesViewHolder(mySerieView);
-        }
-        View mySerieView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_media, parent, false);
-        return new SeriesAdapter.SeriesViewHolder(mySerieView);
+        int layoutId = isHorizontal ? R.layout.item_media_horizontal : R.layout.item_media;
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
+        return new SeriesViewHolder(view, fragment, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SeriesViewHolder holder, int position) {
-        if (getItemCount() != 0) {
-            SerieAdapterData serie = series.get(position);
+        SerieAdapterData serie = getItem(position);
 
-            holder.seriePoster.setImageResource(R.drawable.ic_launcher_foreground);
-            if (serie.getPosterPath() != null) {
-                String link = ctx.getResources().getString(R.string.base_url_poster_500) + serie.getPosterPath();
-                Picasso.get().load(link).fit().error(R.drawable.ic_launcher_foreground)
-                        .into(holder.seriePoster);
-            }
+        holder.seriePoster.setImageResource(R.drawable.ic_launcher_foreground);
+        if (serie.getPosterPath() != null) {
+            String link = ctx.getResources().getString(R.string.base_url_poster_500) + serie.getPosterPath();
+            Picasso.get().load(link).fit().error(R.drawable.ic_launcher_foreground)
+                    .into(holder.seriePoster);
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return series.size();
-    }
-
-    class SeriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
+    public static class SeriesViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         private final ImageView seriePoster;
+        private final SearchInterface fragment;
+        private final SeriesAdapter adapter;
 
-        SeriesViewHolder(View view) {
+        SeriesViewHolder(View view, SearchInterface fragment, SeriesAdapter adapter) {
             super(view);
-
-            seriePoster = view.findViewById(R.id.poster_ic);
-
+            this.seriePoster = view.findViewById(R.id.poster_ic);
+            this.fragment = fragment;
+            this.adapter = adapter;
             view.setOnClickListener(this);
             view.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            final SerieAdapterData serieDatabase = series.get(getAbsoluteAdapterPosition());
-            fragment.setType(SearchInterface.FragmentType.SERIE);
-            fragment.onItemClick(serieDatabase.getId());
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                SerieAdapterData serie = adapter.getItem(pos);
+                fragment.setType(SearchInterface.FragmentType.SERIE);
+                fragment.onItemClick(serie.getId());
+            }
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            final SerieAdapterData serieDatabase = series.get(getAbsoluteAdapterPosition());
-            fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, serieDatabase.getId());
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                SerieAdapterData serie = adapter.getItem(pos);
+                fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, serie.getId());
+            }
         }
     }
 }

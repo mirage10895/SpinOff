@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.model.Event;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
