@@ -7,123 +7,117 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.ActivityMediaBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
 
+    private ActivityMediaBinding binding;
     private SerieViewModel serieViewModel;
-    private FrameLayout content;
-    private RelativeLayout noMedia;
-    private String currentFragment;
-    private SingleSerieFragment fragment;
+    private int serieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media);
-        content = findViewById(R.id.content);
-        noMedia = findViewById(R.id.no_media_display);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        Integer id = getIntent().getIntExtra("id", 0);
-        ActionBar actionBar = getSupportActionBar();
-        FloatingActionButton fab = findViewById(R.id.fab);
+        binding = ActivityMediaBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        fab.setEnabled(false);
-        this.fragment = new SingleSerieFragment();
-        this.serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
-        this.serieViewModel.initGetSerieById(id);
-        this.serieViewModel.initDatabaseSeries();
-
-        this.serieViewModel.getSerie().observe(this, serieResult -> {
-            if (serieResult != null) {
-                setBackground(this.getResources().getString(R.string.base_url_poster_original) + serieResult.getBackdropPath());
-                fragment.setSerie(serieResult);
-                noMedia.setVisibility(View.GONE);
-                content.setVisibility(View.VISIBLE);
-                currentFragment = getString(R.string.fragment_single_serie);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content, fragment, currentFragment)
-                        .commit();
-                actionBar.setTitle(serieResult.getName());
-                fab.setOnClickListener(new AddSerieActionListener(this.serieViewModel, serieResult));
-            } else {
-                noMedia.setVisibility(View.VISIBLE);
-                Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                        .setAction("DAMN", view -> view.setVisibility(View.GONE)).show();
-            }
-        });
-        serieViewModel.getDatabaseSeries().observe(this, series -> {
-            fab.setEnabled(series.stream().noneMatch(i -> i.getId().equals(id)));
-        });
-
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
-            actionBar.setTitle(null);
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(null);
         }
 
+        serieId = getIntent().getIntExtra("id", -1);
+        if (serieId == -1) {
+            finish();
+            return;
+        }
+
+        binding.fab.setEnabled(false);
+
+        serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
+        
+        if (savedInstanceState == null) {
+            serieViewModel.initGetSerieById(serieId);
+            serieViewModel.initDatabaseSeries();
+            
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.content, SingleSerieFragment.newInstance(serieId), "SingleSerieFragment")
+                    .commit();
+        }
+
+        setupObservers();
     }
 
-    /**
-     * Get the backdrop picture for the top
-     *
-     * @param link
-     */
+    private void setupObservers() {
+        serieViewModel.getSerie().observe(this, serie -> {
+            if (serie != null) {
+                binding.content.noMediaDisplay.getRoot().setVisibility(View.GONE);
+                binding.content.content.setVisibility(View.VISIBLE);
+                
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(serie.getName());
+                }
+                
+                String backdropUrl = getString(R.string.base_url_poster_original) + serie.getBackdropPath();
+                setBackground(backdropUrl);
+                
+                binding.fab.setOnClickListener(new AddSerieActionListener(serieViewModel, serie));
+            } else {
+                binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        serieViewModel.getDatabaseSeries().observe(this, series -> {
+            boolean isAlreadyInDatabase = series.stream().anyMatch(s -> s.getId().equals(serieId));
+            binding.fab.setEnabled(!isAlreadyInDatabase);
+        });
+    }
+
     private void setBackground(String link) {
-        final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        final Target target = new Target() {
-
-            final ProgressBar progressBar = findViewById(R.id.progressBar);
-
+        Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
+                binding.progressBar.setVisibility(View.GONE);
+                binding.toolbarLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
             }
 
             @Override
-            public void onBitmapFailed(Exception e, final Drawable errorDrawable) {
-                progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(getDrawable(R.drawable.ic_launcher_foreground));
-                Log.d("TAG", "FAILED");
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                binding.progressBar.setVisibility(View.GONE);
+                binding.toolbarLayout.setBackgroundResource(R.drawable.ic_launcher_foreground);
+                Log.e("SerieActivity", "Failed to load backdrop", e);
             }
 
             @Override
-            public void onPrepareLoad(final Drawable placeHolderDrawable) {
-                progressBar.setVisibility(View.VISIBLE);
-                Log.d("TAG", "Prepare Load");
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                binding.progressBar.setVisibility(View.VISIBLE);
             }
         };
-        collapsingToolbarLayout.setTag(target);
+        
+        // Storing target as a tag to prevent GC
+        binding.toolbarLayout.setTag(target);
         Picasso.get().load(link).into(target);
     }
 
-    /**
-     * This function is simply allowing us to go back to the previous activity when the user
-     * tap on the back button in the supportActionBar.
-     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

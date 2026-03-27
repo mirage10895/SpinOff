@@ -1,25 +1,24 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DecimalFormat;
 import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.CircularImageBar;
@@ -28,6 +27,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,90 +36,133 @@ import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
  */
 public class SingleMovieFragment extends Fragment implements SearchInterface {
 
-    private View singleMovieView;
-    private Context ctx;
-    private Movie movie;
+    private static final String ARG_MOVIE_ID = "movie_id";
+
+    private FragmentSingleMovieBinding binding;
+    private MovieViewModel movieViewModel;
     private FragmentType type;
 
-    // recyclers
-    private RecyclerView directorRecycler;
-    private RecyclerView castRecycler;
-    private RecyclerView recommendationRecycler;
+    private int movieId;
 
-    // views
-    private ImageView rate;
-    private TextView runtime;
-    private TextView releaseDate;
-    private TextView textGenre;
-    private TextView overview;
-    private TextView budget;
-
-    public SingleMovieFragment() {
+    private SingleMovieFragment() {
         // Required empty public constructor
     }
 
-    public static SingleMovieFragment newInstance() {
+    public static SingleMovieFragment newInstance(int movieId) {
         SingleMovieFragment fragment = new SingleMovieFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_MOVIE_ID, movieId);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        this.singleMovieView = inflater.inflate(R.layout.fragment_single_movie, container, false);
-        this.ctx = singleMovieView.getContext();
-
-        this.directorRecycler = singleMovieView.findViewById(R.id.realisators);
-        this.castRecycler = singleMovieView.findViewById(R.id.cast);
-        this.recommendationRecycler = singleMovieView.findViewById(R.id.recycler_recommendations);
-
-        this.rate = singleMovieView.findViewById(R.id.rate);
-        this.runtime = singleMovieView.findViewById(R.id.runtime);
-        this.releaseDate = singleMovieView.findViewById(R.id.release_date);
-        this.textGenre = singleMovieView.findViewById(R.id.genres);
-        this.overview = singleMovieView.findViewById(R.id.overview);
-        this.budget = singleMovieView.findViewById(R.id.budget);
-
-        return singleMovieView;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            movieId = getArguments().getInt(ARG_MOVIE_ID);
+        }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (movie == null) {
-            this.onDestroy();
-            return;
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentSingleMovieBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Initialize ViewModel shared with Activity
+        movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
+
+        setupRecyclerViews();
+        observeViewModel();
+    }
+
+
+    private void setupRecyclerViews() {
+        binding.realisators.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.realisators.setHasFixedSize(true);
+        binding.realisators.setNestedScrollingEnabled(false);
+
+        binding.cast.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.cast.setHasFixedSize(true);
+        binding.cast.setNestedScrollingEnabled(false);
+
+        binding.recyclerRecommendations.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.recyclerRecommendations.setHasFixedSize(true);
+        binding.recyclerRecommendations.setNestedScrollingEnabled(false);
+    }
+
+    private void observeViewModel() {
+        movieViewModel.getMovie().observe(getViewLifecycleOwner(), this::updateUI);
+    }
+
+    private void updateUI(Movie movie) {
+        if (movie == null) return;
+
+        binding.getRoot().setBackgroundColor(requireContext().getColor(R.color.color_primary_semi_opaq));
+
+        // texts
+        if (movie.getVoteAverage() != null) {
+            binding.rate.setImageBitmap(CircularImageBar.buildNote(movie.getVoteAverage()));
+        } else {
+            binding.rate.setImageBitmap(CircularImageBar.buildNote(0));
         }
 
-        this.directorRecycler.setHasFixedSize(true);
-        this.directorRecycler.setLayoutManager(
-                new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
+        if (movie.getRuntime() != null) {
+            binding.runtime.setText(
+                    DateUtils.displayDuration(movie.getRuntime())
+            );
+        } else {
+            binding.runtime.setText(R.string.emptyField);
+        }
+
+        if (movie.getReleaseDate() != null) {
+            binding.releaseDate.setText(DateUtils.toDisplayString(movie.getReleaseDate()));
+        } else {
+            binding.releaseDate.setText(R.string.emptyField);
+        }
+
+        if (!movie.getGenres().isEmpty()) {
+            binding.genres.setText(
+                    movie.getGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .collect(Collectors.joining(", "))
+            );
+        } else {
+            binding.genres.setText(R.string.emptyField);
+        }
+
+        if (movie.getOverview() != null) {
+            binding.overview.setText(movie.getOverview());
+        } else {
+            binding.overview.setText(R.string.emptyField);
+        }
+
+        if (movie.getBudget() != 0) {
+            DecimalFormat decimalFormat = new DecimalFormat("#,###");
+            String numberAsString = decimalFormat.format(movie.getBudget()) + "€";
+            binding.budget.setText(numberAsString);
+        } else {
+            binding.budget.setText(R.string.emptyField);
+        }
+
+        // recyclers
+        binding.realisators.setAdapter(
+                new ArtistsAdapter(requireContext(), this, movie.getDirectors())
         );
-        this.directorRecycler.setAdapter(
-                new ArtistsAdapter(singleMovieView.getContext(), this, movie.getDirectors())
+        binding.cast.setAdapter(
+                new ActorsAdapter(requireContext(), this, movie.getCredits().getCast())
         );
-        this.castRecycler.setHasFixedSize(true);
-        this.castRecycler.setLayoutManager(
-                new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
-        );
-        this.castRecycler.setAdapter(
-                new ActorsAdapter(singleMovieView.getContext(), this, movie.getCredits().getCast())
-        );
-        this.recommendationRecycler.setHasFixedSize(true);
-        this.recommendationRecycler.setLayoutManager(
-                new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
-        );
-        this.recommendationRecycler.setAdapter(
+        binding.recyclerRecommendations.setAdapter(
                 new MoviesAdapter(
-                        this.singleMovieView.getContext(),
+                        requireContext(),
                         this,
-                        this.movie.getRecommendations()
+                        movie.getRecommendations()
                                 .getResults()
                                 .stream()
                                 .map(Movie::toAdapterFormat)
@@ -127,66 +170,34 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
                         true
                 )
         );
-        this.rate.setImageBitmap(CircularImageBar.buildNote(0));
-        if (this.movie.getVoteAverage() != null) {
-            this.rate.setImageBitmap(CircularImageBar.buildNote(this.movie.getVoteAverage()));
-        }
-        this.runtime.setText(getString(R.string.emptyField));
-        if (this.movie.getRuntime() != null) {
-            this.runtime.setText(
-                    DateUtils.displayDuration(this.movie.getRuntime())
-            );
-        }
-        this.releaseDate.setText(R.string.emptyField);
-        if (this.movie.getReleaseDate() != null) {
-            this.releaseDate.setText(DateUtils.toDisplayString(this.movie.getReleaseDate()));
-        }
-        this.textGenre.setText(R.string.emptyField);
-        this.textGenre.setText(
-                this.movie.getGenres()
-                        .stream()
-                        .map(Genre::getName)
-                        .collect(Collectors.joining(", "))
-        );
-        this.overview.setText(getResources().getString(R.string.emptyField));
-        if (this.movie.getOverview() != null) {
-            this.overview.setText(this.movie.getOverview());
-        }
-        this.budget.setText(getResources().getString(R.string.emptyField));
-        if (this.movie.getBudget() != 0) {
-            DecimalFormat decimalFormat = new DecimalFormat("#,###");
-            String numberAsString = decimalFormat.format(movie.getBudget()) + "€";
-            this.budget.setText(numberAsString);
-        }
+
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
     public void onItemClick(Integer id) {
+        if (type == null) {
+            return;
+        }
         switch (this.type) {
-            case NETWORK:
-                //Content.currentNetwork = this.movie.getProductionCompanies().get(position);
-                break;
             case ARTIST:
             case ACTOR: {
-                Intent intent = new Intent(ctx, ArtistActivity.class);
+                Intent intent = new Intent(requireContext(), ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
                 break;
             }
             case MOVIE: {
-                Intent intent = new Intent(ctx, MovieActivity.class);
+                Intent intent = new Intent(requireContext(), MovieActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
                 break;
             }
-            case SERIE:
-                break;
-            case DEFAULT:
-                break;
             default:
                 break;
         }

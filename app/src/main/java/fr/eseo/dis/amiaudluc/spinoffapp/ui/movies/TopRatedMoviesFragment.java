@@ -2,9 +2,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import android.view.LayoutInflater;
+import androidx.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.BaseMovieFragment;
 
@@ -15,22 +14,19 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.BaseMovieFragment;
 public class TopRatedMoviesFragment extends BaseMovieFragment {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        this.initializeSwipeContainer();
         this.movieViewModel.initTopRatedMovies(1);
-        super.observeMovies();
-
-        return super.view;
+        this.observeMovies();
     }
 
     @Override
-    public void initializeSwipeContainer(){
+    protected void initializeSwipeContainer(){
         super.initializeSwipeContainer();
-        swipeContainer.setOnRefreshListener(() -> {
+        binding.swipeContainer.setOnRefreshListener(() -> {
             this.movieViewModel.initTopRatedMovies(1);
-            super.observeMovies();
+            this.observeMovies();
         });
     }
 
@@ -39,5 +35,4 @@ public class TopRatedMoviesFragment extends BaseMovieFragment {
         movieViewModel.initTopRatedMovies(page + 1);
         observeMovies();
     }
-
 }

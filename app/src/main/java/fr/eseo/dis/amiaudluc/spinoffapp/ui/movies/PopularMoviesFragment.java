@@ -2,9 +2,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import android.view.LayoutInflater;
+import androidx.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.BaseMovieFragment;
 
@@ -15,20 +14,17 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.BaseMovieFragment;
 public class PopularMoviesFragment extends BaseMovieFragment {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         this.movieViewModel.initPopularMovies(1);
         this.observeMovies();
-        this.initializeSwipeContainer();
-
-        return super.view;
     }
 
     @Override
-    public void initializeSwipeContainer(){
+    protected void initializeSwipeContainer(){
         super.initializeSwipeContainer();
-        swipeContainer.setOnRefreshListener(() -> {
+        binding.swipeContainer.setOnRefreshListener(() -> {
             this.movieViewModel.initPopularMovies(1);
             this.observeMovies();
         });

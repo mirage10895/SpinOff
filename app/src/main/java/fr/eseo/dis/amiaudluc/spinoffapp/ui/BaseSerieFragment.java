@@ -3,10 +3,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -32,53 +30,45 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 public abstract class BaseSerieFragment extends BaseFragment {
     protected SeriesAdapter seriesAdapter;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
-        this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        this.seriesAdapter = new SeriesAdapter(this.getContext(),this, new ArrayList<>(), false);
-        super.recycler.setAdapter(this.seriesAdapter);
-
-        return super.view;
-    }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
+        this.seriesAdapter = new SeriesAdapter(requireContext(), this, new ArrayList<>(), false);
+        binding.cardList.setAdapter(this.seriesAdapter);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_add) {
             this.serieViewModel.initGetSerieById(super.selectedContextId);
-            this.serieViewModel.getSerie().observe(this, new MediaTransactionObserver<>(
-                    super.movieViewModel, super.serieViewModel, this.view, false
+            this.serieViewModel.getSerie().observe(getViewLifecycleOwner(), new MediaTransactionObserver<>(
+                    super.movieViewModel, super.serieViewModel, binding.getRoot(), false
             ));
         } else if (item.getItemId() == R.id.context_menu_delete) {
             this.serieViewModel.initGetSerieById(super.selectedContextId);
-            this.serieViewModel.getSerie().observe(this, new MediaTransactionObserver<>(
-                    super.movieViewModel, super.serieViewModel, this.view, true
+            this.serieViewModel.getSerie().observe(getViewLifecycleOwner(), new MediaTransactionObserver<>(
+                    super.movieViewModel, super.serieViewModel, binding.getRoot(), true
             ));
         }
         return false;
     }
 
     protected void observeSeries() {
-        this.serieViewModel.getSeries().observe(this, series -> {
-            swipeContainer.setRefreshing(false);
-            super.view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-            super.view.findViewById(R.id.cardList).setVisibility(View.VISIBLE);
-            super.view.findViewById(R.id.no_media_display).setVisibility(View.GONE);
+        this.serieViewModel.getSeries().observe(getViewLifecycleOwner(), series -> {
+            binding.swipeContainer.setRefreshing(false);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.cardList.setVisibility(View.VISIBLE);
+            binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
             if (series != null) {
                 loadSeries(series.stream()
                         .map(Serie::toAdapterFormat)
                         .collect(Collectors.toList()));
             } else {
-                super.view.findViewById(R.id.cardList).setVisibility(View.GONE);
-                super.view.findViewById(R.id.no_media_display).setVisibility(View.VISIBLE);
-                Snackbar.make(super.view, R.string.no_results, Snackbar.LENGTH_LONG)
+                binding.cardList.setVisibility(View.GONE);
+                binding.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG)
                         .setAction("Refresh", view -> onRecyclerLoadMore(0)).show();
             }
         });
@@ -91,7 +81,7 @@ public abstract class BaseSerieFragment extends BaseFragment {
 
     @Override
     public void onItemClick(Integer id) {
-        Intent intent = new Intent(getContext(), SerieActivity.class);
+        Intent intent = new Intent(requireContext(), SerieActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
     }
@@ -100,7 +90,7 @@ public abstract class BaseSerieFragment extends BaseFragment {
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
         super.selectedContextId = selectedContextId;
         super.onCreateContextMenu(contextMenu, v, menuInfo);
-        super.serieViewModel.getDatabaseSeries().observe(this, movies -> {
+        super.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), movies -> {
             boolean isPresent = movies.stream().anyMatch(i -> i.getId().equals(selectedContextId));
             if (isPresent) {
                 contextMenu.removeItem(R.id.context_menu_add);

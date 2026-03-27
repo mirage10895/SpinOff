@@ -3,10 +3,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -31,26 +29,17 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 public abstract class BaseMovieFragment extends BaseFragment {
     protected MoviesAdapter moviesAdapter;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         this.moviesAdapter = new MoviesAdapter(
-                this.getContext(),
+                requireContext(),
                 this,
                 new ArrayList<>(),
                 false
         );
 
-        super.recycler.setAdapter(this.moviesAdapter);
-
-        return super.view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        this.view = view;
-        super.onViewCreated(view, savedInstanceState);
+        binding.cardList.setAdapter(this.moviesAdapter);
     }
 
     @Override
@@ -58,25 +47,25 @@ public abstract class BaseMovieFragment extends BaseFragment {
         if (item.getItemId() == R.id.context_menu_add) {
             this.movieViewModel.initGetMovieById(super.selectedContextId);
             this.movieViewModel.getMovie()
-                    .observe(this, new MediaTransactionObserver<>(
-                            super.movieViewModel, super.serieViewModel, this.view, false
+                    .observe(getViewLifecycleOwner(), new MediaTransactionObserver<>(
+                            super.movieViewModel, super.serieViewModel, binding.getRoot(), false
                     ));
         } else if (item.getItemId() == R.id.context_menu_delete) {
             this.movieViewModel.initGetMovieById(super.selectedContextId);
             this.movieViewModel.getMovie()
-                    .observe(this, new MediaTransactionObserver<>(
-                            super.movieViewModel, super.serieViewModel, this.view, true
+                    .observe(getViewLifecycleOwner(), new MediaTransactionObserver<>(
+                            super.movieViewModel, super.serieViewModel, binding.getRoot(), true
                     ));
         }
         return false;
     }
 
     public void observeMovies() {
-        this.movieViewModel.getMovies().observe(this, movies -> {
-            swipeContainer.setRefreshing(false);
-            this.view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-            this.view.findViewById(R.id.cardList).setVisibility(View.VISIBLE);
-            this.view.findViewById(R.id.no_media_display).setVisibility(View.GONE);
+        this.movieViewModel.getMovies().observe(getViewLifecycleOwner(), movies -> {
+            binding.swipeContainer.setRefreshing(false);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.cardList.setVisibility(View.VISIBLE);
+            binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
             if (movies != null) {
                 loadMovies(
                         movies.stream()
@@ -84,9 +73,9 @@ public abstract class BaseMovieFragment extends BaseFragment {
                                 .collect(Collectors.toList())
                 );
             } else {
-                this.view.findViewById(R.id.cardList).setVisibility(View.GONE);
-                this.view.findViewById(R.id.no_media_display).setVisibility(View.VISIBLE);
-                Snackbar.make(this.view, R.string.no_results, Snackbar.LENGTH_LONG)
+                binding.cardList.setVisibility(View.GONE);
+                binding.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG)
                         .setAction("Refresh", view -> onRecyclerLoadMore(0)).show();
             }
         });
@@ -99,7 +88,7 @@ public abstract class BaseMovieFragment extends BaseFragment {
 
     @Override
     public void onItemClick(Integer id) {
-        Intent intent = new Intent(getContext(), MovieActivity.class);
+        Intent intent = new Intent(requireContext(), MovieActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
     }
@@ -108,7 +97,7 @@ public abstract class BaseMovieFragment extends BaseFragment {
     public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
         super.onCreateContextMenu(contextMenu, v, menuInfo);
         super.selectedContextId = selectedContextId;
-        super.movieViewModel.getDatabaseMovies().observe(this, movies -> {
+        super.movieViewModel.getDatabaseMovies().observe(getViewLifecycleOwner(), movies -> {
             boolean isPresent = movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(selectedContextId));
             if (isPresent) {
                 contextMenu.removeItem(R.id.context_menu_add);

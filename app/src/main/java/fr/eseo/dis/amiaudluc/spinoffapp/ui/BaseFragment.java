@@ -13,8 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.LayoutMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
@@ -26,40 +27,44 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public abstract class BaseFragment extends Fragment implements SearchInterface {
 
+    protected LayoutMainBinding binding;
     public EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    public SwipeRefreshLayout swipeContainer;
     public SerieViewModel serieViewModel;
     public MovieViewModel movieViewModel;
-    public View view;
-    public RecyclerView recycler;
 
     protected Integer selectedContextId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        this.view = inflater.inflate(R.layout.layout_main, container, false);
+        binding = LayoutMainBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
         this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
 
         this.movieViewModel.initDatabaseMovies();
         this.serieViewModel.initDatabaseSeries();
-        this.recycler = this.view.findViewById(R.id.cardList);
-        this.recycler.setHasFixedSize(true);
-        int columns = getResources().getInteger(R.integer.scripts_columns);
-        this.recycler.setLayoutManager(new GridLayoutManager(this.getContext(), columns));
 
-        this.endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener((GridLayoutManager) this.recycler.getLayoutManager()) {
+        binding.cardList.setHasFixedSize(true);
+        int columns = getResources().getInteger(R.integer.scripts_columns);
+        binding.cardList.setLayoutManager(new GridLayoutManager(requireContext(), columns));
+
+        this.endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener((GridLayoutManager) binding.cardList.getLayoutManager()) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 onRecyclerLoadMore(page);
             }
         };
 
-        this.recycler.addOnScrollListener(this.endlessRecyclerViewScrollListener);
-
-        return this.view;
+        binding.cardList.addOnScrollListener(this.endlessRecyclerViewScrollListener);
+        
+        initializeSwipeContainer();
     }
 
     @Override
@@ -72,9 +77,8 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
         }
     }
 
-    public void initializeSwipeContainer() {
-        this.swipeContainer = this.view.findViewById(R.id.swipeContainer);
-        swipeContainer.setColorSchemeResources(R.color.colorAccent,
+    protected void initializeSwipeContainer() {
+        binding.swipeContainer.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
                 R.color.white);
@@ -88,8 +92,12 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
     public abstract void onRecyclerLoadMore(Integer page);
 
     @Override
-    public void onDetach() {
+    public void onDestroyView() {
+        if (binding != null) {
+            binding.cardList.removeOnScrollListener(this.endlessRecyclerViewScrollListener);
+        }
         this.endlessRecyclerViewScrollListener.resetState();
-        super.onDetach();
+        super.onDestroyView();
+        binding = null;
     }
 }

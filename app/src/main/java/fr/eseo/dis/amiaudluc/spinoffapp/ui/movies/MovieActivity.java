@@ -7,138 +7,118 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.databinding.ActivityMediaBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
 
+    private ActivityMediaBinding binding;
     private MovieViewModel movieViewModel;
-    private Movie movie;
-
-    // layout
-    private FrameLayout content;
-    private RelativeLayout noMedia;
-    private String currentFragment;
-    private SingleMovieFragment fragment;
-    private FloatingActionButton fab;
+    private int movieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_media);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        binding = ActivityMediaBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        this.fab = findViewById(R.id.fab);
-        this.fab.setEnabled(false);
-        this.content = findViewById(R.id.content);
-        this.noMedia = findViewById(R.id.no_media_display);
+        setSupportActionBar(binding.toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(null);
+        }
 
-        this.fragment = SingleMovieFragment.newInstance();
-        this.movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+        movieId = getIntent().getIntExtra("id", -1);
+        if (movieId == -1) {
+            finish();
+            return;
+        }
+
+        binding.fab.setEnabled(false);
+        movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
+
+        if (savedInstanceState == null) {
+            movieViewModel.initGetMovieById(movieId);
+            movieViewModel.initDatabaseMovies();
+
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.content, SingleMovieFragment.newInstance(movieId), "SingleMovieFragment")
+                    .commit();
+        }
+
+        setupObservers();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Integer id = getIntent().getIntExtra("id", 0);
-        ActionBar actionBar = getSupportActionBar();
+    private void setupObservers() {
+        movieViewModel.getMovie().observe(this, movie -> {
+            if (movie != null) {
+                binding.content.noMediaDisplay.getRoot().setVisibility(View.GONE);
+                binding.content.content.setVisibility(View.VISIBLE);
 
-        this.movieViewModel.initGetMovieById(id);
-        this.movieViewModel.initDatabaseMovies();
-        this.movieViewModel.getMovie().observe(
-                this,
-                movieResult -> {
-                    if (movieResult != null) {
-                        this.movie = movieResult;
-                        noMedia.setVisibility(View.GONE);
-                        content.setVisibility(View.VISIBLE);
-                        fragment.setMovie(movieResult);
-                        currentFragment = getString(R.string.fragment_single_movie);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, currentFragment).commit();
-                        setBackground(this.getResources().getString(R.string.base_url_poster_original) + movie.getBackdropPath());
-                        actionBar.setTitle(movieResult.getTitle());
-                        this.fab.setOnClickListener(new AddMovieActionListener(this.movieViewModel, movieResult));
-                    } else {
-                        noMedia.setVisibility(View.VISIBLE);
-                        Snackbar.make(content, R.string.no_results, Snackbar.LENGTH_LONG)
-                                .setAction("DAMN", view -> view.setVisibility(View.GONE))
-                                .show();
-                    }
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(movie.getTitle());
                 }
-        );
-        this.movieViewModel.getDatabaseMovies().observe(this, movies -> {
-            boolean hasTheId = movies.stream().map(MovieDatabase::getId).anyMatch(mid -> mid.equals(id));
-            this.fab.setEnabled(!hasTheId);
+
+                String backdropUrl = getString(R.string.base_url_poster_original) + movie.getBackdropPath();
+                setBackground(backdropUrl);
+
+                binding.fab.setOnClickListener(new AddMovieActionListener(movieViewModel, movie));
+            } else {
+                binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
+                Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
+            }
         });
 
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(null);
-        }
+        movieViewModel.getDatabaseMovies().observe(this, movies -> {
+            boolean isAlreadyInDatabase = movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(movieId));
+            binding.fab.setEnabled(!isAlreadyInDatabase);
+        });
     }
 
-    /**
-     * Get the backdrop picture for the top
-     */
     private void setBackground(String link) {
-        final CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.toolbar_layout);
-        final Target target = new Target() {
-
-            final ProgressBar progressBar = findViewById(R.id.progressBar);
-
+        Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
+                binding.progressBar.setVisibility(View.GONE);
+                binding.toolbarLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
             }
 
             @Override
-            public void onBitmapFailed(Exception e, final Drawable errorDrawable) {
-                progressBar.setVisibility(View.GONE);
-                collapsingToolbarLayout.setBackground(AppCompatResources.getDrawable(getApplicationContext(), R.drawable.ic_launcher_foreground));
-                Log.d("TAG", "FAILED");
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                binding.progressBar.setVisibility(View.GONE);
+                binding.toolbarLayout.setBackgroundResource(R.drawable.ic_launcher_foreground);
+                Log.e("MovieActivity", "Failed to load backdrop", e);
             }
 
             @Override
-            public void onPrepareLoad(final Drawable placeHolderDrawable) {
-                progressBar.setVisibility(View.VISIBLE);
-                Log.d("TAG", "Prepare Load");
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                binding.progressBar.setVisibility(View.VISIBLE);
             }
         };
-        collapsingToolbarLayout.setTag(target);
-        Picasso.get().load(link).error(R.drawable.ic_launcher_foreground).into(target);
+
+        binding.toolbarLayout.setTag(target);
+        Picasso.get().load(link).into(target);
     }
 
-    /**
-     * This function is simply allowing us to go back to the previous activity when the user
-     * tap on the back button in the supportActionBar.
-     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

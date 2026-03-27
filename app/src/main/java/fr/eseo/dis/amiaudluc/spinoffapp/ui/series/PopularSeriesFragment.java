@@ -2,9 +2,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.series;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import android.view.LayoutInflater;
+import androidx.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.BaseSerieFragment;
 
@@ -15,22 +14,19 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.BaseSerieFragment;
 public class PopularSeriesFragment extends BaseSerieFragment {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         this.serieViewModel.initPopularSeries(1);
-        observeSeries();
-        this.initializeSwipeContainer();
-
-        return this.view;
+        this.observeSeries();
     }
 
     @Override
-    public void initializeSwipeContainer(){
+    protected void initializeSwipeContainer(){
         super.initializeSwipeContainer();
-        super.swipeContainer.setOnRefreshListener(() -> {
-            serieViewModel.initPopularSeries(1);
-            observeSeries();
+        binding.swipeContainer.setOnRefreshListener(() -> {
+            this.serieViewModel.initPopularSeries(1);
+            this.observeSeries();
         });
     }
 
