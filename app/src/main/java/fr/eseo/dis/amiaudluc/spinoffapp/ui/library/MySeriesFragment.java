@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.FragmentMyMediasBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
@@ -34,16 +33,16 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 /**
  * Created by lucasamiaud on 08/03/2018.
  */
-
 public class MySeriesFragment extends Fragment implements ItemInterface {
 
+    private FragmentMyMediasBinding binding;
     private SerieViewModel serieViewModel;
     private SeriesAdapter toSeeSeriesAdapter;
     private SeriesAdapter seenSeriesAdapter;
     private Integer selectedSerieId;
 
     public MySeriesFragment() {
-        //Empty constructor required
+        // Empty constructor required
     }
 
     @Override
@@ -52,87 +51,66 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
         this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
     }
 
+    @Nullable
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
     ) {
-        View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
-        Context ctx = view.getContext();
+        binding = FragmentMyMediasBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        View toSeeContainer = view.findViewById(R.id.media_to_see_container);
-        View seenContainer = view.findViewById(R.id.media_seen_container);
-        TextView title = view.findViewById(R.id.title);
-        TextView mediaNumber = view.findViewById(R.id.media_number);
-        TextView seenNumber = view.findViewById(R.id.media_seen_number);
-        TextView runtime = view.findViewById(R.id.media_runtime);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Context context = view.getContext();
 
-        title.setText(R.string.library_series);
+        binding.title.setText(R.string.library_series);
 
-        RecyclerView recyclerToSee = view.findViewById(R.id.media_to_see);
-        recyclerToSee.setHasFixedSize(true);
-        recyclerToSee.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        // Setup "To See" RecyclerView
+        binding.mediaToSee.setHasFixedSize(true);
+        binding.mediaToSee.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        this.toSeeSeriesAdapter = new SeriesAdapter(context, this, new ArrayList<>(), true);
+        binding.mediaToSee.setAdapter(toSeeSeriesAdapter);
 
-        this.toSeeSeriesAdapter = new SeriesAdapter(
-                ctx,
-                this,
-                new ArrayList<>(),
-                true
-        );
-        recyclerToSee.setAdapter(toSeeSeriesAdapter);
+        // Setup "Seen" RecyclerView
+        binding.mediaSeen.setHasFixedSize(true);
+        binding.mediaSeen.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        this.seenSeriesAdapter = new SeriesAdapter(context, this, new ArrayList<>(), true);
+        binding.mediaSeen.setAdapter(seenSeriesAdapter);
 
-        RecyclerView recyclerSeen = view.findViewById(R.id.media_seen);
-        recyclerSeen.setHasFixedSize(true);
-        recyclerSeen.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        this.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), serieDatabases -> {
+            List<SerieDatabase> seen = serieDatabases.stream()
+                    .filter(SerieDatabase::isWatched)
+                    .collect(Collectors.toList());
 
-        this.seenSeriesAdapter = new SeriesAdapter(
-                ctx,
-                this,
-                new ArrayList<>(),
-                true
-        );
-        recyclerSeen.setAdapter(seenSeriesAdapter);
+            List<SerieAdapterData> toSee = serieDatabases.stream()
+                    .filter(serieDatabase -> !serieDatabase.isWatched())
+                    .map(m -> SerieAdapterData.of(m.getId(), m.getPosterPath()))
+                    .collect(Collectors.toList());
 
-        this.serieViewModel.getDatabaseSeries().observe(
-                requireActivity(),
-                serieDatabases -> {
-                    List<SerieDatabase> seen = serieDatabases.stream()
-                            .filter(SerieDatabase::isWatched)
-                            .collect(Collectors.toList());
+            binding.mediaNumber.setText(String.valueOf(serieDatabases.size()));
+            binding.mediaSeenNumber.setText(String.valueOf(seen.size()));
+            
+            int seenRuntime = seen.stream().mapToInt(SerieDatabase::getRuntime).sum();
+            binding.mediaRuntime.setText(DateUtils.displayDuration(seenRuntime));
 
-                    List<SerieAdapterData> toSee = serieDatabases.stream()
-                            .filter(serieDatabase -> !serieDatabase.isWatched())
-                            .map(m -> SerieAdapterData.of(
-                                    m.getId(),
-                                    m.getPosterPath()
-                            ))
-                            .collect(Collectors.toList());
+            binding.mediaSeenLayer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
+            binding.mediaToSeeLayer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
 
-                    mediaNumber.setText(String.valueOf(serieDatabases.size()));
-                    seenNumber.setText(String.valueOf(seen.size()));
-                    int seenRuntime = seen.stream()
-                            .mapToInt(SerieDatabase::getRuntime)
-                            .sum();
-                    runtime.setText(DateUtils.displayDuration(seenRuntime));
+            this.setSeries(
+                    seen.stream().map(m -> SerieAdapterData.of(m.getId(), m.getPosterPath())).toList(),
+                    toSee
+            );
+        });
+    }
 
-                    seenContainer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
-                    toSeeContainer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
-
-                    this.setSeries(
-                            seen
-                                    .stream()
-                                    .map(m -> SerieAdapterData.of(
-                                            m.getId(),
-                                            m.getPosterPath()
-                                    ))
-                                    .collect(Collectors.toList()),
-                            toSee
-                    );
-                }
-        );
-
-        return view;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void setSeries(
@@ -146,20 +124,22 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater menuInflater = getActivity().getMenuInflater();
+        MenuInflater menuInflater = requireActivity().getMenuInflater();
         menuInflater.inflate(R.menu.context_menu_library, menu);
 
         if (v.getTag() instanceof Integer) {
             this.selectedSerieId = (Integer) v.getTag();
         }
 
-        boolean hasBeenWatched = this.serieViewModel.getDatabaseSeries().getValue()
-                .stream()
-                .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedSerieId));
-        if (hasBeenWatched) {
-            menu.removeItem(R.id.context_menu_mark_as);
-        } else {
-            menu.removeItem(R.id.context_menu_mark_as_not);
+        List<SerieDatabase> series = this.serieViewModel.getDatabaseSeries().getValue();
+        if (series != null) {
+            boolean hasBeenWatched = series.stream()
+                    .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedSerieId));
+            if (hasBeenWatched) {
+                menu.removeItem(R.id.context_menu_mark_as);
+            } else {
+                menu.removeItem(R.id.context_menu_mark_as_not);
+            }
         }
     }
 
@@ -169,14 +149,11 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
             this.serieViewModel.deleteById(this.selectedSerieId);
             return true;
         }
-        if (
-                item.getItemId() == R.id.context_menu_mark_as
-                        || item.getItemId() == R.id.context_menu_mark_as_not
-        ) {
+        if (item.getItemId() == R.id.context_menu_mark_as || item.getItemId() == R.id.context_menu_mark_as_not) {
             this.serieViewModel.toggleSerieIsWatched(this.selectedSerieId);
             return true;
         }
-        return false;
+        return super.onContextItemSelected(item);
     }
 
     @Override

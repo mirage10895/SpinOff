@@ -16,6 +16,7 @@ import androidx.work.WorkManager;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.UpdateSeriesWorker;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.library.LibraryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.OnAirMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.PopularMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.TopRatedMoviesFragment;
@@ -62,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             if (id == R.id.nav_library) {
-                // Placeholder: you might want to create a separate LibraryFragment later
                 switchFragment(
-                        SearchContainerFragment.newInstance()
+                        LibraryFragment.newInstance()
                 );
                 return true;
             }

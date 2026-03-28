@@ -6,7 +6,7 @@
     android:id="@+id/nested_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?android:attr/windowBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity">
 
@@ -127,9 +127,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:gravity="center_horizontal"
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:textColor="?android:attr/textColorPrimary"
             android:text="@string/movie"
-            android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
@@ -255,9 +256,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/starring_text"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary" />
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -295,9 +297,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
                 android:text="@string/recommendations_text"
-                android:gravity="center_horizontal"
+                android:gravity="start"
                 android:textSize="20sp"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="?android:attr/textColorPrimary" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

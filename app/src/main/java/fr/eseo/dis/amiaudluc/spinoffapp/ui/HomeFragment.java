@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.PopularMoviesFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -61,7 +60,7 @@ public class HomeFragment extends Fragment {
 
         if (savedInstanceState == null) {
             binding.chipPopular.setChecked(true);
-            switchFragment(new PopularMoviesFragment());
+            switchFragment(popularFragment);
         }
         binding.chipPopular.setOnClickListener(chipView -> switchFragment(popularFragment));
         binding.chipTopRated.setOnClickListener(chipView -> switchFragment(topRatedFragment));

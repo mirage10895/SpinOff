@@ -1,58 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text_welcome"
+        android:id="@+id/text_library_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/menu_discover"
+        android:text="@string/title_library"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         android:textStyle="bold"
         android:paddingHorizontal="@dimen/activity_vertical_margin"
         android:paddingTop="@dimen/activity_vertical_margin" />
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_filters"
+        android:id="@+id/chip_group_library"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:paddingHorizontal="@dimen/activity_vertical_margin"
-        app:singleSelection="true">
+        app:singleSelection="true"
+        app:selectionRequired="true">
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_popular"
+            android:id="@+id/chip_my_movies"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
             android:checked="true"
-            android:text="@string/menu_popular" />
+            android:text="@string/library_movies" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/chip_top_rated"
+            android:id="@+id/chip_my_series"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="@string/menu_top_rated" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_on_air"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="@string/menu_on_air" />
+            android:text="@string/library_series" />
     </com.google.android.material.chip.ChipGroup>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/discover_fragment_container"
+        android:id="@+id/library_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

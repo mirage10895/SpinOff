@@ -3,20 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/activity_vertical_margin"
     android:background="?android:attr/windowBackground">
+
+    <TextView
+        android:id="@+id/text_welcome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_title"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+        android:textStyle="bold"
+        android:paddingHorizontal="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/search_bar_container"
+        android:layout_marginHorizontal="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true"
-        android:focusable="false"
-        android:clickable="false"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/text_welcome">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,7 +40,6 @@
                 android:contentDescription="@string/search"
                 android:padding="12dp"
                 android:src="@drawable/ic_search"
-                android:focusable="false"
                 app:tint="@color/colorPrimaryDark" />
 
             <EditText
@@ -58,7 +67,7 @@
         android:id="@+id/no_media_display"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_margin="@dimen/activity_vertical_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_bar_container">
 
@@ -79,7 +88,7 @@
             android:layout_marginBottom="14dp"
             android:gravity="center"
             android:text="@string/search_for"
-            android:textColor="@color/colorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 

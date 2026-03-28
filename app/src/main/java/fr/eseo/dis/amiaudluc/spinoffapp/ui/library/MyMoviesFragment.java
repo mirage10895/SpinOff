@@ -9,18 +9,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.FragmentMyMediasBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
@@ -38,6 +38,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
  */
 public class MyMoviesFragment extends Fragment implements ItemInterface {
 
+    private FragmentMyMediasBinding binding;
     private MovieViewModel movieViewModel;
     private MoviesAdapter seenMoviesAdapter;
     private MoviesAdapter toSeeMoviesAdapter;
@@ -61,22 +62,19 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
             ViewGroup container,
             Bundle savedInstanceState
     ) {
+        binding = FragmentMyMediasBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        View view = inflater.inflate(R.layout.fragment_my_medias, container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ctx = view.getContext();
 
-        View toSeeContainer = view.findViewById(R.id.media_to_see_container);
-        View seenContainer = view.findViewById(R.id.media_seen_container);
-        TextView title = view.findViewById(R.id.title);
-        TextView mediaNumber = view.findViewById(R.id.media_number);
-        TextView seenNumber = view.findViewById(R.id.media_seen_number);
-        TextView runtime = view.findViewById(R.id.media_runtime);
+        binding.title.setText(R.string.library_movies);
 
-        title.setText(R.string.library_movies);
-
-        RecyclerView recyclerToSee = view.findViewById(R.id.media_to_see);
-        recyclerToSee.setHasFixedSize(true);
-        recyclerToSee.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        binding.mediaToSee.setHasFixedSize(true);
+        binding.mediaToSee.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 
         this.toSeeMoviesAdapter = new MoviesAdapter(
                 ctx,
@@ -84,11 +82,10 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
                 new ArrayList<>(),
                 true
         );
-        recyclerToSee.setAdapter(toSeeMoviesAdapter);
+        binding.mediaToSee.setAdapter(toSeeMoviesAdapter);
 
-        RecyclerView recyclerSeen = view.findViewById(R.id.media_seen);
-        recyclerSeen.setHasFixedSize(true);
-        recyclerSeen.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
+        binding.mediaSeen.setHasFixedSize(true);
+        binding.mediaSeen.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 
         this.seenMoviesAdapter = new MoviesAdapter(
                 ctx,
@@ -96,10 +93,10 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
                 new ArrayList<>(),
                 true
         );
-        recyclerSeen.setAdapter(seenMoviesAdapter);
+        binding.mediaSeen.setAdapter(seenMoviesAdapter);
 
         this.movieViewModel.getDatabaseMovies().observe(
-                requireActivity(),
+                getViewLifecycleOwner(),
                 movieDatabases -> {
                     List<MovieDatabase> seen = movieDatabases.stream()
                             .filter(MovieDatabase::isWatched)
@@ -113,15 +110,15 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
                             ))
                             .collect(Collectors.toList());
 
-                    mediaNumber.setText(String.valueOf(movieDatabases.size()));
-                    seenNumber.setText(String.valueOf(seen.size()));
+                    binding.mediaNumber.setText(String.valueOf(movieDatabases.size()));
+                    binding.mediaSeenNumber.setText(String.valueOf(seen.size()));
                     int seenRuntime = seen.stream()
                             .mapToInt(MovieDatabase::getRuntime)
                             .sum();
-                    runtime.setText(DateUtils.displayDuration(seenRuntime));
+                    binding.mediaRuntime.setText(DateUtils.displayDuration(seenRuntime));
 
-                    seenContainer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
-                    toSeeContainer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
+                    binding.mediaSeenLayer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
+                    binding.mediaToSeeLayer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
 
                     this.setMovies(
                             seen
@@ -135,8 +132,12 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
                     );
                 }
         );
+    }
 
-        return view;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     private void setMovies(
@@ -154,20 +155,22 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
             ContextMenu.ContextMenuInfo menuInfo
     ) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater menuInflater = getActivity().getMenuInflater();
+        MenuInflater menuInflater = requireActivity().getMenuInflater();
         menuInflater.inflate(R.menu.context_menu_library, menu);
 
         if (v.getTag() instanceof Integer) {
             this.selectedMovieId = (Integer) v.getTag();
         }
 
-        boolean hasBeenWatched = this.movieViewModel.getDatabaseMovies().getValue()
-                .stream()
-                .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedMovieId));
-        if (hasBeenWatched) {
-            menu.removeItem(R.id.context_menu_mark_as);
-        } else {
-            menu.removeItem(R.id.context_menu_mark_as_not);
+        List<MovieDatabase> movies = this.movieViewModel.getDatabaseMovies().getValue();
+        if (movies != null) {
+            boolean hasBeenWatched = movies.stream()
+                    .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedMovieId));
+            if (hasBeenWatched) {
+                menu.removeItem(R.id.context_menu_mark_as);
+            } else {
+                menu.removeItem(R.id.context_menu_mark_as_not);
+            }
         }
     }
 
@@ -184,7 +187,7 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
             this.movieViewModel.toggleMovieIsWatched(this.selectedMovieId);
             return true;
         }
-        return true;
+        return super.onContextItemSelected(item);
     }
 
     @Override

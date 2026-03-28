@@ -61,7 +61,7 @@
     <string name="number_seasons">Seasons</string>
     <string name="menu_discover">Discover</string>
     <string name="menu_library">My list</string>
-    <string name="movie">The Movie</string>
+    <string name="movie">The movie</string>
 
     <string name="empty_results">Nothing to show</string>
     <string name="empty_desc_results">There\'s no medias to display ! \n Check your network connexion.</string>
@@ -79,6 +79,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_library">Library</string>
 
     <!-- Library -->
     <string name="library_movies">My movies</string>

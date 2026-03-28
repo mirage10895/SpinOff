@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="?android:attr/windowBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity">
 
@@ -128,9 +128,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/tv_show"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary" />
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -231,9 +232,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/number_seasons"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary" />
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/seasons"
@@ -245,9 +247,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:text="@string/text_networks"
-            android:gravity="center_horizontal"
-            android:textSize="20sp"
-            android:textColor="@color/colorPrimary" />
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/recommandation_series_layer"
@@ -261,9 +264,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
                 android:text="@string/recommendations_text"
-                android:gravity="center_horizontal"
-                android:textSize="20sp"
-                android:textColor="@color/colorPrimary" />
+                android:layout_marginVertical="@dimen/text_margin"
+                android:gravity="start"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20sp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
