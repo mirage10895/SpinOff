@@ -16,6 +16,10 @@
         android:layout_margin="15dp"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/layout_chips"
+            layout="@layout/layout_status_chips" />
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

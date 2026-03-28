@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
@@ -71,7 +73,22 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
         
         setupRecyclerViews();
+        setupChips();
         observeViewModel();
+    }
+
+    private void setupChips() {
+        binding.layoutChips.chipInLibrary.setOnClickListener(v -> {
+            if (binding.layoutChips.chipInLibrary.isChecked()) {
+                serieViewModel.insert(serieId);
+            } else {
+                serieViewModel.deleteById(serieId);
+            }
+        });
+
+        binding.layoutChips.chipWatched.setOnClickListener(v -> {
+            serieViewModel.toggleSerieIsWatched(serieId);
+        });
     }
 
     private void setupRecyclerViews() {
@@ -91,6 +108,21 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
     private void observeViewModel() {
         serieViewModel.getSerie().observe(getViewLifecycleOwner(), this::updateUI);
+        serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), series -> {
+            Optional<SerieDatabase> serieDb = series.stream()
+                    .filter(s -> s.getId() == serieId)
+                    .findFirst();
+
+            if (serieDb.isPresent()) {
+                binding.layoutChips.chipInLibrary.setChecked(true);
+                binding.layoutChips.chipWatched.setVisibility(View.VISIBLE);
+                binding.layoutChips.chipWatched.setChecked(serieDb.get().isWatched());
+            } else {
+                binding.layoutChips.chipInLibrary.setChecked(false);
+                binding.layoutChips.chipWatched.setVisibility(View.GONE);
+                binding.layoutChips.chipWatched.setChecked(false);
+            }
+        });
     }
 
     private void updateUI(Serie serie) {

@@ -24,8 +24,6 @@ public class CalendarActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        findViewById(R.id.fab).setVisibility(View.GONE);
-
         this.fragment = new CalendarFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.content, fragment, getString(R.string.menu_calendar)).commit();
         getSupportActionBar().setTitle(getString(R.string.menu_calendar));

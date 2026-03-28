@@ -8,18 +8,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMediaBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
@@ -46,7 +43,6 @@ public class MovieActivity extends AppCompatActivity {
             return;
         }
 
-        binding.fab.setEnabled(false);
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
         if (savedInstanceState == null) {
@@ -73,17 +69,10 @@ public class MovieActivity extends AppCompatActivity {
 
                 String backdropUrl = getString(R.string.base_url_poster_original) + movie.getBackdropPath();
                 setBackground(backdropUrl);
-
-                binding.fab.setOnClickListener(new AddMovieActionListener(movieViewModel, movie.getId()));
             } else {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
             }
-        });
-
-        movieViewModel.getDatabaseMovies().observe(this, movies -> {
-            boolean isAlreadyInDatabase = movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(movieId));
-            binding.fab.setEnabled(!isAlreadyInDatabase);
         });
     }
 

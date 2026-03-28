@@ -45,8 +45,6 @@ public class SerieActivity extends AppCompatActivity {
             return;
         }
 
-        binding.fab.setEnabled(false);
-
         serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
         
         if (savedInstanceState == null) {
@@ -73,17 +71,10 @@ public class SerieActivity extends AppCompatActivity {
                 
                 String backdropUrl = getString(R.string.base_url_poster_original) + serie.getBackdropPath();
                 setBackground(backdropUrl);
-                
-                binding.fab.setOnClickListener(new AddSerieActionListener(serieViewModel, serie.getId()));
             } else {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
             }
-        });
-
-        serieViewModel.getDatabaseSeries().observe(this, series -> {
-            boolean isAlreadyInDatabase = series.stream().anyMatch(s -> s.getId().equals(serieId));
-            binding.fab.setEnabled(!isAlreadyInDatabase);
         });
     }
 

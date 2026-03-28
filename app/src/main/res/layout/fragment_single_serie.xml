@@ -15,6 +15,10 @@
         android:layout_margin="15dp"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/layout_chips"
+            layout="@layout/layout_status_chips" />
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -272,11 +276,10 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/text_margin"
-                card_view:cardBackgroundColor="@color/card_background_color"
-                card_view:cardCornerRadius="5dp"
-                card_view:cardElevation="8dp"
-                card_view:layout_collapseMode="pin">
+                app:cardBackgroundColor="@color/card_background_color"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="8dp"
+                app:layout_collapseMode="pin">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_recommendations"

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.DecimalFormat;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
@@ -42,7 +44,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private int movieId;
 
-    private SingleMovieFragment() {
+    public SingleMovieFragment() {
         // Required empty public constructor
     }
 
@@ -76,7 +78,22 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
 
         setupRecyclerViews();
+        setupChips();
         observeViewModel();
+    }
+
+    private void setupChips() {
+        binding.layoutChips.chipInLibrary.setOnClickListener(v -> {
+            if (binding.layoutChips.chipInLibrary.isChecked()) {
+                movieViewModel.insert(movieId);
+            } else {
+                movieViewModel.deleteMovieById(movieId);
+            }
+        });
+
+        binding.layoutChips.chipWatched.setOnClickListener(v -> {
+            movieViewModel.toggleMovieIsWatched(movieId);
+        });
     }
 
 
@@ -96,6 +113,21 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private void observeViewModel() {
         movieViewModel.getMovie().observe(getViewLifecycleOwner(), this::updateUI);
+        movieViewModel.getDatabaseMovies().observe(getViewLifecycleOwner(), movies -> {
+            Optional<MovieDatabase> movieDb = movies.stream()
+                    .filter(m -> m.getId() == movieId)
+                    .findFirst();
+
+            if (movieDb.isPresent()) {
+                binding.layoutChips.chipInLibrary.setChecked(true);
+                binding.layoutChips.chipWatched.setVisibility(View.VISIBLE);
+                binding.layoutChips.chipWatched.setChecked(movieDb.get().isWatched());
+            } else {
+                binding.layoutChips.chipInLibrary.setChecked(false);
+                binding.layoutChips.chipWatched.setVisibility(View.GONE);
+                binding.layoutChips.chipWatched.setChecked(false);
+            }
+        });
     }
 
     private void updateUI(Movie movie) {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.ChipGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chip_group_status"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_in_library"
+        style="@style/Widget.MaterialComponents.Chip.Filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chip_in_library"
+        app:chipBackgroundColor="@color/chip_background_color"
+        app:checkedIconTint="@color/bottom_nav_color"
+        android:textColor="@color/chip_text_color"
+        app:checkedIconVisible="true"
+        android:clickable="true"
+        android:checkable="true" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_watched"
+        style="@style/Widget.MaterialComponents.Chip.Filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chip_watched"
+        app:chipBackgroundColor="@color/chip_background_color"
+        app:checkedIconTint="@color/bottom_nav_color"
+        android:textColor="@color/chip_text_color"
+        app:checkedIconVisible="true"
+        android:clickable="true"
+        android:checkable="true" />
+
+</com.google.android.material.chip.ChipGroup>

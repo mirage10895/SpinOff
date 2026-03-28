@@ -74,7 +74,6 @@ public abstract class BaseFragment extends Fragment implements ItemInterface {
         if (v.getTag() instanceof Integer) {
             this.selectedContextId = (Integer) v.getTag();
         }
-        menu.setHeaderTitle(R.string.action_settings);
         if (getActivity() != null) {
             MenuInflater menuInflater = getActivity().getMenuInflater();
             menuInflater.inflate(R.menu.context_menu_main, menu);
