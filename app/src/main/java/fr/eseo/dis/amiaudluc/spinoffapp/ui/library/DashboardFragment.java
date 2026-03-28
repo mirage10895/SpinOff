@@ -47,9 +47,6 @@ public class DashboardFragment extends Fragment {
         this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
         this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
 
-        this.movieViewModel.initDatabaseMovies();
-        this.serieViewModel.initDatabaseSeries();
-
         this.seriesCunt = view.findViewById(R.id.nb_series);
         this.moviesCunt = view.findViewById(R.id.nb_movies);
         this.seriesLength = view.findViewById(R.id.series_length);

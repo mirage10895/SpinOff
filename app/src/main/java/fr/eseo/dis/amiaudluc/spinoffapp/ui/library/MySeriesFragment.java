@@ -50,7 +50,6 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        this.serieViewModel.initDatabaseSeries();
     }
 
     @Override

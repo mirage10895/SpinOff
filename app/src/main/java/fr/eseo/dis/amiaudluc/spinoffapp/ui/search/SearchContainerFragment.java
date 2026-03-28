@@ -1,49 +1,57 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.databinding.ActivitySearchBinding;
+import fr.eseo.dis.amiaudluc.databinding.FragmentSearchContainerBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchContainerFragment extends Fragment {
 
-    private ActivitySearchBinding binding;
+    private FragmentSearchContainerBinding binding;
     private SearchViewModel searchViewModel;
     private InputMethodManager imm;
 
+    public SearchContainerFragment() {
+        // Required empty public constructor
+    }
+
+    public static SearchContainerFragment newInstance() {
+        return new SearchContainerFragment();
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivitySearchBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentSearchContainerBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
-        imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        binding.contentMain.content.setVisibility(View.GONE);
+        searchViewModel = new ViewModelProvider(requireActivity()).get(SearchViewModel.class);
+        imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
+            getChildFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .replace(R.id.content, SearchFragment.newInstance(1), "SearchFragment")
+                    .replace(R.id.fragment_container, SearchFragment.newInstance(1), "SearchFragment")
                     .commit();
         }
 
@@ -68,8 +76,8 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.toString().isEmpty()) {
-                    binding.contentMain.progressBar.setVisibility(View.GONE);
-                    binding.contentMain.content.setVisibility(View.GONE);
+                    binding.progressBar.setVisibility(View.GONE);
+                    binding.resultsContainer.setVisibility(View.GONE);
                     binding.noMediaDisplay.setVisibility(View.VISIBLE);
                     binding.nothingText.setText(R.string.search_for);
                 } else {
@@ -85,25 +93,25 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setupObservers() {
-        searchViewModel.getMedias().observe(this, medias -> {
-            binding.contentMain.progressBar.setVisibility(View.GONE);
+        searchViewModel.getMedias().observe(getViewLifecycleOwner(), medias -> {
+            binding.progressBar.setVisibility(View.GONE);
             if (medias == null) {
                 binding.noMediaDisplay.setVisibility(View.VISIBLE);
                 binding.nothingText.setText(R.string.empty_desc_results);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
             } else if (medias.isEmpty()) {
-                binding.contentMain.content.setVisibility(View.GONE);
+                binding.resultsContainer.setVisibility(View.GONE);
                 binding.noMediaDisplay.setVisibility(View.VISIBLE);
                 binding.nothingText.setText(R.string.no_results);
             } else {
                 binding.noMediaDisplay.setVisibility(View.GONE);
-                binding.contentMain.content.setVisibility(View.VISIBLE);
+                binding.resultsContainer.setVisibility(View.VISIBLE);
             }
         });
     }
 
     private void onSearch(String query) {
-        binding.contentMain.progressBar.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.VISIBLE);
         binding.noMediaDisplay.setVisibility(View.GONE);
         searchViewModel.initSearchByQuery(query);
     }
@@ -115,11 +123,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            getOnBackPressedDispatcher().onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

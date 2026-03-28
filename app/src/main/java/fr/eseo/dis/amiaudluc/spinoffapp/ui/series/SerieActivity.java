@@ -51,7 +51,6 @@ public class SerieActivity extends AppCompatActivity {
         
         if (savedInstanceState == null) {
             serieViewModel.initGetSerieById(serieId);
-            serieViewModel.initDatabaseSeries();
             
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)

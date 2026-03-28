@@ -51,7 +51,6 @@ public class MovieActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             movieViewModel.initGetMovieById(movieId);
-            movieViewModel.initDatabaseMovies();
 
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)

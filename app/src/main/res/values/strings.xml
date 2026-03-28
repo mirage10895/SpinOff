@@ -5,15 +5,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- Fragments -->
-    <string name="fragment_popular_movies">Popular Movies</string>
-    <string name="fragment_popular_series">Popular Series</string>
-    <string name="fragment_top_rated_movies">Top Rated Movies</string>
-    <string name="fragment_top_rated_series">Top Rated Series</string>
-    <string name="fragment_on_air_movies">On Air Movies</string>
-    <string name="fragment_on_air_series">On Air Series</string>
-    <string name="fragment_library">My list</string>
-    <string name="fragment_my_calendar">My Calendar</string>
-
     <string name="fragment_search_medias">Search Media</string>
     <string name="fragment_single_movie">Single Movie</string>
     <string name="fragment_single_serie">Single Serie</string>
@@ -39,6 +30,7 @@
     <!-- MENU ITEMS -->
     <string name="menu_popular">Popular</string>
     <string name="menu_top_rated">Top Rated</string>
+    <string name="menu_on_air">Current</string>
     <string name="menu_movie">Movies</string>
     <string name="menu_series">Series</string>
     <string name="menu_artists">Persons</string>

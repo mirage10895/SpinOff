@@ -53,7 +53,6 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
-        this.movieViewModel.initDatabaseMovies();
     }
 
     @Override

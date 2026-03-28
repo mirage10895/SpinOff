@@ -2,14 +2,13 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel;
 
 import android.app.Application;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-
-import java.util.List;
-
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.enums.MovieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
@@ -57,10 +56,6 @@ public class MovieViewModel extends AndroidViewModel {
 
     public void initGetMovieById(Integer id) {
         movieIdTrigger.setValue(id);
-    }
-
-    public void initDatabaseMovies() {
-        // fetchAll() is already wired in constructor
     }
 
     public void insert(int movieId) {

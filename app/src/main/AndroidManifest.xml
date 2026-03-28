@@ -36,12 +36,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="false"/>
         <activity
-            android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.search.SearchActivity"
-            android:label="@string/title_activity_search"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme"
-            android:exported="false" />
-        <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity"
             android:label="@string/title_activity_serie"
             android:theme="@style/AppTheme.NoActionBar"

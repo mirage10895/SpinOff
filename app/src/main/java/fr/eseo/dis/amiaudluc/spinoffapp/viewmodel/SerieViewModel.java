@@ -84,7 +84,6 @@ public class SerieViewModel extends AndroidViewModel {
     }
 
     // Database methods (these usually return stable LiveData from Room)
-    public void initDatabaseSeries() { /* serieRepository.fetchAll() is already assigned */ }
     public void insert(int serieId) { serieRepository.insert(serieId); }
     public void deleteById(int id) { serieRepository.deleteById(id); }
     public void toggleSerieIsWatched(int id) { serieRepository.toggleSerieIsWatched(id); }

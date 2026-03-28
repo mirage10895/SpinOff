@@ -47,9 +47,6 @@ public abstract class BaseFragment extends Fragment implements ItemInterface {
         this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
         this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
 
-        this.movieViewModel.initDatabaseMovies();
-        this.serieViewModel.initDatabaseSeries();
-
         int columns = getResources().getInteger(R.integer.scripts_columns);
         binding.cardList.setLayoutManager(new GridLayoutManager(requireContext(), columns));
 
