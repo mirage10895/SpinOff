@@ -9,7 +9,7 @@
     android:layout_marginStart="1dp"
     android:layout_marginTop="1dp"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="@color/colorPrimaryDark"
+    card_view:cardBackgroundColor="@color/card_background_color"
     card_view:cardCornerRadius="5dp"
     card_view:layout_collapseMode="pin"
     card_view:cardElevation="8dp"

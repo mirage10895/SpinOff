@@ -87,7 +87,7 @@
     <string name="library_media_number">Total</string>
     <string name="library_media_seen_number">Seen</string>
     <string name="library_media_runtime">Seen runtime</string>
-    <string name="library_to_see">Your list</string>
+    <string name="library_to_see">Watchlist</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="starring_text">Starring</string>

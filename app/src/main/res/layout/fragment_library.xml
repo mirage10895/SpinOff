@@ -31,14 +31,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/library_movies" />
+            android:clickable="true"
+            android:text="@string/library_movies"
+            app:chipBackgroundColor="@color/chip_background_color"
+            android:textColor="@color/chip_text_color"
+            app:checkedIconVisible="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_my_series"
             style="@style/Widget.MaterialComponents.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/library_series" />
+            android:clickable="true"
+            android:text="@string/library_series"
+            app:chipBackgroundColor="@color/chip_background_color"
+            android:textColor="@color/chip_text_color"
+            app:checkedIconVisible="false" />
     </com.google.android.material.chip.ChipGroup>
 
     <androidx.fragment.app.FragmentContainerView

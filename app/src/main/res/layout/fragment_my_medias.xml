@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_margin"
         app:layout_constraintTop_toBottomOf="@id/title"
-        card_view:cardBackgroundColor="@color/colorPrimaryDark"
+        card_view:cardBackgroundColor="@color/card_background_color"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="8dp"
         card_view:layout_collapseMode="pin">
@@ -150,7 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/text_margin"
             android:padding="@dimen/text_margin"
-            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">
@@ -187,7 +187,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/text_margin"
             android:padding="@dimen/text_margin"
-            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">

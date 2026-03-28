@@ -32,7 +32,10 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:checked="true"
-            android:text="@string/menu_popular" />
+            android:text="@string/menu_popular"
+            app:chipBackgroundColor="@color/chip_background_color"
+            android:textColor="@color/chip_text_color"
+            app:checkedIconVisible="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_top_rated"
@@ -40,7 +43,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:text="@string/menu_top_rated" />
+            android:text="@string/menu_top_rated"
+            app:chipBackgroundColor="@color/chip_background_color"
+            android:textColor="@color/chip_text_color"
+            app:checkedIconVisible="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_on_air"
@@ -48,7 +54,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:text="@string/menu_on_air" />
+            android:text="@string/menu_on_air"
+            app:chipBackgroundColor="@color/chip_background_color"
+            android:textColor="@color/chip_text_color"
+            app:checkedIconVisible="false" />
     </com.google.android.material.chip.ChipGroup>
 
     <androidx.fragment.app.FragmentContainerView

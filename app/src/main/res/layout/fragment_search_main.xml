@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/text_margin"
-            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/text_margin"
-            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">
@@ -106,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/text_margin"
-            card_view:cardBackgroundColor="@color/colorPrimaryDark"
+            card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
             card_view:cardElevation="8dp"
             card_view:layout_collapseMode="pin">

@@ -1,6 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.common;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -25,7 +24,7 @@ public class CircularImageBar {
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(150, 150, 140, paint);
-        paint.setColor(Color.parseColor("#ffe240"));
+        paint.setColor(Color.parseColor("#4F9DA6"));
         paint.setStrokeWidth(10);
         paint.setStyle(Paint.Style.FILL);
         final RectF oval = new RectF();
@@ -41,24 +40,6 @@ public class CircularImageBar {
         return b;
     }
 
-    public static Bitmap buildSeasons(int size) {
-        Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(b);
-        Paint paint = new Paint();
-
-        paint.setColor(Color.parseColor("#c4c4c4"));
-        paint.setStrokeWidth(10);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setColor(Color.parseColor("#FFFFFF"));
-        paint.setTextSize(130);
-        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
-
-        return b;
-    }
-
     public static Bitmap buildNumber(int size, int color) {
         Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(b);
@@ -70,24 +51,6 @@ public class CircularImageBar {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
         paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(130);
-        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
-
-        return b;
-    }
-
-    public static Bitmap buildString(String size, int color, Context ctx) {
-        Bitmap b = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(b);
-        Paint paint = new Paint();
-
-        paint.setColor(ctx.getColor(color));
-        paint.setStrokeWidth(10);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setColor(ctx.getColor(color));
         paint.setTextSize(130);
         canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
