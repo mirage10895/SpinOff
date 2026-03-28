@@ -75,7 +75,7 @@ public class SerieActivity extends AppCompatActivity {
                 String backdropUrl = getString(R.string.base_url_poster_original) + serie.getBackdropPath();
                 setBackground(backdropUrl);
                 
-                binding.fab.setOnClickListener(new AddSerieActionListener(serieViewModel, serie));
+                binding.fab.setOnClickListener(new AddSerieActionListener(serieViewModel, serie.getId()));
             } else {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();

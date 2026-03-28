@@ -55,6 +55,10 @@ public class ApiRepository {
         return executeAsync(this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations"));
     }
 
+    public Optional<Movie> getMovieByIdSync(Integer id) {
+        return execute(this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations"));
+    }
+
     public LiveData<List<Serie>> getSeriesByType(String type, Integer page, List<Serie> previous) {
         return executeAsync(
                 this.tmdbApiService.api.getSeries(type, "FR", page),

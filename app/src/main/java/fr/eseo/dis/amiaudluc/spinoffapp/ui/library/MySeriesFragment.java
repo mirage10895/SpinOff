@@ -22,8 +22,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
@@ -183,14 +183,9 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onCreateCtxMenu(
-            ContextMenu contextMenu,
-            View v,
-            ContextMenu.ContextMenuInfo menuInfo,
-            Integer serieId
-    ) {
-        this.selectedSerieId = serieId;
-        onCreateContextMenu(contextMenu, v, menuInfo);
+    public void onRegisterContextMenu(View view, Integer id) {
+        view.setTag(id);
+        registerForContextMenu(view);
     }
 
     @Override

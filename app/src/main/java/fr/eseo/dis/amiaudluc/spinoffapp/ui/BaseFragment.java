@@ -67,8 +67,17 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
     }
 
     @Override
+    public void onRegisterContextMenu(View view, Integer id) {
+        view.setTag(id);
+        registerForContextMenu(view);
+    }
+
+    @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getTag() instanceof Integer) {
+            this.selectedContextId = (Integer) v.getTag();
+        }
         menu.setHeaderTitle(R.string.action_settings);
         if (getActivity() != null) {
             MenuInflater menuInflater = getActivity().getMenuInflater();

@@ -1,7 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.movies;
 
 import android.content.Context;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +57,6 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
     }
 
     public void setMovies(List<MovieAdapterData> movies) {
-        // ListAdapter needs a NEW list instance to detect changes reliably
         submitList(movies != null ? new ArrayList<>(movies) : null);
     }
 
@@ -83,10 +81,12 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
                     .error(R.drawable.ic_launcher_foreground)
                     .into(holder.moviePoster);
         }
+        
+        holder.fragment.onRegisterContextMenu(holder.itemView, movie.getId());
     }
 
     public static class MoviesViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnCreateContextMenuListener {
+            implements View.OnClickListener {
 
         private final ImageView moviePoster;
         private final SearchInterface fragment;
@@ -98,7 +98,6 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
             this.fragment = fragment;
             this.adapter = adapter;
             view.setOnClickListener(this);
-            view.setOnCreateContextMenuListener(this);
         }
 
         @Override
@@ -108,15 +107,6 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
                 MovieAdapterData movie = adapter.getItem(pos);
                 fragment.setType(SearchInterface.FragmentType.MOVIE);
                 fragment.onItemClick(movie.getId());
-            }
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            int pos = getAbsoluteAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                MovieAdapterData movie = adapter.getItem(pos);
-                fragment.onCreateCtxMenu(menu, v, menuInfo, movie.getId());
             }
         }
     }

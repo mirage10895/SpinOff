@@ -5,7 +5,6 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 /**
@@ -15,18 +14,18 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 public class DeleteSerieActionListener implements View.OnClickListener {
 
     private final SerieViewModel serieViewModel;
-    private final Serie serie;
+    private final int serieId;
 
 
-    public DeleteSerieActionListener(SerieViewModel serieViewModel, Serie serie) {
+    public DeleteSerieActionListener(SerieViewModel serieViewModel, int serieId) {
         this.serieViewModel = serieViewModel;
-        this.serie = serie;
+        this.serieId = serieId;
     }
 
     @Override
     public void onClick(View v) {
-        this.serieViewModel.deleteById(serie.getId());
+        this.serieViewModel.deleteById(this.serieId);
         Snackbar.make(v, R.string.serie_deleted, Snackbar.LENGTH_LONG)
-                .setAction("Undo", new AddSerieActionListener(this.serieViewModel, this.serie)).show();
+                .setAction("Undo", new AddSerieActionListener(this.serieViewModel, this.serieId)).show();
     }
 }

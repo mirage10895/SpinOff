@@ -2,10 +2,13 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,19 +16,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import fr.eseo.dis.amiaudluc.databinding.FragmentSearchMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
@@ -173,6 +171,7 @@ public class SearchFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
+    public void onRegisterContextMenu(View view, Integer id) {
+        // unused
     }
 }

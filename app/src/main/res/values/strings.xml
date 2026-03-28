@@ -126,5 +126,6 @@
     <string name="movie_deleted">Movie deleted from library</string>
     <string name="serie_added">Serie added to your library</string>
     <string name="serie_deleted">Serie deleted from library</string>
+    <string name="undo_action">Undo</string>
     <string name="error_library_transaction">A problem occurred. Try again or reach an administrator.</string>
 </resources>

@@ -2,28 +2,26 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.series;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import java.util.stream.Collectors;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
@@ -168,7 +166,8 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
+    public void onRegisterContextMenu(View view, Integer id) {
+        // unused
     }
 
     @Override

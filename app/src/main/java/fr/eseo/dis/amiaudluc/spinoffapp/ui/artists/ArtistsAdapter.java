@@ -136,7 +136,7 @@ public class ArtistsAdapter extends ListAdapter<Artist, ArtistsAdapter.ArtistVie
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 Artist artiste = adapter.getItem(pos);
-                fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, artiste.getId());
+                fragment.onRegisterContextMenu(view, artiste.getId());
             }
         }
     }

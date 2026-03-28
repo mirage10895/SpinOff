@@ -1,11 +1,9 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,16 +57,6 @@ public class Movie implements Media {
                 id,
                 posterPath
         );
-    }
-
-    public MovieDatabase toDatabaseFormat() {
-        MovieDatabase movieDatabase = new MovieDatabase();
-        movieDatabase.setId(id);
-        movieDatabase.setTitle(title);
-        movieDatabase.setPosterPath(posterPath);
-        movieDatabase.setRuntime(runtime);
-        movieDatabase.setLastSynchronisationTime(Instant.now());
-        return movieDatabase;
     }
 
     @Override

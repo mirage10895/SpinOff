@@ -1,15 +1,11 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.common;
 
-import android.view.ContextMenu;
 import android.view.View;
 
 /**
- * Created by lucasamiaud on 28/02/2018.
+ * Interface to handle item actions in a list.
  */
-
 public interface ItemInterface {
-    // This function will return the position of the selected item in the RecyclerView.
     void onItemClick(Integer id);
-
-    void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer id);
+    void onRegisterContextMenu(View view, Integer id);
 }

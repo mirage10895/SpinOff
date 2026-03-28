@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.MediaTransactionObserver;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
@@ -42,17 +42,21 @@ public abstract class BaseSerieFragment extends BaseFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.context_menu_add) {
-            this.serieViewModel.initGetSerieById(super.selectedContextId);
-            this.serieViewModel.getSerie().observe(getViewLifecycleOwner(), new MediaTransactionObserver<>(
-                    super.movieViewModel, super.serieViewModel, binding.getRoot(), false
-            ));
+            super.serieViewModel.insert(super.selectedContextId);
+            Snackbar.make(binding.getRoot(), R.string.serie_added, Snackbar.LENGTH_LONG)
+                    .setAction(
+                            R.string.undo_action,
+                            new DeleteSerieActionListener(this.serieViewModel, super.selectedContextId)
+                    )
+                    .show();
+            return true;
         } else if (item.getItemId() == R.id.context_menu_delete) {
-            this.serieViewModel.initGetSerieById(super.selectedContextId);
-            this.serieViewModel.getSerie().observe(getViewLifecycleOwner(), new MediaTransactionObserver<>(
-                    super.movieViewModel, super.serieViewModel, binding.getRoot(), true
-            ));
+            super.serieViewModel.deleteById(super.selectedContextId);
+            Snackbar.make(binding.getRoot(), R.string.serie_deleted, Snackbar.LENGTH_LONG)
+                    .show();
+            return true;
         }
-        return false;
+        return super.onContextItemSelected(item);
     }
 
     protected void observeSeries() {
@@ -86,16 +90,17 @@ public abstract class BaseSerieFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer selectedContextId) {
-        super.selectedContextId = selectedContextId;
-        super.onCreateContextMenu(contextMenu, v, menuInfo);
-        super.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), movies -> {
-            boolean isPresent = movies.stream().anyMatch(i -> i.getId().equals(selectedContextId));
-            if (isPresent) {
-                contextMenu.removeItem(R.id.context_menu_add);
-            } else {
-                contextMenu.removeItem(R.id.context_menu_delete);
-            }
-        });
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (super.selectedContextId != null) {
+            super.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), series -> {
+                boolean isPresent = series.stream().anyMatch(i -> i.getId().equals(super.selectedContextId));
+                if (isPresent) {
+                    menu.removeItem(R.id.context_menu_add);
+                } else {
+                    menu.removeItem(R.id.context_menu_delete);
+                }
+            });
+        }
     }
 }

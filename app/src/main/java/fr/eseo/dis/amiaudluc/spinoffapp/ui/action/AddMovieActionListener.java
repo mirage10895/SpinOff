@@ -1,27 +1,27 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.action;
 
-import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 public class AddMovieActionListener implements View.OnClickListener {
 
     private final MovieViewModel movieViewModel;
-    private final Movie movie;
+    private final int movieId;
 
-    public AddMovieActionListener(MovieViewModel movieViewModel, Movie movie) {
+    public AddMovieActionListener(MovieViewModel movieViewModel, int movieId) {
         this.movieViewModel = movieViewModel;
-        this.movie = movie;
+        this.movieId = movieId;
     }
 
     @Override
     public void onClick(View view) {
         view.setEnabled(false);
-        this.movieViewModel.insert(this.movie.toDatabaseFormat());
+        this.movieViewModel.insert(this.movieId);
         Snackbar.make(view, R.string.movie_added, Snackbar.LENGTH_LONG)
-                .setAction("Undo", new DeleteMovieActionListener(this.movieViewModel, this.movie)).show();
+                .setAction("Undo", new DeleteMovieActionListener(this.movieViewModel, this.movieId)).show();
     }
 }

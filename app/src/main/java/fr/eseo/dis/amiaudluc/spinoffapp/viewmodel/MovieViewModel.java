@@ -63,8 +63,8 @@ public class MovieViewModel extends AndroidViewModel {
         // fetchAll() is already wired in constructor
     }
 
-    public void insert(MovieDatabase movie) {
-        this.movieRepository.insert(movie);
+    public void insert(int movieId) {
+        this.movieRepository.insert(movieId);
     }
 
     public void deleteMovieById(int id) {

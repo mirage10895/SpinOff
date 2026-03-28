@@ -8,16 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
@@ -131,7 +130,7 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 Artist artiste = adapter.getItem(pos);
-                fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, artiste.getId());
+                fragment.onRegisterContextMenu(view, artiste.getId());
             }
         }
     }

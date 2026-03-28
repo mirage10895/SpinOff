@@ -2,7 +2,6 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
@@ -149,6 +147,7 @@ public class SeasonFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer position) {
+    public void onRegisterContextMenu(View view, Integer id) {
+        // unused
     }
 }

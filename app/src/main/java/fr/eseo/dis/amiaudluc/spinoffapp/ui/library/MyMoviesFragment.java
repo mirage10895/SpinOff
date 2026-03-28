@@ -21,8 +21,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
@@ -192,9 +192,9 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onCreateCtxMenu(ContextMenu contextMenu, View v, ContextMenu.ContextMenuInfo menuInfo, Integer movieId) {
-        this.selectedMovieId = movieId;
-        onCreateContextMenu(contextMenu, v, menuInfo);
+    public void onRegisterContextMenu(View view, Integer id) {
+        view.setTag(id);
+        registerForContextMenu(view);
     }
 
     @Override

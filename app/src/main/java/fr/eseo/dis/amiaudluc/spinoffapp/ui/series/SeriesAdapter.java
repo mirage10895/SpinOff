@@ -1,7 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.series;
 
 import android.content.Context;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,10 +78,12 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
             Picasso.get().load(link).fit().error(R.drawable.ic_launcher_foreground)
                     .into(holder.seriePoster);
         }
+
+        holder.fragment.onRegisterContextMenu(holder.itemView, serie.getId());
     }
 
     public static class SeriesViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnCreateContextMenuListener {
+            implements View.OnClickListener {
 
         private final ImageView seriePoster;
         private final SearchInterface fragment;
@@ -94,7 +95,6 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
             this.fragment = fragment;
             this.adapter = adapter;
             view.setOnClickListener(this);
-            view.setOnCreateContextMenuListener(this);
         }
 
         @Override
@@ -104,15 +104,6 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
                 SerieAdapterData serie = adapter.getItem(pos);
                 fragment.setType(SearchInterface.FragmentType.SERIE);
                 fragment.onItemClick(serie.getId());
-            }
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            int pos = getAbsoluteAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                SerieAdapterData serie = adapter.getItem(pos);
-                fragment.onCreateCtxMenu(contextMenu, view, contextMenuInfo, serie.getId());
             }
         }
     }
