@@ -13,11 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.LayoutMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.EndlessRecyclerViewScrollListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
@@ -25,7 +24,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
  * Created by lucasamiaud on 19/03/2018.
  */
 
-public abstract class BaseFragment extends Fragment implements SearchInterface {
+public abstract class BaseFragment extends Fragment implements ItemInterface {
 
     protected LayoutMainBinding binding;
     public EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
@@ -90,11 +89,6 @@ public abstract class BaseFragment extends Fragment implements SearchInterface {
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
                 R.color.white);
-    }
-
-    @Override
-    public void setType(FragmentType type) {
-        // STUB
     }
 
     public abstract void onRecyclerLoadMore(Integer page);

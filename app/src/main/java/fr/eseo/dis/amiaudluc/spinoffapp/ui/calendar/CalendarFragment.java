@@ -22,13 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.model.Event;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CalendarFragment extends Fragment implements SearchInterface {
+public class CalendarFragment extends Fragment implements ItemInterface {
     private Context ctx;
     private AppDatabase db;
 
@@ -38,7 +39,6 @@ public class CalendarFragment extends Fragment implements SearchInterface {
     private EventAdapter eventAdapter;
     private List<Event> events;
     private List<Event> today;
-    private FragmentType type;
 
 
     public CalendarFragment() {
@@ -91,13 +91,8 @@ public class CalendarFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(FragmentType type) {
-        this.type = type;
-    }
-
-    @Override
-    public void onItemClick(Integer position) {
-        if (this.type.equals(FragmentType.EVENT)) {
+    public void onItemClick(Integer position, FragmentType type) {
+        if (type.equals(FragmentType.EVENT)) {
             Intent intent = new Intent(ctx, EpisodeActivity.class);
             startActivity(intent);
         }

@@ -17,19 +17,19 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
-public class SeasonFragment extends Fragment implements SearchInterface {
+public class SeasonFragment extends Fragment implements ItemInterface {
 
     private static final String ARG_SERIE_ID = "serie_id";
     private static final String ARG_SEASON_NUMBER = "season_number";
 
     private FragmentSeasonBinding binding;
     private SerieViewModel serieViewModel;
-    private FragmentType type;
     private int serieId;
     private int seasonNumber;
 
@@ -125,12 +125,7 @@ public class SeasonFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(FragmentType type) {
-        this.type = type;
-    }
-
-    @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
         
         if (type == FragmentType.ACTOR) {

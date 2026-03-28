@@ -17,14 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 
 /**
  * Created by lucasamiaud on 01/03/2018.
  */
 public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.SeriesViewHolder> {
 
-    private final SearchInterface fragment;
+    private final ItemInterface fragment;
     private final Context ctx;
     private final boolean isHorizontal;
 
@@ -43,7 +44,7 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
 
     public SeriesAdapter(
             Context ctx,
-            SearchInterface fragment,
+            ItemInterface fragment,
             List<SerieAdapterData> initialData,
             boolean isHorizontal
     ) {
@@ -86,10 +87,10 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
             implements View.OnClickListener {
 
         private final ImageView seriePoster;
-        private final SearchInterface fragment;
+        private final ItemInterface fragment;
         private final SeriesAdapter adapter;
 
-        SeriesViewHolder(View view, SearchInterface fragment, SeriesAdapter adapter) {
+        SeriesViewHolder(View view, ItemInterface fragment, SeriesAdapter adapter) {
             super(view);
             this.seriePoster = view.findViewById(R.id.poster_ic);
             this.fragment = fragment;
@@ -102,8 +103,7 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 SerieAdapterData serie = adapter.getItem(pos);
-                fragment.setType(SearchInterface.FragmentType.SERIE);
-                fragment.onItemClick(serie.getId());
+                fragment.onItemClick(serie.getId(), FragmentType.SERIE);
             }
         }
     }

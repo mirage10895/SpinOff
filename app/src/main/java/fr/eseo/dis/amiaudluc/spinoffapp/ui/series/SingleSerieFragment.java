@@ -21,20 +21,20 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
-public class SingleSerieFragment extends Fragment implements SearchInterface {
+public class SingleSerieFragment extends Fragment implements ItemInterface {
 
     private static final String ARG_SERIE_ID = "serie_id";
 
     private FragmentSingleSerieBinding binding;
     private SerieViewModel serieViewModel;
-    private FragmentType type;
     private int serieId;
 
     public SingleSerieFragment() {
@@ -143,10 +143,10 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
         
-        switch (this.type) {
+        switch (type) {
             case SEASON: {
                 Intent intent = new Intent(requireContext(), SeasonActivity.class);
                 intent.putExtra("serieId", serieId);
@@ -168,10 +168,5 @@ public class SingleSerieFragment extends Fragment implements SearchInterface {
     @Override
     public void onRegisterContextMenu(View view, Integer id) {
         // unused
-    }
-
-    @Override
-    public void setType(FragmentType type) {
-        this.type = type;
     }
 }

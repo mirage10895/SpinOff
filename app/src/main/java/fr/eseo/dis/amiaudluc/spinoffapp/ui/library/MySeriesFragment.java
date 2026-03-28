@@ -23,7 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
@@ -34,7 +35,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
  * Created by lucasamiaud on 08/03/2018.
  */
 
-public class MySeriesFragment extends Fragment implements SearchInterface {
+public class MySeriesFragment extends Fragment implements ItemInterface {
 
     private SerieViewModel serieViewModel;
     private SeriesAdapter toSeeSeriesAdapter;
@@ -149,6 +150,10 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
         MenuInflater menuInflater = getActivity().getMenuInflater();
         menuInflater.inflate(R.menu.context_menu_library, menu);
 
+        if (v.getTag() instanceof Integer) {
+            this.selectedSerieId = (Integer) v.getTag();
+        }
+
         boolean hasBeenWatched = this.serieViewModel.getDatabaseSeries().getValue()
                 .stream()
                 .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedSerieId));
@@ -176,7 +181,7 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType fragmentType) {
         Intent intent = new Intent(getContext(), SerieActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
@@ -186,10 +191,5 @@ public class MySeriesFragment extends Fragment implements SearchInterface {
     public void onRegisterContextMenu(View view, Integer id) {
         view.setTag(id);
         registerForContextMenu(view);
-    }
-
-    @Override
-    public void setType(FragmentType type) {
-        // stub
     }
 }

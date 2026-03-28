@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
 import java.time.LocalDate;
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,5 +33,10 @@ public class Episode {
         return "S" + seasonNumber +
                 "E" + episodeNumber +
                 ": " + name;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return super.equals(obj);
     }
 }

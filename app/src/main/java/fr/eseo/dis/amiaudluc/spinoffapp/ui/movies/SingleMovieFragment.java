@@ -23,7 +23,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
@@ -32,13 +33,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
  * Use the {@link SingleMovieFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SingleMovieFragment extends Fragment implements SearchInterface {
+public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private static final String ARG_MOVIE_ID = "movie_id";
 
     private FragmentSingleMovieBinding binding;
     private MovieViewModel movieViewModel;
-    private FragmentType type;
 
     private int movieId;
 
@@ -178,11 +178,11 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         if (type == null) {
             return;
         }
-        switch (this.type) {
+        switch (type) {
             case ARTIST:
             case ACTOR: {
                 Intent intent = new Intent(requireContext(), ArtistActivity.class);
@@ -203,11 +203,7 @@ public class SingleMovieFragment extends Fragment implements SearchInterface {
 
     @Override
     public void onRegisterContextMenu(View view, Integer id) {
-        // unused
-    }
-
-    @Override
-    public void setType(FragmentType type) {
-        this.type = type;
+        view.setTag(id);
+        registerForContextMenu(view);
     }
 }

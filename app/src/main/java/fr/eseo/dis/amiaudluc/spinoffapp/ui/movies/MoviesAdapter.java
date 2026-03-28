@@ -17,14 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 
 /**
  * Modernized MoviesAdapter using ListAdapter and DiffUtil.
  */
 public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.MoviesViewHolder> {
 
-    private final SearchInterface fragment;
+    private final ItemInterface fragment;
     private final Context ctx;
     private final boolean isHorizontal;
 
@@ -43,7 +44,7 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
 
     public MoviesAdapter(
             Context ctx,
-            SearchInterface fragment,
+            ItemInterface fragment,
             List<MovieAdapterData> initialData,
             boolean isHorizontal
     ) {
@@ -89,10 +90,10 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
             implements View.OnClickListener {
 
         private final ImageView moviePoster;
-        private final SearchInterface fragment;
+        private final ItemInterface fragment;
         private final MoviesAdapter adapter;
 
-        MoviesViewHolder(View view, SearchInterface fragment, MoviesAdapter adapter) {
+        MoviesViewHolder(View view, ItemInterface fragment, MoviesAdapter adapter) {
             super(view);
             this.moviePoster = view.findViewById(R.id.poster_ic);
             this.fragment = fragment;
@@ -105,8 +106,7 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 MovieAdapterData movie = adapter.getItem(pos);
-                fragment.setType(SearchInterface.FragmentType.MOVIE);
-                fragment.onItemClick(movie.getId());
+                fragment.onItemClick(movie.getId(), FragmentType.MOVIE);
             }
         }
     }

@@ -18,6 +18,7 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
@@ -88,7 +89,7 @@ public abstract class BaseMovieFragment extends BaseFragment {
     }
 
     @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         Intent intent = new Intent(requireContext(), MovieActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);

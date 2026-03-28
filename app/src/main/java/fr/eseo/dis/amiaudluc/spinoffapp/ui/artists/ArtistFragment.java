@@ -20,7 +20,8 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentArtistBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
@@ -31,16 +32,15 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.ArtistViewModel;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ArtistFragment extends Fragment implements SearchInterface {
+public class ArtistFragment extends Fragment implements ItemInterface {
 
     private static final String ARG_ARTIST_ID = "artist_id";
 
     private FragmentArtistBinding binding;
     private ArtistViewModel artistViewModel;
-    private FragmentType type;
     private int artistId;
 
-    public ArtistFragment() {
+    private ArtistFragment() {
         // Required empty public constructor
     }
 
@@ -152,12 +152,7 @@ public class ArtistFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(FragmentType type) {
-        this.type = type;
-    }
-
-    @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
         
         if (type == FragmentType.MOVIE) {

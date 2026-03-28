@@ -23,7 +23,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
@@ -33,7 +34,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 /**
  * A fragment representing a search result list.
  */
-public class SearchFragment extends Fragment implements SearchInterface {
+public class SearchFragment extends Fragment implements ItemInterface {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
@@ -42,7 +43,6 @@ public class SearchFragment extends Fragment implements SearchInterface {
     private MoviesAdapter moviesAdapter;
     private SeriesAdapter seriesAdapter;
     private ArtistsAdapter artistsAdapter;
-    private FragmentType type;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -143,16 +143,11 @@ public class SearchFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(FragmentType type) {
-        this.type = type;
-    }
-
-    @Override
-    public void onItemClick(Integer id) {
-        if (this.type == null) return;
+    public void onItemClick(Integer id, FragmentType type) {
+        if (type == null) return;
         
         Intent intent = null;
-        switch (this.type) {
+        switch (type) {
             case MOVIE:
                 intent = new Intent(requireContext(), MovieActivity.class);
                 break;
@@ -168,10 +163,5 @@ public class SearchFragment extends Fragment implements SearchInterface {
             intent.putExtra("id", id);
             startActivity(intent);
         }
-    }
-
-    @Override
-    public void onRegisterContextMenu(View view, Integer id) {
-        // unused
     }
 }

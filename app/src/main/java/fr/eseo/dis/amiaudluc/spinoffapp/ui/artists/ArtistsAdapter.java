@@ -8,20 +8,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
@@ -29,7 +28,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 
 public class ArtistsAdapter extends ListAdapter<Artist, ArtistsAdapter.ArtistViewHolder> {
 
-    private final SearchInterface mListener;
+    private final ItemInterface mListener;
     private final Context ctx;
 
     private static final DiffUtil.ItemCallback<Artist> DIFF_CALLBACK =
@@ -47,7 +46,7 @@ public class ArtistsAdapter extends ListAdapter<Artist, ArtistsAdapter.ArtistVie
 
     public ArtistsAdapter(
             Context ctx,
-            SearchInterface listener,
+            ItemInterface listener,
             List<Artist> data
     ) {
         super(DIFF_CALLBACK);
@@ -91,22 +90,18 @@ public class ArtistsAdapter extends ListAdapter<Artist, ArtistsAdapter.ArtistVie
         }
     }
 
-    public String getType() {
-        return Media.ARTIST;
-    }
-
     public static class ArtistViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         final ImageView avatar;
         final TextView name;
 
-        private final SearchInterface fragment;
+        private final ItemInterface fragment;
         private final ArtistsAdapter adapter;
 
         ArtistViewHolder(
                 View view,
-                SearchInterface fragment,
+                ItemInterface fragment,
                 ArtistsAdapter adapter
         ) {
             super(view);
@@ -126,8 +121,7 @@ public class ArtistsAdapter extends ListAdapter<Artist, ArtistsAdapter.ArtistVie
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 Artist artist = adapter.getItem(pos);
-                fragment.setType(SearchInterface.FragmentType.ARTIST);
-                fragment.onItemClick(artist.getId());
+                fragment.onItemClick(artist.getId(), FragmentType.ARTIST);
             }
         }
 

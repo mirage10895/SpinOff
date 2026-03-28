@@ -19,14 +19,15 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 
 /**
  * Created by lucasamiaud on 21/03/2018.
  */
 
 public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewHolder> {
-    private final SearchInterface mListener;
+    private final ItemInterface mListener;
     private final Context ctx;
 
     private static final DiffUtil.ItemCallback<Artist> DIFF_CALLBACK =
@@ -44,7 +45,7 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
 
     public ActorsAdapter(
             Context ctx,
-            SearchInterface listener,
+            ItemInterface listener,
             List<Artist> initialData
     ) {
         super(DIFF_CALLBACK);
@@ -94,12 +95,12 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
         final ImageView avatar;
         final TextView name;
         final TextView characterName;
-        final SearchInterface fragment;
+        final ItemInterface fragment;
         final ActorsAdapter adapter;
 
         ArtistViewHolder(
                 View view,
-                SearchInterface fragment,
+                ItemInterface fragment,
                 ActorsAdapter adapter
         ) {
             super(view);
@@ -120,8 +121,7 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
                 Artist artist = adapter.getItem(pos);
-                fragment.setType(SearchInterface.FragmentType.ARTIST);
-                fragment.onItemClick(artist.getId());
+                fragment.onItemClick(artist.getId(), FragmentType.ARTIST);
             }
         }
 

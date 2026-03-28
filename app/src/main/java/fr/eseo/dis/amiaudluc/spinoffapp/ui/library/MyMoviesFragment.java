@@ -22,7 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
@@ -35,13 +36,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class MyMoviesFragment extends Fragment implements SearchInterface {
+public class MyMoviesFragment extends Fragment implements ItemInterface {
 
     private MovieViewModel movieViewModel;
     private MoviesAdapter seenMoviesAdapter;
     private MoviesAdapter toSeeMoviesAdapter;
     private Context ctx;
-    private List<MovieAdapterData> movies;
     private Integer selectedMovieId;
 
 
@@ -158,6 +158,10 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
         MenuInflater menuInflater = getActivity().getMenuInflater();
         menuInflater.inflate(R.menu.context_menu_library, menu);
 
+        if (v.getTag() instanceof Integer) {
+            this.selectedMovieId = (Integer) v.getTag();
+        }
+
         boolean hasBeenWatched = this.movieViewModel.getDatabaseMovies().getValue()
                 .stream()
                 .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedMovieId));
@@ -185,7 +189,7 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         Intent intent = new Intent(getContext(), MovieActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
@@ -195,10 +199,5 @@ public class MyMoviesFragment extends Fragment implements SearchInterface {
     public void onRegisterContextMenu(View view, Integer id) {
         view.setTag(id);
         registerForContextMenu(view);
-    }
-
-    @Override
-    public void setType(FragmentType type) {
-        // stub
     }
 }

@@ -1,8 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.networks;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +11,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Network;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
@@ -70,9 +70,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
         return this.networks.size();
     }
 
-    class NetworksViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final SearchInterface frag = (SearchInterface) mListener;
+    public class NetworksViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         final ImageView avatar;
         final TextView name;
@@ -88,8 +86,7 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
 
         @Override
         public void onClick(View v) {
-            frag.setType(SearchInterface.FragmentType.NETWORK);
-            mListener.onItemClick(getAbsoluteAdapterPosition());
+            mListener.onItemClick(getAbsoluteAdapterPosition(), FragmentType.NETWORK);
         }
 
     }

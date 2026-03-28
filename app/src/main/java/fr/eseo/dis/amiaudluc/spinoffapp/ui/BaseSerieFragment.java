@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
@@ -83,7 +84,7 @@ public abstract class BaseSerieFragment extends BaseFragment {
     }
 
     @Override
-    public void onItemClick(Integer id) {
+    public void onItemClick(Integer id, FragmentType type) {
         Intent intent = new Intent(requireContext(), SerieActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);

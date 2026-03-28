@@ -1,8 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +11,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.model.Event;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
  * Created by lucasamiaud on 16/03/2018.
@@ -24,12 +25,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.services.model.Event;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHolder> {
 
-    private final SearchInterface fragment;
+    private final ItemInterface fragment;
     private final Context ctx;
 
     private List<Event> events;
 
-    EventAdapter(SearchInterface fragment, Context ctx, List<Event> eventList) {
+    EventAdapter(ItemInterface fragment, Context ctx, List<Event> eventList) {
         this.fragment = fragment;
         this.ctx = ctx;
         this.setEvent(eventList);
@@ -79,7 +80,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
     }
 
 
-    class EventsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class EventsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final ImageView seriePoster;
         private final TextView textEpisode;
@@ -97,8 +98,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventsViewHo
 
         @Override
         public void onClick(View v) {
-            fragment.setType(SearchInterface.FragmentType.EVENT);
-            fragment.onItemClick(getAdapterPosition());
+            fragment.onItemClick(getAdapterPosition(), FragmentType.EVENT);
         }
     }
 }

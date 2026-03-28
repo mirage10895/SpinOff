@@ -1,8 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,32 +9,50 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
  */
 
-public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonViewHolder> {
-
-    private List<Season> seasons;
+public class SeasonsAdapter extends ListAdapter<Season, SeasonsAdapter.SeasonViewHolder> {
     private final ItemInterface mListener;
     private final Context ctx;
 
+    private static final DiffUtil.ItemCallback<Season> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Season oldItem, @NonNull Season newItem) {
+                    return Objects.equals(oldItem.getSeasonNumber(), newItem.getSeasonNumber());
+
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull Season oldItem, @NonNull Season newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
+
     public SeasonsAdapter(Context ctx, ItemInterface listener, List<Season> data) {
+        super(DIFF_CALLBACK);
         this.mListener = listener;
         this.ctx = ctx;
-        this.setSeasons(data);
-    }
 
-    public void setSeasons(List<Season> seasons) {
-        this.seasons = seasons;
+        if (data != null) {
+            submitList(new ArrayList<>(data));
+        }
     }
 
     @NonNull
@@ -44,14 +60,13 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
     public SeasonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View seasonView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_season, parent, false);
-        return new SeasonViewHolder(seasonView);
+        return new SeasonViewHolder(seasonView, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SeasonViewHolder holder, int position) {
-        if (getItemCount() != 0) {
-            Season season = seasons.get(position);
-
+        Season season = getItem(position);
+        if (season != null) {
             holder.seasonPoster.setImageResource(R.drawable.ic_launcher_foreground);
             if (season.getPosterPath() != null) {
                 String link = ctx.getResources().getString(R.string.base_url_poster_500) + season.getPosterPath();
@@ -78,39 +93,38 @@ public class SeasonsAdapter extends RecyclerView.Adapter<SeasonsAdapter.SeasonVi
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return this.seasons.size();
-    }
+    public class SeasonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    class SeasonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final View view;
-        private final SearchInterface frag = (SearchInterface) mListener;
+        private final SeasonsAdapter adapter;
 
         private final ImageView seasonPoster;
         private final TextView seasonAirDate;
         private final TextView seasonNumberEpisodes;
         private final TextView seasonNumber;
 
-        SeasonViewHolder(View view) {
+        SeasonViewHolder(
+                View view,
+                SeasonsAdapter adapter
+        ) {
             super(view);
-            this.view = view;
+
+            this.adapter = adapter;
 
             seasonPoster = view.findViewById(R.id.poster_ic);
             seasonAirDate = view.findViewById(R.id.air_date);
             seasonNumberEpisodes = view.findViewById(R.id.episodes);
             seasonNumber = view.findViewById(R.id.season);
 
-
-            this.view.setOnClickListener(this);
+            view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            frag.setType(SearchInterface.FragmentType.SEASON);
-            Season season = seasons.get(getAdapterPosition());
-            mListener.onItemClick(season.getSeasonNumber());
+            int pos = getAbsoluteAdapterPosition();
+            if (pos != RecyclerView.NO_POSITION) {
+                Season season = adapter.getItem(pos);
+                mListener.onItemClick(season.getSeasonNumber(), FragmentType.SEASON);
+            }
         }
 
     }

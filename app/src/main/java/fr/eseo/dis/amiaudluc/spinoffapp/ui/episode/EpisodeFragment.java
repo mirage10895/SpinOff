@@ -16,14 +16,15 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentEpisodeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.SearchInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EpisodeFragment extends Fragment implements SearchInterface {
+public class EpisodeFragment extends Fragment implements ItemInterface {
 
     private static final String ARG_SERIE_ID = "serie_id";
     private static final String ARG_SEASON_NUMBER = "season_number";
@@ -31,7 +32,6 @@ public class EpisodeFragment extends Fragment implements SearchInterface {
 
     private FragmentEpisodeBinding binding;
     private SerieViewModel serieViewModel;
-    private FragmentType type;
 
     public EpisodeFragment() {
         // Required empty public constructor
@@ -113,21 +113,11 @@ public class EpisodeFragment extends Fragment implements SearchInterface {
     }
 
     @Override
-    public void setType(FragmentType type) {
-        this.type = type;
-    }
-
-    @Override
-    public void onItemClick(Integer id) {
-        if (this.type == FragmentType.ACTOR) {
+    public void onItemClick(Integer id, FragmentType type) {
+        if (type == FragmentType.ARTIST || type == FragmentType.ACTOR) {
             Intent intent = new Intent(requireContext(), ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
         }
-    }
-
-    @Override
-    public void onRegisterContextMenu(View view, Integer id) {
-        // unused
     }
 }
