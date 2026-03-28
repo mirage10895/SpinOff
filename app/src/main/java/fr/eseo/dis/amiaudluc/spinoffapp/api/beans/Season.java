@@ -30,7 +30,11 @@ public class Season {
 
     public static int computeEpisodesAverageRuntime(Season season) {
         if (season.episodes != null && !season.episodes.isEmpty()) {
-            return (int) season.episodes.stream().mapToInt(Episode::getRuntime).average().orElse(0);
+            return (int) season.episodes.stream()
+                    .filter(episode -> episode.getRuntime() != null)
+                    .mapToInt(Episode::getRuntime)
+                    .average()
+                    .orElse(0);
         }
         return 0;
     }

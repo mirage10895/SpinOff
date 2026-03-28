@@ -81,10 +81,12 @@ public abstract class BaseFragment extends Fragment implements ItemInterface {
     }
 
     protected void initializeSwipeContainer() {
-        binding.swipeContainer.setColorSchemeResources(R.color.colorAccent,
+        binding.swipeContainer.setColorSchemeResources(
+                R.color.colorAccent,
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
-                R.color.white);
+                R.color.white
+        );
     }
 
     public abstract void onRecyclerLoadMore(Integer page);
