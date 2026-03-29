@@ -188,7 +188,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         this.watchProviderAdapter.setData(
                 watchProviders
                         .stream()
-                        .limit(2)
+                        .limit(3)
                         .map(w -> new AdapterData(
                                 w.providerId(),
                                 w.providerName(),
@@ -209,6 +209,12 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         if (type == null) return;
         
         switch (type) {
+            case SERIE: {
+                Intent intent = new Intent(requireContext(), SerieActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+                break;
+            }
             case SEASON: {
                 Intent intent = new Intent(requireContext(), SeasonActivity.class);
                 intent.putExtra("serieId", serieId);

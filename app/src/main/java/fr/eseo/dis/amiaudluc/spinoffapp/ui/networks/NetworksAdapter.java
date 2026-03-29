@@ -67,7 +67,6 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
         NetworksViewHolder(View view) {
             super(view);
 
-            view.findViewById(R.id.watch_provider_container).setBackgroundColor(ctx.getColor(R.color.white));
             avatar = view.findViewById(R.id.watch_provider_logo);
         }
     }
