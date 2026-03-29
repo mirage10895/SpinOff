@@ -3,10 +3,13 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel;
 import android.app.Application;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
@@ -17,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.enums.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
 import lombok.Getter;
 
 public class SerieViewModel extends AndroidViewModel {
@@ -34,6 +38,8 @@ public class SerieViewModel extends AndroidViewModel {
     private final LiveData<List<WatchProvider>> serieWatchProviders;
     @Getter
     private final LiveData<List<Serie>> series;
+    @Getter
+    private final MediatorLiveData<List<SerieAdapterData>> serieAdapterData;
     @Getter
     private final LiveData<Season> season;
     @Getter
@@ -73,6 +79,34 @@ public class SerieViewModel extends AndroidViewModel {
         );
 
         this.databaseSeries = serieRepository.fetchAll();
+
+        this.serieAdapterData = new MediatorLiveData<>();
+        this.serieAdapterData.addSource(
+                this.series,
+                series -> {
+                    List<SerieDatabase> databaseSeries = this.databaseSeries.getValue();
+                    if (databaseSeries != null) {
+                        this.serieAdapterData.setValue(
+                                series.stream()
+                                        .map(serieToSerieAdapterData(databaseSeries))
+                                        .collect(Collectors.toList())
+                        );
+                    }
+                }
+        );
+        this.serieAdapterData.addSource(
+                this.databaseSeries,
+                databaseSeries -> {
+                    List<Serie> series = this.series.getValue();
+                    if (series != null) {
+                        this.serieAdapterData.setValue(
+                                series.stream()
+                                        .map(serieToSerieAdapterData(databaseSeries))
+                                        .collect(Collectors.toList())
+                        );
+                    }
+                }
+        );
     }
 
     // Public API to trigger data fetch
@@ -146,5 +180,16 @@ public class SerieViewModel extends AndroidViewModel {
             seasonNumber = s;
             episodeNumber = e;
         }
+    }
+
+    private static Function<Serie, SerieAdapterData> serieToSerieAdapterData(List<SerieDatabase> databaseSeries) {
+        return serie1 -> SerieAdapterData.of(
+                serie1.getId(),
+                serie1.getPosterPath(),
+                databaseSeries.stream()
+                        .anyMatch(serieDatabase -> serieDatabase.getId().equals(serie1.getId())),
+                databaseSeries.stream()
+                        .anyMatch(serieDatabase -> serieDatabase.getId().equals(serie1.getId()))
+        );
     }
 }

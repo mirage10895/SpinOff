@@ -8,4 +8,5 @@ import android.view.View;
 public interface ItemInterface {
     void onItemClick(Integer id, FragmentType type);
     default void onRegisterContextMenu(View view, Integer id) {}
+    default void onStatusClick(Integer id, FragmentType type) {}
 }

@@ -4,18 +4,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
@@ -80,6 +80,15 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
                     .into(holder.seriePoster);
         }
 
+        // Update status button icon
+        if (!serie.isInLibrary()) {
+            holder.btnStatus.setImageResource(R.drawable.ic_plus_white);
+        } else if (!serie.isWatched()) {
+            holder.btnStatus.setImageResource(R.drawable.ic_library);
+        } else {
+            holder.btnStatus.setImageResource(R.drawable.ic_star);
+        }
+
         holder.fragment.onRegisterContextMenu(holder.itemView, serie.getId());
     }
 
@@ -87,15 +96,27 @@ public class SeriesAdapter extends ListAdapter<SerieAdapterData, SeriesAdapter.S
             implements View.OnClickListener {
 
         private final ImageView seriePoster;
+        private final ImageButton btnStatus;
         private final ItemInterface fragment;
         private final SeriesAdapter adapter;
 
         SeriesViewHolder(View view, ItemInterface fragment, SeriesAdapter adapter) {
             super(view);
             this.seriePoster = view.findViewById(R.id.poster_ic);
+            this.btnStatus = view.findViewById(R.id.btn_status);
             this.fragment = fragment;
             this.adapter = adapter;
             view.setOnClickListener(this);
+
+            if (btnStatus != null) {
+                btnStatus.setOnClickListener(v -> {
+                    int pos = getAbsoluteAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        SerieAdapterData serie = adapter.getItem(pos);
+                        fragment.onStatusClick(serie.getId(), FragmentType.SERIE);
+                    }
+                });
+            }
         }
 
         @Override

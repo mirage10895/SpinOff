@@ -10,12 +10,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
@@ -64,17 +62,13 @@ public abstract class BaseMovieFragment extends BaseFragment {
     }
 
     public void observeMovies() {
-        this.movieViewModel.getMovies().observe(getViewLifecycleOwner(), movies -> {
+        this.movieViewModel.getMovieAdapterData().observe(getViewLifecycleOwner(), movies -> {
             binding.swipeContainer.setRefreshing(false);
             binding.progressBar.setVisibility(View.GONE);
             binding.cardList.setVisibility(View.VISIBLE);
             binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
             if (movies != null) {
-                loadMovies(
-                        movies.stream()
-                                .map(Movie::toAdapterFormat)
-                                .collect(Collectors.toList())
-                );
+                loadMovies(movies);
             } else {
                 binding.cardList.setVisibility(View.GONE);
                 binding.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);

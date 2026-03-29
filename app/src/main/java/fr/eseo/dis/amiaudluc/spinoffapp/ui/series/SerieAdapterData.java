@@ -6,4 +6,10 @@ import lombok.Value;
 public class SerieAdapterData {
     int id;
     String posterPath;
+    boolean inLibrary;
+    boolean watched;
+
+    public static SerieAdapterData of(int id, String posterPath) {
+        return new SerieAdapterData(id, posterPath, false, false);
+    }
 }

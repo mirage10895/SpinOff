@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -83,6 +84,19 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
                     .into(holder.moviePoster);
         }
         
+        // Update status button icon
+        if (!movie.isInLibrary()) {
+            holder.btnStatus.setImageResource(R.drawable.ic_plus_white);
+        } else if (!movie.isWatched()) {
+            // Using ic_library as a placeholder for eye if eye doesn't exist, 
+            // but let's assume it might exist or use standard visibility icon if possible.
+            // Since I couldn't find ic_eye, I'll use ic_library as it represents "in library".
+            holder.btnStatus.setImageResource(R.drawable.ic_library);
+        } else {
+            // Using ic_star as a placeholder for tick/watched
+            holder.btnStatus.setImageResource(R.drawable.ic_star);
+        }
+
         holder.fragment.onRegisterContextMenu(holder.itemView, movie.getId());
     }
 
@@ -90,15 +104,27 @@ public class MoviesAdapter extends ListAdapter<MovieAdapterData, MoviesAdapter.M
             implements View.OnClickListener {
 
         private final ImageView moviePoster;
+        private final ImageButton btnStatus;
         private final ItemInterface fragment;
         private final MoviesAdapter adapter;
 
         MoviesViewHolder(View view, ItemInterface fragment, MoviesAdapter adapter) {
             super(view);
             this.moviePoster = view.findViewById(R.id.poster_ic);
+            this.btnStatus = view.findViewById(R.id.btn_status);
             this.fragment = fragment;
             this.adapter = adapter;
             view.setOnClickListener(this);
+            
+            if (btnStatus != null) {
+                btnStatus.setOnClickListener(v -> {
+                    int pos = getAbsoluteAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        MovieAdapterData movie = adapter.getItem(pos);
+                        fragment.onStatusClick(movie.getId(), FragmentType.MOVIE);
+                    }
+                });
+            }
         }
 
         @Override

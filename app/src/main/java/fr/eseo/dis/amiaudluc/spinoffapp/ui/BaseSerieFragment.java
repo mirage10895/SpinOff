@@ -10,13 +10,11 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
@@ -61,15 +59,13 @@ public abstract class BaseSerieFragment extends BaseFragment {
     }
 
     protected void observeSeries() {
-        this.serieViewModel.getSeries().observe(getViewLifecycleOwner(), series -> {
+        this.serieViewModel.getSerieAdapterData().observe(getViewLifecycleOwner(), series -> {
             binding.swipeContainer.setRefreshing(false);
             binding.progressBar.setVisibility(View.GONE);
             binding.cardList.setVisibility(View.VISIBLE);
             binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
             if (series != null) {
-                loadSeries(series.stream()
-                        .map(Serie::toAdapterFormat)
-                        .collect(Collectors.toList()));
+                loadSeries(series);
             } else {
                 binding.cardList.setVisibility(View.GONE);
                 binding.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
