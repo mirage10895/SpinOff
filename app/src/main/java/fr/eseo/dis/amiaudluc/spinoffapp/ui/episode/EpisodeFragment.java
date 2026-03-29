@@ -80,13 +80,13 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
             binding.airDate.setText(R.string.emptyField);
         }
 
-        if (episode.getSeasonNumber() != -1) {
+        if (episode.getSeasonNumber() != null) {
             binding.numberOfSeason.setText(String.valueOf(episode.getSeasonNumber()));
         } else {
             binding.numberOfSeason.setText(R.string.emptyField);
         }
 
-        if (episode.getEpisodeNumber() != -1) {
+        if (episode.getRuntime() != null) {
             binding.episodes.setText(DateUtils.displayDuration(episode.getRuntime()));
         } else {
             binding.episodes.setText(R.string.emptyField);

@@ -89,7 +89,7 @@ public class SeasonFragment extends Fragment implements ItemInterface {
         // CircularImageBar for Air Date (Year)
         binding.airDate.setText(DateUtils.toDisplayString(season.getAirDate()));
 
-        binding.numberOfSeason.setText(season.getSeasonNumber() != -1 ? String.valueOf(season.getSeasonNumber()) : "0");
+        binding.numberOfSeason.setText(season.getSeasonNumber() != null ? String.valueOf(season.getSeasonNumber()) : "0");
         
         if (season.getEpisodes() != null) {
             binding.episodes.setText(String.valueOf(season.getEpisodes().size()));

@@ -34,8 +34,4 @@ public class SerieDatabase {
     private Integer episodeCount;
     @ColumnInfo(name = "first_air_date")
     private LocalDate firstAirDate;
-
-    public SerieDatabase() {
-        this.id = -1;
-    }
 }

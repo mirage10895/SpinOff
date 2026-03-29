@@ -77,7 +77,7 @@ public class EpisodesAdapter extends ListAdapter<Episode, EpisodesAdapter.Episod
             }
 
             holder.episodeNumber.setText(R.string.emptyField);
-            if (episode.getEpisodeNumber() != -1) {
+            if (episode.getEpisodeNumber() != null) {
                 holder.episodeNumber.setText(String.valueOf(episode.getEpisodeNumber()));
             }
 

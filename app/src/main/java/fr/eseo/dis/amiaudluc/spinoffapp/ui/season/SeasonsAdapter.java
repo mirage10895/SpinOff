@@ -78,7 +78,7 @@ public class SeasonsAdapter extends ListAdapter<Season, SeasonsAdapter.SeasonVie
             }
 
             holder.seasonNumber.setText(R.string.emptyField);
-            if (season.getSeasonNumber() != -1) {
+            if (season.getSeasonNumber() != null) {
                 holder.seasonNumber.setText(String.valueOf(season.getSeasonNumber()));
             }
 

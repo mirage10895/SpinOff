@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import lombok.Getter;
@@ -46,5 +47,17 @@ public class Season {
                         && "Trailer".equals(video1.getType()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Season season = (Season) o;
+        return Objects.equals(id, season.id) && Objects.equals(name, season.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, seasonNumber, posterPath, serieId, airDate, episodeCount, episodes, overview, credits, videos);
     }
 }
