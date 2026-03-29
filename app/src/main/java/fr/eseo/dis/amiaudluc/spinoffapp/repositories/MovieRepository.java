@@ -51,7 +51,7 @@ public class MovieRepository {
         }
         MovieDatabase movieDatabase = new MovieDatabase();
         movieDatabase.setId(apiMovie.get().getId());
-        movieDatabase.setTitle(apiMovie.get().getTitle());
+        movieDatabase.setTitle(apiMovie.get().getOriginalTitle());
         movieDatabase.setPosterPath(apiMovie.get().getPosterPath());
         movieDatabase.setRuntime(apiMovie.get().getRuntime());
         movieDatabase.setWatched(isWatched);

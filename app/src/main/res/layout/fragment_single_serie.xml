@@ -246,16 +246,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@string/text_networks"
-            android:layout_marginVertical="@dimen/text_margin"
-            android:gravity="start"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="20sp" />
-
         <LinearLayout
             android:id="@+id/recommandation_series_layer"
             android:layout_width="match_parent"
@@ -293,6 +283,16 @@
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:text="@string/text_networks"
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/networks"

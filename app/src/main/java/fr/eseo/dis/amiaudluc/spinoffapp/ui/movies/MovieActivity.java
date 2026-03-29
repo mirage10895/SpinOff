@@ -64,7 +64,7 @@ public class MovieActivity extends AppCompatActivity {
                 binding.content.content.setVisibility(View.VISIBLE);
 
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(movie.getTitle());
+                    getSupportActionBar().setTitle(movie.getOriginalTitle());
                 }
 
                 String backdropUrl = getString(R.string.base_url_poster_original) + movie.getBackdropPath();
