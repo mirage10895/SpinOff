@@ -4,8 +4,6 @@ public enum FragmentType {
     MOVIE,
     SERIE,
     ARTIST,
-    ACTOR,
-    NETWORK,
     SEASON,
     EPISODE,
     EVENT,

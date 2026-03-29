@@ -1,7 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.artists;
 
 import android.content.Context;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +87,7 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
     }
 
     public static class ArtistViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnCreateContextMenuListener {
+            implements View.OnClickListener {
 
         final ImageView avatar;
         final TextView name;
@@ -111,7 +110,6 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
             characterName = view.findViewById(R.id.character_name);
 
             view.setOnClickListener(this);
-            view.setOnCreateContextMenuListener(this);
         }
 
         @Override
@@ -120,15 +118,6 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
             if (pos != RecyclerView.NO_POSITION) {
                 Artist artist = adapter.getItem(pos);
                 fragment.onItemClick(artist.getId(), FragmentType.ARTIST);
-            }
-        }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            int pos = getAbsoluteAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                Artist artiste = adapter.getItem(pos);
-                fragment.onRegisterContextMenu(view, artiste.getId());
             }
         }
     }

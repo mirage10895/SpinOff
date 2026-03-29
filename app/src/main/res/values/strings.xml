@@ -14,7 +14,7 @@
     <string name="fragment_episode">Episode</string>
 
     <string name="action_settings">Settings</string>
-    <string name="emptyField">Not specified</string>
+    <string name="emptyField">-</string>
     <string name="copyright">2018 - Lucas AMIAUD</string>
     <string name="font_family_light">sans-serif-light</string>
     <string name="no_results">Nothing to show. Check your internet connection.</string>

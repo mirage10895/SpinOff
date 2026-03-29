@@ -242,8 +242,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
             return;
         }
         switch (type) {
-            case ARTIST:
-            case ACTOR: {
+            case ARTIST: {
                 Intent intent = new Intent(requireContext(), ArtistActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);

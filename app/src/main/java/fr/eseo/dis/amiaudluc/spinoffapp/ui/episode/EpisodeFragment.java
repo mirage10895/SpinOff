@@ -114,7 +114,7 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
 
     @Override
     public void onItemClick(Integer id, FragmentType type) {
-        if (type == FragmentType.ARTIST || type == FragmentType.ACTOR) {
+        if (type == FragmentType.ARTIST) {
             Intent intent = new Intent(requireContext(), ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);

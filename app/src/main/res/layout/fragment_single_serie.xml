@@ -329,10 +329,9 @@
             android:id="@+id/networks"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:scrollbarStyle="outsideInset"
-            android:scrollbars="horizontal" />
+            android:layout_gravity="start"
+            android:layout_marginVertical="5dp"
+            android:scrollbarStyle="outsideInset" />
 
     </LinearLayout>
 

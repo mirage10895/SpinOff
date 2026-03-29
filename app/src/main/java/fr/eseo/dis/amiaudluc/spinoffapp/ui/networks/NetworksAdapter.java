@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -15,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Network;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 
 /**
  * Created by lucasamiaud on 07/03/2018.
@@ -26,11 +23,9 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
 
 
     private List<Network> networks;
-    private final ItemInterface mListener;
     private final Context ctx;
 
-    public NetworksAdapter(Context ctx, ItemInterface listener, List<Network> data){
-        this.mListener = listener;
+    public NetworksAdapter(Context ctx, List<Network> data){
         this.ctx = ctx;
         this.setNetworks(data);
     }
@@ -43,23 +38,18 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
     @Override
     public NetworksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View seasonView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_realisator, parent, false);
+                .inflate(R.layout.item_watch_provider, parent, false);
         return new NetworksViewHolder(seasonView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NetworksViewHolder holder, int position) {
         if (getItemCount() != 0) {
-            holder.name.setText(ctx.getResources().getString(R.string.emptyField));
-            if (this.networks.get(position).getName() != null) {
-                holder.name.setText(this.networks.get(position).getName());
-            }
-
             String link = ctx.getResources().getString(R.string.base_url_poster_500) + this.networks.get(position).getLogoPath();
             Picasso.get()
                     .load(link)
                     .fit()
-                    .centerCrop()
+                    .centerInside()
                     .error(R.drawable.ic_launcher_foreground)
                     .into(holder.avatar);
         }
@@ -70,24 +60,15 @@ public class NetworksAdapter extends RecyclerView.Adapter<NetworksAdapter.Networ
         return this.networks.size();
     }
 
-    public class NetworksViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class NetworksViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView avatar;
-        final TextView name;
 
         NetworksViewHolder(View view) {
             super(view);
 
-            avatar = view.findViewById(R.id.avatar);
-            name = view.findViewById(R.id.name);
-
-            view.setOnClickListener(this);
+            view.findViewById(R.id.watch_provider_container).setBackgroundColor(ctx.getColor(R.color.white));
+            avatar = view.findViewById(R.id.watch_provider_logo);
         }
-
-        @Override
-        public void onClick(View v) {
-            mListener.onItemClick(getAbsoluteAdapterPosition(), FragmentType.NETWORK);
-        }
-
     }
 }

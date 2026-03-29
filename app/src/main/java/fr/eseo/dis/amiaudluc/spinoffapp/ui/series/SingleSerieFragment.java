@@ -164,7 +164,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
         binding.seasons.setAdapter(new SeasonsAdapter(requireContext(), this, serie.getSeasons()));
         binding.realisators.setAdapter(new ArtistsAdapter(requireContext(), this, serie.getCreatedBy()));
-        binding.networks.setAdapter(new NetworksAdapter(requireContext(), this, serie.getNetworks()));
+        binding.networks.setAdapter(new NetworksAdapter(requireContext(), serie.getNetworks()));
 
         if (serie.getRecommendations() != null) {
             binding.recyclerRecommendations.setAdapter(new MoviesAdapter(

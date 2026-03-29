@@ -86,8 +86,11 @@ public class SeasonFragment extends Fragment implements ItemInterface {
     private void updateUI(Season season) {
         if (season == null || binding == null) return;
 
-        // CircularImageBar for Air Date (Year)
-        binding.airDate.setText(DateUtils.toDisplayString(season.getAirDate()));
+        if (season.getAirDate() != null) {
+            binding.airDate.setText(DateUtils.toDisplayString(season.getAirDate()));
+        } else {
+            binding.airDate.setText(R.string.emptyField);
+        }
 
         binding.numberOfSeason.setText(season.getSeasonNumber() != null ? String.valueOf(season.getSeasonNumber()) : "0");
         
@@ -120,7 +123,7 @@ public class SeasonFragment extends Fragment implements ItemInterface {
     public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
         
-        if (type == FragmentType.ACTOR) {
+        if (type == FragmentType.ARTIST) {
             Intent intent = new Intent(requireContext(), ArtistActivity.class);
             intent.putExtra("id", id);
             startActivity(intent);
