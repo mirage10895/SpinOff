@@ -70,9 +70,7 @@ public class ActorsAdapter extends ListAdapter<Artist, ActorsAdapter.ArtistViewH
         if (artist != null) {
             holder.name.setText(ctx.getResources().getString(R.string.emptyField));
             if (artist.getName() != null) {
-                holder.name.setTextColor(ctx.getColor(R.color.colorAccent));
                 holder.name.setText(artist.getName());
-                holder.characterName.setTextColor(ctx.getColor(R.color.white));
                 holder.characterName.setText(artist.getCharacter());
             }
 

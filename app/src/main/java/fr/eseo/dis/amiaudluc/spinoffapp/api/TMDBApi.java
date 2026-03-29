@@ -7,6 +7,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -28,6 +29,11 @@ public interface TMDBApi {
     @GET("movie/{id}")
     Call<Movie> getMovieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
 
+    @GET("movie/{id}/watch/providers")
+    Call<WatchProvider.WatchProviderApiResponse> fetchMovieWatchProvider(
+            @Path("id") Integer id
+    );
+
     @GET("tv/{type}")
     Call<ApiListResponse<Serie>> getSeries(
             @Path("type") String type,
@@ -37,9 +43,6 @@ public interface TMDBApi {
 
     @GET("tv/{id}")
     Call<Serie> getSerieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
-
-    @GET("tv/{id}/recommendations")
-    Call<ApiListResponse<Serie>> getRecommandationsBySerieId(@Path("id") Integer id);
 
     @GET("tv/{id}/season/{seasonNumber}")
     Call<Season> getSeasonBySerieId(
@@ -54,6 +57,11 @@ public interface TMDBApi {
             @Path("seasonNumber") Integer seasonNumber,
             @Path("episodeNumber") Integer episodeNumber,
             @Query("append_to_response") String appendToResponse
+    );
+
+    @GET("tv/{id}/watch/providers")
+    Call<WatchProvider.WatchProviderApiResponse> fetchTvWatchProvider(
+            @Path("id") Integer id
     );
 
     @GET("person/{id}")

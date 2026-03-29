@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.enums.MovieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
@@ -23,6 +24,7 @@ public class MovieViewModel extends AndroidViewModel {
 
     @Getter private final LiveData<List<Movie>> movies;
     @Getter private final LiveData<Movie> movie;
+    @Getter private final LiveData<List<WatchProvider>> movieWatchProviders;
     @Getter private final LiveData<List<MovieDatabase>> databaseMovies;
 
     private final ApiRepository apiRepository;
@@ -34,6 +36,7 @@ public class MovieViewModel extends AndroidViewModel {
         this.movieRepository = new MovieRepository(application);
 
         this.movie = Transformations.switchMap(movieIdTrigger, apiRepository::getMovieById);
+        this.movieWatchProviders = Transformations.switchMap(movieIdTrigger, apiRepository::fetchMovieWatchProvider);
         
         this.movies = Transformations.switchMap(moviesListTrigger, req -> 
             apiRepository.getMoviesByType(req.type, req.page, req.previous)

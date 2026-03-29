@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,13 +21,16 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
@@ -41,6 +45,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private FragmentSingleMovieBinding binding;
     private MovieViewModel movieViewModel;
+    private WatchProviderAdapter watchProviderAdapter;
 
     private int movieId;
 
@@ -91,9 +96,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
             }
         });
 
-        binding.layoutChips.chipWatched.setOnClickListener(v -> {
-            movieViewModel.toggleMovieIsWatched(movieId);
-        });
+        binding.layoutChips.chipWatched.setOnClickListener(v -> movieViewModel.toggleMovieIsWatched(movieId));
     }
 
 
@@ -101,6 +104,11 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         binding.realisators.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.realisators.setHasFixedSize(true);
         binding.realisators.setNestedScrollingEnabled(false);
+
+        binding.watchProviders.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.watchProviders.setHasFixedSize(false);
+        this.watchProviderAdapter = WatchProviderAdapter.newInstance(getString(R.string.base_url_poster_300));
+        binding.watchProviders.setAdapter(this.watchProviderAdapter);
 
         binding.cast.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.cast.setHasFixedSize(true);
@@ -113,6 +121,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private void observeViewModel() {
         movieViewModel.getMovie().observe(getViewLifecycleOwner(), this::updateUI);
+        movieViewModel.getMovieWatchProviders().observe(getViewLifecycleOwner(), this::updateWatchProviderUI);
         movieViewModel.getDatabaseMovies().observe(getViewLifecycleOwner(), movies -> {
             Optional<MovieDatabase> movieDb = movies.stream()
                     .filter(m -> m.getId() == movieId)
@@ -200,7 +209,25 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
                         true
                 )
         );
+    }
+    private void updateWatchProviderUI(List<WatchProvider> watchProviders) {
+        if (watchProviders == null || watchProviders.isEmpty()) {
+            binding.watchProviders.setVisibility(View.GONE);
+            return;
+        }
 
+        binding.watchProviders.setVisibility(View.VISIBLE);
+        this.watchProviderAdapter.setData(
+                watchProviders
+                        .stream()
+                        .limit(2)
+                        .map(w -> new AdapterData(
+                                w.providerId(),
+                                w.providerName(),
+                                w.logoPath()
+                        ))
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override

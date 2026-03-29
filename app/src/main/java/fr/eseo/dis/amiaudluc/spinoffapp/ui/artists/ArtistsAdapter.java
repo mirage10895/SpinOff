@@ -75,7 +75,6 @@ public class ArtistsAdapter extends ListAdapter<Artist, ArtistsAdapter.ArtistVie
         if (artist != null) {
             holder.name.setText(ctx.getResources().getString(R.string.emptyField));
             if (artist.getName() != null) {
-                holder.name.setTextColor(ctx.getColor(R.color.colorAccent));
                 holder.name.setText(artist.getName());
             }
 

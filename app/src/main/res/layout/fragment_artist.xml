@@ -24,8 +24,7 @@
             android:background="@null"
             android:elevation="10dp"
             android:innerRadius="0dp"
-            android:shape="ring"
-            app:cardCornerRadius="70dp">
+            app:cardCornerRadius="10dp">
 
             <ImageView
                 android:id="@+id/poster_ic"
@@ -42,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/text_margin"
-            android:textColor="@color/colorPrimary"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="25sp" />
 
         <androidx.cardview.widget.CardView
@@ -68,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/birthday_text"
-                    android:textColor="@color/colorAccent" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:id="@+id/birthday"
@@ -83,14 +83,16 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/biography_text"
-                    android:textColor="@color/colorAccent" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:id="@+id/who_are_you"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_margin"
-                    android:gravity="center"
+                    android:textAlignment="gravity"
+                    android:gravity="fill_horizontal"
                     android:textColor="@color/white" />
 
                 <TextView
@@ -99,7 +101,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/see_more_text"
-                    android:textColor="@color/colorAccent" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="?android:attr/textColorPrimary" />
 
                 <TextView
                     android:id="@+id/see_more"

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,14 +20,17 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
@@ -37,6 +41,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
     private FragmentSingleSerieBinding binding;
     private SerieViewModel serieViewModel;
+    private WatchProviderAdapter watchProviderAdapter;
     private int serieId;
 
     public SingleSerieFragment() {
@@ -86,9 +91,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
             }
         });
 
-        binding.layoutChips.chipWatched.setOnClickListener(v -> {
-            serieViewModel.toggleSerieIsWatched(serieId);
-        });
+        binding.layoutChips.chipWatched.setOnClickListener(v -> serieViewModel.toggleSerieIsWatched(serieId));
     }
 
     private void setupRecyclerViews() {
@@ -102,12 +105,19 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         binding.networks.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.networks.setHasFixedSize(true);
 
+        binding.watchProviders.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.watchProviders.setHasFixedSize(false);
+        this.watchProviderAdapter = WatchProviderAdapter.newInstance(getString(R.string.base_url_poster_300));
+        binding.watchProviders.setAdapter(this.watchProviderAdapter);
+
+
         binding.recyclerRecommendations.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerRecommendations.setHasFixedSize(true);
     }
 
     private void observeViewModel() {
         serieViewModel.getSerie().observe(getViewLifecycleOwner(), this::updateUI);
+        serieViewModel.getSerieWatchProviders().observe(getViewLifecycleOwner(), this::updateWatchProviderUI);
         serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), series -> {
             Optional<SerieDatabase> serieDb = series.stream()
                     .filter(s -> s.getId() == serieId)
@@ -166,6 +176,26 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
                     true
             ));
         }
+    }
+
+    private void updateWatchProviderUI(List<WatchProvider> watchProviders) {
+        if (watchProviders == null || watchProviders.isEmpty()) {
+            binding.watchProviders.setVisibility(View.GONE);
+            return;
+        }
+
+        binding.watchProviders.setVisibility(View.VISIBLE);
+        this.watchProviderAdapter.setData(
+                watchProviders
+                        .stream()
+                        .limit(2)
+                        .map(w -> new AdapterData(
+                                w.providerId(),
+                                w.providerName(),
+                                w.logoPath()
+                        ))
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override

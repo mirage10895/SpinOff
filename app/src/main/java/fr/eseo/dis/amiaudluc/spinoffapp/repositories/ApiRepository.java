@@ -1,14 +1,13 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.ApiService;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
@@ -18,6 +17,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,6 +59,19 @@ public class ApiRepository {
         return execute(this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations"));
     }
 
+    public LiveData<List<WatchProvider>> fetchMovieWatchProvider(Integer id) {
+        return executeAsync(
+                this.tmdbApiService.api.fetchMovieWatchProvider(id),
+                watchProviderApiResponse -> {
+                    WatchProvider.WatchProviders watchProviders = watchProviderApiResponse.results().get("FR");
+                    if (watchProviders == null) {
+                        return List.of();
+                    }
+                    return watchProviders.flatrate();
+                }
+        );
+    }
+
     public LiveData<List<Serie>> getSeriesByType(String type, Integer page, List<Serie> previous) {
         return executeAsync(
                 this.tmdbApiService.api.getSeries(type, "FR", page),
@@ -78,6 +91,19 @@ public class ApiRepository {
 
     public Optional<Serie> getSerieByIdSync(Integer id) {
         return execute(this.tmdbApiService.api.getSerieById(id, "credits,videos,recommendations"));
+    }
+
+    public LiveData<List<WatchProvider>> fetchTvWatchProvider(Integer id) {
+        return executeAsync(
+                this.tmdbApiService.api.fetchTvWatchProvider(id),
+                watchProviderApiResponse -> {
+                    WatchProvider.WatchProviders watchProviders = watchProviderApiResponse.results().get("FR");
+                    if (watchProviders == null) {
+                        return List.of();
+                    }
+                    return watchProviders.flatrate();
+                }
+        );
     }
 
     public LiveData<Season> getSeasonBySerieId(Integer id, Integer seasonNumber) {

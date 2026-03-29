@@ -16,9 +16,29 @@
         android:layout_margin="15dp"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/layout_chips"
-            layout="@layout/layout_status_chips" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <include
+                android:id="@+id/layout_chips"
+                layout="@layout/layout_status_chips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/watch_providers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -166,7 +186,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/genres_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:id="@+id/genres"
@@ -189,7 +210,8 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/realisators_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/realisators"
@@ -215,7 +237,8 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/details_overview"
-                        android:textColor="@color/colorAccent" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:id="@+id/overview"
@@ -239,7 +262,8 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/details_budget"
-                        android:textColor="@color/colorAccent" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="?android:attr/textColorPrimary" />
 
                     <TextView
                         android:id="@+id/budget"
