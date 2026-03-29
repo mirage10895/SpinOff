@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
+
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 
 
@@ -19,6 +21,8 @@ public interface MovieDAO {
     void insertMovie(MovieDatabase movie);
     @Query("select * from movie")
     LiveData<List<MovieDatabase>> getAll();
+    @Query("select * from movie")
+    List<MovieDatabase> getAllSync();
     @Query("DELETE FROM movie WHERE id = :id")
     void deleteMovieById(Integer id);
     @Query("select * from movie where id = :id")
@@ -26,4 +30,7 @@ public interface MovieDAO {
 
     @Query("update movie set watched = not watched where id = :id")
     void toggleMovieIsWatched(int id);
+
+    @Update
+    void updateMovie(MovieDatabase movie);
 }

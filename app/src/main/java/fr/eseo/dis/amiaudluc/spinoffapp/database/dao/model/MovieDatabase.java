@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,9 @@ public class MovieDatabase {
     private boolean watched;
     @ColumnInfo(name = "last_synchronisation_time")
     private Instant lastSynchronisationTime;
+    private String genres;
+    @ColumnInfo(name = "release_date")
+    private LocalDate releaseDate;
 
     public MovieDatabase() {
         this.watched = false;
