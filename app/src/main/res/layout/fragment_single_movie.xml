@@ -59,7 +59,8 @@
 
                 <RelativeLayout
                     android:id="@+id/imdb_rating"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/release_date_container"
@@ -72,7 +73,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/imdb_rating"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <ImageView
                         android:id="@+id/rate"
@@ -87,7 +89,8 @@
 
                 <RelativeLayout
                     android:id="@+id/release_date_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/language_container"
@@ -100,7 +103,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/release_date"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/release_date"
@@ -109,6 +113,7 @@
                         android:textSize="15sp"
                         android:layout_below="@id/text_release_date"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:textColor="@color/white"
                         android:contentDescription="@string/release_date" />
@@ -117,7 +122,8 @@
 
                 <RelativeLayout
                     android:id="@+id/language_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
@@ -130,13 +136,16 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/runtime"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/runtime"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:textSize="20sp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
                         android:layout_below="@id/runtime_text"
                         android:gravity="center"
                         android:textColor="@color/white" />
@@ -187,7 +196,7 @@
                         android:layout_height="match_parent"
                         android:text="@string/genres_text"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/genres"
@@ -211,7 +220,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/realisators_text"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="@color/colorPrimary" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/realisators"
@@ -238,7 +247,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/details_overview"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/overview"
@@ -263,7 +272,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/details_budget"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/budget"

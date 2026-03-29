@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:background="?android:attr/windowBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity">
@@ -42,14 +42,14 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="1dp"
             android:layout_marginStart="1dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
             card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
-            card_view:layout_collapseMode="pin"
-            card_view:cardElevation="8dp">
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lil_caracteritics"
@@ -58,7 +58,8 @@
 
                 <RelativeLayout
                     android:id="@+id/imdb_rating"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/season_container"
@@ -71,7 +72,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/imdb_rating"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <ImageView
                         android:id="@+id/rate"
@@ -86,7 +88,8 @@
 
                 <RelativeLayout
                     android:id="@+id/season_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/language_container"
@@ -99,25 +102,27 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/number_seasons"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/number_of_season"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:textSize="20sp"
-                        android:textColor="@color/white"
                         android:layout_below="@id/text_season"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
+                        android:contentDescription="@string/season_text"
                         android:gravity="center"
-                        android:contentDescription="@string/season_text" />
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/language_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
@@ -130,16 +135,19 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/language"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/language"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:textSize="20sp"
                         android:layout_below="@id/language_text"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
 
                 </RelativeLayout>
 
@@ -151,23 +159,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@string/tv_show"
             android:layout_marginVertical="@dimen/text_margin"
             android:gravity="start"
+            android:text="@string/tv_show"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="1dp"
             android:layout_marginStart="1dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
             card_view:cardBackgroundColor="@color/card_background_color"
             card_view:cardCornerRadius="5dp"
-            card_view:layout_collapseMode="pin"
-            card_view:cardElevation="8dp">
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -184,10 +192,10 @@
                         android:id="@+id/text_genre"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="@string/genres_text"
                         android:layout_margin="@dimen/text_margin"
+                        android:text="@string/genres_text"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/genres"
@@ -211,7 +219,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/realisators_text"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary" />
+                        android:textColor="@color/colorPrimary" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/realisators"
@@ -238,7 +246,7 @@
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/details_overview"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="?android:attr/textColorPrimary"/>
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/overview"
@@ -258,9 +266,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@string/number_seasons"
             android:layout_marginVertical="@dimen/text_margin"
             android:gravity="start"
+            android:text="@string/number_seasons"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp" />
 
@@ -280,9 +288,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_margin"
-                android:text="@string/recommendations_text"
                 android:layout_marginVertical="@dimen/text_margin"
                 android:gravity="start"
+                android:text="@string/recommendations_text"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="20sp" />
 
@@ -298,8 +306,8 @@
                     android:id="@+id/recycler_recommendations"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
                     android:scrollbarStyle="outsideInset"
                     android:scrollbars="horizontal" />
 
@@ -311,9 +319,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
-            android:text="@string/text_networks"
             android:layout_marginVertical="@dimen/text_margin"
             android:gravity="start"
+            android:text="@string/text_networks"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="20sp" />
 
@@ -321,8 +329,8 @@
             android:id="@+id/networks"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
-            android:layout_margin="5dp"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:scrollbarStyle="outsideInset"
             android:scrollbars="horizontal" />
 

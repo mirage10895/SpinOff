@@ -34,8 +34,9 @@
 
                 <RelativeLayout
                     android:id="@+id/air_date_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
                     android:layout_height="70dp"
+                    app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/season_container"
                     app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
@@ -47,7 +48,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/air_date_text"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/air_date"
@@ -55,6 +57,7 @@
                         android:layout_height="50dp"
                         android:textSize="15sp"
                         android:textColor="@color/white"
+                        android:layout_marginTop="10dp"
                         android:layout_below="@id/text_air_date"
                         android:layout_centerHorizontal="true"
                         android:gravity="center"
@@ -64,7 +67,8 @@
 
                 <RelativeLayout
                     android:id="@+id/season_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toStartOf="@id/episodes_container"
@@ -77,7 +81,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/season_text"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/number_of_season"
@@ -85,6 +90,7 @@
                         android:layout_height="50dp"
                         android:textSize="20sp"
                         android:textColor="@color/white"
+                        android:layout_marginTop="10dp"
                         android:layout_below="@id/text_season"
                         android:layout_centerHorizontal="true"
                         android:gravity="center"
@@ -94,7 +100,8 @@
 
                 <RelativeLayout
                     android:id="@+id/episodes_container"
-                    android:layout_width="100dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
@@ -107,13 +114,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:text="@string/runtime"
-                        android:textColor="@color/white" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/episodes"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:textSize="15sp"
+                        android:layout_marginTop="10dp"
                         android:textColor="@color/white"
                         android:layout_below="@id/episodes_text"
                         android:layout_centerHorizontal="true"
@@ -164,7 +173,8 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/text_margin"
                         android:text="@string/guests_text"
-                        android:textColor="@color/colorAccent" />
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/guest_stars"
@@ -186,7 +196,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/details_overview"
-                    android:textColor="@color/colorAccent" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/overview"

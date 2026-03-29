@@ -16,11 +16,11 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentSeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodesAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SeasonFragment extends Fragment implements ItemInterface {
@@ -87,15 +87,7 @@ public class SeasonFragment extends Fragment implements ItemInterface {
         if (season == null || binding == null) return;
 
         // CircularImageBar for Air Date (Year)
-        binding.airDate.setImageBitmap(CircularImageBar.buildNumber(0, requireContext().getColor(R.color.colorAccent)));
-        if (season.getAirDate() != null) {
-            binding.airDate.setImageBitmap(
-                    CircularImageBar.buildNumber(
-                            season.getAirDate().getYear(),
-                            requireContext().getColor(R.color.white)
-                    )
-            );
-        }
+        binding.airDate.setText(DateUtils.toDisplayString(season.getAirDate()));
 
         binding.numberOfSeason.setText(season.getSeasonNumber() != -1 ? String.valueOf(season.getSeasonNumber()) : "0");
         

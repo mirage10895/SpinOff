@@ -39,7 +39,8 @@
 
             <RelativeLayout
                 android:id="@+id/media_number_container"
-                android:layout_width="110dp"
+                android:layout_width="0dp"
+                app:layout_constraintHorizontal_weight="1"
                 android:layout_height="70dp"
                 app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                 app:layout_constraintEnd_toStartOf="@id/media_seen_number_container"
@@ -52,12 +53,14 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="@string/library_media_number"
-                    android:textColor="@color/white" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/media_number"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:layout_below="@id/media_number_text"
                     android:gravity="center"
                     android:textColor="@color/white"
@@ -67,7 +70,8 @@
 
             <RelativeLayout
                 android:id="@+id/media_seen_number_container"
-                android:layout_width="110dp"
+                android:layout_width="0dp"
+                app:layout_constraintHorizontal_weight="1"
                 android:layout_height="70dp"
                 app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                 app:layout_constraintEnd_toStartOf="@id/media_runtime_container"
@@ -80,7 +84,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="@string/library_media_seen_number"
-                    android:textColor="@color/white" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/media_seen_number"
@@ -88,6 +93,7 @@
                     android:layout_height="50dp"
                     android:layout_below="@id/text_media_seen_number"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
                     android:contentDescription="@string/season_text"
                     android:gravity="center"
                     android:textColor="@color/white"
@@ -97,7 +103,8 @@
 
             <RelativeLayout
                 android:id="@+id/media_runtime_container"
-                android:layout_width="110dp"
+                android:layout_width="0dp"
+                app:layout_constraintHorizontal_weight="1"
                 android:layout_height="70dp"
                 app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                 app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
@@ -110,13 +117,15 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="@string/library_media_runtime"
-                    android:textColor="@color/white" />
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/media_runtime"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_below="@id/media_runtime_text"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="20sp" />

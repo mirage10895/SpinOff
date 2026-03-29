@@ -68,7 +68,7 @@
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/birthday_text"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/birthday"
@@ -84,7 +84,7 @@
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/biography_text"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/who_are_you"
@@ -102,7 +102,7 @@
                     android:layout_margin="@dimen/text_margin"
                     android:text="@string/see_more_text"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:textColor="@color/colorPrimary" />
 
                 <TextView
                     android:id="@+id/see_more"

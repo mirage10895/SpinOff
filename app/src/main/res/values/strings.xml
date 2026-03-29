@@ -95,7 +95,7 @@
     <string name="episodes_text">Episodes</string>
     <string name="name_text">Name:</string>
     <string name="episode_number_text">Episode n°:</string>
-    <string name="air_date_text">Air date:</string>
+    <string name="air_date_text">Air date</string>
     <string name="title_activity_episode">EpisodeActivity</string>
     <string name="cast_text">Cast</string>
     <string name="episode_text">Episode</string>
