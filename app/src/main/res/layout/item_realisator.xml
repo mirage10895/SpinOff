@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/fragment_artist"
             android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>
 
@@ -34,6 +35,6 @@
         android:layout_below="@+id/producer_pic"
         android:layout_marginTop="6dp"
         android:gravity="center"
-        android:textColor="?android:attr/textColorPrimary" />
+        android:textColor="@color/white" />
 
 </RelativeLayout>

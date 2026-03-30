@@ -13,36 +13,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/producer_pic"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
             android:layout_gravity="center"
             android:background="@null"
             android:elevation="10dp"
             android:innerRadius="0dp"
+            app:cardBackgroundColor="@color/card_background_color"
             app:cardCornerRadius="10dp">
 
-            <ImageView
-                android:id="@+id/poster_ic"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/fragment_artist"
-                android:scaleType="centerCrop" />
-        </androidx.cardview.widget.CardView>
+                android:orientation="vertical"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
+                android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/text_margin"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="25sp" />
+                <ImageView
+                    android:id="@+id/poster_ic"
+                    android:layout_width="240dp"
+                    android:layout_height="280dp"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/fragment_artist"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:textColor="@color/white"
+                    android:textSize="25sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
