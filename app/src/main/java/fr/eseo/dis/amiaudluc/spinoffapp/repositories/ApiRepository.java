@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -13,6 +14,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
@@ -162,4 +164,7 @@ public class ApiRepository {
         return data;
     }
 
+    public static String formatGenres(List<Genre> genres) {
+        return genres.stream().map(Genre::getName).collect(Collectors.joining(","));
+    }
 }

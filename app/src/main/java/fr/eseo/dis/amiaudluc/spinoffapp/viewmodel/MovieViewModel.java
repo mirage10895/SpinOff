@@ -33,7 +33,7 @@ public class MovieViewModel extends AndroidViewModel {
     public MovieViewModel(@NonNull Application application) {
         super(application);
         this.apiRepository = ApiRepository.getInstance();
-        this.movieRepository = new MovieRepository(application);
+        this.movieRepository = MovieRepository.getRepository(application);
 
         this.movie = Transformations.switchMap(movieIdTrigger, apiRepository::getMovieById);
         this.movieWatchProviders = Transformations.switchMap(movieIdTrigger, apiRepository::fetchMovieWatchProvider);

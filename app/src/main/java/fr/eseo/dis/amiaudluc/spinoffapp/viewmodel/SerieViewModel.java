@@ -2,13 +2,14 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel;
 
 import android.app.Application;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
+
+import java.util.List;
+
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
@@ -47,7 +48,7 @@ public class SerieViewModel extends AndroidViewModel {
     public SerieViewModel(@NonNull Application application) {
         super(application);
         this.apiRepository = ApiRepository.getInstance();
-        this.serieRepository = new SerieRepository(application);
+        this.serieRepository = SerieRepository.getRepository(application);
 
         // Wiring triggers to repository calls using switchMap
         this.serie = Transformations.switchMap(

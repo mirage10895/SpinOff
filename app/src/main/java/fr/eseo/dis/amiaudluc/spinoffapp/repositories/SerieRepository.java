@@ -1,11 +1,11 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
 
-import android.app.Application;
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -18,13 +18,22 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 public class SerieRepository {
+    private static SerieRepository INSTANCE = null;
+
     private final SerieDAO serieDAO;
     private final ApiRepository apiRepository;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
 
-    public SerieRepository(Application application) {
-        AppDatabase db = AppDatabase.getAppDatabase(application);
+    public static SerieRepository getRepository(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new SerieRepository(context);
+        }
+        return INSTANCE;
+    }
+
+    private SerieRepository(Context context) {
+        AppDatabase db = AppDatabase.getAppDatabase(context);
         serieDAO = db.serieDAO();
         this.apiRepository = ApiRepository.getInstance();
     }
@@ -45,12 +54,12 @@ public class SerieRepository {
     /**
      * Synchronous version for background tasks.
      */
-    public void updateAllSeriesSync() {
+    public void updateAllSeriesSync(Duration notSyncSince) {
         List<SerieDatabase> series = this.serieDAO.getAllSync();
         for (SerieDatabase serieDatabase : series) {
             // Only update if last sync was more than 10 days ago
             if (serieDatabase.getLastSynchronisationTime() == null ||
-                    serieDatabase.getLastSynchronisationTime().isBefore(Instant.now().minus(10, ChronoUnit.DAYS))) {
+                    serieDatabase.getLastSynchronisationTime().isBefore(Instant.now().minus(notSyncSince))) {
 
                 SerieDatabase updated = computeSerieDatabaseSync(serieDatabase.getId(), serieDatabase.isWatched());
                 if (updated != null) {
@@ -74,6 +83,10 @@ public class SerieRepository {
         serieDatabase.setName(apiSerie.get().getName());
         serieDatabase.setPosterPath(apiSerie.get().getPosterPath());
         serieDatabase.setWatched(isWatched);
+        serieDatabase.setGenres(ApiRepository.formatGenres(apiSerie.get().getGenres()));
+        serieDatabase.setEpisodeCount(apiSerie.get().getNumberOfEpisodes());
+        serieDatabase.setSeasonCount(apiSerie.get().getNumberOfSeasons());
+        serieDatabase.setFirstAirDate(apiSerie.get().getFirstAirDate());
         serieDatabase.setLastSynchronisationTime(Instant.now());
 
         if (apiSerie.get().getNumberOfSeasons() == null || apiSerie.get().getNumberOfSeasons() == 0) {
@@ -94,7 +107,6 @@ public class SerieRepository {
     public void deleteById(int id) {
         executor.execute(() -> this.serieDAO.deleteSerieById(id));
     }
-
 
     public void toggleSerieIsWatched(int id) {
         executor.execute(() -> this.serieDAO.toggleSerieIsWatched(id));

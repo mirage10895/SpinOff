@@ -11,10 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -25,6 +21,11 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.UpdateSeriesWorker;
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         scheduleBackgroundTasks();
+        // DatabaseMigrationWorker.enqueue(this);
     }
 
     private void checkPermissions() {
