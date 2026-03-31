@@ -231,7 +231,8 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         if (type == null) return;
         
         switch (type) {
-            case SERIE: {
+            // recommendations are movie, but still they are series at the end
+            case MOVIE: {
                 Intent intent = new Intent(requireContext(), SerieActivity.class);
                 intent.putExtra("id", id);
                 startActivity(intent);
