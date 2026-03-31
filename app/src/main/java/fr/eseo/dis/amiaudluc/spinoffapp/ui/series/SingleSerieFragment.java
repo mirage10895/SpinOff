@@ -6,20 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
@@ -28,11 +30,13 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SingleSerieFragment extends Fragment implements ItemInterface {
@@ -42,6 +46,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
     private FragmentSingleSerieBinding binding;
     private SerieViewModel serieViewModel;
     private WatchProviderAdapter watchProviderAdapter;
+    private YoutubeConnector youtubeConnector;
     private int serieId;
 
     public SingleSerieFragment() {
@@ -79,6 +84,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         
         setupRecyclerViews();
         setupChips();
+        setupYoutubePlayer();
         observeViewModel();
     }
 
@@ -113,6 +119,10 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
         binding.recyclerRecommendations.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerRecommendations.setHasFixedSize(true);
+    }
+
+    private void setupYoutubePlayer() {
+        this.youtubeConnector = new YoutubeConnector(binding.youtube.youtubePlayerView, getLifecycle());
     }
 
     private void observeViewModel() {
@@ -161,6 +171,18 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         }
 
         binding.overview.setText(serie.getOverview() != null ? serie.getOverview() : getString(R.string.emptyField));
+
+        // YouTube Trailer
+        Video trailer = VideoUtils.getYoutubeTrailer(serie.getVideos());
+        if (trailer != null) {
+            String newVideoId = trailer.getKey();
+            binding.teaserTxt.setVisibility(View.VISIBLE);
+            binding.youtube.youtubeCard.setVisibility(View.VISIBLE);
+            this.youtubeConnector.loadVideo(newVideoId);
+        } else {
+            binding.teaserTxt.setVisibility(View.GONE);
+            binding.youtube.youtubeCard.setVisibility(View.GONE);
+        }
 
         binding.seasons.setAdapter(new SeasonsAdapter(requireContext(), this, serie.getSeasons()));
         binding.realisators.setAdapter(new ArtistsAdapter(requireContext(), this, serie.getCreatedBy()));

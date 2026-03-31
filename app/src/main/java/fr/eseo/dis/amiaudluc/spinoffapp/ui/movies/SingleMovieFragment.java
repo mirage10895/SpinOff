@@ -7,20 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
@@ -30,8 +32,10 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
 /**
@@ -46,6 +50,8 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
     private FragmentSingleMovieBinding binding;
     private MovieViewModel movieViewModel;
     private WatchProviderAdapter watchProviderAdapter;
+    
+    private YoutubeConnector youtubeConnector;
 
     private int movieId;
 
@@ -84,7 +90,12 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
         setupRecyclerViews();
         setupChips();
+        setupYoutubePlayer();
         observeViewModel();
+    }
+
+    private void setupYoutubePlayer() {
+        this.youtubeConnector = new YoutubeConnector(binding.youtube.youtubePlayerView, getLifecycle());
     }
 
     private void setupChips() {
@@ -188,6 +199,18 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
             binding.budget.setText(numberAsString);
         } else {
             binding.budget.setText(R.string.emptyField);
+        }
+
+        // YouTube Trailer
+        Video trailer = VideoUtils.getYoutubeTrailer(movie.getVideos());
+        if (trailer != null) {
+            String newVideoId = trailer.getKey();
+            binding.teaserTxt.setVisibility(View.VISIBLE);
+            binding.youtube.youtubeCard.setVisibility(View.VISIBLE);
+            this.youtubeConnector.loadVideo(newVideoId);
+        } else {
+            binding.teaserTxt.setVisibility(View.GONE);
+            binding.youtube.youtubeCard.setVisibility(View.GONE);
         }
 
         // recyclers

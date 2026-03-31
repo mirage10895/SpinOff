@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import androidx.annotation.Nullable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,15 +37,6 @@ public class Season {
                     .orElse(0);
         }
         return 0;
-    }
-
-    @Nullable
-    public Video getRightVideo() {
-        return this.videos.getResults().stream()
-                .filter(video1 -> "YouTube".equals(video1.getSite())
-                        && "Trailer".equals(video1.getType()))
-                .findFirst()
-                .orElse(null);
     }
 
     @Override

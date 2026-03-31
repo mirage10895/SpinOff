@@ -82,6 +82,9 @@ dependencies {
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
 
+    // YouTube Player
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:13.0.0'
+
     // Testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

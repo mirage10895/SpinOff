@@ -11,16 +11,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SeasonFragment extends Fragment implements ItemInterface {
@@ -30,6 +34,8 @@ public class SeasonFragment extends Fragment implements ItemInterface {
 
     private FragmentSeasonBinding binding;
     private SerieViewModel serieViewModel;
+    private YoutubeConnector youtubeConnector;
+
     private int serieId;
     private int seasonNumber;
 
@@ -67,7 +73,12 @@ public class SeasonFragment extends Fragment implements ItemInterface {
         serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
         
         setupRecyclerViews();
+        setupYoutubePlayer();
         observeViewModel();
+    }
+
+    private void setupYoutubePlayer() {
+        this.youtubeConnector = new YoutubeConnector(binding.youtube.youtubePlayerView, getLifecycle());
     }
 
     private void setupRecyclerViews() {
@@ -106,6 +117,18 @@ public class SeasonFragment extends Fragment implements ItemInterface {
             binding.overview.setText(season.getOverview());
         } else {
             binding.overview.setText(R.string.emptyField);
+        }
+
+        // YouTube Trailer
+        Video trailer = VideoUtils.getYoutubeTrailer(season.getVideos());
+        if (trailer != null) {
+            String newVideoId = trailer.getKey();
+            binding.teaserTxt.setVisibility(View.VISIBLE);
+            binding.youtube.youtubeCard.setVisibility(View.VISIBLE);
+            this.youtubeConnector.loadVideo(newVideoId);
+        } else {
+            binding.teaserTxt.setVisibility(View.GONE);
+            binding.youtube.youtubeCard.setVisibility(View.GONE);
         }
 
         if (season.getCredits() != null && season.getCredits().getCast() != null) {
