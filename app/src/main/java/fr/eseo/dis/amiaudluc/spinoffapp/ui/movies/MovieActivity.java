@@ -39,6 +39,8 @@ public class MovieActivity extends AppCompatActivity {
             return;
         }
 
+        binding.closeButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
         if (savedInstanceState == null) {

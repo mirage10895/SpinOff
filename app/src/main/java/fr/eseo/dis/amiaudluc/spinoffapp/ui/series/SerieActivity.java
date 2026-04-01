@@ -39,6 +39,8 @@ public class SerieActivity extends AppCompatActivity {
             return;
         }
 
+        binding.closeButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
         serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
 
         if (savedInstanceState == null) {
