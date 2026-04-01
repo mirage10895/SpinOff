@@ -62,7 +62,7 @@ public class MovieActivity extends AppCompatActivity {
                 binding.content.content.setVisibility(View.VISIBLE);
 
                 Picasso.get()
-                        .load(getString(R.string.base_url_poster_original) + movie.getPosterPath())
+                        .load(getString(R.string.base_url_poster_500) + movie.getPosterPath())
                         .resize(25, 25)
                         .centerCrop()
                         .into(binding.blurredBackground);

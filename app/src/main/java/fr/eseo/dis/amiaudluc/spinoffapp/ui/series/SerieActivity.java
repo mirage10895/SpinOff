@@ -62,7 +62,7 @@ public class SerieActivity extends AppCompatActivity {
                 binding.content.content.setVisibility(View.VISIBLE);
 
                 Picasso.get()
-                        .load(getString(R.string.base_url_poster_original) + serie.getPosterPath())
+                        .load(getString(R.string.base_url_poster_500) + serie.getPosterPath())
                         .resize(25, 25)
                         .centerCrop()
                         .into(binding.blurredBackground);
