@@ -1,214 +1,380 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_primary_semi_opaq"
+    android:background="?android:attr/windowBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.movies.MovieActivity">
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <include
+                android:id="@+id/layout_chips"
+                layout="@layout/layout_status_chips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/watch_providers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/card_background_color"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/lil_caracteritics"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+                <RelativeLayout
+                    android:id="@+id/imdb_rating"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toStartOf="@id/release_date_container"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                    <TextView
+                        android:id="@+id/text_rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/imdb_rating"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
+
+                    <ImageView
+                        android:id="@+id/rate"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/text_rate"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:contentDescription="@string/imdb_rating" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/release_date_container"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toStartOf="@id/language_container"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/imdb_rating"
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                    <TextView
+                        android:id="@+id/text_release_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/release_date"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/release_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/text_release_date"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:contentDescription="@string/release_date"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/language_container"
+                    android:layout_width="0dp"
+                    android:layout_height="70dp"
+                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@id/release_date_container"
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                    <TextView
+                        android:id="@+id/runtime_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/runtime"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/runtime"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@id/runtime_text"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                </RelativeLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:text="@string/movie"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/card_background_color"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
-                <ProgressBar
-                    android:id="@+id/progressBarBody"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:visibility="gone"/>
-
-                <LinearLayout
-                    android:id="@+id/lil_caracteritics"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp">
-
-                    <RelativeLayout
-                        android:layout_width="100dp"
-                        android:layout_height="70dp"
-                        android:layout_margin="18dp">
-
-                        <TextView
-                            android:id="@+id/text_rate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:textColor="@color/white"
-                            android:text="@string/imdb_rating"/>
-
-                        <ImageView
-                            android:id="@+id/rate"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_below="@id/text_rate"
-                            android:layout_centerHorizontal="true"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="100dp"
-                        android:layout_height="70dp"
-                        android:layout_marginTop="18dp">
-
-                        <TextView
-                            android:id="@+id/text_year"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:layout_centerHorizontal="true"
-                            android:text="@string/year"/>
-
-                        <ImageView
-                            android:id="@+id/year"
-                            android:layout_below="@id/text_year"
-                            android:layout_centerHorizontal="true"
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="100dp"
-                        android:layout_height="70dp"
-                        android:layout_margin="18dp">
-
-                        <TextView
-                            android:id="@+id/language"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/white"
-                            android:layout_centerHorizontal="true"
-                            android:text="@string/language"/>
-
-                        <ImageView
-                            android:id="@+id/flag"
-                            android:layout_below="@id/language"
-                            android:layout_marginTop="10dp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/text_realisator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:layout_margin="@dimen/text_margin"
-                    android:text="@string/realisators_text" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/realisators"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_margin="5dp"
-                    android:scrollbarStyle="outsideInset"
-                    android:scrollbars="horizontal">
-
-                </android.support.v7.widget.RecyclerView>
-
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_margin"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/text_genre"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_margin="@dimen/text_margin"
                         android:text="@string/genres_text"
-                        android:textColor="@color/colorAccent"/>
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/genres"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:textColor="@color/white"
-                        android:layout_marginStart="30dp"/>
+                        android:layout_margin="@dimen/text_margin"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/text_overview"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
                     android:layout_margin="@dimen/text_margin"
-                    android:text="@string/details_overview" />
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/overview"
+                    <TextView
+                        android:id="@+id/text_realisator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:text="@string/realisators_text"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/realisators"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:overScrollMode="never"
+                        android:scrollbars="none">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_marginStart="15dp"
-                    android:layout_margin="@dimen/text_margin"/>
-
-                <TextView
-                    android:id="@+id/text_cast"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
                     android:layout_margin="@dimen/text_margin"
-                    android:text="@string/starring_text" />
+                    android:orientation="vertical">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/cast"
-                    android:layout_width="match_parent"
-                    android:layout_height="155dp"
-                    android:layout_margin="5dp"
-                    android:scrollbarStyle="outsideInset"
-                    android:scrollbars="horizontal">
+                    <TextView
+                        android:id="@+id/text_overview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:text="@string/details_overview"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
-                </android.support.v7.widget.RecyclerView>
+                    <TextView
+                        android:id="@+id/overview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/text_margin"
+                        android:textColor="@color/white" />
 
-                <TextView
-                    android:id="@+id/text_budget"
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
                     android:layout_margin="@dimen/text_margin"
-                    android:text="@string/details_budget"/>
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/budget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_marginStart="15dp"
-                    android:layout_margin="@dimen/text_margin"/>
+                    <TextView
+                        android:id="@+id/text_budget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:text="@string/details_budget"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
 
-                <TextView
-                    android:id="@+id/teaser_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:layout_margin="@dimen/text_margin"
-                    android:text="@string/teaser_txt"/>
-
-                <FrameLayout
-                    android:id="@+id/youtube_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp">
-
-                </FrameLayout>
+                    <TextView
+                        android:id="@+id/budget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/text_margin"
+                        android:layout_marginStart="15dp"
+                        android:textColor="@color/white" />
+                </LinearLayout>
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </androidx.cardview.widget.CardView>
 
-</android.support.v4.widget.NestedScrollView>
+        <TextView
+            android:id="@+id/teaser_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:text="@string/teaser_txt"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/youtube"
+            layout="@layout/layout_youtube_player" />
+
+        <TextView
+            android:id="@+id/text_cast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/text_margin"
+            android:layout_marginVertical="@dimen/text_margin"
+            android:gravity="start"
+            android:text="@string/starring_text"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/card_background_color"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cast"
+                android:layout_width="match_parent"
+                android:layout_height="155dp"
+                android:layout_margin="5dp"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/recommandation_movies_layer"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/recommendation_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:gravity="start"
+                android:text="@string/recommendations_text"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20sp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/text_margin"
+                card_view:cardBackgroundColor="@color/card_background_color"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="8dp"
+                card_view:layout_collapseMode="pin">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_recommendations"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:scrollbarStyle="outsideInset"
+                    android:scrollbars="horizontal" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

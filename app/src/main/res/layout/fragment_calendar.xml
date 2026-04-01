@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.calendar.CalendarFragment">
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar.CalendarFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,14 +27,14 @@
 
         </FrameLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/events"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/text_margin"
             android:layout_below="@+id/calendar_frame">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
 

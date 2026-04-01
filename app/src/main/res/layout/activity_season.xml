@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.season.SeasonActivity">
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity">
 
-    <include layout="@layout/app_bar_main"/>
+    <include android:id="@+id/app_bar_main" layout="@layout/app_bar_main"/>
 
     <include
-        android:id="@+id/nested"
+        android:id="@+id/content_media"
         layout="@layout/content_media"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,76 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_primary_semi_opaq"
-    android:id="@+id/nested_view"
+    android:background="?android:attr/windowBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.artists.ArtistActivity">
+    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/producer_pic"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical">
-
-        <ProgressBar
-            android:id="@+id/progressBarBody"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="350dp"
             android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone"/>
+            android:background="@null"
+            android:elevation="10dp"
+            android:innerRadius="0dp"
+            app:cardBackgroundColor="@color/card_background_color"
+            app:cardCornerRadius="10dp">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/producer_pic"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:background="@null"
-                android:elevation="10dp"
-                android:innerRadius="0dp"
-                android:layout_gravity="center"
-                android:shape="ring"
-                app:cardCornerRadius="70dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
+                android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/poster_ic"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="240dp"
+                    android:layout_height="280dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"/>
-            </android.support.v7.widget.CardView>
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/fragment_artist"
+                    android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_margin"
-                android:layout_gravity="center"
-                android:textSize="25sp"
-                android:textColor="@color/colorAccent"/>
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:textColor="@color/white"
+                    android:textSize="25sp" />
 
-            <TextView
-                android:id="@+id/who_are_you"
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="5dp"
+            card_view:cardBackgroundColor="@color/card_background_color"
+            card_view:cardCornerRadius="5dp"
+            card_view:cardElevation="8dp"
+            card_view:layout_collapseMode="pin">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_margin"
-                android:gravity="center"
-                android:textColor="@color/white"/>
+                android:orientation="vertical">
 
-            <include layout="@layout/fragment_search_main"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"/>
+                <TextView
+                    android:id="@+id/text_born"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/birthday_text"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:textColor="@color/white" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/text_biography"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/biography_text"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
 
-</android.support.v4.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/who_are_you"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:textAlignment="gravity"
+                    android:gravity="fill_horizontal"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/text_see_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:text="@string/see_more_text"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                    android:textColor="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/see_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:linksClickable="true"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <include
+            android:id="@+id/media_main"
+            layout="@layout/fragment_search_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
