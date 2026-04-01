@@ -153,8 +153,6 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
     private void updateUI(Movie movie) {
         if (movie == null) return;
 
-        binding.getRoot().setBackgroundColor(requireContext().getColor(R.color.color_primary_semi_opaq));
-
         // texts
         if (movie.getVoteAverage() != null) {
             binding.rate.setImageBitmap(CircularImageBar.buildNote(movie.getVoteAverage()));

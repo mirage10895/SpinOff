@@ -1,49 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
-        android:background="?android:attr/windowBackground"
-        app:elevation="0dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?android:attr/windowBackground"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            android:layout_height="400dp">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <ImageView
+                android:id="@+id/blurred_background"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:layout_collapseMode="pin" />
+                android:layout_height="match_parent"
+                android:alpha="0.7"
+                android:scaleType="centerCrop" />
 
-            <ProgressBar
-                android:id="@+id/progressBar"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/gradient_to_background" />
+
+            <ImageView
+                android:id="@+id/main_image"
+                android:layout_width="270dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:elevation="12dp" />
+
+            <TextView
+                android:id="@+id/media_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminate="true"
-                android:visibility="gone"/>
+                android:layout_gravity="bottom|center"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+        </FrameLayout>
 
-    <include
-        android:id="@+id/content"
-        layout="@layout/content_media" />
+        <include
+            android:id="@+id/content"
+            layout="@layout/content_media" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

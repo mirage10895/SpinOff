@@ -148,8 +148,6 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
     private void updateUI(Serie serie) {
         if (serie == null) return;
 
-        binding.getRoot().setBackgroundColor(requireContext().getColor(R.color.color_primary_semi_opaq));
-
         if (serie.getVoteAverage() != null) {
             binding.rate.setImageBitmap(CircularImageBar.buildNote(serie.getVoteAverage()));
         } else {

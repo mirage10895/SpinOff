@@ -1,24 +1,22 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.series;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMediaBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.AddSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
@@ -32,12 +30,8 @@ public class SerieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMediaBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(null);
-        }
+        // to delegate the behavior of the app bar to the activity
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         serieId = getIntent().getIntExtra("id", -1);
         if (serieId == -1) {
@@ -46,10 +40,10 @@ public class SerieActivity extends AppCompatActivity {
         }
 
         serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
-        
+
         if (savedInstanceState == null) {
             serieViewModel.initGetSerieById(serieId);
-            
+
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .replace(R.id.content, SingleSerieFragment.newInstance(serieId), "SingleSerieFragment")
@@ -64,44 +58,33 @@ public class SerieActivity extends AppCompatActivity {
             if (serie != null) {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.GONE);
                 binding.content.content.setVisibility(View.VISIBLE);
-                
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(serie.getName());
+
+                Picasso.get()
+                        .load(getString(R.string.base_url_poster_original) + serie.getPosterPath())
+                        .resize(25, 25)
+                        .centerCrop()
+                        .into(binding.blurredBackground);
+
+                Picasso.get()
+                        .load(getString(R.string.base_url_poster_original) + serie.getPosterPath())
+                        .into(binding.mainImage);
+
+                // 2. Application du flou matériel (API 31+)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    RenderEffect blurEffect = RenderEffect.createBlurEffect(
+                            25f, // Rayon de flou horizontal
+                            25f, // Rayon de flou vertical
+                            Shader.TileMode.CLAMP // Comment les bords sont gérés
+                    );
+                    binding.blurredBackground.setRenderEffect(blurEffect);
                 }
-                
-                String backdropUrl = getString(R.string.base_url_poster_original) + serie.getBackdropPath();
-                setBackground(backdropUrl);
+
+                binding.mediaName.setText(serie.getOriginalName());
             } else {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void setBackground(String link) {
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                binding.progressBar.setVisibility(View.GONE);
-                binding.toolbarLayout.setBackground(new BitmapDrawable(getResources(), bitmap));
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                binding.progressBar.setVisibility(View.GONE);
-                binding.toolbarLayout.setBackgroundResource(R.drawable.ic_launcher_foreground);
-                Log.e("SerieActivity", "Failed to load backdrop", e);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                binding.progressBar.setVisibility(View.VISIBLE);
-            }
-        };
-        
-        // Storing target as a tag to prevent GC
-        binding.toolbarLayout.setTag(target);
-        Picasso.get().load(link).into(target);
     }
 
     @Override
