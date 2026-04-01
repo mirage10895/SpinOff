@@ -27,7 +27,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
-            android:contentDescription="@string/trailer_text" />
+            android:contentDescription="@string/teaser_txt" />
 
         <LinearLayout
             android:layout_width="match_parent"
