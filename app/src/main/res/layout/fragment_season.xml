@@ -34,46 +34,13 @@
                 android:layout_height="100dp">
 
                 <RelativeLayout
-                    android:id="@+id/air_date_container"
-                    android:layout_width="0dp"
-                    app:layout_constraintHorizontal_weight="1"
-                    android:layout_height="70dp"
-                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
-                    app:layout_constraintEnd_toStartOf="@id/season_container"
-                    app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
-                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
-
-                    <TextView
-                        android:id="@+id/text_air_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/air_date_text"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-                        android:textColor="@color/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/air_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:textSize="15sp"
-                        android:layout_below="@id/text_air_date"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:contentDescription="@string/air_date" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
                     android:id="@+id/season_container"
                     android:layout_width="0dp"
                     app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
-                    app:layout_constraintEnd_toStartOf="@id/episodes_container"
-                    app:layout_constraintStart_toEndOf="@id/air_date_container"
+                    app:layout_constraintEnd_toStartOf="@id/air_date_container"
+                    app:layout_constraintStart_toStartOf="@id/lil_caracteritics"
                     app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
@@ -100,35 +67,68 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/episodes_container"
+                    android:id="@+id/air_date_container"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:layout_height="70dp"
+                    app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
+                    app:layout_constraintEnd_toStartOf="@id/runtime_container"
+                    app:layout_constraintStart_toEndOf="@id/season_container"
+                    app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
+
+                    <TextView
+                        android:id="@+id/text_air_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/air_date_text"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+                        android:textColor="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/air_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textSize="15sp"
+                        android:layout_below="@id/text_air_date"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:contentDescription="@string/air_date" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/runtime_container"
                     android:layout_width="0dp"
                     app:layout_constraintHorizontal_weight="1"
                     android:layout_height="70dp"
                     app:layout_constraintBottom_toBottomOf="@id/lil_caracteritics"
                     app:layout_constraintEnd_toEndOf="@id/lil_caracteritics"
-                    app:layout_constraintStart_toEndOf="@id/season_container"
+                    app:layout_constraintStart_toEndOf="@id/air_date_container"
                     app:layout_constraintTop_toTopOf="@id/lil_caracteritics">
 
                     <TextView
-                        android:id="@+id/episodes_text"
+                        android:id="@+id/runtime_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="@string/episodes_text"
+                        android:text="@string/runtime"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
                         android:textColor="@color/colorPrimary" />
 
                     <TextView
-                        android:id="@+id/episodes"
+                        android:id="@+id/runtime"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:textSize="20sp"
                         android:textColor="@color/white"
-                        android:layout_below="@id/episodes_text"
+                        android:layout_below="@id/runtime_text"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:contentDescription="@string/episode_text" />
+                        android:contentDescription="@string/runtime" />
 
                 </RelativeLayout>
 

@@ -36,6 +36,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
@@ -154,13 +155,21 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
             binding.rate.setImageBitmap(CircularImageBar.buildNote(0));
         }
 
-        if (serie.getOriginCountry() != null) {
-            binding.language.setText(serie.getOriginCountry().stream().findFirst().orElse("N/A"));
+        if (serie.getFirstAirDate() != null) {
+            binding.releaseDate.setText(DateUtils.toDisplayString(serie.getFirstAirDate()));
         } else {
-            binding.language.setText(R.string.emptyField);
+            binding.releaseDate.setText(R.string.emptyField);
         }
 
-        binding.numberOfSeason.setText(serie.getNumberOfSeasons() != -1 ? String.valueOf(serie.getNumberOfSeasons()) : "0");
+        int totalRuntime = Serie.computeTotalRuntime(serie);
+        if (totalRuntime != 0) {
+            binding.runtime.setText(DateUtils.displayDuration(totalRuntime));
+        } else {
+            binding.runtime.setText(R.string.emptyField);
+        }
+
+        String numberOfSeason = serie.getNumberOfSeasons() != -1 ? String.valueOf(serie.getNumberOfSeasons()) : "0";
+        binding.seasonText.setText(getString(R.string.number_seasons) + " (" + numberOfSeason + ")");
 
         if (serie.getGenres() != null && !serie.getGenres().isEmpty()) {
             binding.genres.setText(serie.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", ")));

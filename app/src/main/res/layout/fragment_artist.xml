@@ -25,7 +25,7 @@
             android:elevation="10dp"
             android:innerRadius="0dp"
             app:cardBackgroundColor="@color/card_background_color"
-            app:cardCornerRadius="10dp">
+            app:cardCornerRadius="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

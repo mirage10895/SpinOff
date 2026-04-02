@@ -6,15 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.squareup.picasso.Picasso;
-
-import java.util.stream.Collectors;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentArtistBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
@@ -38,7 +39,6 @@ public class ArtistFragment extends Fragment implements ItemInterface {
 
     private FragmentArtistBinding binding;
     private ArtistViewModel artistViewModel;
-    private int artistId;
 
     private ArtistFragment() {
         // Required empty public constructor
@@ -55,9 +55,6 @@ public class ArtistFragment extends Fragment implements ItemInterface {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            artistId = getArguments().getInt(ARG_ARTIST_ID);
-        }
     }
 
     @Override
@@ -96,8 +93,7 @@ public class ArtistFragment extends Fragment implements ItemInterface {
         Picasso.get()
                 .load(link)
                 .fit()
-                .centerInside()
-                .placeholder(R.drawable.ic_unknown)
+                .centerCrop()
                 .error(R.drawable.ic_unknown)
                 .into(binding.posterIc);
 

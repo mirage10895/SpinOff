@@ -55,8 +55,8 @@ public class SeasonActivity extends AppCompatActivity {
             if (season != null) {
                 binding.contentMedia.noMediaDisplay.getRoot().setVisibility(View.GONE);
                 binding.contentMedia.content.setVisibility(View.VISIBLE);
-                if (getSupportActionBar() != null && season.getName() != null) {
-                    getSupportActionBar().setTitle(season.getName());
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(getString(R.string.season_text) + " " + season.getSeasonNumber());
                 }
             } else {
                 binding.contentMedia.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);

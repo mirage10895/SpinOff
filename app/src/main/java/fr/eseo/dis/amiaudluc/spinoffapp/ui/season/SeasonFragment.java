@@ -71,7 +71,7 @@ public class SeasonFragment extends Fragment implements ItemInterface {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        
+
         setupRecyclerViews();
         setupYoutubePlayer();
         observeViewModel();
@@ -104,19 +104,20 @@ public class SeasonFragment extends Fragment implements ItemInterface {
         }
 
         binding.numberOfSeason.setText(season.getSeasonNumber() != null ? String.valueOf(season.getSeasonNumber()) : "0");
-        
-        if (season.getEpisodes() != null) {
-            binding.episodes.setText(String.valueOf(season.getEpisodes().size()));
-            binding.episodesRecycler.setAdapter(new EpisodesAdapter(requireContext(), this, season.getEpisodes()));
+
+        int runtime = season.getEpisodes().size() * Season.computeEpisodesAverageRuntime(season);
+        if (runtime != 0) {
+            binding.runtime.setText(DateUtils.displayDuration(runtime));
         } else {
-            binding.episodes.setText("0");
+            binding.runtime.setText(getString(R.string.emptyField));
         }
 
+        binding.episodesRecycler.setAdapter(new EpisodesAdapter(requireContext(), this, season.getEpisodes()));
+
         if (season.getOverview() != null && !season.getOverview().isEmpty()) {
-            binding.overview.setTextColor(requireContext().getColor(R.color.white));
             binding.overview.setText(season.getOverview());
         } else {
-            binding.overview.setText(R.string.emptyField);
+            binding.overview.setVisibility(View.GONE);
         }
 
         // YouTube Trailer
@@ -145,7 +146,7 @@ public class SeasonFragment extends Fragment implements ItemInterface {
     @Override
     public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
-        
+
         if (type == FragmentType.ARTIST) {
             Intent intent = new Intent(requireContext(), ArtistActivity.class);
             intent.putExtra("id", id);

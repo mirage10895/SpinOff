@@ -29,6 +29,7 @@
         app:checkedIconTint="@color/chip_text_color"
         android:textColor="@color/chip_text_color"
         app:checkedIconVisible="true"
+        android:visibility="gone"
         android:clickable="true"
         android:checkable="true" />
 
