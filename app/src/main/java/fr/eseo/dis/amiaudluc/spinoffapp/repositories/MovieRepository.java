@@ -11,10 +11,11 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.MovieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 
 public class MovieRepository {
     private static MovieRepository INSTANCE = null;

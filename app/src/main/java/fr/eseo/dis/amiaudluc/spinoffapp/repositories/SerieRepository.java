@@ -11,11 +11,12 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 
 public class SerieRepository {
     private static SerieRepository INSTANCE = null;

@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;

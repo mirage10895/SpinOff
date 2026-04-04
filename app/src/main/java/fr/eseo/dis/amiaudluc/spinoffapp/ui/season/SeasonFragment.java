@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSeasonBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;

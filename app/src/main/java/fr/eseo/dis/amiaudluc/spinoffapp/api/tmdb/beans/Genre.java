@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
+package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Network {
-    private String name;
+public class Genre {
     private int id;
-    private String logoPath;
-    private Language originCountry;
+    private String name;
 }

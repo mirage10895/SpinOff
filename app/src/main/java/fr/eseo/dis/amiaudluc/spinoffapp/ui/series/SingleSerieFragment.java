@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
@@ -169,7 +169,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         }
 
         String numberOfSeason = serie.getNumberOfSeasons() != -1 ? String.valueOf(serie.getNumberOfSeasons()) : "0";
-        binding.seasonText.setText(getString(R.string.number_seasons) + " (" + numberOfSeason + ")");
+        binding.seasonText.setText(getString(R.string.number_seasons, numberOfSeason));
 
         if (serie.getGenres() != null && !serie.getGenres().isEmpty()) {
             binding.genres.setText(serie.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", ")));

@@ -12,17 +12,12 @@ import java.time.temporal.ChronoUnit;
 
 public class DateUtils {
 
-    public static final String CLASSIC_DATE = "yyyy-MM-dd";
-
-    public static String toString(LocalDate date) {
-        return date.getDayOfMonth()
-                + " - " + date.getMonth().getValue()
-                + " - " + date.getYear();
-    }
+    public static final DateTimeFormatter DISPLAY_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static final DateTimeFormatter DISPLAY_HOUR_FORMATTER = DateTimeFormatter.ofPattern("H'h'mm");
+    public static final DateTimeFormatter CLASSIC_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static String toDisplayString(LocalDate date) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return date.format(dateTimeFormatter);
+        return date.format(DISPLAY_DATE_FORMATTER);
     }
 
     public static String displayDuration(int minutes) {
@@ -33,7 +28,7 @@ public class DateUtils {
         }
         if (duration.minus(Duration.of(24, ChronoUnit.HOURS)).getSeconds() < 0) {
             // heures
-            return LocalTime.MIDNIGHT.plus(duration).format(DateTimeFormatter.ofPattern("H'h'mm"));
+            return LocalTime.MIDNIGHT.plus(duration).format(DISPLAY_HOUR_FORMATTER);
         }
         long jours = minutes / 1440;
         int heures = (minutes % 1440) / 60;

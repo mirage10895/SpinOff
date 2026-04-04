@@ -10,8 +10,8 @@ import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 import lombok.Getter;
 
 public class SearchViewModel extends AndroidViewModel {

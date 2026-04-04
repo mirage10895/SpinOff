@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
+package fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,16 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.ApiService;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.TMDBApi;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TMDBApi;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ApiListResponse;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.MovieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,9 +42,13 @@ public class ApiRepository {
         this.tmdbApiService = new ApiService<>(TMDBApi.class);
     }
 
-    public LiveData<List<Movie>> getMoviesByType(String type, Integer page, List<Movie> previous) {
+    public LiveData<List<Movie>> getMoviesByType(MovieType type, Integer page, List<Movie> previous) {
         return executeAsync(
-                this.tmdbApiService.api.getMovies(type, "FR", page),
+                this.tmdbApiService.api.discoverMovie(
+                        type.getDiscoverFilters()
+                                .apply(page)
+                                .toMap()
+                ),
                 response -> {
                     if (response.getPage() == 1) {
                         return response.getResults();
@@ -74,9 +80,13 @@ public class ApiRepository {
         );
     }
 
-    public LiveData<List<Serie>> getSeriesByType(String type, Integer page, List<Serie> previous) {
+    public LiveData<List<Serie>> getSeriesByType(SerieType type, Integer page, List<Serie> previous) {
         return executeAsync(
-                this.tmdbApiService.api.getSeries(type, "FR", page),
+                this.tmdbApiService.api.discoverSerie(
+                        type.getDiscoverFilters()
+                                .apply(page)
+                                .toMap()
+                ),
                 response -> {
                     if (response.getPage() == 1) {
                         return response.getResults();

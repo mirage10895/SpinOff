@@ -1,17 +1,20 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.api;
+package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiListResponse;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
+import java.util.Map;
+
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ApiListResponse;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by lucasamiaud on 03/03/2019.
@@ -19,11 +22,9 @@ import retrofit2.http.Query;
 
 public interface TMDBApi {
 
-    @GET("movie/{type}")
-    Call<ApiListResponse<Movie>> getMovies(
-            @Path("type") String type,
-            @Query("region") String region,
-            @Query("page") Integer page
+    @GET("discover/movie")
+    Call<ApiListResponse<Movie>> discoverMovie(
+            @QueryMap Map<String, Object> filters
     );
 
     @GET("movie/{id}")
@@ -34,11 +35,10 @@ public interface TMDBApi {
             @Path("id") Integer id
     );
 
-    @GET("tv/{type}")
-    Call<ApiListResponse<Serie>> getSeries(
-            @Path("type") String type,
-            @Query("region") String region,
-            @Query("page") Integer page
+
+    @GET("discover/tv")
+    Call<ApiListResponse<Serie>> discoverSerie(
+            @QueryMap Map<String, Object> filters
     );
 
     @GET("tv/{id}")
@@ -72,5 +72,4 @@ public interface TMDBApi {
 
     @GET("search/multi")
     Call<ApiListResponse<Media>> getSearchByQuery(@Query("query") String query);
-
 }

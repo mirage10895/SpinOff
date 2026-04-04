@@ -8,8 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 import lombok.Getter;
 
 public class ArtistViewModel extends AndroidViewModel {

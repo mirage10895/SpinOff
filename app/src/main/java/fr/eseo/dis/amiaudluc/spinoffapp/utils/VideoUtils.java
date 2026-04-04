@@ -2,8 +2,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.utils;
 
 import java.util.Comparator;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.ApiObjectResponse;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Video;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ApiObjectResponse;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
 
 public class VideoUtils {
     private VideoUtils() {

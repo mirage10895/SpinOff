@@ -13,7 +13,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Network;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Network;
 
 /**
  * Created by lucasamiaud on 07/03/2018.

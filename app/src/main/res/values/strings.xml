@@ -58,7 +58,7 @@
     <string name="tv_show">The TV Show</string>
     <string name="tv_season">The TV Season</string>
     <string name="tv_episode">The TV Episode</string>
-    <string name="number_seasons">Seasons</string>
+    <string name="number_seasons">Seasons (%s)</string>
     <string name="menu_discover">Discover</string>
     <string name="menu_library">My list</string>
     <string name="movie">The movie</string>

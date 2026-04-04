@@ -17,10 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSearchMainBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
@@ -146,18 +146,12 @@ public class SearchFragment extends Fragment implements ItemInterface {
     public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
         
-        Intent intent = null;
-        switch (type) {
-            case MOVIE:
-                intent = new Intent(requireContext(), MovieActivity.class);
-                break;
-            case SERIE:
-                intent = new Intent(requireContext(), SerieActivity.class);
-                break;
-            case ARTIST:
-                intent = new Intent(requireContext(), ArtistActivity.class);
-                break;
-        }
+        Intent intent = switch (type) {
+            case MOVIE -> new Intent(requireContext(), MovieActivity.class);
+            case SERIE -> new Intent(requireContext(), SerieActivity.class);
+            case ARTIST -> new Intent(requireContext(), ArtistActivity.class);
+            default -> null;
+        };
 
         if (intent != null) {
             intent.putExtra("id", id);

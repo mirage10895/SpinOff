@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.api.beans;
+package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
 import lombok.Getter;
 import lombok.Setter;

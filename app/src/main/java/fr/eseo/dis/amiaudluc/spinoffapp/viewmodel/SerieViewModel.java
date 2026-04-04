@@ -2,22 +2,21 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel;
 
 import android.app.Application;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-
-import java.util.List;
-
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Season;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.beans.WatchProvider;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.enums.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
 import lombok.Getter;
 
 public class SerieViewModel extends AndroidViewModel {
@@ -82,15 +81,15 @@ public class SerieViewModel extends AndroidViewModel {
     }
 
     public void initPopularSeries(Integer page) {
-        seriesListTrigger.setValue(new SerieRequest(SerieType.POPULAR.getName(), page, series.getValue()));
+        seriesListTrigger.setValue(new SerieRequest(SerieType.POPULAR, page, series.getValue()));
     }
 
     public void initTopRatedSeries(Integer page) {
-        seriesListTrigger.setValue(new SerieRequest(SerieType.TOP_RATED.getName(), page, series.getValue()));
+        seriesListTrigger.setValue(new SerieRequest(SerieType.TOP_RATED, page, series.getValue()));
     }
 
     public void initOnAirSeries(Integer page) {
-        seriesListTrigger.setValue(new SerieRequest(SerieType.ON_AIR.getName(), page, series.getValue()));
+        seriesListTrigger.setValue(new SerieRequest(SerieType.ON_AIR, page, series.getValue()));
     }
 
     public void initGetSeasonBySerieId(Integer id, Integer seasonNumber) {
@@ -116,11 +115,11 @@ public class SerieViewModel extends AndroidViewModel {
 
     // Helper classes for complex triggers
     private static class SerieRequest {
-        String type;
+        SerieType type;
         Integer page;
         List<Serie> previous;
 
-        SerieRequest(String t, Integer p, List<Serie> prev) {
+        SerieRequest(SerieType t, Integer p, List<Serie> prev) {
             type = t;
             page = p;
             previous = prev;
