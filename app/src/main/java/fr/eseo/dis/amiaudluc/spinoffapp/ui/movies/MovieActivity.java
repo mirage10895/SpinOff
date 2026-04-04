@@ -39,7 +39,13 @@ public class MovieActivity extends AppCompatActivity {
             return;
         }
 
-        binding.closeButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        binding.appBarMain.closeButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        binding.nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            int headerHeight = binding.headerFrame.getHeight();
+            float alpha = Math.min(1f, (float) scrollY / headerHeight);
+            binding.appBarMain.topBar.setAlpha(alpha);
+        });
 
         movieViewModel = new ViewModelProvider(this).get(MovieViewModel.class);
 
@@ -82,6 +88,7 @@ public class MovieActivity extends AppCompatActivity {
                 }
 
                 binding.mediaName.setText(movie.getOriginalTitle());
+                binding.appBarMain.topBar.setTitle(movie.getOriginalTitle());
             } else {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();

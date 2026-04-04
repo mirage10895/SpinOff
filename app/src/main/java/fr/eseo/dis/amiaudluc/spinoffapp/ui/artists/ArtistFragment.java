@@ -97,8 +97,6 @@ public class ArtistFragment extends Fragment implements ItemInterface {
                 .error(R.drawable.ic_unknown)
                 .into(binding.posterIc);
 
-        binding.name.setText(artist.getName());
-
         if (artist.getMovies() != null && artist.getMovies().getCast() != null && !artist.getMovies().getCast().isEmpty()) {
             binding.mediaMain.moviesLayer.setVisibility(View.VISIBLE);
             binding.mediaMain.recyclerMovies.setAdapter(new MoviesAdapter(

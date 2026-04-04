@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.snackbar.Snackbar;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivitySeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
@@ -25,11 +24,8 @@ public class SeasonActivity extends AppCompatActivity {
         binding = ActivitySeasonBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.emptyField);
-        }
+        binding.appBarMain.topBar.setAlpha(1);
+        binding.appBarMain.closeButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.contentMedia.content.setVisibility(View.GONE);
 
@@ -55,9 +51,7 @@ public class SeasonActivity extends AppCompatActivity {
             if (season != null) {
                 binding.contentMedia.noMediaDisplay.getRoot().setVisibility(View.GONE);
                 binding.contentMedia.content.setVisibility(View.VISIBLE);
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(getString(R.string.season_text) + " " + season.getSeasonNumber());
-                }
+                binding.appBarMain.topBar.setTitle(getString(R.string.season_text) + " " + season.getSeasonNumber());
             } else {
                 binding.contentMedia.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();

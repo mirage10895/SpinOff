@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 
@@ -44,12 +43,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Handle the splash screen transition.
-        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+        setupSplashScreen();
 
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        checkPermissions();
+        setupBottomNavigation();
+
+        if (savedInstanceState == null) {
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_movies);
+        }
+
+        scheduleBackgroundTasks();
+    }
+
+    private void setupSplashScreen() {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         splashScreen.setOnExitAnimationListener(splashScreenView -> {
             final View splashView = splashScreenView.getView();
 
@@ -73,9 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
             slideUp.start();
         });
+    }
 
-        checkPermissions();
-
+    private void setupBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_movies) {
@@ -112,12 +123,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-
-        if (savedInstanceState == null) {
-            binding.bottomNavigation.setSelectedItemId(R.id.nav_movies);
-        }
-
-        scheduleBackgroundTasks();
     }
 
     private void checkPermissions() {
@@ -160,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     public void switchFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.nav_host_fragment, fragment)
+                .replace(binding.navHostFragment.getId(), fragment)
                 .commit();
     }
 
@@ -168,14 +173,5 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
-            binding.bottomNavigation.setSelectedItemId(R.id.nav_discover);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

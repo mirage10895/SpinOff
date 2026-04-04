@@ -2,13 +2,10 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nested_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/windowBackground"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity">
+    android:background="?android:attr/windowBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,45 +13,18 @@
         android:layout_margin="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/producer_pic"
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:elevation="10dp"
-            android:innerRadius="0dp"
-            app:cardBackgroundColor="@color/card_background_color"
-            app:cardCornerRadius="5dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_marginVertical="@dimen/activity_vertical_margin"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/poster_ic"
-                    android:layout_width="240dp"
-                    android:layout_height="280dp"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/fragment_artist"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/text_margin"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/poster_ic"
+            android:layout_width="240dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="@dimen/activity_horizontal_margin"
+            android:elevation="8dp"
+            app:strokeColor="#22FFFFFF"
+            app:strokeWidth="1dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Chip"
+            android:contentDescription="@null" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

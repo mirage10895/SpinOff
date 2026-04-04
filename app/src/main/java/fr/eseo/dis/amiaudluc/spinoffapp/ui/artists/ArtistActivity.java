@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.snackbar.Snackbar;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityArtistBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.ArtistViewModel;
@@ -25,11 +24,8 @@ public class ArtistActivity extends AppCompatActivity {
         binding = ActivityArtistBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.emptyField);
-        }
+        binding.appBarMain.topBar.setAlpha(1);
+        binding.appBarMain.closeButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         binding.content.content.setVisibility(View.GONE);
 
@@ -53,9 +49,7 @@ public class ArtistActivity extends AppCompatActivity {
             if (artist != null) {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.GONE);
                 binding.content.content.setVisibility(View.VISIBLE);
-                if (getSupportActionBar() != null && artist.getName() != null) {
-                    getSupportActionBar().setTitle(artist.getName());
-                }
+                binding.appBarMain.topBar.setTitle(artist.getName());
             } else {
                 binding.content.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG).show();
