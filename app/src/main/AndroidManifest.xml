@@ -43,10 +43,6 @@
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity"
             android:theme="@style/AppTheme"
             android:exported="false" />
-        <activity
-            android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.calendar.CalendarActivity"
-            android:theme="@style/AppTheme"
-            android:exported="false"/>
     </application>
 
 </manifest>
