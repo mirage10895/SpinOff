@@ -51,7 +51,7 @@ public class SearchContainerFragment extends Fragment {
         if (savedInstanceState == null) {
             getChildFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container, SearchFragment.newInstance(1), "SearchFragment")
+                    .replace(R.id.fragment_container, SearchFragment.newInstance(), "SearchFragment")
                     .commit();
         }
 

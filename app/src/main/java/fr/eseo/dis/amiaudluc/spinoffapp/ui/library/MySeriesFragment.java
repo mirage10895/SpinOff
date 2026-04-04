@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentMyMediasBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
@@ -37,8 +37,8 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
 
     private FragmentMyMediasBinding binding;
     private SerieViewModel serieViewModel;
-    private SeriesAdapter toSeeSeriesAdapter;
-    private SeriesAdapter seenSeriesAdapter;
+    private MediaAdapter toSeeSeriesAdapter;
+    private MediaAdapter seenSeriesAdapter;
     private Integer selectedSerieId;
 
     public MySeriesFragment() {
@@ -72,13 +72,13 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
         // Setup "To See" RecyclerView
         binding.mediaToSee.setHasFixedSize(true);
         binding.mediaToSee.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        this.toSeeSeriesAdapter = new SeriesAdapter(context, this, new ArrayList<>(), true);
+        this.toSeeSeriesAdapter = new MediaAdapter(context, this, new ArrayList<>(), true);
         binding.mediaToSee.setAdapter(toSeeSeriesAdapter);
 
         // Setup "Seen" RecyclerView
         binding.mediaSeen.setHasFixedSize(true);
         binding.mediaSeen.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        this.seenSeriesAdapter = new SeriesAdapter(context, this, new ArrayList<>(), true);
+        this.seenSeriesAdapter = new MediaAdapter(context, this, new ArrayList<>(), true);
         binding.mediaSeen.setAdapter(seenSeriesAdapter);
 
         this.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), serieDatabases -> {
@@ -86,9 +86,14 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
                     .filter(SerieDatabase::isWatched)
                     .collect(Collectors.toList());
 
-            List<SerieAdapterData> toSee = serieDatabases.stream()
+            List<AdapterData> toSee = serieDatabases.stream()
                     .filter(serieDatabase -> !serieDatabase.isWatched())
-                    .map(m -> SerieAdapterData.of(m.getId(), m.getPosterPath()))
+                    .map(m -> new AdapterData(
+                            m.getId(),
+                            m.getName(),
+                            m.getPosterPath(),
+                            FragmentType.SERIE
+                    ))
                     .collect(Collectors.toList());
 
             binding.mediaNumber.setText(String.valueOf(serieDatabases.size()));
@@ -101,7 +106,14 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
             binding.mediaToSeeLayer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
 
             this.setSeries(
-                    seen.stream().map(m -> SerieAdapterData.of(m.getId(), m.getPosterPath())).toList(),
+                    seen.stream()
+                            .map(m -> new AdapterData(
+                                    m.getId(),
+                                    m.getName(),
+                                    m.getPosterPath(),
+                                    FragmentType.SERIE
+                            ))
+                            .collect(Collectors.toList()),
                     toSee
             );
         });
@@ -114,11 +126,11 @@ public class MySeriesFragment extends Fragment implements ItemInterface {
     }
 
     private void setSeries(
-            List<SerieAdapterData> seenSeries,
-            List<SerieAdapterData> toSeeSeries
+            List<AdapterData> seenSeries,
+            List<AdapterData> toSeeSeries
     ) {
-        toSeeSeriesAdapter.setSeries(toSeeSeries);
-        seenSeriesAdapter.setSeries(seenSeries);
+        toSeeSeriesAdapter.setMedias(toSeeSeries);
+        seenSeriesAdapter.setMedias(seenSeries);
     }
 
     @Override

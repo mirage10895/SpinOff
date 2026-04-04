@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.stream.Collectors;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.squareup.picasso.Picasso;
-
-import java.util.stream.Collectors;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentArtistBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
@@ -23,10 +22,9 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.ArtistViewModel;
 
@@ -99,7 +97,7 @@ public class ArtistFragment extends Fragment implements ItemInterface {
 
         if (artist.getMovies() != null && artist.getMovies().getCast() != null && !artist.getMovies().getCast().isEmpty()) {
             binding.mediaMain.moviesLayer.setVisibility(View.VISIBLE);
-            binding.mediaMain.recyclerMovies.setAdapter(new MoviesAdapter(
+            binding.mediaMain.recyclerMovies.setAdapter(new MediaAdapter(
                     requireContext(),
                     this,
                     artist.getMovies().getCast().stream()
@@ -113,7 +111,7 @@ public class ArtistFragment extends Fragment implements ItemInterface {
 
         if (artist.getSeries() != null && artist.getSeries().getCast() != null && !artist.getSeries().getCast().isEmpty()) {
             binding.mediaMain.seriesLayer.setVisibility(View.VISIBLE);
-            binding.mediaMain.recyclerSeries.setAdapter(new SeriesAdapter(
+            binding.mediaMain.recyclerSeries.setAdapter(new MediaAdapter(
                     requireContext(),
                     this,
                     artist.getSeries().getCast().stream()

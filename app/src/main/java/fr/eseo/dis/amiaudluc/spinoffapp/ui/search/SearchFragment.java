@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSearchMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
@@ -25,43 +24,27 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 /**
  * A fragment representing a search result list.
  */
 public class SearchFragment extends Fragment implements ItemInterface {
-
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
     private FragmentSearchMainBinding binding;
     private SearchViewModel searchViewModel;
-    private MoviesAdapter moviesAdapter;
-    private SeriesAdapter seriesAdapter;
+    private MediaAdapter moviesAdapter;
+    private MediaAdapter seriesAdapter;
     private ArtistsAdapter artistsAdapter;
 
     public SearchFragment() {
         // Required empty public constructor
     }
 
-    public static SearchFragment newInstance(int columnCount) {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+    public static SearchFragment newInstance() {
+        return new SearchFragment();
     }
 
     @Override
@@ -84,8 +67,8 @@ public class SearchFragment extends Fragment implements ItemInterface {
         setupLayoutManager(binding.recyclerSeries);
         setupLayoutManager(binding.recyclerArtists);
 
-        moviesAdapter = new MoviesAdapter(requireContext(), this, new ArrayList<>(), true);
-        seriesAdapter = new SeriesAdapter(requireContext(), this, new ArrayList<>(), true);
+        moviesAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), true);
+        seriesAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), true);
         artistsAdapter = new ArtistsAdapter(requireContext(), this, new ArrayList<>());
 
         binding.recyclerMovies.setAdapter(moviesAdapter);
@@ -95,11 +78,7 @@ public class SearchFragment extends Fragment implements ItemInterface {
 
     private void setupLayoutManager(androidx.recyclerview.widget.RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), mColumnCount));
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void observeViewModel() {
@@ -131,8 +110,8 @@ public class SearchFragment extends Fragment implements ItemInterface {
         binding.seriesLayer.setVisibility(series.isEmpty() ? View.GONE : View.VISIBLE);
         binding.artistsLayer.setVisibility(artists.isEmpty() ? View.GONE : View.VISIBLE);
 
-        moviesAdapter.setMovies(movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()));
-        seriesAdapter.setSeries(series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()));
+        moviesAdapter.setMedias(movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()));
+        seriesAdapter.setMedias(series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()));
         artistsAdapter.setArtist(artists);
     }
 

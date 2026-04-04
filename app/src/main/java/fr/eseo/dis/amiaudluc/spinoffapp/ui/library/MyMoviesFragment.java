@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentMyMediasBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
 
@@ -40,9 +40,8 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
 
     private FragmentMyMediasBinding binding;
     private MovieViewModel movieViewModel;
-    private MoviesAdapter seenMoviesAdapter;
-    private MoviesAdapter toSeeMoviesAdapter;
-    private Context ctx;
+    private MediaAdapter seenMoviesAdapter;
+    private MediaAdapter toSeeMoviesAdapter;
     private Integer selectedMovieId;
 
 
@@ -69,14 +68,14 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ctx = view.getContext();
+        Context ctx = view.getContext();
 
         binding.title.setText(R.string.library_movies);
 
         binding.mediaToSee.setHasFixedSize(true);
         binding.mediaToSee.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 
-        this.toSeeMoviesAdapter = new MoviesAdapter(
+        this.toSeeMoviesAdapter = new MediaAdapter(
                 ctx,
                 this,
                 new ArrayList<>(),
@@ -87,7 +86,7 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
         binding.mediaSeen.setHasFixedSize(true);
         binding.mediaSeen.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
 
-        this.seenMoviesAdapter = new MoviesAdapter(
+        this.seenMoviesAdapter = new MediaAdapter(
                 ctx,
                 this,
                 new ArrayList<>(),
@@ -102,11 +101,13 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
                             .filter(MovieDatabase::isWatched)
                             .collect(Collectors.toList());
 
-                    List<MovieAdapterData> toSee = movieDatabases.stream()
+                    List<AdapterData> toSee = movieDatabases.stream()
                             .filter(movieDatabase -> !movieDatabase.isWatched())
-                            .map(m -> MovieAdapterData.of(
+                            .map(m -> new AdapterData(
                                     m.getId(),
-                                    m.getPosterPath()
+                                    m.getTitle(),
+                                    m.getPosterPath(),
+                                    FragmentType.MOVIE
                             ))
                             .collect(Collectors.toList());
 
@@ -123,9 +124,11 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
                     this.setMovies(
                             seen
                                     .stream()
-                                    .map(m -> MovieAdapterData.of(
+                                    .map(m -> new AdapterData(
                                             m.getId(),
-                                            m.getPosterPath()
+                                            m.getTitle(),
+                                            m.getPosterPath(),
+                                            FragmentType.MOVIE
                                     ))
                                     .collect(Collectors.toList()),
                             toSee
@@ -141,11 +144,11 @@ public class MyMoviesFragment extends Fragment implements ItemInterface {
     }
 
     private void setMovies(
-            List<MovieAdapterData> seenMovies,
-            List<MovieAdapterData> toSeeMovies
+            List<AdapterData> seenMovies,
+            List<AdapterData> toSeeMovies
     ) {
-        toSeeMoviesAdapter.setMovies(toSeeMovies);
-        seenMoviesAdapter.setMovies(seenMovies);
+        toSeeMoviesAdapter.setMedias(toSeeMovies);
+        seenMoviesAdapter.setMedias(seenMovies);
     }
 
     @Override

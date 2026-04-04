@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,10 +53,12 @@ public class Movie implements Media {
                 .collect(Collectors.toList());
     }
 
-    public MovieAdapterData toAdapterFormat() {
-        return MovieAdapterData.of(
+    public AdapterData toAdapterFormat() {
+        return new AdapterData(
                 id,
-                posterPath
+                originalTitle,
+                posterPath,
+                FragmentType.MOVIE
         );
     }
 

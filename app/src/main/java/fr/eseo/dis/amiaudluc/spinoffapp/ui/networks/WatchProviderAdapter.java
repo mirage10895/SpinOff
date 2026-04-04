@@ -61,14 +61,14 @@ public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProvider
         }
 
         public void bind(AdapterData item, String baseImageUrl) {
-            if (item.logoPath() == null) {
+            if (item.posterPath() == null) {
                 binding.watchProviderContainer.setVisibility(View.GONE);
                 return;
             } else {
                 binding.watchProviderContainer.setVisibility(View.VISIBLE);
             }
             
-            String link = baseImageUrl + item.logoPath();
+            String link = baseImageUrl + item.posterPath();
             Picasso.get()
                     .load(link)
                     .fit()

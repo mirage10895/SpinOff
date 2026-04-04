@@ -18,10 +18,10 @@ import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SeriesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
 
 /**
@@ -29,14 +29,14 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
  */
 
 public abstract class BaseSerieFragment extends BaseFragment {
-    protected SeriesAdapter seriesAdapter;
+    protected MediaAdapter seriesAdapter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        this.seriesAdapter = new SeriesAdapter(requireContext(), this, new ArrayList<>(), false);
+        this.seriesAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), false);
         binding.cardList.setAdapter(this.seriesAdapter);
     }
 
@@ -79,8 +79,8 @@ public abstract class BaseSerieFragment extends BaseFragment {
         });
     }
 
-    private void loadSeries(List<SerieAdapterData> serieDatabaseList){
-        this.seriesAdapter.setSeries(serieDatabaseList);
+    private void loadSeries(List<AdapterData> serieDatabaseList){
+        this.seriesAdapter.setMedias(serieDatabaseList);
     }
 
     @Override

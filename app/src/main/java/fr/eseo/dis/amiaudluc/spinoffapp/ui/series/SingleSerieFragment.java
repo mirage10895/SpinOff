@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
@@ -30,8 +29,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
@@ -196,7 +195,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         binding.networks.setAdapter(new NetworksAdapter(requireContext(), serie.getNetworks()));
 
         if (serie.getRecommendations() != null) {
-            binding.recyclerRecommendations.setAdapter(new MoviesAdapter(
+            binding.recyclerRecommendations.setAdapter(new MediaAdapter(
                     requireContext(),
                     this,
                     serie.getRecommendations().getResults().stream()
@@ -221,7 +220,8 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
                         .map(w -> new AdapterData(
                                 w.providerId(),
                                 w.providerName(),
-                                w.logoPath()
+                                w.logoPath(),
+                                null
                         ))
                         .collect(Collectors.toList())
         );

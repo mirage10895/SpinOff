@@ -18,22 +18,22 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieAdapterData;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MoviesAdapter;
 
 /**
  * Created by lucasamiaud on 04/04/2018.
  */
 
 public abstract class BaseMovieFragment extends BaseFragment {
-    protected MoviesAdapter moviesAdapter;
+    protected MediaAdapter moviesAdapter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.moviesAdapter = new MoviesAdapter(
+        this.moviesAdapter = new MediaAdapter(
                 requireContext(),
                 this,
                 new ArrayList<>(),
@@ -84,8 +84,8 @@ public abstract class BaseMovieFragment extends BaseFragment {
         });
     }
 
-    private void loadMovies(List<MovieAdapterData> movies) {
-        this.moviesAdapter.setMovies(movies);
+    private void loadMovies(List<AdapterData> movies) {
+        this.moviesAdapter.setMedias(movies);
     }
 
     @Override

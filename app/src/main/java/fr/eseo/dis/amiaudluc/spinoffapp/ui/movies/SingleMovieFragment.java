@@ -7,17 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
@@ -32,6 +31,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
@@ -219,7 +219,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
                 new ActorsAdapter(requireContext(), this, movie.getCredits().getCast())
         );
         binding.recyclerRecommendations.setAdapter(
-                new MoviesAdapter(
+                new MediaAdapter(
                         requireContext(),
                         this,
                         movie.getRecommendations()
@@ -245,7 +245,8 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
                         .map(w -> new AdapterData(
                                 w.providerId(),
                                 w.providerName(),
-                                w.logoPath()
+                                w.logoPath(),
+                                null
                         ))
                         .collect(Collectors.toList())
         );

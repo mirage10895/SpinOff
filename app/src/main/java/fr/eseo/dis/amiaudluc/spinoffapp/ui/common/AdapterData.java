@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.DiffUtil;
 public record AdapterData(
         int id,
         String name,
-        String logoPath
+        String posterPath,
+        FragmentType fragmentType
 ) {
 
     public static final DiffUtil.ItemCallback<AdapterData> DIFF_CALLBACK =

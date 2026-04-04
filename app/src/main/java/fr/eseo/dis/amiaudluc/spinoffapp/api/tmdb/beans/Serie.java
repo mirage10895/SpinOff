@@ -3,7 +3,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 import java.time.LocalDate;
 import java.util.List;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieAdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,10 +50,12 @@ public class Serie implements Media {
         super();
     }
 
-    public SerieAdapterData toAdapterFormat() {
-        return SerieAdapterData.of(
+    public AdapterData toAdapterFormat() {
+        return new AdapterData(
                 this.id,
-                this.posterPath
+                this.originalName,
+                this.posterPath,
+                FragmentType.SERIE
         );
     }
 
