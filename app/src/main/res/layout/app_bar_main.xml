@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,10 +18,15 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:paddingTop="30dp"
+                android:paddingStart="56dp"
                 android:alpha="0"
                 android:background="?attr/colorSurface"
                 app:titleCentered="true"
-                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:scrollHorizontally="true"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                tools:ignore="RtlSymmetry" />
 
             <ImageButton
                 android:id="@+id/close_button"
