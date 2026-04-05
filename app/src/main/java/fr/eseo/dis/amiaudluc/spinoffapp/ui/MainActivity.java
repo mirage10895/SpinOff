@@ -28,13 +28,7 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.UpdateSeriesWorker;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.library.LibraryFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.OnAirMoviesFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.PopularMoviesFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.TopRatedMoviesFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.search.SearchContainerFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.OnAirSeriesFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.PopularSeriesFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.TopRatedSeriesFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -90,23 +84,11 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_movies) {
-                switchFragment(
-                        HomeFragment.newInstance(
-                                new PopularMoviesFragment(),
-                                new TopRatedMoviesFragment(),
-                                new OnAirMoviesFragment()
-                        )
-                );
+                switchFragment(HomeFragment.newInstance(true));
                 return true;
             }
             if (id == R.id.nav_series) {
-                switchFragment(
-                        HomeFragment.newInstance(
-                                new PopularSeriesFragment(),
-                                new TopRatedSeriesFragment(),
-                                new OnAirSeriesFragment()
-                        )
-                );
+                switchFragment(HomeFragment.newInstance(false));
                 return true;
             }
             if (id == R.id.nav_discover) {

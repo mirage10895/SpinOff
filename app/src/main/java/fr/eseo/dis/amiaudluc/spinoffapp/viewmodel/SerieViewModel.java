@@ -23,17 +23,17 @@ public class SerieViewModel extends AndroidViewModel {
 
     // Input triggers
     private final MutableLiveData<Integer> serieIdTrigger = new MutableLiveData<>();
-    private final MutableLiveData<SerieRequest> seriesListTrigger = new MutableLiveData<>();
     private final MutableLiveData<SeasonRequest> seasonTrigger = new MutableLiveData<>();
     private final MutableLiveData<EpisodeRequest> episodeTrigger = new MutableLiveData<>();
+
+    @Getter
+    private final MutableLiveData<SerieType> serieType = new MutableLiveData<>(SerieType.POPULAR);
 
     // Stable LiveData for UI observation
     @Getter
     private final LiveData<Serie> serie;
     @Getter
     private final LiveData<List<WatchProvider>> serieWatchProviders;
-    @Getter
-    private final LiveData<List<Serie>> series;
     @Getter
     private final LiveData<Season> season;
     @Getter
@@ -60,10 +60,6 @@ public class SerieViewModel extends AndroidViewModel {
                 apiRepository::fetchTvWatchProvider
         );
 
-        this.series = Transformations.switchMap(seriesListTrigger, req ->
-                apiRepository.getSeriesByType(req.type, req.page, req.previous)
-        );
-
         this.season = Transformations.switchMap(seasonTrigger, req ->
                 apiRepository.getSeasonBySerieId(req.id, req.seasonNumber)
         );
@@ -78,18 +74,6 @@ public class SerieViewModel extends AndroidViewModel {
     // Public API to trigger data fetch
     public void initGetSerieById(Integer id) {
         serieIdTrigger.setValue(id);
-    }
-
-    public void initPopularSeries(Integer page) {
-        seriesListTrigger.setValue(new SerieRequest(SerieType.POPULAR, page, series.getValue()));
-    }
-
-    public void initTopRatedSeries(Integer page) {
-        seriesListTrigger.setValue(new SerieRequest(SerieType.TOP_RATED, page, series.getValue()));
-    }
-
-    public void initOnAirSeries(Integer page) {
-        seriesListTrigger.setValue(new SerieRequest(SerieType.ON_AIR, page, series.getValue()));
     }
 
     public void initGetSeasonBySerieId(Integer id, Integer seasonNumber) {
@@ -114,17 +98,6 @@ public class SerieViewModel extends AndroidViewModel {
     }
 
     // Helper classes for complex triggers
-    private static class SerieRequest {
-        SerieType type;
-        Integer page;
-        List<Serie> previous;
-
-        SerieRequest(SerieType t, Integer p, List<Serie> prev) {
-            type = t;
-            page = p;
-            previous = prev;
-        }
-    }
 
     private static class SeasonRequest {
         Integer id;

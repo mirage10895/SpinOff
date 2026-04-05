@@ -12,7 +12,7 @@ import lombok.Builder;
 
 
 @Builder(toBuilder = true)
-public record MovieDiscoverFilters(
+public record DiscoverFilters(
         String certification,
         @SerializedName("certification.gte")
         String certificationGte,

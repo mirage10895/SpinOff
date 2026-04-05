@@ -14,7 +14,7 @@ import lombok.Getter;
 public enum MovieType {
     POPULAR(
             "popular",
-            page -> MovieDiscoverFilters.builder()
+            page -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
                     .region("FR")
@@ -24,7 +24,7 @@ public enum MovieType {
     ),
     TOP_RATED(
             "top_rated",
-            page -> MovieDiscoverFilters.builder()
+            page -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
                     .region("FR")
@@ -36,7 +36,7 @@ public enum MovieType {
     ),
     ON_AIR(
             "now_playing",
-            page -> MovieDiscoverFilters.builder()
+            page -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
                     .region("FR")
@@ -59,5 +59,5 @@ public enum MovieType {
     ;
 
     private final String name;
-    private final Function<Integer, MovieDiscoverFilters> discoverFilters;
+    private final Function<Integer, DiscoverFilters> discoverFilters;
 }

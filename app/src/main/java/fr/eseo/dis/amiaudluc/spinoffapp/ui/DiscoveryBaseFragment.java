@@ -10,26 +10,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.LayoutMainBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.EndlessRecyclerViewScrollListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.OnScrollLoadMoreListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ScrollBehaviorHandler;
 
 /**
  * Created by lucasamiaud on 19/03/2018.
  */
 
-public abstract class BaseFragment extends Fragment implements ItemInterface {
+public abstract class DiscoveryBaseFragment extends Fragment implements ItemInterface, OnScrollLoadMoreListener {
 
     protected LayoutMainBinding binding;
-    public EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
-    public SerieViewModel serieViewModel;
-    public MovieViewModel movieViewModel;
+    protected ScrollBehaviorHandler scrollBehaviorHandler;
 
     protected Integer selectedContextId;
 
@@ -44,21 +39,12 @@ public abstract class BaseFragment extends Fragment implements ItemInterface {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        this.movieViewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
-        this.serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-
         int columns = getResources().getInteger(R.integer.scripts_columns);
         binding.cardList.setLayoutManager(new GridLayoutManager(requireContext(), columns));
 
-        this.endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener((GridLayoutManager) binding.cardList.getLayoutManager()) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                onRecyclerLoadMore(page);
-            }
-        };
+        this.scrollBehaviorHandler = new ScrollBehaviorHandler(binding.cardList, this);
+        this.scrollBehaviorHandler.setup();
 
-        binding.cardList.addOnScrollListener(this.endlessRecyclerViewScrollListener);
-        
         initializeSwipeContainer();
     }
 
@@ -89,14 +75,22 @@ public abstract class BaseFragment extends Fragment implements ItemInterface {
         );
     }
 
-    public abstract void onRecyclerLoadMore(Integer page);
+    public abstract void onRecyclerLoadMore(int page);
+
+    public void resetScroll() {
+        if (binding != null) {
+            binding.cardList.scrollToPosition(0);
+        }
+        if (scrollBehaviorHandler != null) {
+            scrollBehaviorHandler.resetState();
+        }
+    }
 
     @Override
     public void onDestroyView() {
-        if (binding != null) {
-            binding.cardList.removeOnScrollListener(this.endlessRecyclerViewScrollListener);
+        if (scrollBehaviorHandler != null) {
+            scrollBehaviorHandler.detach();
         }
-        this.endlessRecyclerViewScrollListener.resetState();
         super.onDestroyView();
         binding = null;
     }

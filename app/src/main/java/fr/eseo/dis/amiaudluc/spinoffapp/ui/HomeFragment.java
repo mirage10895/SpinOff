@@ -8,41 +8,42 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 
 public class HomeFragment extends Fragment {
 
+    private static final String ARG_IS_MOVIE = "is_movie";
     private FragmentHomeBinding binding;
 
-    private final BaseFragment popularFragment;
-    private final BaseFragment topRatedFragment;
-    private final BaseFragment onAirFragment;
+    private boolean isMovie;
+    private DiscoveryViewModel discoveryViewModel;
+    private DiscoveryType type = DiscoveryType.POPULAR;
 
-    private HomeFragment(
-            BaseFragment popularFragment,
-            BaseFragment topRatedFragment,
-            BaseFragment onAirFragment
-    ) {
-        this.popularFragment = popularFragment;
-        this.topRatedFragment = topRatedFragment;
-        this.onAirFragment = onAirFragment;
+
+    public HomeFragment() {
+        // Required empty public constructor
     }
 
-     public static HomeFragment newInstance(
-            BaseFragment popularFragment,
-            BaseFragment topRatedFragment,
-            BaseFragment onAirFragment
-    ) {
-
+    public static HomeFragment newInstance(boolean isMovie) {
         Bundle args = new Bundle();
-        HomeFragment fragment = new HomeFragment(
-                popularFragment,
-                topRatedFragment,
-                onAirFragment
-        );
+        args.putBoolean(ARG_IS_MOVIE, isMovie);
+        HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isMovie = getArguments().getBoolean(ARG_IS_MOVIE);
+        }
     }
 
     @Nullable
@@ -56,27 +57,48 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.textWelcome.setText("Discover");
+        this.discoveryViewModel = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
+
+        binding.textWelcome.setText(R.string.menu_discover);
 
         if (savedInstanceState == null) {
-            binding.chipPopular.setChecked(true);
-            switchFragment(popularFragment);
-        }
-        binding.chipPopular.setOnClickListener(chipView -> switchFragment(popularFragment));
-        binding.chipTopRated.setOnClickListener(chipView -> switchFragment(topRatedFragment));
-        binding.chipOnAir.setOnClickListener(chipView -> switchFragment(onAirFragment));
+            Fragment discoveryFragment = isMovie ?
+                    MovieDiscoveryFragment.newInstance() :
+                    SerieDiscoveryFragment.newInstance();
 
-        // Setup RecyclerViews with dummy or actual data logic later
-        // binding.recyclerContinueWatching.setAdapter(...)
-        // binding.recyclerPopular.setAdapter(...)
+            getChildFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.discover_fragment_container, discoveryFragment)
+                    .commit();
+        }
+
+        setupFilters();
     }
 
-    private void switchFragment(Fragment fragment) {
-        getChildFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                // L'utilisation de replace() supprime l'ancien fragment automatiquement
-                .replace(R.id.discover_fragment_container, fragment)
-                .commit();
+    private void setupFilters() {
+        binding.chipPopular.setOnClickListener(v -> updatePresetFilter(DiscoveryType.POPULAR));
+        binding.chipTopRated.setOnClickListener(v -> updatePresetFilter(DiscoveryType.TOP_RATED));
+        binding.chipOnAir.setOnClickListener(v -> updatePresetFilter(DiscoveryType.ON_AIR));
+    }
+
+    private void updatePresetFilter(DiscoveryType type) {
+        this.type = type;
+        switch (type) {
+            case POPULAR:
+                binding.chipPopular.setChecked(true);
+                break;
+            case TOP_RATED:
+                binding.chipTopRated.setChecked(true);
+                break;
+            case ON_AIR:
+                binding.chipOnAir.setChecked(true);
+                break;
+        }
+        pushStateToViewModel();
+    }
+
+    private void pushStateToViewModel() {
+        this.discoveryViewModel.setFilter(type);
     }
 
     @Override

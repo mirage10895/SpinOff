@@ -20,8 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.MovieType;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.DiscoverFilters;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,20 +41,10 @@ public class ApiRepository {
         this.tmdbApiService = new ApiService<>(TMDBApi.class);
     }
 
-    public LiveData<List<Movie>> getMoviesByType(MovieType type, Integer page, List<Movie> previous) {
+    public LiveData<List<Movie>> discoverMovie(DiscoverFilters filters) {
         return executeAsync(
-                this.tmdbApiService.api.discoverMovie(
-                        type.getDiscoverFilters()
-                                .apply(page)
-                                .toMap()
-                ),
-                response -> {
-                    if (response.getPage() == 1) {
-                        return response.getResults();
-                    }
-                    previous.addAll(response.getResults());
-                    return previous;
-                }
+                this.tmdbApiService.api.discoverMovie(filters.toMap()),
+                ApiListResponse::getResults
         );
     }
 
@@ -80,20 +69,12 @@ public class ApiRepository {
         );
     }
 
-    public LiveData<List<Serie>> getSeriesByType(SerieType type, Integer page, List<Serie> previous) {
+    public LiveData<List<Serie>> discoverSerie(DiscoverFilters filters) {
         return executeAsync(
                 this.tmdbApiService.api.discoverSerie(
-                        type.getDiscoverFilters()
-                                .apply(page)
-                                .toMap()
+                        filters.toMap()
                 ),
-                response -> {
-                    if (response.getPage() == 1) {
-                        return response.getResults();
-                    }
-                    previous.addAll(response.getResults());
-                    return previous;
-                }
+                ApiListResponse::getResults
         );
     }
 
