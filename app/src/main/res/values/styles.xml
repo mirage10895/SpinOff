@@ -7,14 +7,9 @@
         <item name="colorPrimaryDark">?android:attr/windowBackground</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-
         <item name="android:statusBarColor">@android:color/transparent</item>
-
         <item name="android:navigationBarColor">@android:color/transparent</item>
-
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
