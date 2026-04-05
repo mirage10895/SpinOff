@@ -144,14 +144,30 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/lil_caracteritics_container">
 
-        <TextView
-            android:id="@+id/media_to_see_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:text="@string/library_to_see"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/media_to_see_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="start"
+                android:text="@string/library_to_see"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/see_all_to_see"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@string/see_all" />
+        </RelativeLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/media_to_see_container"
@@ -181,14 +197,30 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/media_to_see_layer">
 
-        <TextView
-            android:id="@+id/media_seen_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:text="@string/library_media_seen_number"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="20sp" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/media_seen_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="start"
+                android:text="@string/library_media_seen_number"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/see_all_seen"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@string/see_all" />
+        </RelativeLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/media_seen_container"

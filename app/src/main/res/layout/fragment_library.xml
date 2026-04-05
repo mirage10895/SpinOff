@@ -10,11 +10,11 @@
         android:id="@+id/text_library_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:text="@string/title_library"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        android:textStyle="bold"
-        android:paddingHorizontal="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" />
+        android:textStyle="bold" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chip_group_library"
@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:paddingHorizontal="@dimen/activity_vertical_margin"
-        app:singleSelection="true"
-        app:selectionRequired="true">
+        app:selectionRequired="true"
+        app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_my_movies"
@@ -33,9 +33,9 @@
             android:checked="true"
             android:clickable="true"
             android:text="@string/library_movies"
-            app:chipBackgroundColor="@color/chip_background_color"
             android:textColor="@color/chip_text_color"
-            app:checkedIconVisible="false" />
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="@color/chip_background_color" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_my_series"
@@ -44,14 +44,20 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:text="@string/library_series"
-            app:chipBackgroundColor="@color/chip_background_color"
             android:textColor="@color/chip_text_color"
-            app:checkedIconVisible="false" />
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="@color/chip_background_color" />
     </com.google.android.material.chip.ChipGroup>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/library_fragment_container"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/library_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
