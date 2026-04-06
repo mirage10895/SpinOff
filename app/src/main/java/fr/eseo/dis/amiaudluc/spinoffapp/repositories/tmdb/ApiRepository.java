@@ -59,13 +59,7 @@ public class ApiRepository {
     public LiveData<List<WatchProvider>> fetchMovieWatchProvider(Integer id) {
         return executeAsync(
                 this.tmdbApiService.api.fetchMovieWatchProvider(id),
-                watchProviderApiResponse -> {
-                    WatchProvider.WatchProviders watchProviders = watchProviderApiResponse.results().get("FR");
-                    if (watchProviders == null) {
-                        return List.of();
-                    }
-                    return watchProviders.flatrate();
-                }
+                WatchProvider::filterOutWatchProviders
         );
     }
 
@@ -89,13 +83,7 @@ public class ApiRepository {
     public LiveData<List<WatchProvider>> fetchTvWatchProvider(Integer id) {
         return executeAsync(
                 this.tmdbApiService.api.fetchTvWatchProvider(id),
-                watchProviderApiResponse -> {
-                    WatchProvider.WatchProviders watchProviders = watchProviderApiResponse.results().get("FR");
-                    if (watchProviders == null) {
-                        return List.of();
-                    }
-                    return watchProviders.flatrate();
-                }
+                WatchProvider::filterOutWatchProviders
         );
     }
 

@@ -72,7 +72,7 @@ public class MySeriesFragment extends BaseLibraryFragment {
                             .mapToInt(SerieDatabase::getRuntime)
                             .sum();
 
-                    updateUI(seen, toSee, serieDatabases.size(), seen.size(), DateUtils.displayDuration(seenRuntime));
+                    updateUI(seen, toSee, DateUtils.displayDuration(seenRuntime));
                 }
         );
     }

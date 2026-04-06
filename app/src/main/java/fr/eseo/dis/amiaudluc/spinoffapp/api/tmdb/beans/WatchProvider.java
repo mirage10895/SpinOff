@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public record WatchProvider(
         String logoPath,
@@ -20,4 +21,17 @@ public record WatchProvider(
             int id,
             Map<String, WatchProviders> results
     ) {}
+
+    public static List<WatchProvider> filterOutWatchProviders(WatchProviderApiResponse watchProviderApiResponse) {
+        WatchProviders watchProviders = watchProviderApiResponse.results().get("FR");
+        if (watchProviders == null) {
+            return List.of();
+        }
+        // 1796 = Netflix with ads
+        // 2100 = Amazon with ads
+        return watchProviders.flatrate()
+                .stream()
+                .filter(w -> !w.providerName.contains("Ads"))
+                .collect(Collectors.toList());
+    }
 }

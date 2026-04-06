@@ -79,9 +79,13 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
     protected abstract FragmentType getFragmentType();
     protected abstract void setupViewModel();
 
-    protected void updateUI(List<AdapterData> seen, List<AdapterData> toSee, int totalCount, int seenCount, String seenRuntime) {
-        binding.mediaNumber.setText(String.valueOf(totalCount));
-        binding.mediaSeenNumber.setText(String.valueOf(seenCount));
+    protected void updateUI(
+            List<AdapterData> seen,
+            List<AdapterData> toSee,
+            String seenRuntime
+    ) {
+        binding.mediaNumber.setText(String.valueOf(toSee.size()));
+        binding.mediaSeenNumber.setText(String.valueOf(seen.size()));
         binding.mediaRuntime.setText(seenRuntime);
 
         binding.mediaSeenLayer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);

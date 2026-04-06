@@ -72,7 +72,7 @@ public class MyMoviesFragment extends BaseLibraryFragment {
                             .mapToInt(MovieDatabase::getRuntime)
                             .sum();
 
-                    updateUI(seen, toSee, movieDatabases.size(), seen.size(), DateUtils.displayDuration(seenRuntime));
+                    updateUI(seen, toSee, DateUtils.displayDuration(seenRuntime));
                 }
         );
     }
