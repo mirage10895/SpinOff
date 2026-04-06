@@ -29,6 +29,9 @@ public record WatchProvider(
         }
         // 1796 = Netflix with ads
         // 2100 = Amazon with ads
+        if (watchProviders.flatrate() == null) {
+            return List.of();
+        }
         return watchProviders.flatrate()
                 .stream()
                 .filter(w -> !w.providerName.contains("Ads"))
