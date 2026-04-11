@@ -91,8 +91,8 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
         binding.mediaSeenNumber.setText(String.valueOf(seen.size()));
         binding.mediaRuntime.setText(seenRuntime);
 
-        binding.mediaSeenLayer.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
-        binding.mediaToSeeLayer.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.mediaSeenCard.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.mediaToSeeCard.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
 
         seenAdapter.setMedias(seen);
         toSeeAdapter.setMedias(toSee);

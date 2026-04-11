@@ -204,11 +204,11 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         Video trailer = VideoUtils.getYoutubeTrailer(movie.getVideos());
         if (trailer != null) {
             String newVideoId = trailer.getKey();
-            binding.teaserTxt.setVisibility(View.VISIBLE);
+            binding.youtube.teaserTxt.setVisibility(View.VISIBLE);
             binding.youtube.youtubeCard.setVisibility(View.VISIBLE);
             this.youtubeConnector.loadVideo(newVideoId);
         } else {
-            binding.teaserTxt.setVisibility(View.GONE);
+            binding.youtube.teaserTxt.setVisibility(View.GONE);
             binding.youtube.youtubeCard.setVisibility(View.GONE);
         }
 

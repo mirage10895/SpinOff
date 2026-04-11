@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.library;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.TextViewCompat;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMovieStatsBinding;
@@ -52,8 +54,8 @@ public class MovieStatsActivity extends AppCompatActivity {
         binding.genreListContainer.removeAllViews();
         if (stats.getTop3Genres() != null) {
             for (Map.Entry<String, Integer> entry : stats.getTop3Genres()) {
-                android.widget.TextView textView = new android.widget.TextView(this);
-                androidx.core.widget.TextViewCompat.setTextAppearance(textView, R.style.BentoGenreText);
+                TextView textView = new TextView(this);
+                TextViewCompat.setTextAppearance(textView, R.style.BentoGenreText);
                 int percent = stats.getTotalMovies() > 0 ? (entry.getValue() * 100 / stats.getTotalMovies()) : 0;
                 textView.setText(String.format(Locale.getDefault(), "%s: %d (%d%%)", entry.getKey(), entry.getValue(), percent));
                 binding.genreListContainer.addView(textView);
@@ -68,8 +70,8 @@ public class MovieStatsActivity extends AppCompatActivity {
         binding.yearsListContainer.removeAllViews();
         if (stats.getTop3Years() != null) {
             for (Map.Entry<Integer, Integer> entry : stats.getTop3Years()) {
-                android.widget.TextView textView = new android.widget.TextView(this);
-                androidx.core.widget.TextViewCompat.setTextAppearance(textView, R.style.BentoGenreText);
+                TextView textView = new TextView(this);
+                TextViewCompat.setTextAppearance(textView, R.style.BentoGenreText);
                 int percent = stats.getTotalMovies() > 0 ? (entry.getValue() * 100 / stats.getTotalMovies()) : 0;
                 textView.setText(String.format(Locale.getDefault(), "%d: %d movies (%d%%)", entry.getKey(), entry.getValue(), percent));
                 binding.yearsListContainer.addView(textView);
