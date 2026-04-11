@@ -48,16 +48,7 @@
             android:label="@string/title_library"
             android:theme="@style/AppTheme"
             android:exported="false" />
-        <activity
-            android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.library.MovieStatsActivity"
-            android:label="@string/stats_movie_title"
-            android:theme="@style/AppTheme"
-            android:exported="false" />
-        <activity
-            android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.library.SerieStatsActivity"
-            android:label="@string/stats_serie_title"
-            android:theme="@style/AppTheme"
-            android:exported="false" />
+
     </application>
 
 </manifest>

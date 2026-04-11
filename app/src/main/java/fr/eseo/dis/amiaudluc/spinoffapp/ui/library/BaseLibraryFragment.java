@@ -13,23 +13,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentMyMediasBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 
 public abstract class BaseLibraryFragment extends Fragment implements ItemInterface {
 
     protected FragmentMyMediasBinding binding;
-    private MediaAdapter seenAdapter;
-    private MediaAdapter toSeeAdapter;
     protected Integer selectedId;
 
     @Nullable
@@ -44,19 +36,7 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
         super.onViewCreated(view, savedInstanceState);
         Context ctx = view.getContext();
 
-        binding.title.setText(getTitleResId());
-
-        binding.mediaToSee.setHasFixedSize(true);
-        binding.mediaToSee.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
-        this.toSeeAdapter = new MediaAdapter(ctx, this, new ArrayList<>(), true);
-        binding.mediaToSee.setAdapter(toSeeAdapter);
-
-        binding.mediaSeen.setHasFixedSize(true);
-        binding.mediaSeen.setLayoutManager(new LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false));
-        this.seenAdapter = new MediaAdapter(ctx, this, new ArrayList<>(), true);
-        binding.mediaSeen.setAdapter(seenAdapter);
-
-        binding.seeAllToSee.setOnClickListener(v -> {
+        binding.btnSeeWatchlist.setOnClickListener(v -> {
             Intent intent = new Intent(ctx, MediaListActivity.class);
             intent.putExtra(MediaListActivity.EXTRA_SHOW_WATCHED, false);
             intent.putExtra(MediaListActivity.EXTRA_TITLE, getString(R.string.library_to_see));
@@ -64,7 +44,7 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
             startActivity(intent);
         });
 
-        binding.seeAllSeen.setOnClickListener(v -> {
+        binding.btnSeeWatched.setOnClickListener(v -> {
             Intent intent = new Intent(ctx, MediaListActivity.class);
             intent.putExtra(MediaListActivity.EXTRA_SHOW_WATCHED, true);
             intent.putExtra(MediaListActivity.EXTRA_TITLE, getString(R.string.library_media_seen_number));
@@ -72,31 +52,11 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
             startActivity(intent);
         });
 
-        binding.seeStats.setOnClickListener(v -> onSeeStatsClick());
-
         setupViewModel();
     }
 
-    protected abstract void onSeeStatsClick();
-    protected abstract int getTitleResId();
     protected abstract FragmentType getFragmentType();
     protected abstract void setupViewModel();
-
-    protected void updateUI(
-            List<AdapterData> seen,
-            List<AdapterData> toSee,
-            String seenRuntime
-    ) {
-        binding.mediaNumber.setText(String.valueOf(toSee.size()));
-        binding.mediaSeenNumber.setText(String.valueOf(seen.size()));
-        binding.mediaRuntime.setText(seenRuntime);
-
-        binding.mediaSeenCard.setVisibility(seen.isEmpty() ? View.GONE : View.VISIBLE);
-        binding.mediaToSeeCard.setVisibility(toSee.isEmpty() ? View.GONE : View.VISIBLE);
-
-        seenAdapter.setMedias(seen);
-        toSeeAdapter.setMedias(toSee);
-    }
 
     @Override
     public void onDestroyView() {

@@ -10,7 +10,7 @@
         android:id="@+id/text_library_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/activity_vertical_margin"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:text="@string/title_library"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:paddingHorizontal="@dimen/activity_vertical_margin"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
         app:selectionRequired="true"
         app:singleSelection="true">
 

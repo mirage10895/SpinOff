@@ -132,6 +132,7 @@ public class SerieViewModel extends AndroidViewModel {
 
         SerieStats stats = new SerieStats();
         int totalRuntimeMinutes = 0;
+        int watchlistCount = 0;
         Map<String, Integer> genreCounts = new HashMap<>();
         Map<String, Integer> combinationCounts = new HashMap<>();
         Map<Integer, Integer> yearCounts = new HashMap<>();
@@ -160,10 +161,13 @@ public class SerieViewModel extends AndroidViewModel {
                     int year = serie.getFirstAirDate().getYear();
                     yearCounts.put(year, yearCounts.getOrDefault(year, 0) + 1);
                 }
+            } else {
+                watchlistCount++;
             }
         }
 
         stats.setTotalMinutes(totalRuntimeMinutes);
+        stats.setWatchlistCount(watchlistCount);
 
         // Process Genres
         if (!genreCounts.isEmpty()) {

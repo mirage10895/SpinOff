@@ -51,6 +51,7 @@ public class MovieViewModel extends AndroidViewModel {
 
         MovieStats stats = new MovieStats();
         int totalRuntimeMinutes = 0;
+        int watchlistCount = 0;
         Map<String, Integer> genreCounts = new HashMap<>();
         Map<String, Integer> combinationCounts = new HashMap<>();
         Map<Integer, Integer> yearCounts = new HashMap<>();
@@ -78,10 +79,13 @@ public class MovieViewModel extends AndroidViewModel {
                     int year = movie.getReleaseDate().getYear();
                     yearCounts.put(year, yearCounts.getOrDefault(year, 0) + 1);
                 }
+            } else {
+                watchlistCount++;
             }
         }
 
         stats.setTotalRuntime(totalRuntimeMinutes);
+        stats.setWatchlistCount(watchlistCount);
 
         // Process Genres
         if (!genreCounts.isEmpty()) {

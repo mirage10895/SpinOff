@@ -12,6 +12,7 @@ public class SerieStats {
     private long totalMinutes;
     private int totalEpisodes;
     private int totalSeries;
+    private int watchlistCount;
     private String topGenre = "";
     private List<Map.Entry<String, Integer>> top3Genres;
     private String topCombination = "";

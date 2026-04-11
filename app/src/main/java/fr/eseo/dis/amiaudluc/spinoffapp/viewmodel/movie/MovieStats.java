@@ -11,6 +11,7 @@ import lombok.Setter;
 public class MovieStats {
     private int totalRuntime;
     private int totalMovies;
+    private int watchlistCount;
     private String topGenre = "";
     private List<Map.Entry<String, Integer>> top3Genres;
     private String topCombination = "";
