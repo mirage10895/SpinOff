@@ -3,16 +3,14 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.library;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.widget.TextView;
 
 import java.time.Duration;
 import java.util.Locale;
-import java.util.Map;
 
-import androidx.core.widget.TextViewCompat;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.chart.MultiSegmentProgressView;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieStats;
@@ -63,14 +61,12 @@ public class MySeriesFragment extends BaseLibraryFragment {
         // Genres
         binding.topGenreName.setText(stats.getTopGenre());
         binding.genreListContainer.removeAllViews();
-        if (stats.getTop3Genres() != null) {
-            for (Map.Entry<String, Integer> entry : stats.getTop3Genres()) {
-                TextView textView = new TextView(getContext());
-                TextViewCompat.setTextAppearance(textView, R.style.BentoGenreText);
-                int percent = stats.getTotalSeries() > 0 ? (entry.getValue() * 100 / stats.getTotalSeries()) : 0;
-                textView.setText(String.format(Locale.getDefault(), "%s: %d (%d%%)", entry.getKey(), entry.getValue(), percent));
-                binding.genreListContainer.addView(textView);
-            }
+        if (stats.getTopGenres() != null) {
+            MultiSegmentProgressView.builder()
+                    .withColors()
+                    .withData(stats.getTopGenres())
+                    .into(binding.genreRepartitionChart)
+                    .withLegendInto(binding.genreListContainer);
         }
 
         // Combination
@@ -79,14 +75,12 @@ public class MySeriesFragment extends BaseLibraryFragment {
         // Years
         binding.topYearValue.setText(String.valueOf(stats.getTopYear()));
         binding.yearsListContainer.removeAllViews();
-        if (stats.getTop3Years() != null) {
-            for (Map.Entry<Integer, Integer> entry : stats.getTop3Years()) {
-                TextView textView = new TextView(getContext());
-                TextViewCompat.setTextAppearance(textView, R.style.BentoGenreText);
-                int percent = stats.getTotalSeries() > 0 ? (entry.getValue() * 100 / stats.getTotalSeries()) : 0;
-                textView.setText(String.format(Locale.getDefault(), "%d: %d series (%d%%)", entry.getKey(), entry.getValue(), percent));
-                binding.yearsListContainer.addView(textView);
-            }
+        if (stats.getTopYears() != null) {
+            MultiSegmentProgressView.builder()
+                    .withColors()
+                    .withData(stats.getTopYears())
+                    .into(binding.yearRepartitionChart)
+                    .withLegendInto(binding.yearsListContainer);
         }
     }
 

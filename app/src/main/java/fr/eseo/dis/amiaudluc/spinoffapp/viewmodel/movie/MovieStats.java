@@ -13,8 +13,8 @@ public class MovieStats {
     private int totalMovies;
     private int watchlistCount;
     private String topGenre = "";
-    private List<Map.Entry<String, Integer>> top3Genres;
+    private List<Map.Entry<String, Integer>> topGenres;
     private String topCombination = "";
-    private int topYear;
-    private List<Map.Entry<Integer, Integer>> top3Years;
+    private String topYear;
+    private List<Map.Entry<String, Integer>> topYears;
 }

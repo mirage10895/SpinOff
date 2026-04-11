@@ -59,7 +59,7 @@ public class MovieViewModel extends AndroidViewModel {
         int watchlistCount = 0;
         Map<String, Integer> genreCounts = new HashMap<>();
         Map<String, Integer> combinationCounts = new HashMap<>();
-        Map<Integer, Integer> yearCounts = new HashMap<>();
+        Map<String, Integer> yearCounts = new HashMap<>();
 
         for (MovieDatabase movie : movies) {
             if (movie.isWatched()) {
@@ -82,7 +82,7 @@ public class MovieViewModel extends AndroidViewModel {
                 // Years
                 if (movie.getReleaseDate() != null) {
                     int year = movie.getReleaseDate().getYear();
-                    yearCounts.put(year, yearCounts.getOrDefault(year, 0) + 1);
+                    yearCounts.put(String.valueOf(year), yearCounts.getOrDefault(String.valueOf(year), 0) + 1);
                 }
             } else {
                 watchlistCount++;
@@ -94,11 +94,13 @@ public class MovieViewModel extends AndroidViewModel {
 
         // Process Genres
         if (!genreCounts.isEmpty()) {
-            stats.setTop3Genres(genreCounts.entrySet().stream()
-                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                    .limit(3)
-                    .collect(Collectors.toList()));
-            stats.setTopGenre(stats.getTop3Genres().get(0).getKey());
+            stats.setTopGenres(
+                    genreCounts.entrySet().stream()
+                            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                            .limit(6)
+                            .collect(Collectors.toList())
+            );
+            stats.setTopGenre(stats.getTopGenres().get(0).getKey());
         }
 
         // Process Combinations
@@ -111,11 +113,13 @@ public class MovieViewModel extends AndroidViewModel {
 
         // Process Years
         if (!yearCounts.isEmpty()) {
-            stats.setTop3Years(yearCounts.entrySet().stream()
-                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                    .limit(3)
-                    .collect(Collectors.toList()));
-            stats.setTopYear(stats.getTop3Years().get(0).getKey());
+            stats.setTopYears(
+                    yearCounts.entrySet().stream()
+                            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                            .limit(6)
+                            .collect(Collectors.toList())
+            );
+            stats.setTopYear(stats.getTopYears().get(0).getKey());
         }
 
         return stats;

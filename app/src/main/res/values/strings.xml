@@ -127,7 +127,6 @@
     <string name="stats_top_genre_combination">Top Combination</string>
     <string name="stats_years_distribution">Years Distribution</string>
     <string name="stats_top_year">Top Year</string>
-    <string name="stats_top_years">Top 3 Years</string>
     <string name="previous_text">Previous</string>
     <string name="next_text">Next</string>
     <string name="number_of_series_txt">Number of Series</string>
