@@ -16,52 +16,34 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_bar_container"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="?android:attr/textColorPrimary"
+        app:endIconTintMode="src_atop"
         app:layout_constraintTop_toBottomOf="@id/text_welcome">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/query"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:hint="@string/txt_search"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingVertical="16dp"
+            android:textColor="?android:attr/textColorPrimary" />
 
-            <ImageView
-                android:id="@+id/search_button"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/search"
-                android:padding="12dp"
-                android:src="@drawable/ic_search"
-                app:tint="@color/colorPrimary" />
-
-            <EditText
-                android:id="@+id/query"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="@string/txt_search"
-                android:inputType="text"
-                android:lines="1"
-                android:maxLines="1"
-                android:padding="12dp"
-                android:focusable="true"
-                android:clickable="true"
-                android:textAlignment="viewStart"
-                android:textColor="@android:color/background_dark"
-                android:textColorHint="@android:color/background_dark" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <RelativeLayout
         android:id="@+id/no_media_display"

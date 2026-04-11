@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
@@ -24,10 +25,16 @@ import lombok.Getter;
 
 public class SerieViewModel extends AndroidViewModel {
 
+    private static final String SERIE_ID_KEY = "serieId";
+    private static final String SEASON_REQ_KEY = "seasonReq";
+    private static final String EPISODE_REQ_KEY = "episodeReq";
+
+    private final SavedStateHandle savedStateHandle;
+
     // Input triggers
-    private final MutableLiveData<Integer> serieIdTrigger = new MutableLiveData<>();
-    private final MutableLiveData<SeasonRequest> seasonTrigger = new MutableLiveData<>();
-    private final MutableLiveData<EpisodeRequest> episodeTrigger = new MutableLiveData<>();
+    private final LiveData<Integer> serieIdTrigger;
+    private final LiveData<SeasonRequest> seasonTrigger;
+    private final LiveData<EpisodeRequest> episodeTrigger;
 
     @Getter
     private final MutableLiveData<SerieType> serieType = new MutableLiveData<>(SerieType.POPULAR);
@@ -49,8 +56,13 @@ public class SerieViewModel extends AndroidViewModel {
     private final ApiRepository apiRepository;
     private final SerieRepository serieRepository;
 
-    public SerieViewModel(@NonNull Application application) {
+    public SerieViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
+        this.savedStateHandle = savedStateHandle;
+        this.serieIdTrigger = savedStateHandle.getLiveData(SERIE_ID_KEY);
+        this.seasonTrigger = savedStateHandle.getLiveData(SEASON_REQ_KEY);
+        this.episodeTrigger = savedStateHandle.getLiveData(EPISODE_REQ_KEY);
+
         this.apiRepository = ApiRepository.getInstance();
         this.serieRepository = SerieRepository.getRepository(application);
 
@@ -79,15 +91,23 @@ public class SerieViewModel extends AndroidViewModel {
 
     // Public API to trigger data fetch
     public void initGetSerieById(Integer id) {
-        serieIdTrigger.setValue(id);
+        if (!id.equals(savedStateHandle.get(SERIE_ID_KEY))) {
+            savedStateHandle.set(SERIE_ID_KEY, id);
+        }
     }
 
     public void initGetSeasonBySerieId(Integer id, Integer seasonNumber) {
-        seasonTrigger.setValue(new SeasonRequest(id, seasonNumber));
+        SeasonRequest newReq = new SeasonRequest(id, seasonNumber);
+        if (!newReq.equals(savedStateHandle.get(SEASON_REQ_KEY))) {
+            savedStateHandle.set(SEASON_REQ_KEY, newReq);
+        }
     }
 
     public void initGetEpisodeBySeasonNumberBySerieId(Integer id, Integer seasonNumber, Integer episodeNumber) {
-        episodeTrigger.setValue(new EpisodeRequest(id, seasonNumber, episodeNumber));
+        EpisodeRequest newReq = new EpisodeRequest(id, seasonNumber, episodeNumber);
+        if (!newReq.equals(savedStateHandle.get(EPISODE_REQ_KEY))) {
+            savedStateHandle.set(EPISODE_REQ_KEY, newReq);
+        }
     }
 
     // Database methods (these usually return stable LiveData from Room)
@@ -105,7 +125,7 @@ public class SerieViewModel extends AndroidViewModel {
 
     // Helper classes for complex triggers
 
-    private static class SeasonRequest {
+    private static class SeasonRequest implements java.io.Serializable {
         Integer id;
         Integer seasonNumber;
 
@@ -113,9 +133,23 @@ public class SerieViewModel extends AndroidViewModel {
             id = i;
             seasonNumber = s;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SeasonRequest that = (SeasonRequest) o;
+            return java.util.Objects.equals(id, that.id) &&
+                    java.util.Objects.equals(seasonNumber, that.seasonNumber);
+        }
+
+        @Override
+        public int hashCode() {
+            return java.util.Objects.hash(id, seasonNumber);
+        }
     }
 
-    private static class EpisodeRequest {
+    private static class EpisodeRequest implements java.io.Serializable {
         Integer id;
         Integer seasonNumber;
         Integer episodeNumber;
@@ -124,6 +158,21 @@ public class SerieViewModel extends AndroidViewModel {
             id = i;
             seasonNumber = s;
             episodeNumber = e;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            EpisodeRequest that = (EpisodeRequest) o;
+            return java.util.Objects.equals(id, that.id) &&
+                    java.util.Objects.equals(seasonNumber, that.seasonNumber) &&
+                    java.util.Objects.equals(episodeNumber, that.episodeNumber);
+        }
+
+        @Override
+        public int hashCode() {
+            return java.util.Objects.hash(id, seasonNumber, episodeNumber);
         }
     }
 

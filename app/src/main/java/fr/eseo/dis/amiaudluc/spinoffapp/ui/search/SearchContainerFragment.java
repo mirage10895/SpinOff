@@ -10,13 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.snackbar.Snackbar;
-
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSearchContainerBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
@@ -62,7 +61,7 @@ public class SearchContainerFragment extends Fragment {
     private void setupListeners() {
         binding.query.setOnKeyListener((view, keyCode, keyEvent) -> {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                onSearch(binding.query.getText().toString());
+                onSearch(binding.query.getText());
                 hideKeyboard(view);
                 return true;
             }
@@ -81,14 +80,9 @@ public class SearchContainerFragment extends Fragment {
                     binding.noMediaDisplay.setVisibility(View.VISIBLE);
                     binding.nothingText.setText(R.string.search_for);
                 } else {
-                    onSearch(s.toString());
+                    onSearch(s);
                 }
             }
-        });
-
-        binding.searchButton.setOnClickListener(v -> {
-            onSearch(binding.query.getText().toString());
-            hideKeyboard(v);
         });
     }
 
@@ -110,10 +104,13 @@ public class SearchContainerFragment extends Fragment {
         });
     }
 
-    private void onSearch(String query) {
+    private void onSearch(CharSequence query) {
+        if (query == null) {
+            return;
+        }
         binding.progressBar.setVisibility(View.VISIBLE);
         binding.noMediaDisplay.setVisibility(View.GONE);
-        searchViewModel.initSearchByQuery(query);
+        searchViewModel.initSearchByQuery(query.toString());
     }
 
     private void hideKeyboard(View view) {

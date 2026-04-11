@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
@@ -21,7 +21,9 @@ import lombok.Getter;
 
 public class MovieViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<Integer> movieIdTrigger = new MutableLiveData<>();
+    private static final String MOVIE_ID_KEY = "movieId";
+    private final SavedStateHandle savedStateHandle;
+    private final LiveData<Integer> movieIdTrigger;
 
     @Getter
     private final LiveData<Movie> movie;
@@ -34,8 +36,11 @@ public class MovieViewModel extends AndroidViewModel {
 
     private final MovieRepository movieRepository;
 
-    public MovieViewModel(@NonNull Application application) {
+    public MovieViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
+        this.savedStateHandle = savedStateHandle;
+        this.movieIdTrigger = savedStateHandle.getLiveData(MOVIE_ID_KEY);
+
         ApiRepository apiRepository = ApiRepository.getInstance();
         this.movieRepository = MovieRepository.getRepository(application);
 
@@ -119,7 +124,9 @@ public class MovieViewModel extends AndroidViewModel {
     // single page
 
     public void initGetMovieById(Integer id) {
-        movieIdTrigger.setValue(id);
+        if (!id.equals(savedStateHandle.get(MOVIE_ID_KEY))) {
+            savedStateHandle.set(MOVIE_ID_KEY, id);
+        }
     }
 
     // database action
