@@ -20,8 +20,8 @@ public class DateUtils {
         return date.format(DISPLAY_DATE_FORMATTER);
     }
 
-    public static String displayDuration(int minutes) {
-        Duration duration = Duration.ofMinutes(minutes);
+    public static String displayDuration(Duration duration) {
+        long minutes = duration.toMinutes();
         if (duration.minus(Duration.of(59, ChronoUnit.MINUTES)).getSeconds() < 0) {
             // minutes
             return minutes +  " min.";
@@ -31,7 +31,7 @@ public class DateUtils {
             return LocalTime.MIDNIGHT.plus(duration).format(DISPLAY_HOUR_FORMATTER);
         }
         long jours = minutes / 1440;
-        int heures = (minutes % 1440) / 60;
+        long heures = (minutes % 1440) / 60;
         return jours + "j. " + heures + "h.";
     }
 }

@@ -8,25 +8,42 @@
     android:background="?android:attr/windowBackground"
     tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.library.MyMoviesFragment">
 
-    <TextView
-        android:id="@+id/title"
+    <RelativeLayout
+        android:id="@+id/title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/text_margin"
-        android:gravity="start"
-        android:text="@string/library_movies"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:gravity="start"
+            android:text="@string/library_movies"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/see_stats"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="@string/see_all_stats" />
+    </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/lil_caracteritics_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/text_margin"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/title_container"
         card_view:cardBackgroundColor="@color/card_background_color"
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="8dp"

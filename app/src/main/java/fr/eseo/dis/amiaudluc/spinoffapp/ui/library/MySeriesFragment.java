@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 public class MySeriesFragment extends BaseLibraryFragment {
 
@@ -45,6 +46,11 @@ public class MySeriesFragment extends BaseLibraryFragment {
         this.serieViewModel.getDatabaseSeries().observe(
                 getViewLifecycleOwner(),
                 serieDatabases -> {
+                    if (!serieDatabases.isEmpty()) {
+                        binding.seeStats.setVisibility(android.view.View.VISIBLE);
+                    } else {
+                        binding.seeStats.setVisibility(android.view.View.GONE);
+                    }
                     List<SerieDatabase> seenRaw = serieDatabases.stream()
                             .filter(SerieDatabase::isWatched)
                             .collect(Collectors.toList());
@@ -72,9 +78,15 @@ public class MySeriesFragment extends BaseLibraryFragment {
                             .mapToInt(SerieDatabase::getRuntime)
                             .sum();
 
-                    updateUI(seen, toSee, DateUtils.displayDuration(seenRuntime));
+                    updateUI(seen, toSee, DateUtils.displayDuration(Duration.ofMinutes(seenRuntime)));
                 }
         );
+    }
+
+    @Override
+    protected void onSeeStatsClick() {
+        Intent intent = new Intent(getContext(), SerieStatsActivity.class);
+        startActivity(intent);
     }
 
     @Override

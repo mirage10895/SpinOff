@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 public class SingleSerieFragment extends Fragment implements ItemInterface {
 
@@ -162,7 +163,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
         int totalRuntime = Serie.computeTotalRuntime(serie);
         if (totalRuntime != 0) {
-            binding.runtime.setText(DateUtils.displayDuration(totalRuntime));
+            binding.runtime.setText(DateUtils.displayDuration(Duration.ofMinutes(totalRuntime)));
         } else {
             binding.runtime.setText(R.string.emptyField);
         }

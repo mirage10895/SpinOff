@@ -5,7 +5,7 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 public class AddSerieActionListener implements View.OnClickListener {
 

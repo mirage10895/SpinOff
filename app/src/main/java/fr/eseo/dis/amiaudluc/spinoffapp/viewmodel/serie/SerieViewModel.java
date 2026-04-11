@@ -1,8 +1,11 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel;
+package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie;
 
 import android.app.Application;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -40,6 +43,8 @@ public class SerieViewModel extends AndroidViewModel {
     private final LiveData<Episode> episode;
     @Getter
     private final LiveData<List<SerieDatabase>> databaseSeries;
+    @Getter
+    private final LiveData<SerieStats> serieStats;
 
     private final ApiRepository apiRepository;
     private final SerieRepository serieRepository;
@@ -69,6 +74,7 @@ public class SerieViewModel extends AndroidViewModel {
         );
 
         this.databaseSeries = serieRepository.fetchAll();
+        this.serieStats = Transformations.map(databaseSeries, SerieViewModel::calculateStats);
     }
 
     // Public API to trigger data fetch
@@ -119,5 +125,72 @@ public class SerieViewModel extends AndroidViewModel {
             seasonNumber = s;
             episodeNumber = e;
         }
+    }
+
+    private static SerieStats calculateStats(List<SerieDatabase> series) {
+        if (series == null) return null;
+
+        SerieStats stats = new SerieStats();
+        int totalRuntimeMinutes = 0;
+        Map<String, Integer> genreCounts = new HashMap<>();
+        Map<String, Integer> combinationCounts = new HashMap<>();
+        Map<Integer, Integer> yearCounts = new HashMap<>();
+
+        for (SerieDatabase serie : series) {
+            if (serie.isWatched()) {
+                int episodes = serie.getEpisodeCount() != null ? serie.getEpisodeCount() : 0;
+                totalRuntimeMinutes += serie.getRuntime();
+                stats.setTotalEpisodes(stats.getTotalEpisodes() + episodes);
+                stats.setTotalSeries(stats.getTotalSeries() + 1);
+
+                // Genres and Combinations
+                if (serie.getGenres() != null && !serie.getGenres().isEmpty()) {
+                    String genresStr = serie.getGenres();
+                    combinationCounts.put(genresStr, combinationCounts.getOrDefault(genresStr, 0) + 1);
+
+                    String[] genres = genresStr.split(",");
+                    for (String genre : genres) {
+                        String trimmedGenre = genre.trim();
+                        genreCounts.put(trimmedGenre, genreCounts.getOrDefault(trimmedGenre, 0) + 1);
+                    }
+                }
+
+                // Years
+                if (serie.getFirstAirDate() != null) {
+                    int year = serie.getFirstAirDate().getYear();
+                    yearCounts.put(year, yearCounts.getOrDefault(year, 0) + 1);
+                }
+            }
+        }
+
+        stats.setTotalMinutes(totalRuntimeMinutes);
+
+        // Process Genres
+        if (!genreCounts.isEmpty()) {
+            stats.setTop3Genres(genreCounts.entrySet().stream()
+                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                    .limit(3)
+                    .collect(Collectors.toList()));
+            stats.setTopGenre(stats.getTop3Genres().get(0).getKey());
+        }
+
+        // Process Combinations
+        if (!combinationCounts.isEmpty()) {
+            stats.setTopCombination(combinationCounts.entrySet().stream()
+                    .max(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey)
+                    .orElse(""));
+        }
+
+        // Process Years
+        if (!yearCounts.isEmpty()) {
+            stats.setTop3Years(yearCounts.entrySet().stream()
+                    .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                    .limit(3)
+                    .collect(Collectors.toList()));
+            stats.setTopYear(stats.getTop3Years().get(0).getKey());
+        }
+
+        return stats;
     }
 }

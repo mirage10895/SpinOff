@@ -5,7 +5,7 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
 
 public class AddMovieActionListener implements View.OnClickListener {
 

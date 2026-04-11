@@ -23,7 +23,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.MovieDiscoveryViewModel;
 

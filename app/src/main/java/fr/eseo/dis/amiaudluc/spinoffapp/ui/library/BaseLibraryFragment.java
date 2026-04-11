@@ -72,9 +72,12 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
             startActivity(intent);
         });
 
+        binding.seeStats.setOnClickListener(v -> onSeeStatsClick());
+
         setupViewModel();
     }
 
+    protected abstract void onSeeStatsClick();
     protected abstract int getTitleResId();
     protected abstract FragmentType getFragmentType();
     protected abstract void setupViewModel();

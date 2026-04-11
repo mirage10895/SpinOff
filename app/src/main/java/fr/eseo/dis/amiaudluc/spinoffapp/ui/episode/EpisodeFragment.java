@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.time.Duration;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -19,7 +21,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,7 +89,7 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
         }
 
         if (episode.getRuntime() != null) {
-            binding.episodes.setText(DateUtils.displayDuration(episode.getRuntime()));
+            binding.episodes.setText(DateUtils.displayDuration(Duration.ofMinutes(episode.getRuntime())));
         } else {
             binding.episodes.setText(R.string.emptyField);
         }

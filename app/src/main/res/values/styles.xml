@@ -23,10 +23,45 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/fab_label_background</item>
+    <style name="BentoCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/card_background_color</item>
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
+    <style name="BentoCard.Outline">
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/color_primary_semi_opaq</item>
+    </style>
+
+    <style name="BentoCard.Outline.Primary">
+        <item name="strokeColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="BentoLabel">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#99E5E2E1</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+
+    <style name="BentoValue">
+        <item name="android:fontFamily">sans-serif-black</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@string/font_family_light</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="BentoValue.Large">
+        <item name="android:textSize">48sp</item>
+    </style>
+
+    <style name="BentoGenreText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
     </style>
 </resources>

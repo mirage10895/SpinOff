@@ -43,13 +43,13 @@ public enum SerieType {
                     .page(page)
                     .sortBy(DiscoverSortPath.POPULARITY.withSort(DiscoverSort.DESC))
                     .withReleaseType("2|3")
-                    .releaseDateGte(
+                    .primaryReleaseDateGte(
                             LocalDate.now()
                                     .minusWeeks(6)
                                     .with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY))
                                     .format(DateUtils.CLASSIC_DATE_FORMATTER)
                     )
-                    .releaseDateLte(
+                    .primaryReleaseDateLte(
                             LocalDate.now()
                                     .with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY))
                                     .format(DateUtils.CLASSIC_DATE_FORMATTER)

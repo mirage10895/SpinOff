@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -162,7 +163,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
         if (movie.getRuntime() != null) {
             binding.runtime.setText(
-                    DateUtils.displayDuration(movie.getRuntime())
+                    DateUtils.displayDuration(Duration.ofMinutes(movie.getRuntime()))
             );
         } else {
             binding.runtime.setText(R.string.emptyField);

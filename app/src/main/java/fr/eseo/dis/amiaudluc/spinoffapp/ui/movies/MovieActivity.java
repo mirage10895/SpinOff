@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMediaBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
 
 public class MovieActivity extends AppCompatActivity {
 

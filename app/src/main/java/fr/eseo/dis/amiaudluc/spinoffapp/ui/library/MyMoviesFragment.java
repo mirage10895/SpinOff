@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
 
 public class MyMoviesFragment extends BaseLibraryFragment {
 
@@ -72,7 +73,7 @@ public class MyMoviesFragment extends BaseLibraryFragment {
                             .mapToInt(MovieDatabase::getRuntime)
                             .sum();
 
-                    updateUI(seen, toSee, DateUtils.displayDuration(seenRuntime));
+                    updateUI(seen, toSee, DateUtils.displayDuration(Duration.ofMinutes(seenRuntime)));
                 }
         );
     }
@@ -99,6 +100,12 @@ public class MyMoviesFragment extends BaseLibraryFragment {
     @Override
     protected void toggleWatched(Integer id) {
         this.movieViewModel.toggleMovieIsWatched(id);
+    }
+
+    @Override
+    protected void onSeeStatsClick() {
+        Intent intent = new Intent(getContext(), MovieStatsActivity.class);
+        startActivity(intent);
     }
 
     @Override
