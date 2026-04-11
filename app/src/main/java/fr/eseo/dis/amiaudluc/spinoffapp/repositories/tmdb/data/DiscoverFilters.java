@@ -33,6 +33,10 @@ public record DiscoverFilters(
         String releaseDateGte,
         @SerializedName("release_date.lte")
         String releaseDateLte,
+        @SerializedName("air_date.gte")
+        String airDateGte,
+        @SerializedName("air_date.lte")
+        String airDateLte,
         String sortBy,
         @SerializedName("vote_average.gte")
         Double voteAverageGte,

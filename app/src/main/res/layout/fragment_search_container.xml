@@ -40,7 +40,7 @@
                 android:contentDescription="@string/search"
                 android:padding="12dp"
                 android:src="@drawable/ic_search"
-                app:tint="@color/colorPrimaryDark" />
+                app:tint="@color/colorPrimary" />
 
             <EditText
                 android:id="@+id/query"
@@ -56,8 +56,8 @@
                 android:focusable="true"
                 android:clickable="true"
                 android:textAlignment="viewStart"
-                android:textColor="@color/colorPrimaryDark"
-                android:textColorHint="@color/colorPrimaryDark" />
+                android:textColor="@android:color/background_dark"
+                android:textColorHint="@android:color/background_dark" />
 
         </LinearLayout>
 

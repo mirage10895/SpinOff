@@ -34,25 +34,9 @@ public class CircularImageBar {
         paint.setStrokeWidth(5);
         paint.setTextAlign(Paint.Align.CENTER);
         paint.setColor(Color.parseColor("#FFFFFF"));
-        paint.setTextSize(140);
+        paint.setTextSize(120);
+        paint.setStyle(Paint.Style.FILL);
         canvas.drawText(decimalFormat.format(size), 150, 150 + (paint.getTextSize() / 3), paint);
-
-        return b;
-    }
-
-    public static Bitmap buildNumber(int size, int color) {
-        Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(b);
-        Paint paint = new Paint();
-
-        paint.setColor(color);
-        paint.setStrokeWidth(10);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(130);
-        canvas.drawText(String.valueOf(size), 150, 150 + (paint.getTextSize() / 3), paint);
 
         return b;
     }

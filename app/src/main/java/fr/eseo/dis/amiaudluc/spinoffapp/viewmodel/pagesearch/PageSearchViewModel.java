@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import lombok.Getter;
 
 public abstract class PageSearchViewModel<T, F> extends AndroidViewModel {
@@ -20,6 +21,7 @@ public abstract class PageSearchViewModel<T, F> extends AndroidViewModel {
     @Getter
     private final LiveData<List<T>> results = _results;
     private LiveData<F> boundFilter;
+    private final Observer<F> filterObserver = filter -> resetSearch();
 
     public PageSearchViewModel(@NotNull Application application) {
         super(application);
@@ -28,11 +30,27 @@ public abstract class PageSearchViewModel<T, F> extends AndroidViewModel {
     protected abstract LiveData<List<T>> searchApi(F filter, int pageNumber);
 
     public void bindFilters(LiveData<F> filters) {
+        if (this.boundFilter != null) {
+            unbindFilters();
+        }
         this.boundFilter = filters;
-        boundFilter.observeForever(filter -> resetSearch());
+        if (this.boundFilter != null) {
+            this.boundFilter.observeForever(filterObserver);
+        }
     }
 
+    public void unbindFilters() {
+        if (this.boundFilter != null) {
+            this.boundFilter.removeObserver(filterObserver);
+            this.boundFilter = null;
+        }
+    }
+
+    // Method to load next page
     public void loadPage(int nextPage) {
+        if (boundFilter == null) {
+            return;
+        }
         F filter = boundFilter.getValue();
         if (filter == null) {
             return;
@@ -46,6 +64,9 @@ public abstract class PageSearchViewModel<T, F> extends AndroidViewModel {
     public void resetSearch() {
         page.setValue(1);                       // reset pagination
 
+        if (boundFilter == null) {
+            return;
+        }
         F filter = boundFilter.getValue();
         if (filter != null) {
             loadPage(filter, 1);                // load first page with current filter
@@ -61,5 +82,11 @@ public abstract class PageSearchViewModel<T, F> extends AndroidViewModel {
             _results.setValue(current);
             _results.removeSource(pageLiveData); // remove to avoid multiple triggers
         });
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        unbindFilters();
     }
 }

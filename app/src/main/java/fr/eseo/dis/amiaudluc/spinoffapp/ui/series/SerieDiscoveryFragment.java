@@ -135,4 +135,10 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
             });
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        serieDiscoveryViewModel.unbindFilters();
+    }
 }

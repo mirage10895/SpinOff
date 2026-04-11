@@ -144,4 +144,10 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
             });
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        movieDiscoveryViewModel.unbindFilters();
+    }
 }

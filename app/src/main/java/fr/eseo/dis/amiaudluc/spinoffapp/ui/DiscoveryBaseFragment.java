@@ -68,9 +68,9 @@ public abstract class DiscoveryBaseFragment extends Fragment implements ItemInte
 
     protected void initializeSwipeContainer() {
         binding.swipeContainer.setColorSchemeResources(
-                R.color.colorAccent,
                 R.color.colorPrimary,
-                R.color.colorPrimaryDark,
+                R.color.colorAccent,
+                R.color.colorSecondary,
                 R.color.white
         );
     }
