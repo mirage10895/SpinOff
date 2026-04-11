@@ -24,12 +24,12 @@
         <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity"
             android:label="@string/title_activity_movie"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Modal"
             android:exported="false"/>
         <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity"
             android:label="@string/title_activity_serie"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar.Modal"
             android:exported="false" />
         <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity"
@@ -37,7 +37,7 @@
             android:exported="false" />
         <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.Modal"
             android:exported="false" />
         <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.episode.EpisodeActivity"
@@ -46,7 +46,7 @@
         <activity
             android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.library.MediaListActivity"
             android:label="@string/title_library"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar.Modal"
             android:exported="false" />
 
     </application>

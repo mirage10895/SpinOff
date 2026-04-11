@@ -23,6 +23,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Modal" parent="AppTheme.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/Animation.Activity.BottomUp</item>
+    </style>
+
     <style name="BentoCard" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/card_background_color</item>
         <item name="cardCornerRadius">24dp</item>
@@ -63,5 +67,18 @@
         <item name="android:textSize">14sp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <!-- Animation Style -->
+    <style name="Animation.Activity.BottomUp" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:activityOpenExitAnimation">@anim/no_animation</item>
+        <item name="android:activityCloseEnterAnimation">@anim/no_animation</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+    <!-- Modal Theme -->
+    <style name="AppTheme.Modal" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/Animation.Activity.BottomUp</item>
     </style>
 </resources>
