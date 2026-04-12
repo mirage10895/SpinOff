@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
@@ -28,10 +27,6 @@ public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProvider
 
     public static WatchProviderAdapter newInstance(String baseImageUrl) {
         return new WatchProviderAdapter(baseImageUrl);
-    }
-
-    public void setData(List<AdapterData> data) {
-        submitList(data != null ? new ArrayList<>(data) : null);
     }
 
     @NonNull

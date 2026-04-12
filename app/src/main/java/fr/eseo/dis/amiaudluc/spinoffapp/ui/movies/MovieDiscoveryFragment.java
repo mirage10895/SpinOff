@@ -120,7 +120,7 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
     }
 
     private void loadMovies(List<AdapterData> movies) {
-        this.moviesAdapter.setMedias(movies);
+        this.moviesAdapter.submitList(movies);
     }
 
     @Override

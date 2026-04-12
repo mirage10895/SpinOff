@@ -35,7 +35,6 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
     public static final String EXTRA_TITLE = "extra_title";
     public static final String EXTRA_TYPE = "extra_type";
 
-    private ActivityMediaListBinding binding;
     private MovieViewModel movieViewModel;
     private SerieViewModel serieViewModel;
     private MediaAdapter adapter;
@@ -46,7 +45,7 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMediaListBinding.inflate(getLayoutInflater());
+        ActivityMediaListBinding binding = ActivityMediaListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         showWatched = getIntent().getBooleanExtra(EXTRA_SHOW_WATCHED, false);
@@ -73,7 +72,7 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
                                 FragmentType.MOVIE
                         ))
                         .collect(Collectors.toList());
-                adapter.setMedias(filteredMovies);
+                adapter.submitList(filteredMovies);
             });
         } else {
             serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
@@ -87,7 +86,7 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
                                 FragmentType.SERIE
                         ))
                         .collect(Collectors.toList());
-                adapter.setMedias(filteredSeries);
+                adapter.submitList(filteredSeries);
             });
         }
     }

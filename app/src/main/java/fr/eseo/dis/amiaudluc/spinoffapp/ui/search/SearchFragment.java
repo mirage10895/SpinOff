@@ -110,8 +110,8 @@ public class SearchFragment extends Fragment implements ItemInterface {
         binding.seriesLayer.setVisibility(series.isEmpty() ? View.GONE : View.VISIBLE);
         binding.artistsLayer.setVisibility(artists.isEmpty() ? View.GONE : View.VISIBLE);
 
-        moviesAdapter.setMedias(movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()));
-        seriesAdapter.setMedias(series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()));
+        moviesAdapter.submitList(movies.stream().map(Movie::toAdapterFormat).collect(Collectors.toList()));
+        seriesAdapter.submitList(series.stream().map(Serie::toAdapterFormat).collect(Collectors.toList()));
         artistsAdapter.setArtist(artists);
     }
 

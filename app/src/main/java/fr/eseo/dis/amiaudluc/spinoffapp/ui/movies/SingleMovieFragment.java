@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +51,10 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private FragmentSingleMovieBinding binding;
     private MovieViewModel movieViewModel;
+
+    private ArtistsAdapter artistsAdapter;
+    private ActorsAdapter actorsAdapter;
+    private MediaAdapter mediaAdapter;
     private WatchProviderAdapter watchProviderAdapter;
     
     private YoutubeConnector youtubeConnector;
@@ -114,8 +119,10 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
 
     private void setupRecyclerViews() {
         binding.realisators.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.realisators.setHasFixedSize(true);
+        binding.realisators.setHasFixedSize(false);
         binding.realisators.setNestedScrollingEnabled(false);
+        this.artistsAdapter = new ArtistsAdapter(requireContext(), this, new ArrayList<>());
+        binding.realisators.setAdapter(this.artistsAdapter);
 
         binding.watchProviders.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.watchProviders.setHasFixedSize(false);
@@ -123,12 +130,16 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         binding.watchProviders.setAdapter(this.watchProviderAdapter);
 
         binding.cast.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.cast.setHasFixedSize(true);
+        binding.cast.setHasFixedSize(false);
         binding.cast.setNestedScrollingEnabled(false);
+        this.actorsAdapter = new ActorsAdapter(requireContext(), this, new ArrayList<>());
+        binding.cast.setAdapter(this.actorsAdapter);
 
         binding.recyclerRecommendations.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.recyclerRecommendations.setHasFixedSize(true);
+        binding.recyclerRecommendations.setHasFixedSize(false);
         binding.recyclerRecommendations.setNestedScrollingEnabled(false);
+        this.mediaAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), true);
+        binding.recyclerRecommendations.setAdapter(this.mediaAdapter);
     }
 
     private void observeViewModel() {
@@ -213,23 +224,14 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         }
 
         // recyclers
-        binding.realisators.setAdapter(
-                new ArtistsAdapter(requireContext(), this, movie.getDirectors())
-        );
-        binding.cast.setAdapter(
-                new ActorsAdapter(requireContext(), this, movie.getCredits().getCast())
-        );
-        binding.recyclerRecommendations.setAdapter(
-                new MediaAdapter(
-                        requireContext(),
-                        this,
-                        movie.getRecommendations()
-                                .getResults()
-                                .stream()
-                                .map(Movie::toAdapterFormat)
-                                .collect(Collectors.toList()),
-                        true
-                )
+        this.artistsAdapter.submitList(movie.getDirectors());
+        this.actorsAdapter.submitList(movie.getCredits().getCast());
+        this.mediaAdapter.submitList(
+                movie.getRecommendations()
+                        .getResults()
+                        .stream()
+                        .map(Movie::toAdapterFormat)
+                        .collect(Collectors.toList())
         );
     }
     private void updateWatchProviderUI(List<WatchProvider> watchProviders) {
@@ -239,7 +241,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         }
 
         binding.watchProviders.setVisibility(View.VISIBLE);
-        this.watchProviderAdapter.setData(
+        this.watchProviderAdapter.submitList(
                 watchProviders
                         .stream()
                         .limit(2)

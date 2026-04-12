@@ -111,7 +111,7 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
     }
 
     private void loadSeries(List<AdapterData> serieDatabaseList){
-        this.seriesAdapter.setMedias(serieDatabaseList);
+        this.seriesAdapter.submitList(serieDatabaseList);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +33,6 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.NetworksAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
@@ -46,6 +46,10 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
     private FragmentSingleSerieBinding binding;
     private SerieViewModel serieViewModel;
+    private SeasonsAdapter seasonsAdapter;
+    private ArtistsAdapter artistsAdapter;
+    private WatchProviderAdapter networksAdapter;
+    private MediaAdapter mediaAdapter;
     private WatchProviderAdapter watchProviderAdapter;
     private YoutubeConnector youtubeConnector;
     private int serieId;
@@ -79,10 +83,10 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
         // Initialize ViewModel shared with Activity
         serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        
+
         setupRecyclerViews();
         setupChips();
         setupYoutubePlayer();
@@ -103,14 +107,21 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
     private void setupRecyclerViews() {
         binding.seasons.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.seasons.setHasFixedSize(true);
+        binding.seasons.setHasFixedSize(false);
         binding.seasons.setNestedScrollingEnabled(false);
+        this.seasonsAdapter = new SeasonsAdapter(requireContext(), this, new ArrayList<>());
+        binding.seasons.setAdapter(this.seasonsAdapter);
 
         binding.realisators.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.realisators.setHasFixedSize(true);
+        binding.realisators.setHasFixedSize(false);
+        this.artistsAdapter = new ArtistsAdapter(requireContext(), this, new ArrayList<>());
+        binding.realisators.setAdapter(this.artistsAdapter);
+
 
         binding.networks.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.networks.setHasFixedSize(true);
+        binding.networks.setHasFixedSize(false);
+        this.networksAdapter = WatchProviderAdapter.newInstance(getString(R.string.base_url_poster_300));
+        binding.networks.setAdapter(this.networksAdapter);
 
         binding.watchProviders.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.watchProviders.setHasFixedSize(false);
@@ -119,7 +130,9 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
 
 
         binding.recyclerRecommendations.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.recyclerRecommendations.setHasFixedSize(true);
+        binding.recyclerRecommendations.setHasFixedSize(false);
+        this.mediaAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), true);
+        binding.recyclerRecommendations.setAdapter(this.mediaAdapter);
     }
 
     private void setupYoutubePlayer() {
@@ -191,19 +204,26 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
             binding.youtube.youtubeCard.setVisibility(View.GONE);
         }
 
-        binding.seasons.setAdapter(new SeasonsAdapter(requireContext(), this, serie.getSeasons()));
-        binding.realisators.setAdapter(new ArtistsAdapter(requireContext(), this, serie.getCreatedBy()));
-        binding.networks.setAdapter(new NetworksAdapter(requireContext(), serie.getNetworks()));
+        this.seasonsAdapter.submitList(serie.getSeasons());
+        this.artistsAdapter.submitList(serie.getCreatedBy());
+        this.networksAdapter.submitList(
+                serie.getNetworks()
+                        .stream()
+                        .map(n -> new AdapterData(
+                                n.getId(),
+                                n.getName(),
+                                n.getLogoPath(),
+                                null
+                        ))
+                        .collect(Collectors.toList())
+        );
 
         if (serie.getRecommendations() != null) {
-            binding.recyclerRecommendations.setAdapter(new MediaAdapter(
-                    requireContext(),
-                    this,
+            this.mediaAdapter.submitList(
                     serie.getRecommendations().getResults().stream()
                             .map(Movie::toAdapterFormat)
-                            .collect(Collectors.toList()),
-                    true
-            ));
+                            .collect(Collectors.toList())
+            );
         }
     }
 
@@ -214,7 +234,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         }
 
         binding.watchProviders.setVisibility(View.VISIBLE);
-        this.watchProviderAdapter.setData(
+        this.watchProviderAdapter.submitList(
                 watchProviders
                         .stream()
                         .limit(3)
@@ -237,7 +257,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
     @Override
     public void onItemClick(Integer id, FragmentType type) {
         if (type == null) return;
-        
+
         switch (type) {
             // recommendations are movie, but still they are series at the end
             case MOVIE: {

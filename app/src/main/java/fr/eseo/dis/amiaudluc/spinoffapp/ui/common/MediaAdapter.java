@@ -36,10 +36,6 @@ public class MediaAdapter extends ListAdapter<AdapterData, MediaAdapter.MediaVie
         }
     }
 
-    public void setMedias(List<AdapterData> series) {
-        submitList(series != null ? new ArrayList<>(series) : null);
-    }
-
     @NonNull
     @Override
     public MediaAdapter.MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

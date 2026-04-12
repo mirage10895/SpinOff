@@ -20,13 +20,18 @@
         android:id="@+id/search_bar_container"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        app:boxCornerRadiusBottomEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusTopStart="12dp"
+        android:layout_marginVertical="24dp"
+        app:boxCornerRadiusBottomEnd="24dp"
+        app:boxCornerRadiusBottomStart="24dp"
+        app:hintTextColor="?android:attr/textColorPrimary"
+        app:hintEnabled="false"
+        app:cursorColor="?android:attr/textColorPrimary"
+        app:boxCornerRadiusTopEnd="24dp"
+        app:boxCornerRadiusTopStart="24dp"
+        app:boxStrokeColor="@color/card_background_color"
+        app:boxBackgroundColor="@color/card_background_color"
         app:endIconMode="clear_text"
         app:endIconTint="?android:attr/textColorPrimary"
         app:endIconTintMode="src_atop"
@@ -35,7 +40,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/query"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:hint="@string/txt_search"
             android:inputType="text"
             android:lines="1"
@@ -49,7 +54,8 @@
         android:id="@+id/no_media_display"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginVertical="@dimen/activity_vertical_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_bar_container">
 
@@ -81,7 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginVertical="@dimen/activity_vertical_margin"
         app:layout_constraintTop_toBottomOf="@id/search_bar_container">
 
         <ProgressBar
@@ -90,20 +97,22 @@
             android:layout_centerInParent="true" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/results_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone"
-        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginVertical="@dimen/activity_vertical_margin"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_bar_container">
 
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
 
-    </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
