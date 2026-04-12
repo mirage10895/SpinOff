@@ -16,13 +16,13 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 
 public class SerieRepository {
     private static SerieRepository INSTANCE = null;
 
     private final SerieDAO serieDAO;
-    private final ApiRepository apiRepository;
+    private final TmdbApiRepository apiRepository;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
 
@@ -36,7 +36,7 @@ public class SerieRepository {
     private SerieRepository(Context context) {
         AppDatabase db = AppDatabase.getAppDatabase(context);
         serieDAO = db.serieDAO();
-        this.apiRepository = ApiRepository.getInstance();
+        this.apiRepository = TmdbApiRepository.getInstance();
     }
 
     public LiveData<List<SerieDatabase>> fetchAll() {
@@ -84,7 +84,7 @@ public class SerieRepository {
         serieDatabase.setName(apiSerie.get().getName());
         serieDatabase.setPosterPath(apiSerie.get().getPosterPath());
         serieDatabase.setWatched(isWatched);
-        serieDatabase.setGenres(ApiRepository.formatGenres(apiSerie.get().getGenres()));
+        serieDatabase.setGenres(TmdbApiRepository.formatGenres(apiSerie.get().getGenres()));
         serieDatabase.setEpisodeCount(apiSerie.get().getNumberOfEpisodes());
         serieDatabase.setSeasonCount(apiSerie.get().getNumberOfSeasons());
         serieDatabase.setFirstAirDate(apiSerie.get().getFirstAirDate());

@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data;
+package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

@@ -9,7 +9,7 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import lombok.Getter;
 
 public class ArtistViewModel extends AndroidViewModel {
@@ -21,14 +21,12 @@ public class ArtistViewModel extends AndroidViewModel {
     @Getter
     private final LiveData<Artist> artist;
 
-    private final ApiRepository apiRepository;
-
     public ArtistViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
         this.savedStateHandle = savedStateHandle;
         this.artistIdTrigger = savedStateHandle.getLiveData(ARTIST_ID_KEY);
 
-        this.apiRepository = ApiRepository.getInstance();
+        TmdbApiRepository apiRepository = TmdbApiRepository.getInstance();
 
         this.artist = Transformations.switchMap(artistIdTrigger, apiRepository::getArtistById);
     }

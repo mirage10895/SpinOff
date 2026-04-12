@@ -1,17 +1,18 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data;
+package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.function.Function;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum MovieType {
+public enum SerieType {
     POPULAR(
             "popular",
             page -> DiscoverFilters.builder()
@@ -35,7 +36,7 @@ public enum MovieType {
                     .build()
     ),
     ON_AIR(
-            "now_playing",
+            "on_the_air",
             page -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
@@ -43,13 +44,13 @@ public enum MovieType {
                     .page(page)
                     .sortBy(DiscoverSortPath.POPULARITY.withSort(DiscoverSort.DESC))
                     .withReleaseType("2|3")
-                    .releaseDateGte(
+                    .airDateGte(
                             LocalDate.now()
                                     .minusWeeks(6)
                                     .with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY))
                                     .format(DateUtils.CLASSIC_DATE_FORMATTER)
                     )
-                    .releaseDateLte(
+                    .airDateLte(
                             LocalDate.now()
                                     .with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY))
                                     .format(DateUtils.CLASSIC_DATE_FORMATTER)

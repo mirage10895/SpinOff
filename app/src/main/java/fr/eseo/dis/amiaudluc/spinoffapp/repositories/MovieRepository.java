@@ -15,13 +15,13 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.MovieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 
 public class MovieRepository {
     private static MovieRepository INSTANCE = null;
 
     private final MovieDAO movieDao;
-    private final ApiRepository apiRepository;
+    private final TmdbApiRepository apiRepository;
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     public static MovieRepository getRepository(Context context) {
@@ -34,7 +34,7 @@ public class MovieRepository {
     private MovieRepository(Context context) {
         AppDatabase db = AppDatabase.getAppDatabase(context);
         movieDao = db.moviesDAO();
-        this.apiRepository = ApiRepository.getInstance();
+        this.apiRepository = TmdbApiRepository.getInstance();
     }
 
     public LiveData<List<MovieDatabase>> fetchAll() {
@@ -82,7 +82,7 @@ public class MovieRepository {
         movieDatabase.setPosterPath(apiMovie.get().getPosterPath());
         movieDatabase.setRuntime(apiMovie.get().getRuntime());
         movieDatabase.setWatched(isWatched);
-        movieDatabase.setGenres(ApiRepository.formatGenres(apiMovie.get().getGenres()));
+        movieDatabase.setGenres(TmdbApiRepository.formatGenres(apiMovie.get().getGenres()));
         movieDatabase.setReleaseDate(apiMovie.get().getReleaseDate());
         movieDatabase.setLastSynchronisationTime(Instant.now());
         return movieDatabase;

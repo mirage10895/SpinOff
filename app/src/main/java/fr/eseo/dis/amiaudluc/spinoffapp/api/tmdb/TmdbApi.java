@@ -20,7 +20,7 @@ import retrofit2.http.QueryMap;
  * Created by lucasamiaud on 03/03/2019.
  */
 
-public interface TMDBApi {
+public interface TmdbApi {
 
     @GET("discover/movie")
     Call<ApiListResponse<Movie>> discoverMovie(

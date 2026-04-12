@@ -11,10 +11,10 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.MovieRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class MovieViewModel extends AndroidViewModel {
         this.savedStateHandle = savedStateHandle;
         this.movieIdTrigger = savedStateHandle.getLiveData(MOVIE_ID_KEY);
 
-        ApiRepository apiRepository = ApiRepository.getInstance();
+        TmdbApiRepository apiRepository = TmdbApiRepository.getInstance();
         this.movieRepository = MovieRepository.getRepository(application);
 
         this.movie = Transformations.switchMap(movieIdTrigger, apiRepository::getMovieById);

@@ -2,16 +2,15 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel;
 
 import android.app.Application;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
-
-import java.util.List;
-
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 import lombok.Getter;
 
 public class SearchViewModel extends AndroidViewModel {
@@ -21,14 +20,13 @@ public class SearchViewModel extends AndroidViewModel {
 
     @Getter
     private final LiveData<List<Media>> medias;
-    private final ApiRepository apiRepository;
 
     public SearchViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
         this.savedStateHandle = savedStateHandle;
         this.searchQuery = savedStateHandle.getLiveData(SEARCH_QUERY_KEY);
 
-        this.apiRepository = ApiRepository.getInstance();
+        TmdbApiRepository apiRepository = TmdbApiRepository.getInstance();
         
         // switchMap ensures that whenever searchQuery changes, we switch to a new LiveData source
         // but the 'medias' reference remains the same for the Observer in the Activity.
@@ -36,7 +34,7 @@ public class SearchViewModel extends AndroidViewModel {
             if (query == null || query.trim().isEmpty()) {
                 return new androidx.lifecycle.MutableLiveData<>(); // Return empty if no query
             }
-            return this.apiRepository.getSearchByQuery(query);
+            return apiRepository.getSearchByQuery(query);
         });
     }
 

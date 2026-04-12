@@ -12,13 +12,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;
@@ -53,7 +53,7 @@ public class SerieViewModel extends AndroidViewModel {
     @Getter
     private final LiveData<SerieStats> serieStats;
 
-    private final ApiRepository apiRepository;
+    private final TmdbApiRepository apiRepository;
     private final SerieRepository serieRepository;
 
     public SerieViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
@@ -63,7 +63,7 @@ public class SerieViewModel extends AndroidViewModel {
         this.seasonTrigger = savedStateHandle.getLiveData(SEASON_REQ_KEY);
         this.episodeTrigger = savedStateHandle.getLiveData(EPISODE_REQ_KEY);
 
-        this.apiRepository = ApiRepository.getInstance();
+        this.apiRepository = TmdbApiRepository.getInstance();
         this.serieRepository = SerieRepository.getRepository(application);
 
         // Wiring triggers to repository calls using switchMap

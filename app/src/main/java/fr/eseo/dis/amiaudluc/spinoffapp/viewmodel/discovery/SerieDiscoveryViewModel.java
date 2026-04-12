@@ -7,16 +7,15 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.pagesearch.PageSearchViewModel;
 
 public class SerieDiscoveryViewModel extends PageSearchViewModel<Serie, DiscoveryType> {
-    private final ApiRepository apiRepository;
+    private final TmdbApiRepository apiRepository;
 
     public SerieDiscoveryViewModel(@NonNull Application application) {
         super(application);
-        this.apiRepository = ApiRepository.getInstance();
+        this.apiRepository = TmdbApiRepository.getInstance();
     }
 
     @Override

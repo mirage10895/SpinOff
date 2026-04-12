@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data;
+package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
