@@ -12,10 +12,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.MovieRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;
 
@@ -28,7 +28,7 @@ public class MovieViewModel extends AndroidViewModel {
     @Getter
     private final LiveData<Movie> movie;
     @Getter
-    private final LiveData<List<WatchProvider>> movieWatchProviders;
+    private final LiveData<List<WatchProviderAdapterData>> movieWatchProviders;
     @Getter
     private final LiveData<List<MovieDatabase>> databaseMovies;
     @Getter

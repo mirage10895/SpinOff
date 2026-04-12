@@ -10,12 +10,14 @@
     app:cardElevation="4dp"
     app:cardBackgroundColor="@android:color/transparent"
     android:layout_marginHorizontal="4dp"
-    android:clickable="false" >
+    android:clickable="false"
+    android:focusable="false">
 
     <ImageView
         android:id="@+id/watch_provider_logo"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:contentDescription="@string/producer_text"
         android:scaleType="centerInside" />
 
 </com.google.android.material.card.MaterialCardView>

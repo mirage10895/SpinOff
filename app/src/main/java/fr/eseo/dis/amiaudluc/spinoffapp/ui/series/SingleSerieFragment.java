@@ -23,16 +23,15 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
@@ -209,7 +208,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         this.networksAdapter.submitList(
                 serie.getNetworks()
                         .stream()
-                        .map(n -> new AdapterData(
+                        .map(n -> new WatchProviderAdapterData(
                                 n.getId(),
                                 n.getName(),
                                 n.getLogoPath(),
@@ -227,7 +226,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         }
     }
 
-    private void updateWatchProviderUI(List<WatchProvider> watchProviders) {
+    private void updateWatchProviderUI(List<WatchProviderAdapterData> watchProviders) {
         if (watchProviders == null || watchProviders.isEmpty()) {
             binding.watchProviders.setVisibility(View.GONE);
             return;
@@ -238,12 +237,6 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
                 watchProviders
                         .stream()
                         .limit(3)
-                        .map(w -> new AdapterData(
-                                w.providerId(),
-                                w.providerName(),
-                                w.logoPath(),
-                                null
-                        ))
                         .collect(Collectors.toList())
         );
     }

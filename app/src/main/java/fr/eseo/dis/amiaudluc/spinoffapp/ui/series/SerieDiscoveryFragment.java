@@ -19,7 +19,7 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;

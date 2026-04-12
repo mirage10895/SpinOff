@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
+
 public record WatchProvider(
         String logoPath,
         int providerId,
@@ -15,14 +17,16 @@ public record WatchProvider(
             List<WatchProvider> buy,
             List<WatchProvider> flatrate,
             List<WatchProvider> rent
-    ) {}
+    ) {
+    }
 
     public record WatchProviderApiResponse(
             int id,
             Map<String, WatchProviders> results
-    ) {}
+    ) {
+    }
 
-    public static List<WatchProvider> filterOutWatchProviders(WatchProviderApiResponse watchProviderApiResponse) {
+    public static List<WatchProviderAdapterData> filterOutWatchProviders(WatchProviderApiResponse watchProviderApiResponse) {
         WatchProviders watchProviders = watchProviderApiResponse.results().get("FR");
         if (watchProviders == null) {
             return List.of();
@@ -35,6 +39,12 @@ public record WatchProvider(
         return watchProviders.flatrate()
                 .stream()
                 .filter(w -> !w.providerName.contains("Ads"))
+                .map(w -> new WatchProviderAdapterData(
+                        w.providerId,
+                        w.providerName,
+                        w.logoPath,
+                        watchProviders.link()
+                ))
                 .collect(Collectors.toList());
     }
 }

@@ -21,6 +21,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.DiscoverFilters;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,7 +57,7 @@ public class ApiRepository {
         return execute(this.tmdbApiService.api.getMovieById(id, "credits,videos,recommendations"));
     }
 
-    public LiveData<List<WatchProvider>> fetchMovieWatchProvider(Integer id) {
+    public LiveData<List<WatchProviderAdapterData>> fetchMovieWatchProvider(Integer id) {
         return executeAsync(
                 this.tmdbApiService.api.fetchMovieWatchProvider(id),
                 WatchProvider::filterOutWatchProviders
@@ -80,7 +81,7 @@ public class ApiRepository {
         return execute(this.tmdbApiService.api.getSerieById(id, "credits,videos,recommendations"));
     }
 
-    public LiveData<List<WatchProvider>> fetchTvWatchProvider(Integer id) {
+    public LiveData<List<WatchProviderAdapterData>> fetchTvWatchProvider(Integer id) {
         return executeAsync(
                 this.tmdbApiService.api.fetchTvWatchProvider(id),
                 WatchProvider::filterOutWatchProviders

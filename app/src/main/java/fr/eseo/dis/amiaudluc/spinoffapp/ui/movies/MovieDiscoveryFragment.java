@@ -20,7 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;

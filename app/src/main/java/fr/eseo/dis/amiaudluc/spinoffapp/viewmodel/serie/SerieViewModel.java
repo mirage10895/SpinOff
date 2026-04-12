@@ -15,11 +15,11 @@ import androidx.lifecycle.Transformations;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;
 
@@ -43,7 +43,7 @@ public class SerieViewModel extends AndroidViewModel {
     @Getter
     private final LiveData<Serie> serie;
     @Getter
-    private final LiveData<List<WatchProvider>> serieWatchProviders;
+    private final LiveData<List<WatchProviderAdapterData>> serieWatchProviders;
     @Getter
     private final LiveData<Season> season;
     @Getter

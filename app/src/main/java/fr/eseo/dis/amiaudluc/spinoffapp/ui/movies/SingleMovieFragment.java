@@ -24,17 +24,16 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentSingleMovieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
@@ -234,7 +233,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
                         .collect(Collectors.toList())
         );
     }
-    private void updateWatchProviderUI(List<WatchProvider> watchProviders) {
+    private void updateWatchProviderUI(List<WatchProviderAdapterData> watchProviders) {
         if (watchProviders == null || watchProviders.isEmpty()) {
             binding.watchProviders.setVisibility(View.GONE);
             return;
@@ -244,13 +243,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
         this.watchProviderAdapter.submitList(
                 watchProviders
                         .stream()
-                        .limit(2)
-                        .map(w -> new AdapterData(
-                                w.providerId(),
-                                w.providerName(),
-                                w.logoPath(),
-                                null
-                        ))
+                        .limit(3)
                         .collect(Collectors.toList())
         );
     }

@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.networks;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +15,14 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ItemWatchProviderBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 
-public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProviderAdapter.WatchProviderViewHolder> {
+public class WatchProviderAdapter extends ListAdapter<WatchProviderAdapterData, WatchProviderAdapter.WatchProviderViewHolder> {
 
     private final String baseImageUrl;
 
     private WatchProviderAdapter(String baseImageUrl) {
-        super(AdapterData.DIFF_CALLBACK);
+        super(WatchProviderAdapterData.DIFF_CALLBACK);
         this.baseImageUrl = baseImageUrl;
         submitList(new ArrayList<>());
     }
@@ -33,8 +35,8 @@ public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProvider
     @Override
     public WatchProviderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemWatchProviderBinding binding = ItemWatchProviderBinding.inflate(
-                LayoutInflater.from(parent.getContext()), 
-                parent, 
+                LayoutInflater.from(parent.getContext()),
+                parent,
                 false
         );
         return new WatchProviderViewHolder(binding);
@@ -42,7 +44,7 @@ public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProvider
 
     @Override
     public void onBindViewHolder(@NonNull WatchProviderViewHolder holder, int position) {
-        AdapterData item = getItem(position);
+        WatchProviderAdapterData item = getItem(position);
         holder.bind(item, baseImageUrl);
     }
 
@@ -55,14 +57,14 @@ public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProvider
             this.binding = binding;
         }
 
-        public void bind(AdapterData item, String baseImageUrl) {
+        public void bind(WatchProviderAdapterData item, String baseImageUrl) {
             if (item.posterPath() == null) {
                 binding.watchProviderContainer.setVisibility(View.GONE);
                 return;
             } else {
                 binding.watchProviderContainer.setVisibility(View.VISIBLE);
             }
-            
+
             String link = baseImageUrl + item.posterPath();
             Picasso.get()
                     .load(link)
@@ -70,6 +72,18 @@ public class WatchProviderAdapter extends ListAdapter<AdapterData, WatchProvider
                     .centerInside()
                     .error(R.drawable.ic_launcher_foreground)
                     .into(binding.watchProviderLogo);
+
+            if (item.externalUrl() != null) {
+                binding.watchProviderContainer.setClickable(true);
+                binding.watchProviderContainer.setFocusable(true);
+                binding.watchProviderContainer.setOnClickListener((view) -> {
+                    binding.getRoot().getContext()
+                            .startActivity(new Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(item.externalUrl())
+                            ));
+                });
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.ui.common;
+package fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 
 public record AdapterData(
         int id,

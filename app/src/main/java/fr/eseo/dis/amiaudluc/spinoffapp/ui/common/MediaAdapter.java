@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 
 public class MediaAdapter extends ListAdapter<AdapterData, MediaAdapter.MediaViewHolder> {
     private final ItemInterface fragment;
