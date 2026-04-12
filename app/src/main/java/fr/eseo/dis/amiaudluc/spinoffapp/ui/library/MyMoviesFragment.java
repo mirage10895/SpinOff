@@ -56,7 +56,7 @@ public class MyMoviesFragment extends BaseLibraryFragment {
         binding.watchlistValue.setText(String.valueOf(stats.getWatchlistCount()));
 
         // Remove Avg Release Year as it's a duplicate of the one below
-        binding.metric3Card.setVisibility(View.GONE);
+        binding.metricSerieCards.setVisibility(View.GONE);
 
         // Genres
         binding.topGenreName.setText(stats.getTopGenre());

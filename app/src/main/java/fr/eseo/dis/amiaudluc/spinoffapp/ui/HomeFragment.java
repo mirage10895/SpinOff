@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryType;
@@ -18,10 +19,10 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 
 public class HomeFragment extends Fragment {
 
-    private static final String ARG_IS_MOVIE = "is_movie";
+    private static final String ARG_TYPE = "fragment_type";
     private FragmentHomeBinding binding;
 
-    private boolean isMovie;
+    private FragmentType fragmentType;
     private DiscoveryViewModel discoveryViewModel;
     private DiscoveryType type = DiscoveryType.POPULAR;
 
@@ -30,9 +31,9 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance(boolean isMovie) {
+    public static HomeFragment newInstance(FragmentType type) {
         Bundle args = new Bundle();
-        args.putBoolean(ARG_IS_MOVIE, isMovie);
+        args.putSerializable(ARG_TYPE, type);
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isMovie = getArguments().getBoolean(ARG_IS_MOVIE);
+            fragmentType = (FragmentType) getArguments().getSerializable(ARG_TYPE);
         }
     }
 
@@ -59,10 +60,16 @@ public class HomeFragment extends Fragment {
 
         this.discoveryViewModel = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
 
+        // Restore state from ViewModel
+        DiscoveryType savedType = this.discoveryViewModel.getFilter(fragmentType).getValue();
+        if (savedType != null) {
+            this.type = savedType;
+        }
+
         binding.textWelcome.setText(R.string.menu_discover);
 
         if (savedInstanceState == null) {
-            Fragment discoveryFragment = isMovie ?
+            Fragment discoveryFragment = fragmentType == FragmentType.MOVIE ?
                     MovieDiscoveryFragment.newInstance() :
                     SerieDiscoveryFragment.newInstance();
 
@@ -76,6 +83,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFilters() {
+        updatePresetFilter(type);
         binding.chipPopular.setOnClickListener(v -> updatePresetFilter(DiscoveryType.POPULAR));
         binding.chipTopRated.setOnClickListener(v -> updatePresetFilter(DiscoveryType.TOP_RATED));
         binding.chipOnAir.setOnClickListener(v -> updatePresetFilter(DiscoveryType.ON_AIR));
@@ -98,7 +106,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void pushStateToViewModel() {
-        this.discoveryViewModel.setFilter(type);
+        this.discoveryViewModel.setFilter(type, fragmentType);
     }
 
     @Override

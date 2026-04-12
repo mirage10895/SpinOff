@@ -42,8 +42,8 @@ public class MultiSegmentProgressView extends View {
     private final RectF rectF = new RectF();
     private List<Segment> segments = new ArrayList<>();
 
-    private float strokeWidthBackground = 16f;
-    private float strokeWidthSegment = 20f;
+    private float strokeWidthBackground = 35f;
+    private float strokeWidthSegment = 40f;
     private int backgroundColor = Color.parseColor("#33FFFFFF"); // Default semi-transparent white
 
     public MultiSegmentProgressView(Context context) {

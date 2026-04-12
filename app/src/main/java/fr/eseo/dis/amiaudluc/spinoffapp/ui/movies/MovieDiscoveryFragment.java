@@ -61,8 +61,8 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
 
         binding.cardList.setAdapter(this.moviesAdapter);
 
-        this.movieDiscoveryViewModel.bindFilters(this.discoveryViewModel.getFilter());
-        this.discoveryViewModel.getFilter().observe(getViewLifecycleOwner(), type -> resetScroll());
+        this.movieDiscoveryViewModel.bindFilters(this.discoveryViewModel.getFilter(FragmentType.MOVIE));
+        this.discoveryViewModel.getFilter(FragmentType.MOVIE).observe(getViewLifecycleOwner(), type -> resetScroll());
 
         this.observeMovies();
     }

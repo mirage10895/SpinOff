@@ -27,6 +27,7 @@ import androidx.work.WorkManager;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ActivityMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.services.UpdateSeriesWorker;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.library.LibraryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.search.SearchContainerFragment;
 
@@ -84,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_movies) {
-                switchFragment(HomeFragment.newInstance(true));
+                switchFragment(HomeFragment.newInstance(FragmentType.MOVIE));
                 return true;
             }
             if (id == R.id.nav_series) {
-                switchFragment(HomeFragment.newInstance(false));
+                switchFragment(HomeFragment.newInstance(FragmentType.SERIE));
                 return true;
             }
             if (id == R.id.nav_discover) {

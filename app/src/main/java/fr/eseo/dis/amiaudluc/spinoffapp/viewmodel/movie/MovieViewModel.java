@@ -5,7 +5,6 @@ import android.app.Application;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,6 +16,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.MovieRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;
 
 public class MovieViewModel extends AndroidViewModel {
@@ -95,10 +95,7 @@ public class MovieViewModel extends AndroidViewModel {
         // Process Genres
         if (!genreCounts.isEmpty()) {
             stats.setTopGenres(
-                    genreCounts.entrySet().stream()
-                            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                            .limit(6)
-                            .collect(Collectors.toList())
+                    StatUtils.topNWithOther(genreCounts, 8)
             );
             stats.setTopGenre(stats.getTopGenres().get(0).getKey());
         }
@@ -114,10 +111,7 @@ public class MovieViewModel extends AndroidViewModel {
         // Process Years
         if (!yearCounts.isEmpty()) {
             stats.setTopYears(
-                    yearCounts.entrySet().stream()
-                            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                            .limit(6)
-                            .collect(Collectors.toList())
+                    StatUtils.topNWithOther(yearCounts, 8)
             );
             stats.setTopYear(stats.getTopYears().get(0).getKey());
         }

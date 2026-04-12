@@ -11,6 +11,7 @@ import lombok.Setter;
 public class SerieStats {
     private long totalMinutes;
     private int totalEpisodes;
+    private int totalSeasons;
     private int totalSeries;
     private int watchlistCount;
     private String topGenre = "";

@@ -5,7 +5,6 @@ import android.app.Application;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -21,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.ApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.tmdb.data.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;
 
 public class SerieViewModel extends AndroidViewModel {
@@ -189,8 +189,10 @@ public class SerieViewModel extends AndroidViewModel {
         for (SerieDatabase serie : series) {
             if (serie.isWatched()) {
                 int episodes = serie.getEpisodeCount() != null ? serie.getEpisodeCount() : 0;
+                int seasons = serie.getSeasonCount() != null ? serie.getSeasonCount() : 0;
                 totalRuntimeMinutes += serie.getRuntime();
                 stats.setTotalEpisodes(stats.getTotalEpisodes() + episodes);
+                stats.setTotalSeasons(stats.getTotalSeasons() + seasons);
                 stats.setTotalSeries(stats.getTotalSeries() + 1);
 
                 // Genres and Combinations
@@ -221,10 +223,7 @@ public class SerieViewModel extends AndroidViewModel {
         // Process Genres
         if (!genreCounts.isEmpty()) {
             stats.setTopGenres(
-                    genreCounts.entrySet().stream()
-                            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                            .limit(6)
-                            .collect(Collectors.toList())
+                    StatUtils.topNWithOther(genreCounts, 8)
             );
             stats.setTopGenre(stats.getTopGenres().get(0).getKey());
         }
@@ -240,10 +239,7 @@ public class SerieViewModel extends AndroidViewModel {
         // Process Years
         if (!yearCounts.isEmpty()) {
             stats.setTopYears(
-                    yearCounts.entrySet().stream()
-                            .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                            .limit(6)
-                            .collect(Collectors.toList())
+                    StatUtils.topNWithOther(yearCounts, 8)
             );
             stats.setTopYear(stats.getTopYears().get(0).getKey());
         }

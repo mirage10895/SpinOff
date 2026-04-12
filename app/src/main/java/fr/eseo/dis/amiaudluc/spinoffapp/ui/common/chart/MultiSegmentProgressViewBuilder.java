@@ -42,6 +42,11 @@ public class MultiSegmentProgressViewBuilder {
         return this;
     }
 
+    public MultiSegmentProgressViewBuilder withStrokeWidths(float background, float segment) {
+        this.chartView.setStrokeWidths(background, segment);
+        return this;
+    }
+
     public MultiSegmentProgressViewBuilder withData(List<Map.Entry<String, Integer>> data) {
         this.data = data;
         return this;

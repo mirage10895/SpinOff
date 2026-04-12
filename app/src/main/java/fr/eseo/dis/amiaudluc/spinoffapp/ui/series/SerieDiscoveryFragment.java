@@ -54,8 +54,8 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
         this.seriesAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), false);
         binding.cardList.setAdapter(this.seriesAdapter);
 
-        this.serieDiscoveryViewModel.bindFilters(this.discoveryViewModel.getFilter());
-        this.discoveryViewModel.getFilter().observe(getViewLifecycleOwner(), type -> resetScroll());
+        this.serieDiscoveryViewModel.bindFilters(this.discoveryViewModel.getFilter(FragmentType.SERIE));
+        this.discoveryViewModel.getFilter(FragmentType.SERIE).observe(getViewLifecycleOwner(), type -> resetScroll());
 
         this.observeSeries();
     }

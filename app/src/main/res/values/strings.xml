@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Spin-Off</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <!-- Fragments -->
     <string name="fragment_search_medias">Search Media</string>
     <string name="fragment_single_movie">Single Movie</string>
@@ -34,15 +31,6 @@
     <string name="menu_movie">Movies</string>
     <string name="menu_series">Series</string>
     <string name="menu_artists">Persons</string>
-    <string name="menu_my_space">Personal space</string>
-    <string name="menu_calendar">My Calendar</string>
-
-    <!-- YOUTUBE -->
-
-    <string name="player_error">Error initializing YouTube player: %s</string>
-    <string name="seek_to">Jump To</string>
-    <string name="seek_to_hint">Seconds</string>
-
 
     <string name="details_overview">Overview</string>
     <string name="imdb_rating">iMDB Rating</string>
@@ -60,7 +48,7 @@
     <string name="tv_episode">The TV Episode</string>
     <string name="number_seasons">Seasons (%s)</string>
     <string name="menu_discover">Discover</string>
-    <string name="menu_library">My list</string>
+    <string name="menu_library">My library</string>
     <string name="movie">The movie</string>
 
     <string name="empty_results">Nothing to show</string>
@@ -89,7 +77,6 @@
     <string name="library_media_runtime">Seen runtime</string>
     <string name="library_to_see">Watchlist</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="starring_text">Starring</string>
     <string name="season_text">Season</string>
     <string name="episodes_text">Episodes</string>
@@ -103,20 +90,15 @@
     <string name="biography_text">Biography</string>
     <string name="birthday_text">Born</string>
     <string name="see_more_text">See more</string>
-    <string name="see_all">See all</string>
-    <string name="see_all_stats">See all stats</string>
     <string name="stats_movie_title">Movie Statistics</string>
     <string name="stats_movies_watched">Movies watched</string>
     <string name="stats_average_year_label">Avg. release year</string>
     <string name="stats_serie_title">Series Statistics</string>
     <string name="stats_total_runtime">Total runtime: %s</string>
-    <string name="stats_average_year">Average release year: %d</string>
-    <string name="stats_average_first_air_year">Average first air year: %d</string>
-    <string name="stats_total_seasons">Total seasons watched: %d</string>
-    <string name="stats_total_episodes">Total episodes watched: %d</string>
     <string name="stats_total_runtime_label">Total watch time</string>
     <string name="stats_hours_unit">HOURS</string>
     <string name="stats_days_equivalent">Equivalent to %s of non-stop cinema.</string>
+    <string name="stats_seasons_watched">Seasons watched</string>
     <string name="stats_episodes_watched">Episodes watched</string>
     <string name="stats_series_watched">Series watched</string>
     <string name="stats_genres_preferred">Preferred Genres</string>
@@ -124,7 +106,7 @@
     <string name="stats_prediction_desc">Based on your habits, we suggest you start a new show. Your estimated free time is 4h this Sunday.</string>
     <string name="stats_explore">Explore</string>
     <string name="stats_top_genre">Top Genre</string>
-    <string name="stats_top_genre_combination">Top Combination</string>
+    <string name="stats_top_genre_combination">Top Genre Combination</string>
     <string name="stats_years_distribution">Years Distribution</string>
     <string name="stats_top_year">Top Year</string>
     <string name="previous_text">Previous</string>

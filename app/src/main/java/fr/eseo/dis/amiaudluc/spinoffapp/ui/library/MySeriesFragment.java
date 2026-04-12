@@ -54,9 +54,13 @@ public class MySeriesFragment extends BaseLibraryFragment {
 
         binding.watchlistValue.setText(String.valueOf(stats.getWatchlistCount()));
 
-        binding.metric3Value.setText(String.valueOf(stats.getTotalEpisodes()));
-        binding.metric3Label.setText(R.string.stats_episodes_watched);
-        binding.metric3Icon.setImageResource(R.drawable.ic_movie);
+        binding.metricSerieCard1Value.setText(String.valueOf(stats.getTotalSeasons()));
+        binding.metricSerieCard1Label.setText(R.string.stats_seasons_watched);
+        binding.metricSerieCard1Icon.setImageResource(R.drawable.ic_library);
+
+        binding.metricSerieCard2Value.setText(String.valueOf(stats.getTotalEpisodes()));
+        binding.metricSerieCard2Label.setText(R.string.stats_episodes_watched);
+        binding.metricSerieCard2Icon.setImageResource(R.drawable.ic_movie);
 
         // Genres
         binding.topGenreName.setText(stats.getTopGenre());
