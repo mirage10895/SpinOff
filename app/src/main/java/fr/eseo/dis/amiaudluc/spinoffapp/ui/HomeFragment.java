@@ -14,7 +14,7 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 
 public class HomeFragment extends Fragment {

@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
 
 public class DiscoveryViewModel extends AndroidViewModel {
 

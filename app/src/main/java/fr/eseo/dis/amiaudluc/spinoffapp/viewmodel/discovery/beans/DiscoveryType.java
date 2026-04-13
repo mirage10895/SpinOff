@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery;
+package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans;
 
 public enum DiscoveryType {
     POPULAR,
