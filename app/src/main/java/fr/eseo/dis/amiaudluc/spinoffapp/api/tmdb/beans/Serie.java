@@ -55,6 +55,8 @@ public class Serie implements Media {
                 this.id,
                 this.originalName,
                 this.posterPath,
+                false,
+                false,
                 FragmentType.SERIE
         );
     }

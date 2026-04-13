@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
@@ -92,14 +91,21 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
     }
 
     protected void observeSeries() {
-        this.serieDiscoveryViewModel.getResults().observe(getViewLifecycleOwner(), series -> {
+        this.serieDiscoveryViewModel.getCombinedSeries().observe(getViewLifecycleOwner(), series -> {
             binding.swipeContainer.setRefreshing(false);
             binding.progressBar.setVisibility(View.GONE);
             binding.cardList.setVisibility(View.VISIBLE);
             binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
             if (series != null) {
                 loadSeries(series.stream()
-                        .map(Serie::toAdapterFormat)
+                        .map(s -> new AdapterData(
+                                s.media().getId(),
+                                s.media().getOriginalName(),
+                                s.media().getPosterPath(),
+                                s.isInLibrary(),
+                                s.isWatched(),
+                                FragmentType.SERIE
+                        ))
                         .collect(Collectors.toList()));
             } else {
                 binding.cardList.setVisibility(View.GONE);

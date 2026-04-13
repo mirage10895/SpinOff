@@ -69,6 +69,8 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
                                 m.getId(),
                                 m.getTitle(),
                                 m.getPosterPath(),
+                                true,
+                                m.isWatched(),
                                 FragmentType.MOVIE
                         ))
                         .collect(Collectors.toList());
@@ -83,6 +85,8 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
                                 m.getId(),
                                 m.getName(),
                                 m.getPosterPath(),
+                                true,
+                                m.isWatched(),
                                 FragmentType.SERIE
                         ))
                         .collect(Collectors.toList());

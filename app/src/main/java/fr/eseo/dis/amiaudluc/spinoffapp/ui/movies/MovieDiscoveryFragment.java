@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
@@ -99,7 +98,7 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
     }
 
     public void observeMovies() {
-        this.movieDiscoveryViewModel.getResults().observe(getViewLifecycleOwner(), movies -> {
+        this.movieDiscoveryViewModel.getCombinedMovies().observe(getViewLifecycleOwner(), movies -> {
             binding.swipeContainer.setRefreshing(false);
             binding.progressBar.setVisibility(View.GONE);
             binding.cardList.setVisibility(View.VISIBLE);
@@ -107,7 +106,14 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
             if (movies != null) {
                 loadMovies(
                         movies.stream()
-                                .map(Movie::toAdapterFormat)
+                                .map(m -> new AdapterData(
+                                        m.media().getId(),
+                                        m.media().getOriginalTitle(),
+                                        m.media().getPosterPath(),
+                                        m.isInLibrary(),
+                                        m.isWatched(),
+                                        FragmentType.MOVIE
+                                ))
                                 .collect(Collectors.toList())
                 );
             } else {

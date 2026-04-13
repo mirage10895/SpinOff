@@ -8,6 +8,8 @@ public record AdapterData(
         int id,
         String name,
         String posterPath,
+        boolean isInLibrary,
+        boolean isWatched,
         FragmentType fragmentType
 ) {
 

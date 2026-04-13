@@ -58,6 +58,8 @@ public class Movie implements Media {
                 id,
                 originalTitle,
                 posterPath,
+                false,
+                false,
                 FragmentType.MOVIE
         );
     }
