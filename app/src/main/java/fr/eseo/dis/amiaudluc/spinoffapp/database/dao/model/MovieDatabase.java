@@ -29,6 +29,15 @@ public class MovieDatabase {
     private String genres;
     @ColumnInfo(name = "release_date")
     private LocalDate releaseDate;
+    @ColumnInfo(name = "vote_average")
+    private Double voteAverage;
+    @ColumnInfo(name = "original_language")
+    private String originalLanguage;
+    private Double popularity;
+    @ColumnInfo(name = "production_countries")
+    private String productionCountries;
+    private String actors;
+    private String directors;
 
     public MovieDatabase() {
         this.watched = false;

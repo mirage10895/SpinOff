@@ -11,12 +11,15 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ProductionCountry;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 
 public class SerieRepository {
     private static SerieRepository INSTANCE = null;
@@ -84,10 +87,16 @@ public class SerieRepository {
         serieDatabase.setName(apiSerie.get().getName());
         serieDatabase.setPosterPath(apiSerie.get().getPosterPath());
         serieDatabase.setWatched(isWatched);
-        serieDatabase.setGenres(TmdbApiRepository.formatGenres(apiSerie.get().getGenres()));
+        serieDatabase.setGenres(TmdbApiRepository.formatList(apiSerie.get().getGenres(), Genre::getName));
         serieDatabase.setEpisodeCount(apiSerie.get().getNumberOfEpisodes());
         serieDatabase.setSeasonCount(apiSerie.get().getNumberOfSeasons());
         serieDatabase.setFirstAirDate(apiSerie.get().getFirstAirDate());
+        serieDatabase.setVoteAverage(apiSerie.get().getVoteAverage());
+        serieDatabase.setOriginalLanguage(apiSerie.get().getOriginalLanguage());
+        serieDatabase.setPopularity(apiSerie.get().getPopularity());
+        serieDatabase.setProductionCountries(TmdbApiRepository.formatList(apiSerie.get().getProductionCountries(), ProductionCountry::getName));
+        serieDatabase.setActors(TmdbApiRepository.formatList(apiSerie.get().getCredits().getCast(), Artist::getName));
+        serieDatabase.setDirectors(TmdbApiRepository.formatList(apiSerie.get().getCreatedBy(), Artist::getName));
         serieDatabase.setLastSynchronisationTime(Instant.now());
 
         if (apiSerie.get().getNumberOfSeasons() == null || apiSerie.get().getNumberOfSeasons() == 0) {

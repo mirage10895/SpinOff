@@ -34,4 +34,13 @@ public class SerieDatabase {
     private Integer episodeCount;
     @ColumnInfo(name = "first_air_date")
     private LocalDate firstAirDate;
+    @ColumnInfo(name = "vote_average")
+    private Double voteAverage;
+    @ColumnInfo(name = "original_language")
+    private String originalLanguage;
+    private Double popularity;
+    @ColumnInfo(name = "production_countries")
+    private String productionCountries;
+    private String actors;
+    private String directors;
 }

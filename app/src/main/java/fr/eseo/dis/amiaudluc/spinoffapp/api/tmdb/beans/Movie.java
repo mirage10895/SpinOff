@@ -28,12 +28,12 @@ public class Movie implements Media {
     private String homepage;
     private Integer id;
     private String imdbId;
-    private Language originalLanguage;
+    private String originalLanguage;
     private String originalTitle;
     private String overview;
     private Double popularity;
     private List<ProductionCompany> productionCompanies;
-    private List<ProductionCountry> productionCountry;
+    private List<ProductionCountry> productionCountries;
     private LocalDate releaseDate;
     private Long revenue;
     private List<SpokenLanguage> spokenLanguages;

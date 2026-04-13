@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
+import com.google.gson.annotations.SerializedName;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ProductionCountry {
-    private String iso_3166_1;
+    @SerializedName("iso_3166_1")
+    private String iso31661;
     private String name;
 }

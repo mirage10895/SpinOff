@@ -15,5 +15,5 @@ public class Network {
     private String name;
     private int id;
     private String logoPath;
-    private Language originCountry;
+    private String originCountry;
 }

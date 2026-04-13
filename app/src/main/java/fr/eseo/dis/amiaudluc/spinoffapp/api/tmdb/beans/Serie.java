@@ -26,23 +26,25 @@ public class Serie implements Media {
     private List<Genre> genres;
     private String homepage;
     private Boolean inProduction;
-    private List<Language> languages;
+    private List<String> languages;
     private LocalDate lastAirDate;
     private Episode lastEpisodeToAir;
     private Episode nextEpisodeToAir;
     private List<Network> networks;
     private Integer numberOfSeasons;
     private List<String> originCountry;
-    private Language originalLanguage;
+    private String originalLanguage;
     private String originalName;
     private String overview;
     private Double popularity;
+    private List<ProductionCountry> productionCountries;
     private List<ProductionCompany> productionCompanies;
     private List<Season> seasons;
     private String status;
     private String type;
     private Double voteAverage;
     private Integer voteCount;
+    private Credits<Artist> credits;
     private ApiObjectResponse<Video> videos;
     private ApiObjectResponse<Movie> recommendations;
 

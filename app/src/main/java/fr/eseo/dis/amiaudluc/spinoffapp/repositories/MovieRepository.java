@@ -11,11 +11,14 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ProductionCountry;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.MovieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 
 public class MovieRepository {
     private static MovieRepository INSTANCE = null;
@@ -82,8 +85,14 @@ public class MovieRepository {
         movieDatabase.setPosterPath(apiMovie.get().getPosterPath());
         movieDatabase.setRuntime(apiMovie.get().getRuntime());
         movieDatabase.setWatched(isWatched);
-        movieDatabase.setGenres(TmdbApiRepository.formatGenres(apiMovie.get().getGenres()));
+        movieDatabase.setGenres(TmdbApiRepository.formatList(apiMovie.get().getGenres(), Genre::getName));
         movieDatabase.setReleaseDate(apiMovie.get().getReleaseDate());
+        movieDatabase.setVoteAverage(apiMovie.get().getVoteAverage());
+        movieDatabase.setOriginalLanguage(apiMovie.get().getOriginalLanguage());
+        movieDatabase.setPopularity(apiMovie.get().getPopularity());
+        movieDatabase.setProductionCountries(TmdbApiRepository.formatList(apiMovie.get().getProductionCountries(), ProductionCountry::getName));
+        movieDatabase.setActors(TmdbApiRepository.formatList(apiMovie.get().getCredits().getCast(), Artist::getName));
+        movieDatabase.setDirectors(TmdbApiRepository.formatList(apiMovie.get().getDirectors(), Artist::getName));
         movieDatabase.setLastSynchronisationTime(Instant.now());
         return movieDatabase;
     }

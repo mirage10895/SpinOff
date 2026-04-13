@@ -16,7 +16,7 @@ import lombok.Setter;
         tableName = "serie_episode",
         foreignKeys = {
                 @ForeignKey(
-                        entity = MovieDatabase.class,
+                        entity = fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase.class,
                         parentColumns = "id",
                         childColumns = "serie_id"
                 )

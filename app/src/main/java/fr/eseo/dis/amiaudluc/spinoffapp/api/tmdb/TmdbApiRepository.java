@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb;
 
+import androidx.lifecycle.LiveData;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,23 +9,22 @@ import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import androidx.lifecycle.LiveData;
 import fr.eseo.dis.amiaudluc.BuildConfig;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.RetrofitApi;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.InterfaceAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.LocalDateAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import lombok.Getter;
 import okhttp3.HttpUrl;
@@ -40,6 +41,11 @@ public class TmdbApiRepository {
     private static TmdbApiRepository INSTANCE = null;
 
     public final TmdbApi api;
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(Media.class, new InterfaceAdapter<Media>())
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create();
 
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
@@ -53,12 +59,6 @@ public class TmdbApiRepository {
         return INSTANCE;
     }
     private TmdbApiRepository() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Media.class, new InterfaceAdapter<Media>())
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
-
         Retrofit retrofit = new Retrofit
                 .Builder()
                 .baseUrl(BASE_URL)
@@ -82,7 +82,7 @@ public class TmdbApiRepository {
                                 })
                                 .build()
                 )
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create(GSON))
                 .build();
 
         this.api = retrofit.create(TmdbApi.class);
@@ -154,7 +154,7 @@ public class TmdbApiRepository {
         return RetrofitApi.executeAsync(this.api.getSearchByQuery(query), ApiListResponse::getResults);
     }
 
-    public static String formatGenres(List<Genre> genres) {
-        return genres.stream().map(Genre::getName).collect(Collectors.joining(","));
+    public static <T> String formatList(List<T> list, Function<T, String> toString) {
+        return list.stream().map(toString).collect(Collectors.joining(","));
     }
 }
