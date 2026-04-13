@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery;
+package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

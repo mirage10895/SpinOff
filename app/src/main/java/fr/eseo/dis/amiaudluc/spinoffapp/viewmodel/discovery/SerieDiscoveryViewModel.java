@@ -8,6 +8,8 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.pagesearch.PageSearchViewModel;
 
 public class SerieDiscoveryViewModel extends PageSearchViewModel<Serie, DiscoveryType> {

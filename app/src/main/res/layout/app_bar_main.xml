@@ -35,7 +35,7 @@
                 android:layout_gravity="center_vertical|start"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
                 android:contentDescription="@string/undo_action"
                 android:minWidth="48dp"
                 android:src="@drawable/abc_ic_clear_material"

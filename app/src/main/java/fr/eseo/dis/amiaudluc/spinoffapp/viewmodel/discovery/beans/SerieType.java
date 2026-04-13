@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery;
+package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

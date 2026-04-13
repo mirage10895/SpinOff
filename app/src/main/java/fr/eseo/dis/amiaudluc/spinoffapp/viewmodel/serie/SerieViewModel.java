@@ -18,7 +18,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.SerieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
 import lombok.Getter;

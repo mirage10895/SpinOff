@@ -249,7 +249,7 @@
                         android:layout_height="20dp"
                         android:contentDescription="@null"
                         android:src="@drawable/ic_star"
-                        app:tint="@color/white" />
+                        app:tint="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/watchlist_value"
