@@ -24,8 +24,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
-import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.WatchProvider;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.WatchProviderUtils;
 import lombok.Getter;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -103,10 +103,14 @@ public class TmdbApiRepository {
         return RetrofitApi.execute(this.api.getMovieById(id, "credits,videos,recommendations"));
     }
 
-    public LiveData<List<WatchProviderAdapterData>> fetchMovieWatchProvider(Integer id) {
+    public LiveData<List<WatchProviderAdapterData>> fetchMovieWatchProvider(Integer id, String imdbId) {
         return RetrofitApi.executeAsync(
                 this.api.fetchMovieWatchProvider(id),
-                WatchProvider::filterOutWatchProviders
+                watchProviderApiResponse -> WatchProviderUtils.formatWatchProviders(
+                        watchProviderApiResponse,
+                        Media.MOVIE,
+                        imdbId
+                )
         );
     }
 
@@ -120,17 +124,21 @@ public class TmdbApiRepository {
     }
 
     public LiveData<Serie> getSerieById(Integer id) {
-        return RetrofitApi.executeAsync(this.api.getSerieById(id, "credits,videos,recommendations"));
+        return RetrofitApi.executeAsync(this.api.getSerieById(id, "credits,videos,recommendations,external_ids"));
     }
 
     public Optional<Serie> getSerieByIdSync(Integer id) {
         return RetrofitApi.execute(this.api.getSerieById(id, "credits,videos,recommendations"));
     }
 
-    public LiveData<List<WatchProviderAdapterData>> fetchTvWatchProvider(Integer id) {
+    public LiveData<List<WatchProviderAdapterData>> fetchTvWatchProvider(Integer id, String imdbId) {
         return RetrofitApi.executeAsync(
                 this.api.fetchTvWatchProvider(id),
-                WatchProvider::filterOutWatchProviders
+                watchProviderApiResponse -> WatchProviderUtils.formatWatchProviders(
+                        watchProviderApiResponse,
+                        Media.SERIE,
+                        imdbId
+                )
         );
     }
 

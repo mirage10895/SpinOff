@@ -73,8 +73,8 @@ public class SerieViewModel extends AndroidViewModel {
         );
 
         this.serieWatchProviders = Transformations.switchMap(
-                serieIdTrigger,
-                apiRepository::fetchTvWatchProvider
+                serie,
+                fetchedSerie -> apiRepository.fetchTvWatchProvider(fetchedSerie.getId(), fetchedSerie.getExternalIds().imdbId())
         );
 
         this.season = Transformations.switchMap(seasonTrigger, req ->

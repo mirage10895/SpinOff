@@ -1,13 +1,15 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 
 public record WatchProviderAdapterData(
         int id,
         String name,
         String posterPath,
-        String externalUrl
+        String externalUrl,
+        @Nullable String fallbackPackageName
 ) {
     public static final DiffUtil.ItemCallback<WatchProviderAdapterData> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<>() {

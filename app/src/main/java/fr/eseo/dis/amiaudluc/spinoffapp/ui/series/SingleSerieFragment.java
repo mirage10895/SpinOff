@@ -212,6 +212,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
                                 n.getId(),
                                 n.getName(),
                                 n.getLogoPath(),
+                                null,
                                 null
                         ))
                         .collect(Collectors.toList())
@@ -233,12 +234,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         }
 
         binding.watchProviders.setVisibility(View.VISIBLE);
-        this.watchProviderAdapter.submitList(
-                watchProviders
-                        .stream()
-                        .limit(3)
-                        .collect(Collectors.toList())
-        );
+        this.watchProviderAdapter.submitList(watchProviders);
     }
 
     @Override

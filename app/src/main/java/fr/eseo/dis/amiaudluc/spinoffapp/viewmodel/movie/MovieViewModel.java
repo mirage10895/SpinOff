@@ -45,7 +45,10 @@ public class MovieViewModel extends AndroidViewModel {
         this.movieRepository = MovieRepository.getRepository(application);
 
         this.movie = Transformations.switchMap(movieIdTrigger, apiRepository::getMovieById);
-        this.movieWatchProviders = Transformations.switchMap(movieIdTrigger, apiRepository::fetchMovieWatchProvider);
+        this.movieWatchProviders = Transformations.switchMap(
+                movie,
+                fetched -> apiRepository.fetchMovieWatchProvider(fetched.getId(), fetched.getImdbId())
+        );
 
         this.databaseMovies = movieRepository.fetchAll();
         this.movieStats = Transformations.map(databaseMovies, this::calculateStats);

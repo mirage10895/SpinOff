@@ -47,6 +47,7 @@ public class Serie implements Media {
     private Credits<Artist> credits;
     private ApiObjectResponse<Video> videos;
     private ApiObjectResponse<Movie> recommendations;
+    private ExternalIds externalIds;
 
     public Serie() {
         super();

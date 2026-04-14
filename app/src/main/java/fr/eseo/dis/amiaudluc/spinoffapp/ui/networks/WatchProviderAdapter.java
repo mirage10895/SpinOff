@@ -1,7 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.networks;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ItemWatchProviderBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.utils.WatchProviderUtils;
 
 public class WatchProviderAdapter extends ListAdapter<WatchProviderAdapterData, WatchProviderAdapter.WatchProviderViewHolder> {
 
@@ -65,7 +64,9 @@ public class WatchProviderAdapter extends ListAdapter<WatchProviderAdapterData, 
                 binding.watchProviderContainer.setVisibility(View.VISIBLE);
             }
 
-            String link = baseImageUrl + item.posterPath();
+            String link = item.posterPath().startsWith("http")
+                    ? item.posterPath()
+                    : baseImageUrl + item.posterPath();
             Picasso.get()
                     .load(link)
                     .fit()
@@ -76,13 +77,7 @@ public class WatchProviderAdapter extends ListAdapter<WatchProviderAdapterData, 
             if (item.externalUrl() != null) {
                 binding.watchProviderContainer.setClickable(true);
                 binding.watchProviderContainer.setFocusable(true);
-                binding.watchProviderContainer.setOnClickListener((view) -> {
-                    binding.getRoot().getContext()
-                            .startActivity(new Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse(item.externalUrl())
-                            ));
-                });
+                binding.watchProviderContainer.setOnClickListener((view) -> WatchProviderUtils.openProvider(view.getContext(), item));
             }
         }
     }
