@@ -14,7 +14,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterDa
 
 public class WatchProviderUtils {
     private static final String STREMIO_LOGO_URL = "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/stremio.webp";
-    private static final String STREMIO_DEEP_LINK = "stremio///details/%s/%s";
+    private static final String STREMIO_DEEP_LINK = "stremio:///detail/%s/%s";
     private static final String STREMIO_MOVIE_LINK = "movie";
     private static final String STREMIO_SERIE_LINK = "series";
 
@@ -64,10 +64,12 @@ public class WatchProviderUtils {
     public static void openProvider(Context context, WatchProviderAdapterData provider) {
         if (provider.externalUrl() == null) return;
 
+        LogUtils.d("WATCH", "Opening provider " + provider.externalUrl());
         try {
             Uri uri = Uri.parse(provider.externalUrl());
             context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
         } catch (Exception e) {
+            LogUtils.e("WATCH", "Error while opening provider", e);
             String fallback = provider.fallbackPackageName();
             if (fallback != null) {
                 launchPlayStore(context, fallback);

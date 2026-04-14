@@ -50,5 +50,12 @@
             android:exported="false" />
 
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="stremio" />
+        </intent>
+        <package android:name="com.stremio.one" />
+    </queries>
 
 </manifest>
