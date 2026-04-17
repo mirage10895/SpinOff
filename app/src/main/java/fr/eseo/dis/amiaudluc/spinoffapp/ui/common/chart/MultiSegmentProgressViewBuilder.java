@@ -6,12 +6,13 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
+import androidx.core.widget.TextViewCompat;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import androidx.core.widget.TextViewCompat;
 import fr.eseo.dis.amiaudluc.R;
 
 public class MultiSegmentProgressViewBuilder {
@@ -87,7 +88,7 @@ public class MultiSegmentProgressViewBuilder {
 
     public void withLegendInto(ViewGroup container) {
         if (data == null || container == null || chartView == null) return;
-
+        container.removeAllViews();
         Context context = container.getContext();
         int total = data.stream().mapToInt(Map.Entry::getValue).sum();
 

@@ -2,25 +2,30 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie;
 
 import android.app.Application;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.StatUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 import lombok.Getter;
 
 public class SerieViewModel extends AndroidViewModel {
@@ -30,11 +35,6 @@ public class SerieViewModel extends AndroidViewModel {
     private static final String EPISODE_REQ_KEY = "episodeReq";
 
     private final SavedStateHandle savedStateHandle;
-
-    // Input triggers
-    private final LiveData<Integer> serieIdTrigger;
-    private final LiveData<SeasonRequest> seasonTrigger;
-    private final LiveData<EpisodeRequest> episodeTrigger;
 
     @Getter
     private final MutableLiveData<SerieType> serieType = new MutableLiveData<>(SerieType.POPULAR);
@@ -59,9 +59,10 @@ public class SerieViewModel extends AndroidViewModel {
     public SerieViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
         this.savedStateHandle = savedStateHandle;
-        this.serieIdTrigger = savedStateHandle.getLiveData(SERIE_ID_KEY);
-        this.seasonTrigger = savedStateHandle.getLiveData(SEASON_REQ_KEY);
-        this.episodeTrigger = savedStateHandle.getLiveData(EPISODE_REQ_KEY);
+        // Input triggers
+        LiveData<Integer> serieIdTrigger = savedStateHandle.getLiveData(SERIE_ID_KEY);
+        LiveData<SeasonRequest> seasonTrigger = savedStateHandle.getLiveData(SEASON_REQ_KEY);
+        LiveData<EpisodeRequest> episodeTrigger = savedStateHandle.getLiveData(EPISODE_REQ_KEY);
 
         this.apiRepository = TmdbApiRepository.getInstance();
         this.serieRepository = SerieRepository.getRepository(application);
@@ -176,6 +177,8 @@ public class SerieViewModel extends AndroidViewModel {
         }
     }
 
+    // Helper methods
+    
     private static SerieStats calculateStats(List<SerieDatabase> series) {
         if (series == null) return null;
 
@@ -184,7 +187,13 @@ public class SerieViewModel extends AndroidViewModel {
         int watchlistCount = 0;
         Map<String, Integer> genreCounts = new HashMap<>();
         Map<String, Integer> combinationCounts = new HashMap<>();
-        Map<String, Integer> yearCounts = new HashMap<>();
+        Map<String, Integer> decadeCounts = new HashMap<>();
+        List<Double> ratings = new ArrayList<>();
+        Map<String, Integer> actorCounts = new HashMap<>();
+        Map<String, Integer> directorCounts = new HashMap<>();
+        Map<String, Integer> actorNetworkCounts = new HashMap<>();
+        Map<String, Integer> originCounts = new HashMap<>();
+        Map<String, Integer> languageCounts = new HashMap<>();
 
         for (SerieDatabase serie : series) {
             if (serie.isWatched()) {
@@ -198,19 +207,53 @@ public class SerieViewModel extends AndroidViewModel {
                 // Genres and Combinations
                 if (serie.getGenres() != null && !serie.getGenres().isEmpty()) {
                     String genresStr = serie.getGenres();
-                    combinationCounts.put(genresStr, combinationCounts.getOrDefault(genresStr, 0) + 1);
+                    StatUtils.fillMapCount(combinationCounts, Set.of(genresStr));
 
-                    String[] genres = genresStr.split(",");
-                    for (String genre : genres) {
-                        String trimmedGenre = genre.trim();
-                        genreCounts.put(trimmedGenre, genreCounts.getOrDefault(trimmedGenre, 0) + 1);
-                    }
+                    Set<String> genres = StatUtils.extractTrimmedValues(genresStr);
+                    StatUtils.fillMapCount(genreCounts, genres);
                 }
 
-                // Years
+                // Decades
                 if (serie.getFirstAirDate() != null) {
                     int year = serie.getFirstAirDate().getYear();
-                    yearCounts.put(String.valueOf(year), yearCounts.getOrDefault(String.valueOf(year), 0) + 1);
+                    int decadeStart = (year / 10) * 10;
+                    String decade = decadeStart + "s";
+                    StatUtils.fillMapCount(decadeCounts, Set.of(decade));
+                }
+
+                // Ratings
+                if (serie.getVoteAverage() != null && serie.getVoteAverage() > 0) {
+                    ratings.add(serie.getVoteAverage());
+                }
+
+                // Actors & Network
+                if (serie.getActors() != null && !serie.getActors().isEmpty()) {
+                    Set<String> trimmedActors = StatUtils.extractTrimmedValues(serie.getActors());
+                    StatUtils.fillMapCount(actorCounts, trimmedActors);
+                    // Network (pairs)
+                    StatUtils.fillMapCount(
+                            actorNetworkCounts,
+                            StatUtils.extractPairs(trimmedActors).stream()
+                                    .map(pair -> pair.first + " & " + pair.second)
+                                    .collect(Collectors.toSet())
+                    );
+                }
+
+                // Directors
+                if (serie.getDirectors() != null && !serie.getDirectors().isEmpty()) {
+                    Set<String> trimmedDirectors = StatUtils.extractTrimmedValues(serie.getDirectors());
+                    StatUtils.fillMapCount(directorCounts, trimmedDirectors);
+                }
+
+                // Production countries
+                if (serie.getProductionCountries() != null && !serie.getProductionCountries().isEmpty()) {
+                    Set<String> countries = StatUtils.extractTrimmedValues(serie.getProductionCountries());
+                    StatUtils.fillMapCount(originCounts, countries);
+                }
+
+                // Language
+                if (serie.getOriginalLanguage() != null) {
+                    StatUtils.fillMapCount(languageCounts, Set.of(serie.getOriginalLanguage().toUpperCase()));
                 }
             } else {
                 watchlistCount++;
@@ -222,9 +265,7 @@ public class SerieViewModel extends AndroidViewModel {
 
         // Process Genres
         if (!genreCounts.isEmpty()) {
-            stats.setTopGenres(
-                    StatUtils.topNWithOther(genreCounts, 8)
-            );
+            stats.setTopGenres(StatUtils.topNWithOther(genreCounts, 8));
             stats.setTopGenre(stats.getTopGenres().get(0).getKey());
         }
 
@@ -236,12 +277,44 @@ public class SerieViewModel extends AndroidViewModel {
                     .orElse(""));
         }
 
-        // Process Years
-        if (!yearCounts.isEmpty()) {
-            stats.setTopYears(
-                    StatUtils.topNWithOther(yearCounts, 8)
-            );
-            stats.setTopYear(stats.getTopYears().get(0).getKey());
+        // Process Decades
+        if (!decadeCounts.isEmpty()) {
+            stats.setTopDecades(StatUtils.topNWithOther(decadeCounts, 8));
+            stats.setTopDecade(stats.getTopDecades().get(0).getKey());
+        }
+
+        // Process Ratings
+        if (!ratings.isEmpty()) {
+            Collections.sort(ratings);
+            stats.setMeanRating(ratings.stream().mapToDouble(d -> d).average().orElse(0.0));
+            stats.setMedianRating(StatUtils.computeMedian(ratings));
+        }
+
+        // Process Actors & Directors
+        if (!actorCounts.isEmpty()) {
+            stats.setTopActors(StatUtils.topNWithOther(actorCounts, 5));
+        }
+        if (!directorCounts.isEmpty()) {
+            stats.setTopDirectors(StatUtils.topNWithOther(directorCounts, 5));
+        }
+
+        // Process Network
+        if (!actorNetworkCounts.isEmpty()) {
+            stats.setTopActorNetwork(actorNetworkCounts.entrySet().stream()
+                    .max(Map.Entry.comparingByValue())
+                    .orElseGet(() -> Map.entry("", 0)));
+        }
+
+        // Process Origins & Languages
+        if (!originCounts.isEmpty()) {
+            stats.setTopOrigins(originCounts.entrySet().stream()
+                    .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                    .collect(Collectors.toList()));
+            stats.setTopOrigin(stats.getTopOrigins().get(0).getKey());
+        }
+        if (!languageCounts.isEmpty()) {
+            stats.setTopLanguages(StatUtils.topNWithOther(languageCounts, 5));
+            stats.setTopLanguage(stats.getTopLanguages().get(0).getKey());
         }
 
         return stats;

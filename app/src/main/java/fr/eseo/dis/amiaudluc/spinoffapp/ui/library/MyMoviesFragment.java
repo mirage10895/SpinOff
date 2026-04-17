@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.View;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import java.time.Duration;
 import java.util.Locale;
 
-import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.chart.MultiSegmentProgressView;
@@ -48,7 +49,7 @@ public class MyMoviesFragment extends BaseLibraryFragment {
     private void updateUI(MovieStats stats) {
         binding.totalRuntimeValue.setText(String.format(Locale.getDefault(), "%,d", Duration.ofMinutes(stats.getTotalRuntime()).toHours()));
         binding.daysEquivalent.setText(getString(R.string.stats_days_equivalent, DateUtils.displayDuration(Duration.ofMinutes(stats.getTotalRuntime()))));
-        
+
         binding.metric1Value.setText(String.valueOf(stats.getTotalMovies()));
         binding.metric1Label.setText(R.string.stats_movies_watched);
         binding.metric1Icon.setImageResource(R.drawable.ic_movie);
@@ -59,28 +60,28 @@ public class MyMoviesFragment extends BaseLibraryFragment {
         binding.metricSerieCards.setVisibility(View.GONE);
 
         // Genres
-        binding.topGenreName.setText(stats.getTopGenre());
-        binding.genreListContainer.removeAllViews();
         if (stats.getTopGenres() != null) {
+            binding.genreRepartitionCard.cardTitle.setText(R.string.stats_genres_preferred);
+            binding.genreRepartitionCard.topName.setText(stats.getTopGenre());
             MultiSegmentProgressView.builder()
                     .withColors()
                     .withData(stats.getTopGenres())
-                    .into(binding.genreRepartitionChart)
-                    .withLegendInto(binding.genreListContainer);
+                    .into(binding.genreRepartitionCard.repartitionChart)
+                    .withLegendInto(binding.genreRepartitionCard.legendContainer);
         }
 
         // Combination
         binding.topCombinationValue.setText(stats.getTopCombination());
 
-        // Years
-        binding.topYearValue.setText(stats.getTopYear());
-        binding.yearsListContainer.removeAllViews();
-        if (stats.getTopYears() != null) {
+        // Decades (Year distribution modified to Decades)
+        if (stats.getTopDecades() != null) {
+            binding.yearRepartitionCard.cardTitle.setText(R.string.stats_years_distribution);
+            binding.yearRepartitionCard.topName.setText(stats.getTopDecade());
             MultiSegmentProgressView.builder()
                     .withColors()
-                    .withData(stats.getTopYears())
-                    .into(binding.yearRepartitionChart)
-                    .withLegendInto(binding.yearsListContainer);
+                    .withData(stats.getTopDecades())
+                    .into(binding.yearRepartitionCard.repartitionChart)
+                    .withLegendInto(binding.yearRepartitionCard.legendContainer);
         }
     }
 

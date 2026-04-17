@@ -63,28 +63,28 @@ public class MySeriesFragment extends BaseLibraryFragment {
         binding.metricSerieCard2Icon.setImageResource(R.drawable.ic_movie);
 
         // Genres
-        binding.topGenreName.setText(stats.getTopGenre());
-        binding.genreListContainer.removeAllViews();
         if (stats.getTopGenres() != null) {
+            binding.genreRepartitionCard.cardTitle.setText(R.string.stats_genres_preferred);
+            binding.genreRepartitionCard.topName.setText(stats.getTopGenre());
             MultiSegmentProgressView.builder()
                     .withColors()
                     .withData(stats.getTopGenres())
-                    .into(binding.genreRepartitionChart)
-                    .withLegendInto(binding.genreListContainer);
+                    .into(binding.genreRepartitionCard.repartitionChart)
+                    .withLegendInto(binding.genreRepartitionCard.legendContainer);
         }
 
         // Combination
         binding.topCombinationValue.setText(stats.getTopCombination());
 
-        // Years
-        binding.topYearValue.setText(String.valueOf(stats.getTopYear()));
-        binding.yearsListContainer.removeAllViews();
-        if (stats.getTopYears() != null) {
+        // Decades
+        if (stats.getTopDecades() != null) {
+            binding.yearRepartitionCard.cardTitle.setText(R.string.stats_years_distribution);
+            binding.yearRepartitionCard.topName.setText(stats.getTopDecade());
             MultiSegmentProgressView.builder()
                     .withColors()
-                    .withData(stats.getTopYears())
-                    .into(binding.yearRepartitionChart)
-                    .withLegendInto(binding.yearsListContainer);
+                    .withData(stats.getTopDecades())
+                    .into(binding.yearRepartitionCard.repartitionChart)
+                    .withLegendInto(binding.yearRepartitionCard.legendContainer);
         }
     }
 

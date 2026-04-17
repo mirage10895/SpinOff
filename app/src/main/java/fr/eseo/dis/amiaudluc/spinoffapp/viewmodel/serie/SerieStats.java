@@ -17,6 +17,15 @@ public class SerieStats {
     private String topGenre = "";
     private List<Map.Entry<String, Integer>> topGenres;
     private String topCombination = "";
-    private String topYear;
-    private List<Map.Entry<String, Integer>> topYears;
+    private String topDecade = "";
+    private List<Map.Entry<String, Integer>> topDecades;
+    private double meanRating;
+    private double medianRating;
+    private List<Map.Entry<String, Integer>> topActors;
+    private List<Map.Entry<String, Integer>> topDirectors;
+    private Map.Entry<String, Integer> topActorNetwork;
+    private String topOrigin = "";
+    private List<Map.Entry<String, Integer>> topOrigins;
+    private String topLanguage = "";
+    private List<Map.Entry<String, Integer>> topLanguages;
 }

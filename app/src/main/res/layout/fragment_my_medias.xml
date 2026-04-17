@@ -10,9 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:orientation="vertical"
-        android:padding="24dp"
-        android:clipToPadding="false">
+        android:padding="24dp">
 
         <!-- Hero Stats Section -->
         <com.google.android.material.card.MaterialCardView
@@ -73,102 +73,102 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    <LinearLayout
-        android:id="@+id/metric_serie_cards"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/metric_serie_cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/metric_serie_card_1"
-            style="@style/BentoCard.Outline"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/metric_serie_card_1"
+                style="@style/BentoCard.Outline"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/metric_serie_card_1_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_event"
-                    app:tint="@color/white" />
-
-                <TextView
-                    android:id="@+id/metric_serie_card_1_value"
-                    style="@style/BentoValue"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textSize="20sp"
-                    tools:text="2010" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/metric_serie_card_1_label"
-                    style="@style/BentoLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/stats_seasons_watched"
-                    android:textSize="11sp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <ImageView
+                        android:id="@+id/metric_serie_card_1_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_event"
+                        app:tint="@color/white" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/metric_serie_card_2"
-            style="@style/BentoCard.Outline"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/metric_serie_card_1_value"
+                        style="@style/BentoValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="20sp"
+                        tools:text="2010" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/metric_serie_card_1_label"
+                        style="@style/BentoLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/stats_seasons_watched"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/metric_serie_card_2"
+                style="@style/BentoCard.Outline"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginStart="4dp"
+                android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/metric_serie_card_2_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_event"
-                    app:tint="@color/white" />
-
-                <TextView
-                    android:id="@+id/metric_serie_card_2_value"
-                    style="@style/BentoValue"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textSize="20sp"
-                    tools:text="2010" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/metric_serie_card_2_label"
-                    style="@style/BentoLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/stats_episodes_watched"
-                    android:textSize="11sp" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/metric_serie_card_2_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_event"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/metric_serie_card_2_value"
+                        style="@style/BentoValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="20sp"
+                        tools:text="2010" />
+
+                    <TextView
+                        android:id="@+id/metric_serie_card_2_label"
+                        style="@style/BentoLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/stats_episodes_watched"
+                        android:textSize="11sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
         <!-- Mini Metrics Row -->
         <LinearLayout
@@ -275,82 +275,12 @@
         </LinearLayout>
 
         <!-- Genre Distribution -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/BentoCard"
+        <include
+            android:id="@+id/genre_repartition_card"
+            layout="@layout/item_stat_graph_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="24dp"
-                        android:background="@color/colorPrimary" />
-
-                    <TextView
-                        style="@style/BentoValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="@string/stats_genres_preferred"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp"
-                    android:layout_marginTop="24dp">
-
-                    <fr.eseo.dis.amiaudluc.spinoffapp.ui.common.chart.MultiSegmentProgressView
-                        android:id="@+id/genre_repartition_chart"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_gravity="center" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/BentoLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/stats_top_genre" />
-
-                        <TextView
-                            android:id="@+id/top_genre_name"
-                            style="@style/BentoValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="24sp"
-                            tools:text="Sci-Fi" />
-                    </LinearLayout>
-                </FrameLayout>
-
-                <LinearLayout
-                    android:id="@+id/genre_list_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_marginTop="24dp" />
 
         <!-- Genre Combination -->
         <com.google.android.material.card.MaterialCardView
@@ -394,162 +324,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:textColor="@color/colorPrimary"
-                    tools:text="Action, Adventure, Sci-Fi"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    tools:text="Action, Adventure, Sci-Fi" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Year Distribution -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/BentoCard"
+        <include
+            android:id="@+id/year_repartition_card"
+            layout="@layout/item_stat_graph_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="24dp"
-                        android:background="@color/colorPrimary" />
-
-                    <TextView
-                        style="@style/BentoValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="@string/stats_years_distribution"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp"
-                    android:layout_marginTop="24dp">
-
-                    <fr.eseo.dis.amiaudluc.spinoffapp.ui.common.chart.MultiSegmentProgressView
-                        android:id="@+id/year_repartition_chart"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp"
-                        android:layout_gravity="center" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/BentoLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/stats_top_year" />
-
-                        <TextView
-                            android:id="@+id/top_year_value"
-                            style="@style/BentoValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorPrimary"
-                            android:textSize="24sp"
-                            tools:text="2022" />
-                    </LinearLayout>
-                </FrameLayout>
-
-                <LinearLayout
-                    android:id="@+id/years_list_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Insights Banner : do it later ? -->
-        <com.google.android.material.card.MaterialCardView
-            style="@style/BentoCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="32dp"
-            app:cardBackgroundColor="@color/color_primary_semi_opaq"
-            app:strokeColor="@color/colorPrimary"
-            android:visibility="gone"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="20dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    app:cardBackgroundColor="@color/color_primary_semi_opaq"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp">
-
-                    <ImageView
-                        android:id="@+id/insight_icon"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_star"
-                        app:tint="@color/colorPrimary" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/BentoValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/stats_prediction_title"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        style="@style/BentoLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/stats_prediction_desc" />
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:text="@string/stats_explore"
-                    android:textSize="12sp"
-                    app:backgroundTint="@color/colorPrimary"
-                    app:cornerRadius="999dp"
-                    app:rippleColor="@color/white" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_marginTop="24dp" />
 
     </LinearLayout>
 
