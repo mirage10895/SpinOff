@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.transition.TransitionManager;
 import android.widget.ArrayAdapter;
 
 import java.time.LocalDate;
@@ -107,7 +108,8 @@ public class HomeFragment extends Fragment {
         }
 
         List<String> years = new ArrayList<>();
-        years.add("All years");
+        String allYears = getString(R.string.filter_all_year);
+        years.add(allYears);
         years.addAll(IntStream.rangeClosed(1900, LocalDate.now().getYear())
                 .boxed()
                 .sorted((a, b) -> b - a)
@@ -118,7 +120,7 @@ public class HomeFragment extends Fragment {
         binding.spinnerYear.setAdapter(yearAdapter);
         binding.spinnerYear.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
-            selectedYear = "All years".equals(selected) ? null : Integer.parseInt(selected);
+            selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
             pushStateToViewModel();
         });
     }
@@ -126,14 +128,19 @@ public class HomeFragment extends Fragment {
     private void updateGenreSpinner(List<Genre> genres) {
         if (genres == null) return;
         List<String> genreNames = new ArrayList<>();
-        genreNames.add("All genres");
-        genreNames.addAll(genres.stream().map(Genre::getName).collect(Collectors.toList()));
+        String allGenres = getString(R.string.filter_all_genres);
+        genreNames.add(allGenres);
+        genreNames.addAll(
+                genres.stream()
+                        .map(Genre::getName)
+                        .collect(Collectors.toList())
+        );
 
         ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, genreNames);
         binding.spinnerGenre.setAdapter(genreAdapter);
         binding.spinnerGenre.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
-            if ("All genres".equals(selected)) {
+            if (allGenres.equals(selected)) {
                 selectedGenreId = null;
             } else {
                 selectedGenreId = genres.stream()
@@ -151,6 +158,12 @@ public class HomeFragment extends Fragment {
         binding.chipPopular.setOnClickListener(v -> updatePresetFilter(DiscoveryType.POPULAR));
         binding.chipTopRated.setOnClickListener(v -> updatePresetFilter(DiscoveryType.TOP_RATED));
         binding.chipOnAir.setOnClickListener(v -> updatePresetFilter(DiscoveryType.ON_AIR));
+
+        binding.btnAddFilters.setOnClickListener(v -> {
+            boolean isVisible = binding.layoutExtraFilters.getVisibility() == View.VISIBLE;
+            TransitionManager.beginDelayedTransition(binding.getRoot());
+            binding.layoutExtraFilters.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        });
     }
 
     private void updatePresetFilter(DiscoveryType type) {
@@ -178,7 +191,7 @@ public class HomeFragment extends Fragment {
             if (fragmentType == FragmentType.MOVIE) {
                 extraBuilder.primaryReleaseYear(selectedYear);
             } else {
-                extraBuilder.year(selectedYear);
+                extraBuilder.firstAirDateYear(selectedYear);
             }
         }
 

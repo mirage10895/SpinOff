@@ -17,49 +17,72 @@
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_filters"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:paddingHorizontal="@dimen/activity_horizontal_margin"
-        app:singleSelection="true">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_popular"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:checked="true"
-            android:text="@string/menu_popular"
-            app:checkedIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_top_rated"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="@string/menu_top_rated"
-            app:checkedIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_on_air"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="@string/menu_on_air"
-            app:checkedIconVisible="false" />
-    </com.google.android.material.chip.ChipGroup>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="8dp">
+        android:gravity="center_vertical">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_filters"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_popular"
+                style="@style/BentoChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:checked="true"
+                android:text="@string/menu_popular"
+                app:checkedIconVisible="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_top_rated"
+                style="@style/BentoChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="@string/menu_top_rated"
+                app:checkedIconVisible="false" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_on_air"
+                style="@style/BentoChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="@string/menu_on_air"
+                app:checkedIconVisible="false" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_add_filters"
+            style="@style/BentoIconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            app:iconSize="20dp"
+            app:icon="@drawable/ic_plus_white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_extra_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:baselineAligned="false"
+        tools:visibility="visible">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_genre"
@@ -75,7 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:text="Genre"
+                android:text="@string/genres_text"
+                android:hint="@string/genres_text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp" />
 
@@ -94,7 +118,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:text="Year"
+                android:text="@string/year_text"
+                android:hint="@string/year_text"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp" />
 

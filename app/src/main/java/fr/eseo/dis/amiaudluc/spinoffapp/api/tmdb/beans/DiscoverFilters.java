@@ -35,6 +35,8 @@ public record DiscoverFilters(
         String releaseDateLte,
         @SerializedName("air_date.gte")
         String airDateGte,
+        @SerializedName("first_air_date_year")
+        Integer firstAirDateYear,
         @SerializedName("air_date.lte")
         String airDateLte,
         String sortBy,

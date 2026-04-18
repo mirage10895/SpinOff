@@ -34,6 +34,10 @@
     <string name="title_activity_movie">MovieActivity</string>
     <string name="title_activity_search">SearchActivity</string>
 
+    <!-- Filters -->
+    <string name="filter_all_year">All years</string>
+    <string name="filter_all_genres">All genres</string>
+
     <!-- Details -->
     <string name="details_overview">Overview</string>
     <string name="imdb_rating">iMDB Rating</string>
@@ -77,6 +81,7 @@
     <string name="see_more_text">See more</string>
     <string name="teaser_txt">Teaser</string>
     <string name="recommendations_text">Recommendations</string>
+    <string name="year_text">Years</string>
 
     <!-- Library -->
     <string name="library_movies">My movies</string>
