@@ -56,7 +56,7 @@ public class Movie implements Media {
     public AdapterData toAdapterFormat() {
         return new AdapterData(
                 id,
-                originalTitle,
+                isInTheaters() ? "In cinema" : null,
                 posterPath,
                 FragmentType.MOVIE
         );
@@ -65,5 +65,12 @@ public class Movie implements Media {
     @Override
     public String getMediaType() {
         return Media.MOVIE;
+    }
+
+    private boolean isInTheaters() {
+        if (releaseDate == null) {
+            return false;
+        }
+        return !releaseDate.isBefore(LocalDate.now().minusWeeks(8));
     }
 }

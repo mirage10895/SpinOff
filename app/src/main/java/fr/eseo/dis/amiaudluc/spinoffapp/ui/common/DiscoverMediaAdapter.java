@@ -79,7 +79,13 @@ public class DiscoverMediaAdapter extends ListAdapter<AdapterData, DiscoverMedia
                         .error(R.drawable.ic_launcher_foreground)
                         .into(binding.imagePoster);
             }
-            binding.textTitle.setText(media.name());
+            // binding.bannerInfo is used as an optional light information banner
+            if (media.banner() != null && !media.banner().isEmpty()) {
+                binding.bannerInfo.setText(media.banner());
+                binding.bannerInfo.setVisibility(View.VISIBLE);
+            } else {
+                binding.bannerInfo.setVisibility(View.GONE);
+            }
 
             fragment.onRegisterContextMenu(itemView, media.id());
         }

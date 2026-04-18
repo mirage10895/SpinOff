@@ -6,7 +6,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 
 public record AdapterData(
         int id,
-        String name,
+        String banner,
         String posterPath,
         FragmentType fragmentType
 ) {
