@@ -19,12 +19,12 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.DiscoverMediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.SerieDiscoveryViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 /**
  * Created by lucasamiaud on 28/12/2018.
@@ -33,7 +33,7 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
     private DiscoveryViewModel discoveryViewModel;
     private SerieViewModel serieViewModel;
     private SerieDiscoveryViewModel serieDiscoveryViewModel;
-    protected MediaAdapter seriesAdapter;
+    protected DiscoverMediaAdapter seriesAdapter;
 
     public static SerieDiscoveryFragment newInstance() {
         return new SerieDiscoveryFragment();
@@ -51,7 +51,11 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        this.seriesAdapter = new MediaAdapter(requireContext(), this, new ArrayList<>(), false);
+        this.seriesAdapter = new DiscoverMediaAdapter(
+                this,
+                getString(R.string.base_url_poster_500),
+                new ArrayList<>()
+        );
         binding.cardList.setAdapter(this.seriesAdapter);
 
         this.serieDiscoveryViewModel.bindFilters(this.discoveryViewModel.getFilter(FragmentType.SERIE));
@@ -110,7 +114,7 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
         });
     }
 
-    private void loadSeries(List<AdapterData> serieDatabaseList){
+    private void loadSeries(List<AdapterData> serieDatabaseList) {
         this.seriesAdapter.submitList(serieDatabaseList);
     }
 

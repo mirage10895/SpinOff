@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.LayoutMainBinding;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.GridSpacingItemDecoration;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.OnScrollLoadMoreListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ScrollBehaviorHandler;
@@ -41,6 +42,9 @@ public abstract class DiscoveryBaseFragment extends Fragment implements ItemInte
 
         int columns = getResources().getInteger(R.integer.scripts_columns);
         binding.cardList.setLayoutManager(new GridLayoutManager(requireContext(), columns));
+
+        int spacing = getResources().getDimensionPixelSize(R.dimen.grid_spacing);
+        binding.cardList.addItemDecoration(new GridSpacingItemDecoration(columns, spacing));
 
         this.scrollBehaviorHandler = new ScrollBehaviorHandler(binding.cardList, this);
         this.scrollBehaviorHandler.setup();

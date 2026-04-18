@@ -20,12 +20,12 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.DiscoverMediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.MovieDiscoveryViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
 
 /**
  * Created by lucasamiaud on 04/04/2018.
@@ -35,7 +35,7 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
     private DiscoveryViewModel discoveryViewModel;
     private MovieViewModel movieViewModel;
     private MovieDiscoveryViewModel movieDiscoveryViewModel;
-    protected MediaAdapter moviesAdapter;
+    protected DiscoverMediaAdapter moviesAdapter;
 
     public static MovieDiscoveryFragment newInstance() {
         return new MovieDiscoveryFragment();
@@ -52,11 +52,10 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.moviesAdapter = new MediaAdapter(
-                requireContext(),
+        this.moviesAdapter = new DiscoverMediaAdapter(
                 this,
-                new ArrayList<>(),
-                false
+                getString(R.string.base_url_poster_500),
+                new ArrayList<>()
         );
 
         binding.cardList.setAdapter(this.moviesAdapter);

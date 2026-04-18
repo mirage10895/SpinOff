@@ -130,6 +130,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/discover_fragment_container"
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="16dp" />
