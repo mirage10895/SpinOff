@@ -27,24 +27,22 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_my_movies"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/BentoChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:clickable="true"
             android:text="@string/library_movies"
-            android:textColor="@color/chip_text_color"
             app:checkedIconVisible="false"
             app:chipBackgroundColor="@color/chip_background_color" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_my_series"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/BentoChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:text="@string/library_series"
-            android:textColor="@color/chip_text_color"
             app:checkedIconVisible="false"
             app:chipBackgroundColor="@color/chip_background_color" />
     </com.google.android.material.chip.ChipGroup>

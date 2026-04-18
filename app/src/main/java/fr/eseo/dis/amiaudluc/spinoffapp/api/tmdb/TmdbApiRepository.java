@@ -20,6 +20,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
@@ -164,5 +165,13 @@ public class TmdbApiRepository {
 
     public static <T> String formatList(List<T> list, Function<T, String> toString) {
         return list.stream().map(toString).collect(Collectors.joining(","));
+    }
+
+    public LiveData<List<Genre>> getMovieGenres() {
+        return RetrofitApi.executeAsync(this.api.getMovieGenres(), Genre.GenreListResponse::getGenres);
+    }
+
+    public LiveData<List<Genre>> getSerieGenres() {
+        return RetrofitApi.executeAsync(this.api.getSerieGenres(), Genre.GenreListResponse::getGenres);
     }
 }

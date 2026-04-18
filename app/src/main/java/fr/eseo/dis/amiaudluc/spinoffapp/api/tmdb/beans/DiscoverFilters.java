@@ -74,4 +74,12 @@ public record DiscoverFilters(
     public Map<String, Object> toMap() {
         return GSON.fromJson(GSON.toJson(this), new TypeToken<Map<String, Object>>() {}.getType());
     }
+
+    public DiscoverFilters merge(DiscoverFilters other) {
+        if (other == null) return this;
+        Map<String, Object> thisMap = this.toMap();
+        Map<String, Object> otherMap = other.toMap();
+        thisMap.putAll(otherMap);
+        return GSON.fromJson(GSON.toJson(thisMap), DiscoverFilters.class);
+    }
 }

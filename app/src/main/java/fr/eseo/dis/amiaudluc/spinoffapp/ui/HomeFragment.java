@@ -5,15 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ArrayAdapter;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 
@@ -25,6 +37,9 @@ public class HomeFragment extends Fragment {
     private FragmentType fragmentType;
     private DiscoveryViewModel discoveryViewModel;
     private DiscoveryType type = DiscoveryType.POPULAR;
+
+    private Integer selectedGenreId = null;
+    private Integer selectedYear = null;
 
 
     public HomeFragment() {
@@ -61,9 +76,9 @@ public class HomeFragment extends Fragment {
         this.discoveryViewModel = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
 
         // Restore state from ViewModel
-        DiscoveryType savedType = this.discoveryViewModel.getFilter(fragmentType).getValue();
-        if (savedType != null) {
-            this.type = savedType;
+        DiscoveryFilter savedFilter = this.discoveryViewModel.getFilter(fragmentType).getValue();
+        if (savedFilter != null) {
+            this.type = savedFilter.type();
         }
 
         binding.textWelcome.setText(R.string.menu_discover);
@@ -80,6 +95,55 @@ public class HomeFragment extends Fragment {
         }
 
         setupFilters();
+        setupSpinners();
+    }
+
+    private void setupSpinners() {
+        TmdbApiRepository repository = TmdbApiRepository.getInstance();
+        if (fragmentType == FragmentType.MOVIE) {
+            repository.getMovieGenres().observe(getViewLifecycleOwner(), this::updateGenreSpinner);
+        } else {
+            repository.getSerieGenres().observe(getViewLifecycleOwner(), this::updateGenreSpinner);
+        }
+
+        List<String> years = new ArrayList<>();
+        years.add("All years");
+        years.addAll(IntStream.rangeClosed(1900, LocalDate.now().getYear())
+                .boxed()
+                .sorted((a, b) -> b - a)
+                .map(String::valueOf)
+                .collect(Collectors.toList()));
+
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, years);
+        binding.spinnerYear.setAdapter(yearAdapter);
+        binding.spinnerYear.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = (String) parent.getItemAtPosition(position);
+            selectedYear = "All years".equals(selected) ? null : Integer.parseInt(selected);
+            pushStateToViewModel();
+        });
+    }
+
+    private void updateGenreSpinner(List<Genre> genres) {
+        if (genres == null) return;
+        List<String> genreNames = new ArrayList<>();
+        genreNames.add("All genres");
+        genreNames.addAll(genres.stream().map(Genre::getName).collect(Collectors.toList()));
+
+        ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, genreNames);
+        binding.spinnerGenre.setAdapter(genreAdapter);
+        binding.spinnerGenre.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = (String) parent.getItemAtPosition(position);
+            if ("All genres".equals(selected)) {
+                selectedGenreId = null;
+            } else {
+                selectedGenreId = genres.stream()
+                        .filter(g -> g.getName().equals(selected))
+                        .findFirst()
+                        .map(Genre::getId)
+                        .orElse(null);
+            }
+            pushStateToViewModel();
+        });
     }
 
     private void setupFilters() {
@@ -106,7 +170,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void pushStateToViewModel() {
-        this.discoveryViewModel.setFilter(type, fragmentType);
+        DiscoverFilters.DiscoverFiltersBuilder extraBuilder = DiscoverFilters.builder();
+        if (selectedGenreId != null) {
+            extraBuilder.withGenres(String.valueOf(selectedGenreId));
+        }
+        if (selectedYear != null) {
+            if (fragmentType == FragmentType.MOVIE) {
+                extraBuilder.primaryReleaseYear(selectedYear);
+            } else {
+                extraBuilder.year(selectedYear);
+            }
+        }
+
+        this.discoveryViewModel.setFilter(new DiscoveryFilter(type, extraBuilder.build()), fragmentType);
     }
 
     @Override

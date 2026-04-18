@@ -9,26 +9,34 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
 
 public class DiscoveryViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<DiscoveryType> movieFilter = new MutableLiveData<>(DiscoveryType.POPULAR);
-    private final MutableLiveData<DiscoveryType> serieFilter = new MutableLiveData<>(DiscoveryType.POPULAR);
+    private final MutableLiveData<DiscoveryFilter> movieFilter = new MutableLiveData<>(DiscoveryFilter.defaultFilter());
+    private final MutableLiveData<DiscoveryFilter> serieFilter = new MutableLiveData<>(DiscoveryFilter.defaultFilter());
 
     public DiscoveryViewModel(@NotNull Application application) {
         super(application);
     }
 
-    public LiveData<DiscoveryType> getFilter(FragmentType fragmentType) {
+    public LiveData<DiscoveryFilter> getFilter(FragmentType fragmentType) {
         return fragmentType == FragmentType.MOVIE ? movieFilter : serieFilter;
     }
 
-    public void setFilter(DiscoveryType type, FragmentType fragmentType) {
+    public void setFilter(DiscoveryFilter filter, FragmentType fragmentType) {
         if (fragmentType == FragmentType.MOVIE) {
-            movieFilter.setValue(type);
+            movieFilter.setValue(filter);
         } else {
-            serieFilter.setValue(type);
+            serieFilter.setValue(filter);
+        }
+    }
+
+    public void setType(DiscoveryType type, FragmentType fragmentType) {
+        DiscoveryFilter current = getFilter(fragmentType).getValue();
+        if (current != null) {
+            setFilter(new DiscoveryFilter(type, current.extraFilters()), fragmentType);
         }
     }
 }

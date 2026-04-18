@@ -27,38 +27,80 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_popular"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/BentoChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:checked="true"
             android:text="@string/menu_popular"
-            app:chipBackgroundColor="@color/chip_background_color"
-            android:textColor="@color/chip_text_color"
             app:checkedIconVisible="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_top_rated"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/BentoChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:text="@string/menu_top_rated"
-            app:chipBackgroundColor="@color/chip_background_color"
-            android:textColor="@color/chip_text_color"
             app:checkedIconVisible="false" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_on_air"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+            style="@style/BentoChip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:text="@string/menu_on_air"
-            app:chipBackgroundColor="@color/chip_background_color"
-            android:textColor="@color/chip_text_color"
             app:checkedIconVisible="false" />
     </com.google.android.material.chip.ChipGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="8dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_genre"
+            style="@style/BentoSelector"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/spinner_genre"
+                style="@style/BentoSelectorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:text="Genre"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_year"
+            style="@style/BentoSelector"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <AutoCompleteTextView
+                android:id="@+id/spinner_year"
+                style="@style/BentoSelectorText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:text="Year"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/discover_fragment_container"

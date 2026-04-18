@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermissions() {
         List<String> listPermissionsNeeded = new ArrayList<>();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.SEND_SMS);
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_NETWORK_STATE);
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.INTERNET);

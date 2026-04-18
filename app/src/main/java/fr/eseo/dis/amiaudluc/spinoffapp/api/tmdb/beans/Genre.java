@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,4 +16,10 @@ import lombok.Setter;
 public class Genre {
     private int id;
     private String name;
+
+    @Getter
+    @Setter
+    public static class GenreListResponse {
+        private List<Genre> genres;
+    }
 }

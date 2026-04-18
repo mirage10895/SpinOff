@@ -5,6 +5,7 @@ import java.util.Map;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ApiListResponse;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
@@ -72,4 +73,10 @@ public interface TmdbApi {
 
     @GET("search/multi")
     Call<ApiListResponse<Media>> getSearchByQuery(@Query("query") String query);
+
+    @GET("genre/movie/list")
+    Call<Genre.GenreListResponse> getMovieGenres();
+
+    @GET("genre/tv/list")
+    Call<Genre.GenreListResponse> getSerieGenres();
 }
