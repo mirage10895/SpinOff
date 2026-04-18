@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nested_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,8 +18,7 @@
         <com.google.android.material.card.MaterialCardView
             style="@style/BentoCard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/lil_caracteritics"
@@ -56,7 +54,7 @@
                         android:contentDescription="@string/number_seasons"
                         android:gravity="center"
                         android:textColor="@color/white"
-                        android:textSize="24sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                 </RelativeLayout>
@@ -122,7 +120,7 @@
                         android:contentDescription="@string/runtime"
                         android:gravity="center"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                 </RelativeLayout>

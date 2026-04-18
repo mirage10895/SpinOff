@@ -108,7 +108,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
         binding.seasons.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.seasons.setHasFixedSize(false);
         binding.seasons.setNestedScrollingEnabled(false);
-        this.seasonsAdapter = new SeasonsAdapter(requireContext(), this, new ArrayList<>());
+        this.seasonsAdapter = new SeasonsAdapter(this, new ArrayList<>());
         binding.seasons.setAdapter(this.seasonsAdapter);
 
         binding.realisators.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));

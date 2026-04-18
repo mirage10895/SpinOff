@@ -114,7 +114,7 @@ public class SeasonFragment extends Fragment implements ItemInterface {
             binding.runtime.setText(getString(R.string.emptyField));
         }
 
-        binding.episodesRecycler.setAdapter(new EpisodesAdapter(requireContext(), this, season.getEpisodes()));
+        binding.episodesRecycler.setAdapter(new EpisodesAdapter(this, season.getEpisodes()));
 
         if (season.getOverview() != null && !season.getOverview().isEmpty()) {
             binding.overview.setText(season.getOverview());

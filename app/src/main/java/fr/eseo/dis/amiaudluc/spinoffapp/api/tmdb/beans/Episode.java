@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans;
 
+import android.support.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class Episode {
     private Integer voteCount;
     private Integer runtime;
 
+    @NonNull
     @Override
     public String toString() {
         return "S" + seasonNumber +

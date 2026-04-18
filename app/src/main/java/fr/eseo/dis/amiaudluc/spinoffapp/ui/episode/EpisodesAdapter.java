@@ -1,11 +1,8 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.episode;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -18,17 +15,18 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.ItemSeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
- * Created by lucasamiaud on 09/03/2018.
+ * Adapter for displaying a list of episodes using View Binding.
  */
 public class EpisodesAdapter extends ListAdapter<Episode, EpisodesAdapter.EpisodesViewHolder> {
-    private final ItemInterface fragment;
-    private final Context ctx;
+
+    private final ItemInterface listener;
 
     private static final DiffUtil.ItemCallback<Episode> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<>() {
@@ -39,18 +37,13 @@ public class EpisodesAdapter extends ListAdapter<Episode, EpisodesAdapter.Episod
 
                 @Override
                 public boolean areContentsTheSame(@NonNull Episode oldItem, @NonNull Episode newItem) {
-                    return oldItem.equals(newItem);
+                    return Objects.equals(oldItem, newItem);
                 }
             };
 
-    public EpisodesAdapter(
-            Context ctx,
-            ItemInterface fragment,
-            List<Episode> episodes
-    ) {
+    public EpisodesAdapter(ItemInterface listener, List<Episode> episodes) {
         super(DIFF_CALLBACK);
-        this.ctx = ctx;
-        this.fragment = fragment;
+        this.listener = listener;
         if (episodes != null) {
             submitList(new ArrayList<>(episodes));
         }
@@ -59,73 +52,58 @@ public class EpisodesAdapter extends ListAdapter<Episode, EpisodesAdapter.Episod
     @NonNull
     @Override
     public EpisodesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View episodeView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_season, parent, false);
-        return new EpisodesAdapter.EpisodesViewHolder(episodeView, this);
+        ItemSeasonBinding binding = ItemSeasonBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
+        return new EpisodesViewHolder(binding, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EpisodesViewHolder holder, int position) {
-        Episode episode = getItem(position);
-
-        if (episode != null) {
-            holder.episodePoster.setImageResource(R.drawable.ic_launcher_foreground);
-            if (episode.getStillPath() != null) {
-                String link = ctx.getResources().getString(R.string.base_url_poster_500) + episode.getStillPath();
-                Picasso.get().load(link).fit().centerCrop().error(R.drawable.ic_launcher_foreground)
-                        .into(holder.episodePoster);
-            }
-
-            holder.episodeNumber.setText(R.string.emptyField);
-            if (episode.getEpisodeNumber() != null) {
-                holder.episodeNumber.setText(String.valueOf(episode.getEpisodeNumber()));
-            }
-
-            holder.episodeAirDate.setText(R.string.emptyField);
-            if (episode.getAirDate() != null) {
-                holder.episodeAirDate.setText(DateUtils.toDisplayString(episode.getAirDate()));
-            }
-
-            holder.episodeName.setText(R.string.emptyField);
-            if (episode.getName() != null) {
-                holder.episodeName.setText(episode.getName());
-            }
-        }
+        holder.bind(getItem(position));
     }
 
-    public class EpisodesViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+    public static class EpisodesViewHolder extends RecyclerView.ViewHolder {
 
-        private final EpisodesAdapter adapter;
+        private final ItemSeasonBinding binding;
+        private final ItemInterface listener;
 
-        private final ImageView episodePoster;
-        private final TextView episodeName;
-        private final TextView episodeAirDate;
-        private final TextView episodeNumber;
-
-        EpisodesViewHolder(
-                View view,
-                EpisodesAdapter adapter
-        ) {
-            super(view);
-
-            this.adapter = adapter;
-
-            episodePoster = view.findViewById(R.id.poster_ic);
-            episodeName = view.findViewById(R.id.season);
-            episodeAirDate = view.findViewById(R.id.air_date);
-            episodeNumber = view.findViewById(R.id.episodes);
-
-            view.setOnClickListener(this);
+        EpisodesViewHolder(ItemSeasonBinding binding, ItemInterface listener) {
+            super(binding.getRoot());
+            this.binding = binding;
+            this.listener = listener;
         }
 
-        @Override
-        public void onClick(View v) {
-            int pos = getAbsoluteAdapterPosition();
-            if (pos != RecyclerView.NO_POSITION) {
-                Episode episode = adapter.getItem(pos);
-                fragment.onItemClick(episode.getEpisodeNumber(), FragmentType.EPISODE);
+        void bind(Episode episode) {
+            if (episode == null) return;
+
+            // Update labels to match Episode context
+            binding.textNumberSeason.setText(episode.getName() != null ? episode.getName() : "-");
+            binding.season.setVisibility(View.GONE);
+
+            String episodeText = "S" + episode.getSeasonNumber() + ":E" + episode.getEpisodeNumber();
+            binding.textNumberEpisodes.setText(episodeText);
+            binding.episodes.setVisibility(View.GONE);
+
+            binding.textAirDate.setText(episode.getAirDate() != null ?
+                    DateUtils.toDisplayString(episode.getAirDate()) : "-");
+            binding.airDate.setVisibility(View.GONE);
+
+            binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
+            if (episode.getStillPath() != null) {
+                String baseUrl = itemView.getContext().getString(R.string.base_url_poster_500);
+                String link = baseUrl + episode.getStillPath();
+                Picasso.get().load(link)
+                        .fit()
+                        .centerCrop()
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(binding.posterIc);
             }
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(episode.getEpisodeNumber(), FragmentType.EPISODE);
+                }
+            });
         }
     }
 }
