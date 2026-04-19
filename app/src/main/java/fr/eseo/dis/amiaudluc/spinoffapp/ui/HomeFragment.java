@@ -1,11 +1,10 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.transition.TransitionManager;
 import android.widget.ArrayAdapter;
 
 import java.time.LocalDate;
@@ -26,9 +25,9 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 
 public class HomeFragment extends Fragment {
 
@@ -80,6 +79,13 @@ public class HomeFragment extends Fragment {
         DiscoveryFilter savedFilter = this.discoveryViewModel.getFilter(fragmentType).getValue();
         if (savedFilter != null) {
             this.type = savedFilter.type();
+            DiscoverFilters extra = savedFilter.extraFilters();
+            if (extra != null) {
+                if (extra.withGenres() != null) {
+                    selectedGenreId = Integer.parseInt(extra.withGenres());
+                }
+                selectedYear = fragmentType == FragmentType.MOVIE ? extra.primaryReleaseYear() : extra.firstAirDateYear();
+            }
         }
 
         binding.textWelcome.setText(R.string.menu_discover);
@@ -118,6 +124,9 @@ public class HomeFragment extends Fragment {
 
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, years);
         binding.spinnerYear.setAdapter(yearAdapter);
+        if (selectedYear != null) {
+            binding.spinnerYear.setText(String.valueOf(selectedYear), false);
+        }
         binding.spinnerYear.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
             selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
@@ -138,6 +147,15 @@ public class HomeFragment extends Fragment {
 
         ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, genreNames);
         binding.spinnerGenre.setAdapter(genreAdapter);
+        if (selectedGenreId != null) {
+            binding.spinnerGenre.setText(
+                    genres.stream()
+                            .filter(g -> g.getId() == selectedGenreId)
+                            .findFirst()
+                            .map(Genre::getName)
+                            .orElse(null), false
+            );
+        }
         binding.spinnerGenre.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
             if (allGenres.equals(selected)) {

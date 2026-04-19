@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
 
 public class DiscoveryViewModel extends AndroidViewModel {
 
@@ -30,13 +28,6 @@ public class DiscoveryViewModel extends AndroidViewModel {
             movieFilter.setValue(filter);
         } else {
             serieFilter.setValue(filter);
-        }
-    }
-
-    public void setType(DiscoveryType type, FragmentType fragmentType) {
-        DiscoveryFilter current = getFilter(fragmentType).getValue();
-        if (current != null) {
-            setFilter(new DiscoveryFilter(type, current.extraFilters()), fragmentType);
         }
     }
 }
