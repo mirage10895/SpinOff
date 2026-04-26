@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,21 +19,23 @@ import java.util.stream.IntStream;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
+import fr.eseo.dis.amiaudluc.databinding.BottomSheetGenresBinding;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.MovieType;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CheckboxFilterAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FilterItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.MovieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 
 public class HomeFragment extends Fragment {
 
@@ -41,8 +46,9 @@ public class HomeFragment extends Fragment {
     private DiscoveryViewModel discoveryViewModel;
     private DiscoveryType type = DiscoveryType.POPULAR;
 
-    private Integer selectedGenreId = null;
+    private List<Integer> selectedGenreIds = new ArrayList<>();
     private Integer selectedYear = null;
+    private List<Genre> availableGenres = new ArrayList<>();
 
 
     public HomeFragment() {
@@ -84,8 +90,12 @@ public class HomeFragment extends Fragment {
             this.type = savedFilter.type();
             DiscoverFilters filters = savedFilter.filters();
             if (filters != null) {
-                if (filters.withGenres() != null) {
-                    selectedGenreId = Integer.parseInt(filters.withGenres());
+                if (filters.withGenres() != null && !filters.withGenres().isEmpty()) {
+                    selectedGenreIds = Arrays.stream(filters.withGenres().split(","))
+                            .map(Integer::parseInt)
+                            .collect(Collectors.toList());
+                } else {
+                    selectedGenreIds = new ArrayList<>();
                 }
                 selectedYear = fragmentType == FragmentType.MOVIE ? filters.primaryReleaseYear() : filters.firstAirDateYear();
             }
@@ -111,10 +121,18 @@ public class HomeFragment extends Fragment {
     private void setupSpinners() {
         TmdbApiRepository repository = TmdbApiRepository.getInstance();
         if (fragmentType == FragmentType.MOVIE) {
-            repository.getMovieGenres().observe(getViewLifecycleOwner(), this::updateGenreSpinner);
+            repository.getMovieGenres().observe(getViewLifecycleOwner(), genres -> {
+                this.availableGenres = genres;
+                updateGenreUI();
+            });
         } else {
-            repository.getSerieGenres().observe(getViewLifecycleOwner(), this::updateGenreSpinner);
+            repository.getSerieGenres().observe(getViewLifecycleOwner(), genres -> {
+                this.availableGenres = genres;
+                updateGenreUI();
+            });
         }
+
+        binding.spinnerGenre.setOnClickListener(v -> showGenreBottomSheet());
 
         List<String> years = new ArrayList<>();
         String allYears = getString(R.string.filter_all_year);
@@ -137,41 +155,48 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void updateGenreSpinner(List<Genre> genres) {
-        if (genres == null) return;
-        List<String> genreNames = new ArrayList<>();
-        String allGenres = getString(R.string.filter_all_genres);
-        genreNames.add(allGenres);
-        genreNames.addAll(
-                genres.stream()
-                        .map(Genre::getName)
-                        .collect(Collectors.toList())
-        );
+    private void showGenreBottomSheet() {
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BentoBottomSheetDialog);
+        BottomSheetGenresBinding binding = BottomSheetGenresBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding.getRoot());
 
-        ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, genreNames);
-        binding.spinnerGenre.setAdapter(genreAdapter);
-        if (selectedGenreId != null) {
-            binding.spinnerGenre.setText(
-                    genres.stream()
-                            .filter(g -> g.getId() == selectedGenreId)
-                            .findFirst()
-                            .map(Genre::getName)
-                            .orElse(null), false
-            );
-        }
-        binding.spinnerGenre.setOnItemClickListener((parent, view, position, id) -> {
-            String selected = (String) parent.getItemAtPosition(position);
-            if (allGenres.equals(selected)) {
-                selectedGenreId = null;
-            } else {
-                selectedGenreId = genres.stream()
-                        .filter(g -> g.getName().equals(selected))
-                        .findFirst()
-                        .map(Genre::getId)
-                        .orElse(null);
-            }
-            pushStateToViewModel();
+        List<FilterItem> filterItems = availableGenres.stream()
+                .map(g -> new FilterItem(g.getId(), g.getName(), selectedGenreIds.contains(g.getId())))
+                .collect(Collectors.toList());
+
+        CheckboxFilterAdapter adapter = new CheckboxFilterAdapter(null);
+        binding.recyclerGenres.setAdapter(adapter);
+        adapter.submitList(filterItems);
+
+        binding.btnClearGenres.setOnClickListener(v -> {
+            List<FilterItem> clearedList = adapter.getCurrentList().stream()
+                    .map(item -> new FilterItem(item.id(), item.name(), false))
+                    .collect(Collectors.toList());
+            adapter.submitList(clearedList);
         });
+
+        binding.btnApply.setOnClickListener(v -> {
+            selectedGenreIds = adapter.getSelectedIds();
+            updateGenreUI();
+            pushStateToViewModel();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void updateGenreUI() {
+        if (availableGenres == null || availableGenres.isEmpty()) return;
+
+        if (selectedGenreIds.isEmpty()) {
+            binding.spinnerGenre.setText(R.string.filter_all_genres);
+        } else {
+            String names = availableGenres.stream()
+                    .filter(g -> selectedGenreIds.contains(g.getId()))
+                    .map(Genre::getName)
+                    .collect(Collectors.joining(", "));
+            binding.spinnerGenre.setText(names);
+        }
     }
 
     private void setupFilters() {
@@ -193,17 +218,20 @@ public class HomeFragment extends Fragment {
                 MovieType.valueOf(type.name()).getDiscoverFilters().apply(1) :
                 SerieType.valueOf(type.name()).getDiscoverFilters().apply(1);
 
-        if (presetFilters.withGenres() != null) {
-            selectedGenreId = Integer.parseInt(presetFilters.withGenres());
+        if (presetFilters.withGenres() != null && !presetFilters.withGenres().isEmpty()) {
+            selectedGenreIds = Arrays.stream(presetFilters.withGenres().split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
         } else {
-            selectedGenreId = null;
+            selectedGenreIds = new ArrayList<>();
         }
 
         selectedYear = fragmentType == FragmentType.MOVIE ?
                 presetFilters.primaryReleaseYear() :
                 presetFilters.firstAirDateYear();
 
-        // Update UI Spinners
+        // Update UI
+        updateGenreUI();
         updateSpinnerSelections();
 
         switch (type) {
@@ -221,26 +249,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateSpinnerSelections() {
-        TmdbApiRepository repository = TmdbApiRepository.getInstance();
-        LiveData<List<Genre>> genresLiveData = fragmentType == FragmentType.MOVIE ?
-                repository.getMovieGenres() :
-                repository.getSerieGenres();
-
-        List<Genre> genres = genresLiveData.getValue();
-        if (genres != null) {
-            if (selectedGenreId != null) {
-                binding.spinnerGenre.setText(
-                        genres.stream()
-                                .filter(g -> g.getId() == (int) selectedGenreId)
-                                .findFirst()
-                                .map(Genre::getName)
-                                .orElse(getString(R.string.filter_all_genres)), false
-                );
-            } else {
-                binding.spinnerGenre.setText(getString(R.string.filter_all_genres), false);
-            }
-        }
-
         if (selectedYear != null) {
             binding.spinnerYear.setText(String.valueOf(selectedYear), false);
         } else {
@@ -255,8 +263,11 @@ public class HomeFragment extends Fragment {
 
         DiscoverFilters.DiscoverFiltersBuilder builder = presetFilters.toBuilder();
 
-        if (selectedGenreId != null) {
-            builder.withGenres(String.valueOf(selectedGenreId));
+        if (!selectedGenreIds.isEmpty()) {
+            String genreString = selectedGenreIds.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+            builder.withGenres(genreString);
         } else {
             builder.withGenres(null);
         }

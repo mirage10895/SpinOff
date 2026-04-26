@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.checkbox.MaterialCheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/checkbox_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48dp"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+    android:textColor="@color/white"
+    app:buttonTint="@color/colorPrimary"
+    app:useMaterialThemeColors="true" />

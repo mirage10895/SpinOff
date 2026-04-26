@@ -134,4 +134,6 @@
 
     <string name="chip_in_library">In watchlist</string>
     <string name="chip_watched">Watched</string>
+    <string name="apply">Apply</string>
+    <string name="clear_all">Clear all</string>
 </resources>

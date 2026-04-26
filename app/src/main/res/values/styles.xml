@@ -138,4 +138,21 @@
         <item name="iconGravity">textStart</item>
         <item name="rippleColor">@color/colorPrimary</item>
     </style>
+
+    <style name="BentoBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BentoBottomSheetStyle</item>
+    </style>
+
+    <style name="BentoBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="backgroundTint">@color/card_background_color</item>
+        <item name="shapeAppearance">@style/BentoBottomSheetShapeAppearance</item>
+    </style>
+
+    <style name="BentoBottomSheetShapeAppearance" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">32dp</item>
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
 </resources>
