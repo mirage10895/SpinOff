@@ -16,11 +16,14 @@ import java.util.stream.IntStream;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.MovieType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
@@ -79,12 +82,12 @@ public class HomeFragment extends Fragment {
         DiscoveryFilter savedFilter = this.discoveryViewModel.getFilter(fragmentType).getValue();
         if (savedFilter != null) {
             this.type = savedFilter.type();
-            DiscoverFilters extra = savedFilter.extraFilters();
-            if (extra != null) {
-                if (extra.withGenres() != null) {
-                    selectedGenreId = Integer.parseInt(extra.withGenres());
+            DiscoverFilters filters = savedFilter.filters();
+            if (filters != null) {
+                if (filters.withGenres() != null) {
+                    selectedGenreId = Integer.parseInt(filters.withGenres());
                 }
-                selectedYear = fragmentType == FragmentType.MOVIE ? extra.primaryReleaseYear() : extra.firstAirDateYear();
+                selectedYear = fragmentType == FragmentType.MOVIE ? filters.primaryReleaseYear() : filters.firstAirDateYear();
             }
         }
 
@@ -186,6 +189,23 @@ public class HomeFragment extends Fragment {
 
     private void updatePresetFilter(DiscoveryType type) {
         this.type = type;
+        DiscoverFilters presetFilters = fragmentType == FragmentType.MOVIE ?
+                MovieType.valueOf(type.name()).getDiscoverFilters().apply(1) :
+                SerieType.valueOf(type.name()).getDiscoverFilters().apply(1);
+
+        if (presetFilters.withGenres() != null) {
+            selectedGenreId = Integer.parseInt(presetFilters.withGenres());
+        } else {
+            selectedGenreId = null;
+        }
+
+        selectedYear = fragmentType == FragmentType.MOVIE ?
+                presetFilters.primaryReleaseYear() :
+                presetFilters.firstAirDateYear();
+
+        // Update UI Spinners
+        updateSpinnerSelections();
+
         switch (type) {
             case POPULAR:
                 binding.chipPopular.setChecked(true);
@@ -200,20 +220,54 @@ public class HomeFragment extends Fragment {
         pushStateToViewModel();
     }
 
-    private void pushStateToViewModel() {
-        DiscoverFilters.DiscoverFiltersBuilder extraBuilder = DiscoverFilters.builder();
-        if (selectedGenreId != null) {
-            extraBuilder.withGenres(String.valueOf(selectedGenreId));
-        }
-        if (selectedYear != null) {
-            if (fragmentType == FragmentType.MOVIE) {
-                extraBuilder.primaryReleaseYear(selectedYear);
+    private void updateSpinnerSelections() {
+        TmdbApiRepository repository = TmdbApiRepository.getInstance();
+        LiveData<List<Genre>> genresLiveData = fragmentType == FragmentType.MOVIE ?
+                repository.getMovieGenres() :
+                repository.getSerieGenres();
+
+        List<Genre> genres = genresLiveData.getValue();
+        if (genres != null) {
+            if (selectedGenreId != null) {
+                binding.spinnerGenre.setText(
+                        genres.stream()
+                                .filter(g -> g.getId() == (int) selectedGenreId)
+                                .findFirst()
+                                .map(Genre::getName)
+                                .orElse(getString(R.string.filter_all_genres)), false
+                );
             } else {
-                extraBuilder.firstAirDateYear(selectedYear);
+                binding.spinnerGenre.setText(getString(R.string.filter_all_genres), false);
             }
         }
 
-        this.discoveryViewModel.setFilter(new DiscoveryFilter(type, extraBuilder.build()), fragmentType);
+        if (selectedYear != null) {
+            binding.spinnerYear.setText(String.valueOf(selectedYear), false);
+        } else {
+            binding.spinnerYear.setText(getString(R.string.filter_all_year), false);
+        }
+    }
+
+    private void pushStateToViewModel() {
+        DiscoverFilters presetFilters = fragmentType == FragmentType.MOVIE ?
+                MovieType.valueOf(type.name()).getDiscoverFilters().apply(1) :
+                SerieType.valueOf(type.name()).getDiscoverFilters().apply(1);
+
+        DiscoverFilters.DiscoverFiltersBuilder builder = presetFilters.toBuilder();
+
+        if (selectedGenreId != null) {
+            builder.withGenres(String.valueOf(selectedGenreId));
+        } else {
+            builder.withGenres(null);
+        }
+
+        if (fragmentType == FragmentType.MOVIE) {
+            builder.primaryReleaseYear(selectedYear);
+        } else {
+            builder.firstAirDateYear(selectedYear);
+        }
+
+        this.discoveryViewModel.setFilter(new DiscoveryFilter(type, builder.build()), fragmentType);
     }
 
     @Override
