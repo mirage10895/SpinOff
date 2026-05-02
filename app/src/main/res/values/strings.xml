@@ -45,6 +45,7 @@
     <string name="imdb_rating">iMDB Rating</string>
     <string name="language">Language</string>
     <string name="runtime">Runtime</string>
+    <string name="runtime_warning">(Accuracy may vary due to missing API data)</string>
     <string name="runtime_short_movies">Short movies</string>
     <string name="runtime_epic_movies">Epic long movies</string>
     <string name="runtime_sitcoms">Sitcoms</string>

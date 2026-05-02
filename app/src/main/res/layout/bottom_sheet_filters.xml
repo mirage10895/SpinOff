@@ -92,12 +92,30 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        style="@style/BentoLabel"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/runtime"
-        android:layout_marginVertical="@dimen/activity_vertical_margin" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginVertical="@dimen/activity_vertical_margin">
+
+        <TextView
+            style="@style/BentoLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="0dp"
+            android:text="@string/runtime" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:alpha="0.6"
+            android:text="@string/runtime_warning"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="italic" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_runtime"

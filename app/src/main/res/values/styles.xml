@@ -77,12 +77,13 @@
     </style>
 
     <!-- Selector Theme -->
+
     <style name="BentoSelector" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="boxBackgroundColor">@color/card_background_color</item>
-        <item name="boxStrokeColor">@color/color_primary_semi_opaq</item>
-        <item name="strokeColor">@color/color_primary_semi_opaq</item>
+        <item name="boxStrokeColor">@color/bento_selector_stroke_color</item>
         <item name="rippleColor">@color/colorPrimary</item>
         <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
         <item name="boxCornerRadiusTopStart">8dp</item>
         <item name="boxCornerRadiusTopEnd">8dp</item>
         <item name="boxCornerRadiusBottomStart">8dp</item>
