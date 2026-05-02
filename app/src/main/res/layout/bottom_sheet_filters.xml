@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingHorizontal="@dimen/activity_horizontal_margin"
+    android:paddingVertical="@dimen/activity_vertical_margin"
     android:background="@android:color/transparent">
 
     <View
@@ -17,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
+        android:layout_marginVertical="@dimen/activity_vertical_margin">
 
         <TextView
             android:layout_width="wrap_content"
@@ -64,22 +65,20 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/color_primary_semi_opaq"
-        android:layout_marginBottom="16dp" />
+        android:background="@color/color_primary_semi_opaq" />
 
     <TextView
         style="@style/BentoLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dates_title"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginVertical="@dimen/activity_vertical_margin" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_year"
         style="@style/BentoSelector"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/activity_vertical_margin">
+        android:layout_height="wrap_content">
 
         <AutoCompleteTextView
             android:id="@+id/spinner_year"
@@ -88,10 +87,45 @@
             android:layout_height="wrap_content"
             android:inputType="none"
             android:hint="@string/year_text"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp" />
+            android:paddingStart="@dimen/grid_spacing"
+            android:paddingEnd="@dimen/grid_spacing" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        style="@style/BentoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/runtime"
+        android:layout_marginVertical="@dimen/activity_vertical_margin" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group_runtime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_runtime_short"
+            style="@style/BentoChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            app:chipStrokeColor="@color/color_primary_semi_opaq"
+            app:checkedIconVisible="false"
+            android:text="@string/runtime_short_movies" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_runtime_long"
+            style="@style/BentoChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            app:chipStrokeColor="@color/color_primary_semi_opaq"
+            app:checkedIconVisible="false"
+            android:text="@string/runtime_epic_movies" />
+
+    </com.google.android.material.chip.ChipGroup>
 
     <TextView
         style="@style/BentoLabel"
@@ -106,7 +140,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:clipToPadding="false"
-        android:layout_marginBottom="16dp" />
+        android:clipToPadding="false" />
 
 </LinearLayout>

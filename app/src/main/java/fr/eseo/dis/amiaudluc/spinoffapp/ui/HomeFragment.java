@@ -32,8 +32,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.strategy.DiscoveryStrategy;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.strategy.DiscoveryStrategy;
 
 public class HomeFragment extends Fragment {
 
@@ -47,6 +47,8 @@ public class HomeFragment extends Fragment {
 
     private List<Integer> selectedGenreIds = new ArrayList<>();
     private Integer selectedYear = null;
+    private Integer selectedRuntimeGte = null;
+    private Integer selectedRuntimeLte = null;
     private List<Genre> availableGenres = new ArrayList<>();
 
 
@@ -98,6 +100,8 @@ public class HomeFragment extends Fragment {
                     selectedGenreIds = new ArrayList<>();
                 }
                 selectedYear = discoveryStrategy.getYear(filters);
+                selectedRuntimeGte = filters.withRuntimeGte();
+                selectedRuntimeLte = filters.withRuntimeLte();
             }
         }
 
@@ -164,17 +168,37 @@ public class HomeFragment extends Fragment {
             selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
         });
 
+        // Setup Runtime
+        if (selectedRuntimeGte != null && selectedRuntimeGte == 120 && selectedRuntimeLte == null) {
+            sheetBinding.chipRuntimeLong.setChecked(true);
+        } else if (selectedRuntimeLte != null && selectedRuntimeLte == 90 && selectedRuntimeGte == null) {
+            sheetBinding.chipRuntimeShort.setChecked(true);
+        }
+
+        sheetBinding.chipGroupRuntime.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.contains(R.id.chip_runtime_short)) {
+                selectedRuntimeLte = 90;
+                selectedRuntimeGte = null;
+            } else if (checkedIds.contains(R.id.chip_runtime_long)) {
+                selectedRuntimeGte = 120;
+                selectedRuntimeLte = null;
+            }
+        });
+
         // Setup Actions
         sheetBinding.btnReset.setOnClickListener(v -> {
             selectedGenreIds.clear();
             selectedYear = null;
-            
+            selectedRuntimeGte = null;
+            selectedRuntimeLte = null;
+
             // Refresh UI in bottom sheet
             List<FilterItem> resetItems = availableGenres.stream()
                     .map(g -> new FilterItem(g.getId(), g.getName(), false))
                     .collect(Collectors.toList());
             genreAdapter.submitList(resetItems);
             sheetBinding.spinnerYear.setText(allYears, false);
+            sheetBinding.chipGroupRuntime.clearCheck();
         });
 
         sheetBinding.btnApply.setOnClickListener(v -> {
@@ -196,7 +220,7 @@ public class HomeFragment extends Fragment {
 
     private void updatePresetFilter(DiscoveryType type) {
         this.type = type;
-        DiscoverFilters presetFilters = mergeFilters(type, null, null);
+        DiscoverFilters presetFilters = mergeFilters(type, null, null, null, null);
 
         if (presetFilters.withGenres() != null && !presetFilters.withGenres().isEmpty()) {
             selectedGenreIds = Arrays.stream(presetFilters.withGenres().split(","))
@@ -207,6 +231,8 @@ public class HomeFragment extends Fragment {
         }
 
         selectedYear = discoveryStrategy.getYear(presetFilters);
+        selectedRuntimeGte = presetFilters.withRuntimeGte();
+        selectedRuntimeLte = presetFilters.withRuntimeLte();
 
         switch (type) {
             case POPULAR:
@@ -224,7 +250,7 @@ public class HomeFragment extends Fragment {
 
     private void pushStateToViewModel() {
         this.discoveryViewModel.setFilter(
-                new DiscoveryFilter(type, mergeFilters(type, selectedGenreIds, selectedYear)),
+                new DiscoveryFilter(type, mergeFilters(type, selectedGenreIds, selectedYear, selectedRuntimeGte, selectedRuntimeLte)),
                 fragmentType
         );
     }
@@ -232,7 +258,9 @@ public class HomeFragment extends Fragment {
     private DiscoverFilters mergeFilters(
             DiscoveryType type,
             List<Integer> genreIds,
-            Integer year
+            Integer year,
+            Integer runtimeGte,
+            Integer runtimeLte
     ) {
         DiscoverFilters.DiscoverFiltersBuilder builder = discoveryStrategy.getBaseFilters(type);
 
@@ -243,6 +271,9 @@ public class HomeFragment extends Fragment {
         builder.withGenres(genreString);
 
         discoveryStrategy.applyYear(builder, year);
+
+        builder.withRuntimeGte(runtimeGte);
+        builder.withRuntimeLte(runtimeLte);
 
         return builder.build();
     }
