@@ -13,6 +13,7 @@ public interface DiscoveryStrategy {
     void applyYear(DiscoverFilters.DiscoverFiltersBuilder builder, Integer year);
     Integer getYear(DiscoverFilters filters);
     LiveData<List<Genre>> getGenres(TmdbApiRepository repository);
+    List<RuntimeFilter> getRuntimeFilters();
 
     static DiscoveryStrategy from(FragmentType type) {
         if (type == FragmentType.MOVIE) {

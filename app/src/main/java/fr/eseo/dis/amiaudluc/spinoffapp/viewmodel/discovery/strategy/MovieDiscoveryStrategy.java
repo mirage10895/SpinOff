@@ -2,6 +2,8 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.strategy;
 
 import androidx.lifecycle.LiveData;
 import java.util.List;
+
+import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
@@ -27,5 +29,13 @@ public class MovieDiscoveryStrategy implements DiscoveryStrategy {
     @Override
     public LiveData<List<Genre>> getGenres(TmdbApiRepository repository) {
         return repository.getMovieGenres();
+    }
+
+    @Override
+    public List<RuntimeFilter> getRuntimeFilters() {
+        return List.of(
+                new RuntimeFilter(R.string.runtime_short_movies, null, 90),
+                new RuntimeFilter(R.string.runtime_epic_movies, 120, null)
+        );
     }
 }

@@ -99,33 +99,13 @@
         android:text="@string/runtime"
         android:layout_marginVertical="@dimen/activity_vertical_margin" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_runtime"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_runtime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:singleSelection="true">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_runtime_short"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            app:chipStrokeColor="@color/color_primary_semi_opaq"
-            app:checkedIconVisible="false"
-            android:text="@string/runtime_short_movies" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_runtime_long"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            app:chipStrokeColor="@color/color_primary_semi_opaq"
-            app:checkedIconVisible="false"
-            android:text="@string/runtime_epic_movies" />
-
-    </com.google.android.material.chip.ChipGroup>
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:clipToPadding="false" />
 
     <TextView
         style="@style/BentoLabel"

@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.ui.common;
+package fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters;
 
 import android.view.LayoutInflater;
 import android.view.View;

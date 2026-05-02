@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,7 +56,7 @@ public class Movie implements Media {
     public AdapterData toAdapterFormat() {
         return new AdapterData(
                 id,
-                isInTheaters() ? "In cinema" : null,
+                null,
                 posterPath,
                 FragmentType.MOVIE
         );
@@ -65,12 +65,5 @@ public class Movie implements Media {
     @Override
     public String getMediaType() {
         return Media.MOVIE;
-    }
-
-    private boolean isInTheaters() {
-        if (releaseDate == null) {
-            return false;
-        }
-        return !releaseDate.isBefore(LocalDate.now().minusWeeks(8));
     }
 }

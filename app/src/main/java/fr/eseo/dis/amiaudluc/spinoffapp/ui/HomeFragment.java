@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -25,15 +26,17 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FilterItem;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.FilterItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.GenreChipAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.GenreChipAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.RuntimeChipAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.strategy.DiscoveryStrategy;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.strategy.RuntimeFilter;
 
 public class HomeFragment extends Fragment {
 
@@ -168,22 +171,24 @@ public class HomeFragment extends Fragment {
             selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
         });
 
-        // Setup Runtime
-        if (selectedRuntimeGte != null && selectedRuntimeGte == 120 && selectedRuntimeLte == null) {
-            sheetBinding.chipRuntimeLong.setChecked(true);
-        } else if (selectedRuntimeLte != null && selectedRuntimeLte == 90 && selectedRuntimeGte == null) {
-            sheetBinding.chipRuntimeShort.setChecked(true);
-        }
+        // Setup Runtime RecyclerView
+        List<RuntimeFilter> runtimeFilters = discoveryStrategy.getRuntimeFilters();
+        RuntimeFilter currentRuntimeFilter = runtimeFilters.stream()
+                .filter(f -> Objects.equals(f.min(), selectedRuntimeGte) && Objects.equals(f.max(), selectedRuntimeLte))
+                .findFirst()
+                .orElse(null);
 
-        sheetBinding.chipGroupRuntime.setOnCheckedStateChangeListener((group, checkedIds) -> {
-            if (checkedIds.contains(R.id.chip_runtime_short)) {
-                selectedRuntimeLte = 90;
+        RuntimeChipAdapter runtimeAdapter = new RuntimeChipAdapter(filter -> {
+            if (filter != null) {
+                selectedRuntimeGte = filter.min();
+                selectedRuntimeLte = filter.max();
+            } else {
                 selectedRuntimeGte = null;
-            } else if (checkedIds.contains(R.id.chip_runtime_long)) {
-                selectedRuntimeGte = 120;
                 selectedRuntimeLte = null;
             }
-        });
+        }, currentRuntimeFilter);
+        sheetBinding.recyclerRuntime.setAdapter(runtimeAdapter);
+        runtimeAdapter.submitList(runtimeFilters);
 
         // Setup Actions
         sheetBinding.btnReset.setOnClickListener(v -> {
@@ -198,7 +203,7 @@ public class HomeFragment extends Fragment {
                     .collect(Collectors.toList());
             genreAdapter.submitList(resetItems);
             sheetBinding.spinnerYear.setText(allYears, false);
-            sheetBinding.chipGroupRuntime.clearCheck();
+            runtimeAdapter.clearSelection();
         });
 
         sheetBinding.btnApply.setOnClickListener(v -> {
