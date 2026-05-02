@@ -37,6 +37,8 @@
     <!-- Filters -->
     <string name="filter_all_year">All years</string>
     <string name="filter_all_genres">All genres</string>
+    <string name="filters_title">Filters</string>
+    <string name="dates_title">Dates</string>
 
     <!-- Details -->
     <string name="details_overview">Overview</string>

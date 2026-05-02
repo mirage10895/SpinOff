@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground"
@@ -70,63 +69,6 @@
             android:layout_marginStart="8dp"
             app:iconSize="20dp"
             app:icon="@drawable/ic_plus_white" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_extra_filters"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:baselineAligned="false"
-        tools:visibility="visible">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_genre"
-            style="@style/BentoSelector"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp">
-
-            <AutoCompleteTextView
-                android:id="@+id/spinner_genre"
-                style="@style/BentoSelectorText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:clickable="true"
-                android:cursorVisible="false"
-                android:inputType="none"
-                android:text="@string/genres_text"
-                android:hint="@string/genres_text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_year"
-            style="@style/BentoSelector"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <AutoCompleteTextView
-                android:id="@+id/spinner_year"
-                style="@style/BentoSelectorText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:text="@string/year_text"
-                android:hint="@string/year_text"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

@@ -1,7 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui;
 
 import android.os.Bundle;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +20,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.databinding.BottomSheetGenresBinding;
+import fr.eseo.dis.amiaudluc.databinding.BottomSheetFiltersBinding;
 import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CheckboxFilterAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FilterItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.GenreChipAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
@@ -115,25 +114,39 @@ public class HomeFragment extends Fragment {
         }
 
         setupFilters();
-        setupSpinners();
+        observeGenres();
     }
 
-    private void setupSpinners() {
+    private void observeGenres() {
         TmdbApiRepository repository = TmdbApiRepository.getInstance();
         if (fragmentType == FragmentType.MOVIE) {
             repository.getMovieGenres().observe(getViewLifecycleOwner(), genres -> {
                 this.availableGenres = genres;
-                updateGenreUI();
             });
         } else {
             repository.getSerieGenres().observe(getViewLifecycleOwner(), genres -> {
                 this.availableGenres = genres;
-                updateGenreUI();
             });
         }
+    }
 
-        binding.spinnerGenre.setOnClickListener(v -> showGenreBottomSheet());
+    private void showFiltersBottomSheet() {
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BentoBottomSheetDialog);
+        BottomSheetFiltersBinding sheetBinding = BottomSheetFiltersBinding.inflate(getLayoutInflater());
+        dialog.setContentView(sheetBinding.getRoot());
 
+        // Setup Genres RecyclerView
+        List<FilterItem> filterItems = availableGenres.stream()
+                .map(g -> new FilterItem(g.getId(), g.getName(), selectedGenreIds.contains(g.getId())))
+                .collect(Collectors.toList());
+
+        GenreChipAdapter genreAdapter = new GenreChipAdapter(selectedIds -> {
+            selectedGenreIds = selectedIds;
+        });
+        sheetBinding.recyclerGenres.setAdapter(genreAdapter);
+        genreAdapter.submitList(filterItems);
+
+        // Setup Year Spinner
         List<String> years = new ArrayList<>();
         String allYears = getString(R.string.filter_all_year);
         years.add(allYears);
@@ -144,59 +157,37 @@ public class HomeFragment extends Fragment {
                 .collect(Collectors.toList()));
 
         ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, years);
-        binding.spinnerYear.setAdapter(yearAdapter);
+        sheetBinding.spinnerYear.setAdapter(yearAdapter);
         if (selectedYear != null) {
-            binding.spinnerYear.setText(String.valueOf(selectedYear), false);
+            sheetBinding.spinnerYear.setText(String.valueOf(selectedYear), false);
+        } else {
+            sheetBinding.spinnerYear.setText(allYears, false);
         }
-        binding.spinnerYear.setOnItemClickListener((parent, view, position, id) -> {
+
+        sheetBinding.spinnerYear.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
             selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
-            pushStateToViewModel();
         });
-    }
 
-    private void showGenreBottomSheet() {
-        BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BentoBottomSheetDialog);
-        BottomSheetGenresBinding binding = BottomSheetGenresBinding.inflate(getLayoutInflater());
-        dialog.setContentView(binding.getRoot());
-
-        List<FilterItem> filterItems = availableGenres.stream()
-                .map(g -> new FilterItem(g.getId(), g.getName(), selectedGenreIds.contains(g.getId())))
-                .collect(Collectors.toList());
-
-        CheckboxFilterAdapter adapter = new CheckboxFilterAdapter(null);
-        binding.recyclerGenres.setAdapter(adapter);
-        adapter.submitList(filterItems);
-
-        binding.btnClearGenres.setOnClickListener(v -> {
-            List<FilterItem> clearedList = adapter.getCurrentList().stream()
-                    .map(item -> new FilterItem(item.id(), item.name(), false))
+        // Setup Actions
+        sheetBinding.btnReset.setOnClickListener(v -> {
+            selectedGenreIds.clear();
+            selectedYear = null;
+            
+            // Refresh UI in bottom sheet
+            List<FilterItem> resetItems = availableGenres.stream()
+                    .map(g -> new FilterItem(g.getId(), g.getName(), false))
                     .collect(Collectors.toList());
-            adapter.submitList(clearedList);
+            genreAdapter.submitList(resetItems);
+            sheetBinding.spinnerYear.setText(allYears, false);
         });
 
-        binding.btnApply.setOnClickListener(v -> {
-            selectedGenreIds = adapter.getSelectedIds();
-            updateGenreUI();
+        sheetBinding.btnApply.setOnClickListener(v -> {
             pushStateToViewModel();
             dialog.dismiss();
         });
 
         dialog.show();
-    }
-
-    private void updateGenreUI() {
-        if (availableGenres == null || availableGenres.isEmpty()) return;
-
-        if (selectedGenreIds.isEmpty()) {
-            binding.spinnerGenre.setText(R.string.filter_all_genres);
-        } else {
-            String names = availableGenres.stream()
-                    .filter(g -> selectedGenreIds.contains(g.getId()))
-                    .map(Genre::getName)
-                    .collect(Collectors.joining(", "));
-            binding.spinnerGenre.setText(names);
-        }
     }
 
     private void setupFilters() {
@@ -205,11 +196,7 @@ public class HomeFragment extends Fragment {
         binding.chipTopRated.setOnClickListener(v -> updatePresetFilter(DiscoveryType.TOP_RATED));
         binding.chipOnAir.setOnClickListener(v -> updatePresetFilter(DiscoveryType.ON_AIR));
 
-        binding.btnAddFilters.setOnClickListener(v -> {
-            boolean isVisible = binding.layoutExtraFilters.getVisibility() == View.VISIBLE;
-            TransitionManager.beginDelayedTransition(binding.getRoot());
-            binding.layoutExtraFilters.setVisibility(isVisible ? View.GONE : View.VISIBLE);
-        });
+        binding.btnAddFilters.setOnClickListener(v -> showFiltersBottomSheet());
     }
 
     private void updatePresetFilter(DiscoveryType type) {
@@ -230,10 +217,6 @@ public class HomeFragment extends Fragment {
                 presetFilters.primaryReleaseYear() :
                 presetFilters.firstAirDateYear();
 
-        // Update UI
-        updateGenreUI();
-        updateSpinnerSelections();
-
         switch (type) {
             case POPULAR:
                 binding.chipPopular.setChecked(true);
@@ -246,14 +229,6 @@ public class HomeFragment extends Fragment {
                 break;
         }
         pushStateToViewModel();
-    }
-
-    private void updateSpinnerSelections() {
-        if (selectedYear != null) {
-            binding.spinnerYear.setText(String.valueOf(selectedYear), false);
-        } else {
-            binding.spinnerYear.setText(getString(R.string.filter_all_year), false);
-        }
     }
 
     private void pushStateToViewModel() {
