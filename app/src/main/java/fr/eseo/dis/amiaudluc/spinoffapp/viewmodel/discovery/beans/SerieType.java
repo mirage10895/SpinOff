@@ -3,7 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
@@ -15,33 +15,28 @@ import lombok.Getter;
 public enum SerieType {
     POPULAR(
             "popular",
-            page -> DiscoverFilters.builder()
+            () -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
                     .region("FR")
-                    .page(page)
                     .sortBy(DiscoverSortPath.POPULARITY.withSort(DiscoverSort.DESC))
-                    .build()
     ),
     TOP_RATED(
             "top_rated",
-            page -> DiscoverFilters.builder()
+            () -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
                     .region("FR")
-                    .page(page)
                     .sortBy(DiscoverSortPath.VOTE_AVERAGE.withSort(DiscoverSort.DESC))
                     .withoutGenres("99,10755")
                     .voteCountGte(200)
-                    .build()
     ),
     ON_AIR(
             "on_the_air",
-            page -> DiscoverFilters.builder()
+            () -> DiscoverFilters.builder()
                     .includeAdult(false)
                     .includeVideo(false)
                     .region("FR")
-                    .page(page)
                     .sortBy(DiscoverSortPath.POPULARITY.withSort(DiscoverSort.DESC))
                     .withReleaseType("2|3")
                     .airDateGte(
@@ -55,10 +50,9 @@ public enum SerieType {
                                     .with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY))
                                     .format(DateUtils.CLASSIC_DATE_FORMATTER)
                     )
-                    .build()
     ),
     ;
 
     private final String name;
-    private final Function<Integer, DiscoverFilters> discoverFilters;
+    private final Supplier<DiscoverFilters.DiscoverFiltersBuilder> discoverFilters;
 }

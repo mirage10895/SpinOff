@@ -66,6 +66,8 @@ public record DiscoverFilters(
         String withWatchMonetizationTypes,
         String withWatchProviders,
         String withNetworks,
+        @SerializedName("with_origin_country")
+        String withOriginCountry,
         Integer year
 ) {
 

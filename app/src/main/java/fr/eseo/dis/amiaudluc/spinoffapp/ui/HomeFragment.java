@@ -201,9 +201,7 @@ public class HomeFragment extends Fragment {
 
     private void updatePresetFilter(DiscoveryType type) {
         this.type = type;
-        DiscoverFilters presetFilters = fragmentType == FragmentType.MOVIE ?
-                MovieType.valueOf(type.name()).getDiscoverFilters().apply(1) :
-                SerieType.valueOf(type.name()).getDiscoverFilters().apply(1);
+        DiscoverFilters presetFilters = mergeFilters(type, null, null);
 
         if (presetFilters.withGenres() != null && !presetFilters.withGenres().isEmpty()) {
             selectedGenreIds = Arrays.stream(presetFilters.withGenres().split(","))
@@ -232,28 +230,34 @@ public class HomeFragment extends Fragment {
     }
 
     private void pushStateToViewModel() {
-        DiscoverFilters presetFilters = fragmentType == FragmentType.MOVIE ?
-                MovieType.valueOf(type.name()).getDiscoverFilters().apply(1) :
-                SerieType.valueOf(type.name()).getDiscoverFilters().apply(1);
+        this.discoveryViewModel.setFilter(
+                new DiscoveryFilter(type, mergeFilters(type, selectedGenreIds, selectedYear)),
+                fragmentType
+        );
+    }
 
-        DiscoverFilters.DiscoverFiltersBuilder builder = presetFilters.toBuilder();
+    private DiscoverFilters mergeFilters(
+            DiscoveryType type,
+            List<Integer> genreIds,
+            Integer year
+    ) {
+        DiscoverFilters.DiscoverFiltersBuilder builder = fragmentType == FragmentType.MOVIE ?
+                MovieType.valueOf(type.name()).getDiscoverFilters().get() :
+                SerieType.valueOf(type.name()).getDiscoverFilters().get();
 
-        if (!selectedGenreIds.isEmpty()) {
-            String genreString = selectedGenreIds.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(","));
-            builder.withGenres(genreString);
-        } else {
-            builder.withGenres(null);
-        }
+        String genreString = (genreIds == null || genreIds.isEmpty()) ? null :
+                genreIds.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","));
+        builder.withGenres(genreString);
 
         if (fragmentType == FragmentType.MOVIE) {
-            builder.primaryReleaseYear(selectedYear);
+            builder.primaryReleaseYear(year);
         } else {
-            builder.firstAirDateYear(selectedYear);
+            builder.firstAirDateYear(year);
         }
 
-        this.discoveryViewModel.setFilter(new DiscoveryFilter(type, builder.build()), fragmentType);
+        return builder.build();
     }
 
     @Override
