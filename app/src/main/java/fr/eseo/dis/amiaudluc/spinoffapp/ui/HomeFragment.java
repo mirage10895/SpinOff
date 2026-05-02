@@ -32,9 +32,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieDiscoveryFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryFilter;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.strategy.DiscoveryStrategy;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.DiscoveryType;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.MovieType;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.beans.SerieType;
 
 public class HomeFragment extends Fragment {
 
@@ -43,6 +42,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentType fragmentType;
     private DiscoveryViewModel discoveryViewModel;
+    private DiscoveryStrategy discoveryStrategy;
     private DiscoveryType type = DiscoveryType.POPULAR;
 
     private List<Integer> selectedGenreIds = new ArrayList<>();
@@ -82,6 +82,7 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.discoveryViewModel = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
+        this.discoveryStrategy = DiscoveryStrategy.from(fragmentType);
 
         // Restore state from ViewModel
         DiscoveryFilter savedFilter = this.discoveryViewModel.getFilter(fragmentType).getValue();
@@ -96,7 +97,7 @@ public class HomeFragment extends Fragment {
                 } else {
                     selectedGenreIds = new ArrayList<>();
                 }
-                selectedYear = fragmentType == FragmentType.MOVIE ? filters.primaryReleaseYear() : filters.firstAirDateYear();
+                selectedYear = discoveryStrategy.getYear(filters);
             }
         }
 
@@ -119,15 +120,9 @@ public class HomeFragment extends Fragment {
 
     private void observeGenres() {
         TmdbApiRepository repository = TmdbApiRepository.getInstance();
-        if (fragmentType == FragmentType.MOVIE) {
-            repository.getMovieGenres().observe(getViewLifecycleOwner(), genres -> {
-                this.availableGenres = genres;
-            });
-        } else {
-            repository.getSerieGenres().observe(getViewLifecycleOwner(), genres -> {
-                this.availableGenres = genres;
-            });
-        }
+        discoveryStrategy.getGenres(repository).observe(getViewLifecycleOwner(), genres -> {
+            this.availableGenres = genres;
+        });
     }
 
     private void showFiltersBottomSheet() {
@@ -211,9 +206,7 @@ public class HomeFragment extends Fragment {
             selectedGenreIds = new ArrayList<>();
         }
 
-        selectedYear = fragmentType == FragmentType.MOVIE ?
-                presetFilters.primaryReleaseYear() :
-                presetFilters.firstAirDateYear();
+        selectedYear = discoveryStrategy.getYear(presetFilters);
 
         switch (type) {
             case POPULAR:
@@ -241,9 +234,7 @@ public class HomeFragment extends Fragment {
             List<Integer> genreIds,
             Integer year
     ) {
-        DiscoverFilters.DiscoverFiltersBuilder builder = fragmentType == FragmentType.MOVIE ?
-                MovieType.valueOf(type.name()).getDiscoverFilters().get() :
-                SerieType.valueOf(type.name()).getDiscoverFilters().get();
+        DiscoverFilters.DiscoverFiltersBuilder builder = discoveryStrategy.getBaseFilters(type);
 
         String genreString = (genreIds == null || genreIds.isEmpty()) ? null :
                 genreIds.stream()
@@ -251,11 +242,7 @@ public class HomeFragment extends Fragment {
                         .collect(Collectors.joining(","));
         builder.withGenres(genreString);
 
-        if (fragmentType == FragmentType.MOVIE) {
-            builder.primaryReleaseYear(year);
-        } else {
-            builder.firstAirDateYear(year);
-        }
+        discoveryStrategy.applyYear(builder, year);
 
         return builder.build();
     }
