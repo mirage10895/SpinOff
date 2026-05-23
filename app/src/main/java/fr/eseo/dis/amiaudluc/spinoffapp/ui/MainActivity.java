@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setupBottomNavigation();
 
         if (savedInstanceState == null) {
-            binding.bottomNavigation.setSelectedItemId(R.id.nav_movies);
+            binding.bottomNavigation.setSelectedItemId(R.id.nav_discover);
         }
 
         scheduleBackgroundTasks();
@@ -84,15 +84,11 @@ public class MainActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_movies) {
+            if (id == R.id.nav_discover) {
                 switchFragment(HomeFragment.newInstance(FragmentType.MOVIE));
                 return true;
             }
-            if (id == R.id.nav_series) {
-                switchFragment(HomeFragment.newInstance(FragmentType.SERIE));
-                return true;
-            }
-            if (id == R.id.nav_discover) {
+            if (id == R.id.nav_search) {
                 switchFragment(
                         SearchContainerFragment.newInstance()
                 );

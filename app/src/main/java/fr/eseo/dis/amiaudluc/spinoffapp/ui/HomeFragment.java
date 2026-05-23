@@ -87,6 +87,17 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         this.discoveryViewModel = new ViewModelProvider(requireActivity()).get(DiscoveryViewModel.class);
+
+        binding.textWelcome.setText(R.string.menu_discover);
+
+        setupState(fragmentType);
+        setupFragments(savedInstanceState);
+        setupFilters();
+        observeGenres();
+    }
+
+    private void setupState(FragmentType fragmentType) {
+        this.fragmentType = fragmentType;
         this.discoveryStrategy = DiscoveryStrategy.from(fragmentType);
 
         // Restore state from ViewModel
@@ -106,23 +117,31 @@ public class HomeFragment extends Fragment {
                 selectedRuntimeGte = filters.withRuntimeGte();
                 selectedRuntimeLte = filters.withRuntimeLte();
             }
+        } else {
+            // Default state if no saved filter
+            this.type = DiscoveryType.POPULAR;
+            selectedGenreIds = new ArrayList<>();
+            selectedYear = null;
+            selectedRuntimeGte = null;
+            selectedRuntimeLte = null;
         }
+    }
 
-        binding.textWelcome.setText(R.string.menu_discover);
-
+    private void setupFragments(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            Fragment discoveryFragment = fragmentType == FragmentType.MOVIE ?
-                    MovieDiscoveryFragment.newInstance() :
-                    SerieDiscoveryFragment.newInstance();
-
-            getChildFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.discover_fragment_container, discoveryFragment)
-                    .commit();
+            replaceDiscoveryFragment();
         }
+    }
 
-        setupFilters();
-        observeGenres();
+    private void replaceDiscoveryFragment() {
+        Fragment discoveryFragment = fragmentType == FragmentType.MOVIE ?
+                MovieDiscoveryFragment.newInstance() :
+                SerieDiscoveryFragment.newInstance();
+
+        getChildFragmentManager().beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.discover_fragment_container, discoveryFragment)
+                .commit();
     }
 
     private void observeGenres() {
@@ -136,6 +155,29 @@ public class HomeFragment extends Fragment {
         BottomSheetDialog dialog = new BottomSheetDialog(requireContext(), R.style.BentoBottomSheetDialog);
         BottomSheetFiltersBinding sheetBinding = BottomSheetFiltersBinding.inflate(getLayoutInflater());
         dialog.setContentView(sheetBinding.getRoot());
+
+        // Setup Discovery Type Chips
+        switch (type) {
+            case POPULAR:
+                sheetBinding.chipPopular.setChecked(true);
+                break;
+            case TOP_RATED:
+                sheetBinding.chipTopRated.setChecked(true);
+                break;
+            case ON_AIR:
+                sheetBinding.chipOnAir.setChecked(true);
+                break;
+        }
+
+        sheetBinding.chipGroupDiscoveryType.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.contains(R.id.chip_popular)) {
+                type = DiscoveryType.POPULAR;
+            } else if (checkedIds.contains(R.id.chip_top_rated)) {
+                type = DiscoveryType.TOP_RATED;
+            } else if (checkedIds.contains(R.id.chip_on_air)) {
+                type = DiscoveryType.ON_AIR;
+            }
+        });
 
         // Setup Genres RecyclerView
         List<FilterItem> filterItems = availableGenres.stream()
@@ -192,12 +234,14 @@ public class HomeFragment extends Fragment {
 
         // Setup Actions
         sheetBinding.btnReset.setOnClickListener(v -> {
+            type = DiscoveryType.POPULAR;
             selectedGenreIds.clear();
             selectedYear = null;
             selectedRuntimeGte = null;
             selectedRuntimeLte = null;
 
             // Refresh UI in bottom sheet
+            sheetBinding.chipPopular.setChecked(true);
             List<FilterItem> resetItems = availableGenres.stream()
                     .map(g -> new FilterItem(g.getId(), g.getName(), false))
                     .collect(Collectors.toList());
@@ -215,42 +259,27 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFilters() {
-        updatePresetFilter(type);
-        binding.chipPopular.setOnClickListener(v -> updatePresetFilter(DiscoveryType.POPULAR));
-        binding.chipTopRated.setOnClickListener(v -> updatePresetFilter(DiscoveryType.TOP_RATED));
-        binding.chipOnAir.setOnClickListener(v -> updatePresetFilter(DiscoveryType.ON_AIR));
+        if (fragmentType == FragmentType.MOVIE) {
+            binding.chipMovies.setChecked(true);
+        } else {
+            binding.chipSeries.setChecked(true);
+        }
+
+        binding.chipGroupType.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (checkedIds.contains(R.id.chip_movies) && fragmentType != FragmentType.MOVIE) {
+                updateFragmentType(FragmentType.MOVIE);
+            } else if (checkedIds.contains(R.id.chip_series) && fragmentType != FragmentType.SERIE) {
+                updateFragmentType(FragmentType.SERIE);
+            }
+        });
 
         binding.btnAddFilters.setOnClickListener(v -> showFiltersBottomSheet());
     }
 
-    private void updatePresetFilter(DiscoveryType type) {
-        this.type = type;
-        DiscoverFilters presetFilters = mergeFilters(type, null, null, null, null);
-
-        if (presetFilters.withGenres() != null && !presetFilters.withGenres().isEmpty()) {
-            selectedGenreIds = Arrays.stream(presetFilters.withGenres().split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-        } else {
-            selectedGenreIds = new ArrayList<>();
-        }
-
-        selectedYear = discoveryStrategy.getYear(presetFilters);
-        selectedRuntimeGte = presetFilters.withRuntimeGte();
-        selectedRuntimeLte = presetFilters.withRuntimeLte();
-
-        switch (type) {
-            case POPULAR:
-                binding.chipPopular.setChecked(true);
-                break;
-            case TOP_RATED:
-                binding.chipTopRated.setChecked(true);
-                break;
-            case ON_AIR:
-                binding.chipOnAir.setChecked(true);
-                break;
-        }
-        pushStateToViewModel();
+    private void updateFragmentType(FragmentType newType) {
+        setupState(newType);
+        replaceDiscoveryFragment();
+        observeGenres();
     }
 
     private void pushStateToViewModel() {

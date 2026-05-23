@@ -25,38 +25,30 @@
         android:gravity="center_vertical">
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_filters"
+            android:id="@+id/chip_group_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:singleSelection="true">
+            app:singleSelection="true"
+            app:selectionRequired="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip_popular"
+                android:id="@+id/chip_movies"
                 style="@style/BentoChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:checked="true"
-                android:text="@string/menu_popular"
+                android:text="@string/menu_movie"
                 app:checkedIconVisible="false" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chip_top_rated"
+                android:id="@+id/chip_series"
                 style="@style/BentoChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="@string/menu_top_rated"
-                app:checkedIconVisible="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_on_air"
-                style="@style/BentoChip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="@string/menu_on_air"
+                android:text="@string/menu_series"
                 app:checkedIconVisible="false" />
 
         </com.google.android.material.chip.ChipGroup>
