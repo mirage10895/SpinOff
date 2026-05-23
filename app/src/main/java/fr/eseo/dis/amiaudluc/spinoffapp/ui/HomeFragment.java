@@ -26,8 +26,9 @@ import fr.eseo.dis.amiaudluc.databinding.FragmentHomeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.FilterItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.countries.CountryUtils;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.FilterItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.GenreChipAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.RuntimeChipAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieDiscoveryFragment;
@@ -52,6 +53,7 @@ public class HomeFragment extends Fragment {
     private Integer selectedYear = null;
     private Integer selectedRuntimeGte = null;
     private Integer selectedRuntimeLte = null;
+    private String selectedCountryCode = null;
     private List<Genre> availableGenres = new ArrayList<>();
 
 
@@ -116,6 +118,7 @@ public class HomeFragment extends Fragment {
                 selectedYear = discoveryStrategy.getYear(filters);
                 selectedRuntimeGte = filters.withRuntimeGte();
                 selectedRuntimeLte = filters.withRuntimeLte();
+                selectedCountryCode = filters.withOriginCountry();
             }
         } else {
             // Default state if no saved filter
@@ -124,6 +127,7 @@ public class HomeFragment extends Fragment {
             selectedYear = null;
             selectedRuntimeGte = null;
             selectedRuntimeLte = null;
+            selectedCountryCode = null;
         }
     }
 
@@ -213,6 +217,29 @@ public class HomeFragment extends Fragment {
             selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
         });
 
+        // Setup Country Spinner
+        List<CountryUtils.Country> countries = new ArrayList<>();
+        String allCountries = getString(R.string.filter_all_countries);
+        countries.add(new CountryUtils.Country(null, allCountries));
+
+        List<CountryUtils.Country> isoCountries = CountryUtils.countries();
+        countries.addAll(isoCountries);
+
+        ArrayAdapter<CountryUtils.Country> countryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, countries);
+        sheetBinding.spinnerCountry.setAdapter(countryAdapter);
+
+        if (selectedCountryCode != null) {
+            String countryName = CountryUtils.displayCountry(selectedCountryCode);
+            sheetBinding.spinnerCountry.setText(countryName, false);
+        } else {
+            sheetBinding.spinnerCountry.setText(allCountries, false);
+        }
+
+        sheetBinding.spinnerCountry.setOnItemClickListener((parent, view, position, id) -> {
+            CountryUtils.Country selected = (CountryUtils.Country) parent.getItemAtPosition(position);
+            selectedCountryCode = selected.code();
+        });
+
         // Setup Runtime RecyclerView
         List<RuntimeFilter> runtimeFilters = discoveryStrategy.getRuntimeFilters();
         RuntimeFilter currentRuntimeFilter = runtimeFilters.stream()
@@ -239,6 +266,7 @@ public class HomeFragment extends Fragment {
             selectedYear = null;
             selectedRuntimeGte = null;
             selectedRuntimeLte = null;
+            selectedCountryCode = null;
 
             // Refresh UI in bottom sheet
             sheetBinding.chipPopular.setChecked(true);
@@ -247,6 +275,7 @@ public class HomeFragment extends Fragment {
                     .collect(Collectors.toList());
             genreAdapter.submitList(resetItems);
             sheetBinding.spinnerYear.setText(allYears, false);
+            sheetBinding.spinnerCountry.setText(allCountries, false);
             runtimeAdapter.clearSelection();
         });
 
@@ -284,7 +313,7 @@ public class HomeFragment extends Fragment {
 
     private void pushStateToViewModel() {
         this.discoveryViewModel.setFilter(
-                new DiscoveryFilter(type, mergeFilters(type, selectedGenreIds, selectedYear, selectedRuntimeGte, selectedRuntimeLte)),
+                new DiscoveryFilter(type, mergeFilters(type, selectedGenreIds, selectedYear, selectedRuntimeGte, selectedRuntimeLte, selectedCountryCode)),
                 fragmentType
         );
     }
@@ -294,7 +323,8 @@ public class HomeFragment extends Fragment {
             List<Integer> genreIds,
             Integer year,
             Integer runtimeGte,
-            Integer runtimeLte
+            Integer runtimeLte,
+            String countryCode
     ) {
         DiscoverFilters.DiscoverFiltersBuilder builder = discoveryStrategy.getBaseFilters(type);
 
@@ -308,6 +338,7 @@ public class HomeFragment extends Fragment {
 
         builder.withRuntimeGte(runtimeGte);
         builder.withRuntimeLte(runtimeLte);
+        builder.withOriginCountry(countryCode);
 
         return builder.build();
     }
