@@ -27,6 +27,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.DiscoverFilters;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.ArraySearchAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.countries.CountryUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.FilterItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.filters.GenreChipAdapter;
@@ -195,50 +196,53 @@ public class HomeFragment extends Fragment {
         genreAdapter.submitList(filterItems);
 
         // Setup Year Spinner
-        List<String> years = new ArrayList<>();
-        String allYears = getString(R.string.filter_all_year);
-        years.add(allYears);
-        years.addAll(IntStream.rangeClosed(1900, LocalDate.now().getYear())
+        List<String> years = IntStream.rangeClosed(1900, LocalDate.now().getYear())
                 .boxed()
                 .sorted((a, b) -> b - a)
                 .map(String::valueOf)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
 
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, years);
+        ArrayAdapter<String> yearAdapter = new ArraySearchAdapter<>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                years,
+                year -> year
+        );
         sheetBinding.spinnerYear.setAdapter(yearAdapter);
         if (selectedYear != null) {
             sheetBinding.spinnerYear.setText(String.valueOf(selectedYear), false);
-        } else {
-            sheetBinding.spinnerYear.setText(allYears, false);
         }
 
         sheetBinding.spinnerYear.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
-            selectedYear = allYears.equals(selected) ? null : Integer.parseInt(selected);
+            selectedYear = selected == null ? null : Integer.parseInt(selected);
         });
 
+        sheetBinding.spinnerYear.setOnClickListener(v -> sheetBinding.spinnerYear.showDropDown());
+
         // Setup Country Spinner
-        List<CountryUtils.Country> countries = new ArrayList<>();
-        String allCountries = getString(R.string.filter_all_countries);
-        countries.add(new CountryUtils.Country(null, allCountries));
+        List<CountryUtils.Country> countries = CountryUtils.countries();
 
-        List<CountryUtils.Country> isoCountries = CountryUtils.countries();
-        countries.addAll(isoCountries);
+        ArrayAdapter<CountryUtils.Country> countryAdapter = new ArraySearchAdapter<>(
+                requireContext(), android.R.layout.simple_dropdown_item_1line,
+                new ArrayList<>(countries),
+                country -> country.name() + " (" + country.code() + ")"
+        ) {
 
-        ArrayAdapter<CountryUtils.Country> countryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, countries);
+        };
         sheetBinding.spinnerCountry.setAdapter(countryAdapter);
 
         if (selectedCountryCode != null) {
             String countryName = CountryUtils.displayCountry(selectedCountryCode);
             sheetBinding.spinnerCountry.setText(countryName, false);
-        } else {
-            sheetBinding.spinnerCountry.setText(allCountries, false);
         }
 
         sheetBinding.spinnerCountry.setOnItemClickListener((parent, view, position, id) -> {
             CountryUtils.Country selected = (CountryUtils.Country) parent.getItemAtPosition(position);
             selectedCountryCode = selected.code();
         });
+
+        sheetBinding.spinnerCountry.setOnClickListener(v -> sheetBinding.spinnerCountry.showDropDown());
 
         // Setup Runtime RecyclerView
         List<RuntimeFilter> runtimeFilters = discoveryStrategy.getRuntimeFilters();
@@ -274,8 +278,8 @@ public class HomeFragment extends Fragment {
                     .map(g -> new FilterItem(g.getId(), g.getName(), false))
                     .collect(Collectors.toList());
             genreAdapter.submitList(resetItems);
-            sheetBinding.spinnerYear.setText(allYears, false);
-            sheetBinding.spinnerCountry.setText(allCountries, false);
+            sheetBinding.spinnerYear.setText(null, false);
+            sheetBinding.spinnerCountry.setText(null, false);
             runtimeAdapter.clearSelection();
         });
 

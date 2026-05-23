@@ -120,13 +120,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/spinner_year"
             style="@style/BentoSelectorText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
             android:hint="@string/year_text"
+            android:inputType="text"
             android:paddingStart="@dimen/grid_spacing"
             android:paddingEnd="@dimen/grid_spacing" />
 
@@ -145,13 +145,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <AutoCompleteTextView
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/spinner_country"
             style="@style/BentoSelectorText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
             android:hint="@string/origin_country_text"
+            android:inputType="text"
             android:paddingStart="@dimen/grid_spacing"
             android:paddingEnd="@dimen/grid_spacing" />
 
