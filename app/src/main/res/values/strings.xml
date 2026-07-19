@@ -145,4 +145,11 @@
     <string name="chip_watched">Watched</string>
     <string name="apply">Apply</string>
     <string name="clear_all">Clear all</string>
+
+    <!-- Library Settings -->
+    <string name="setting_title">Setting</string>
+    <string name="export_library">Export Library</string>
+    <string name="import_library">Import Library</string>
+    <string name="import_library_success">Library exported successfully !</string>
+    <string name="import_library_error">Error during library export : %s</string>
 </resources>

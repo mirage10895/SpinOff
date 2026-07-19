@@ -6,11 +6,11 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    compileSdkVersion 36
+    compileSdkVersion 37
     defaultConfig {
         applicationId "fr.eseo.dis.amiaudluc.spinoffapp"
         minSdkVersion 26
-        targetSdkVersion 36
+        targetSdkVersion 37
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -50,18 +50,18 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // Core AndroidX
     implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.core:core-ktx:1.18.0'
+    implementation 'androidx.core:core:1.19.0'
     implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation "androidx.gridlayout:gridlayout:1.1.0"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0"
 
     // Lifecycle (Java-friendly)
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.10.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.10.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.11.0'
 
     // WorkManager
     implementation 'androidx.work:work-runtime:2.11.2'

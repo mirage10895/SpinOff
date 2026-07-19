@@ -1,12 +1,13 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.dao;
 
+import android.database.Cursor;
+
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-
-import java.util.List;
-
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.CalendarBean;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
 
@@ -19,6 +20,12 @@ public interface EpisodeDAO {
 
     @Insert
     void insertEpisode(EpisodeDatabase episode);
+
+    @Query("SELECT * FROM serie_episode")
+    Cursor getAllCursor();
+
+    @Query("DELETE FROM serie_episode")
+    void deleteAll();
 
     @Query("select * FROM serie_episode where serie_id = :serieId")
     LiveData<List<EpisodeDatabase>> fetchWatchedEpisodesBySerieId(long serieId);

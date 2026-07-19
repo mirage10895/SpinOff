@@ -16,36 +16,54 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         android:textStyle="bold" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_library"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:paddingHorizontal="@dimen/activity_horizontal_margin"
-        app:selectionRequired="true"
-        app:singleSelection="true">
+        android:gravity="center_vertical">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_my_movies"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_library"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:clickable="true"
-            android:text="@string/library_movies"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="@color/chip_background_color" />
+            android:layout_weight="1"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_my_series"
-            style="@style/BentoChip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:text="@string/library_series"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="@color/chip_background_color" />
-    </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_my_movies"
+                style="@style/BentoChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:clickable="true"
+                android:text="@string/library_movies"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_background_color" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_my_series"
+                style="@style/BentoChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="@string/library_series"
+                app:checkedIconVisible="false"
+                app:chipBackgroundColor="@color/chip_background_color" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_library_settings"
+            style="@style/BentoIconButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            app:iconSize="20dp"
+            app:icon="@drawable/ic_plus_white" />
+
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"

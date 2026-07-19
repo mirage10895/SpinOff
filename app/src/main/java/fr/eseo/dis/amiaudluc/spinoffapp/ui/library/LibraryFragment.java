@@ -42,6 +42,13 @@ public class LibraryFragment extends Fragment {
 
         binding.chipMyMovies.setOnClickListener(v -> switchFragment(new MyMoviesFragment()));
         binding.chipMySeries.setOnClickListener(v -> switchFragment(new MySeriesFragment()));
+
+        binding.btnLibrarySettings.setOnClickListener(v -> showSettingsBottomSheet());
+    }
+
+    private void showSettingsBottomSheet() {
+        LibrarySettingsBottomSheet bottomSheet = new LibrarySettingsBottomSheet();
+        bottomSheet.show(getChildFragmentManager(), LibrarySettingsBottomSheet.TAG);
     }
 
     private void switchFragment(Fragment fragment) {

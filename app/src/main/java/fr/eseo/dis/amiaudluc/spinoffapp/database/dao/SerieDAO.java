@@ -1,5 +1,7 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.database.dao;
 
+import android.database.Cursor;
+
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -21,6 +23,12 @@ public interface SerieDAO {
     LiveData<List<SerieDatabase>> getAll();
     @Query("SELECT * FROM serie")
     List<SerieDatabase> getAllSync();
+
+    @Query("SELECT * FROM serie")
+    Cursor getAllCursor();
+
+    @Query("DELETE FROM serie")
+    void deleteAll();
     @Query("DELETE FROM serie where id = :id")
     void deleteSerieById(Integer id);
     @Query("update serie set watched = not watched where id = :id")
