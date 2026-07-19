@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -101,6 +102,7 @@ public class ArtistFragment extends Fragment implements ItemInterface {
                     requireContext(),
                     this,
                     artist.getMovies().getCast().stream()
+                            .sorted(Comparator.comparing(Movie::getPopularity).reversed())
                             .map(Movie::toAdapterFormat)
                             .collect(Collectors.toList()),
                     true
@@ -115,6 +117,7 @@ public class ArtistFragment extends Fragment implements ItemInterface {
                     requireContext(),
                     this,
                     artist.getSeries().getCast().stream()
+                            .sorted(Comparator.comparing(Serie::getPopularity).reversed())
                             .map(Serie::toAdapterFormat)
                             .collect(Collectors.toList()),
                     true
