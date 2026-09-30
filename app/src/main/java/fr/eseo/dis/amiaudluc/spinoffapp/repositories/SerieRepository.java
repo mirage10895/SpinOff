@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
@@ -13,18 +14,25 @@ import java.util.concurrent.Executors;
 
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.ProductionCountry;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.EpisodeDAO;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SeasonDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 public class SerieRepository {
     private static SerieRepository INSTANCE = null;
 
     private final SerieDAO serieDAO;
+    private final SeasonDAO seasonDAO;
+    private final EpisodeDAO episodeDAO;
     private final TmdbApiRepository apiRepository;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
@@ -39,6 +47,8 @@ public class SerieRepository {
     private SerieRepository(Context context) {
         AppDatabase db = AppDatabase.getAppDatabase(context);
         serieDAO = db.serieDAO();
+        seasonDAO = db.seasonDAO();
+        episodeDAO = db.episodeDAO();
         this.apiRepository = TmdbApiRepository.getInstance();
     }
 
@@ -46,12 +56,35 @@ public class SerieRepository {
         return this.serieDAO.getAll();
     }
 
+    public LiveData<List<SeasonDatabase>> fetchAllSeasons() {
+        return this.seasonDAO.getAll();
+    }
+
+    public LiveData<List<EpisodeDatabase>> fetchAllEpisodes() {
+        return this.episodeDAO.getAll();
+    }
+
+    public LiveData<List<SeasonDatabase>> fetchSeasonsBySerie(int serieId) {
+        return this.seasonDAO.getSeasonsBySerie(serieId);
+    }
+
+    public LiveData<SeasonDatabase> fetchSeason(int serieId, int seasonNumber) {
+        return this.seasonDAO.getSeason(serieId, seasonNumber);
+    }
+
+    public LiveData<List<EpisodeDatabase>> fetchEpisodesBySerieAndSeason(int serieId, int seasonNumber) {
+        return this.episodeDAO.getEpisodesBySerieAndSeason(serieId, seasonNumber);
+    }
+
     public void insert(int serieId) {
         executor.execute(() -> {
-            SerieDatabase result = computeSerieDatabaseSync(serieId, false);
-            if (result != null) {
-                this.insert(result);
+            Optional<Serie> apiSerie = this.apiRepository.getSerieByIdSync(serieId);
+            if (apiSerie.isEmpty()) {
+                return;
             }
+            this.serieDAO.insertSerie(computeSerieDatabase(apiSerie.get(), false));
+            upsertSeasons(apiSerie.get());
+            recomputeSerieWatched(serieId);
         });
     }
 
@@ -61,68 +94,205 @@ public class SerieRepository {
     public void updateAllSeriesSync(Duration notSyncSince) {
         List<SerieDatabase> series = this.serieDAO.getAllSync();
         for (SerieDatabase serieDatabase : series) {
-            // Only update if last sync was more than 10 days ago
+            // Only update if last sync was more than the given duration ago
             if (serieDatabase.getLastSynchronisationTime() == null ||
                     serieDatabase.getLastSynchronisationTime().isBefore(Instant.now().minus(notSyncSince))) {
 
-                SerieDatabase updated = computeSerieDatabaseSync(serieDatabase.getId(), serieDatabase.isWatched());
-                if (updated != null) {
-                    this.serieDAO.updateSerie(updated);
+                Optional<Serie> apiSerie = this.apiRepository.getSerieByIdSync(serieDatabase.getId());
+                if (apiSerie.isEmpty()) {
+                    continue;
                 }
+
+                boolean legacyWatched = serieDatabase.isWatched();
+                this.serieDAO.updateSerie(computeSerieDatabase(apiSerie.get(), legacyWatched));
+                upsertSeasons(apiSerie.get());
+
+                // Data migration: propagate a legacy "watched" flag to every non-special season
+                if (legacyWatched) {
+                    this.seasonDAO.setAllSeasonsWatched(serieDatabase.getId(), true);
+                }
+
+                recomputeSerieWatched(serieDatabase.getId());
             }
         }
     }
 
-    /**
-     * Synchronous version containing the source of truth for the logic.
-     */
-    private SerieDatabase computeSerieDatabaseSync(int serieId, boolean isWatched) {
-        Optional<Serie> apiSerie = this.apiRepository.getSerieByIdSync(serieId);
-        if (apiSerie.isEmpty()) {
-            return null;
-        }
-
+    private SerieDatabase computeSerieDatabase(Serie apiSerie, boolean isWatched) {
         SerieDatabase serieDatabase = new SerieDatabase();
-        serieDatabase.setId(apiSerie.get().getId());
-        serieDatabase.setName(apiSerie.get().getName());
-        serieDatabase.setPosterPath(apiSerie.get().getPosterPath());
+        serieDatabase.setId(apiSerie.getId());
+        serieDatabase.setName(apiSerie.getName());
+        serieDatabase.setPosterPath(apiSerie.getPosterPath());
         serieDatabase.setWatched(isWatched);
-        serieDatabase.setGenres(TmdbApiRepository.formatList(apiSerie.get().getGenres(), Genre::getName));
-        serieDatabase.setEpisodeCount(apiSerie.get().getNumberOfEpisodes());
-        serieDatabase.setSeasonCount(apiSerie.get().getNumberOfSeasons());
-        serieDatabase.setFirstAirDate(apiSerie.get().getFirstAirDate());
-        serieDatabase.setVoteAverage(apiSerie.get().getVoteAverage());
-        serieDatabase.setOriginalLanguage(apiSerie.get().getOriginalLanguage());
-        serieDatabase.setPopularity(apiSerie.get().getPopularity());
-        serieDatabase.setProductionCountries(TmdbApiRepository.formatList(apiSerie.get().getProductionCountries(), ProductionCountry::getName));
-        serieDatabase.setActors(TmdbApiRepository.formatList(apiSerie.get().getCredits().getCast(), Artist::getName));
-        serieDatabase.setDirectors(TmdbApiRepository.formatList(apiSerie.get().getCreatedBy(), Artist::getName));
+        serieDatabase.setGenres(TmdbApiRepository.formatList(apiSerie.getGenres(), Genre::getName));
+        serieDatabase.setEpisodeCount(apiSerie.getNumberOfEpisodes());
+        serieDatabase.setSeasonCount(apiSerie.getNumberOfSeasons());
+        serieDatabase.setFirstAirDate(apiSerie.getFirstAirDate());
+        serieDatabase.setVoteAverage(apiSerie.getVoteAverage());
+        serieDatabase.setOriginalLanguage(apiSerie.getOriginalLanguage());
+        serieDatabase.setPopularity(apiSerie.getPopularity());
+        serieDatabase.setProductionCountries(TmdbApiRepository.formatList(apiSerie.getProductionCountries(), ProductionCountry::getName));
+        serieDatabase.setActors(TmdbApiRepository.formatList(apiSerie.getCredits().getCast(), Artist::getName));
+        serieDatabase.setDirectors(TmdbApiRepository.formatList(apiSerie.getCreatedBy(), Artist::getName));
         serieDatabase.setLastSynchronisationTime(Instant.now());
 
-        if (apiSerie.get().getNumberOfSeasons() == null || apiSerie.get().getNumberOfSeasons() == 0) {
+        if (apiSerie.getNumberOfSeasons() == null || apiSerie.getNumberOfSeasons() == 0) {
             return serieDatabase;
         }
 
-        if (apiSerie.get().getEpisodeRunTime() == null || apiSerie.get().getEpisodeRunTime().isEmpty()) {
-            Optional<Season> season = this.apiRepository.getSeasonBySerieIdSync(apiSerie.get().getId(), 1);
+        if (apiSerie.getEpisodeRunTime() == null || apiSerie.getEpisodeRunTime().isEmpty()) {
+            Optional<Season> season = this.apiRepository.getSeasonBySerieIdSync(apiSerie.getId(), 1);
             season.ifPresent(value -> serieDatabase.setRuntime(
-                    Season.computeEpisodesAverageRuntime(value) * apiSerie.get().getNumberOfEpisodes()
+                    Season.computeEpisodesAverageRuntime(value) * apiSerie.getNumberOfEpisodes()
             ));
         } else {
-            serieDatabase.setRuntime(Serie.computeTotalRuntime(apiSerie.get()));
+            serieDatabase.setRuntime(Serie.computeTotalRuntime(apiSerie));
         }
         return serieDatabase;
     }
 
+    private void upsertSeasons(Serie apiSerie) {
+        if (apiSerie.getSeasons() == null) {
+            return;
+        }
+        for (Season season : apiSerie.getSeasons()) {
+            if (season.getSeasonNumber() == null) {
+                continue;
+            }
+            this.seasonDAO.upsertSeason(apiSerie.getId(), season.getSeasonNumber(), season.getEpisodeCount());
+        }
+    }
+
     public void deleteById(int id) {
-        executor.execute(() -> this.serieDAO.deleteSerieById(id));
+        executor.execute(() -> {
+            this.episodeDAO.deleteBySerie(id);
+            this.seasonDAO.deleteBySerie(id);
+            this.serieDAO.deleteSerieById(id);
+        });
     }
 
     public void toggleSerieIsWatched(int id) {
-        executor.execute(() -> this.serieDAO.toggleSerieIsWatched(id));
+        executor.execute(() -> {
+            SerieDatabase serie = this.serieDAO.fetchSerieByIdSync(id);
+            boolean watched = serie != null && !serie.isWatched();
+            applySerieWatched(id, watched);
+        });
     }
 
-    private void insert(SerieDatabase serieDatabase) {
-        executor.execute(() -> this.serieDAO.insertSerie(serieDatabase));
+    public void setSerieWatched(int serieId, boolean watched) {
+        executor.execute(() -> applySerieWatched(serieId, watched));
+    }
+
+    private void applySerieWatched(int serieId, boolean watched) {
+        // Season flags carry the "watched" state; individual episode rows become redundant
+        this.seasonDAO.setAllSeasonsWatched(serieId, watched);
+        this.episodeDAO.deleteBySerie(serieId);
+        recomputeSerieWatched(serieId);
+    }
+
+    public void setSeasonWatched(int serieId, int seasonNumber, boolean watched) {
+        executor.execute(() -> {
+            this.seasonDAO.setSeasonWatched(serieId, seasonNumber, watched);
+            this.episodeDAO.deleteBySeason(serieId, seasonNumber);
+            recomputeSerieWatched(serieId);
+        });
+    }
+
+    /**
+     * Store the episode count of a season when the season screen is opened.
+     * Never overwrites a valid count with a non-positive one.
+     */
+    public void ensureSeasonMetadata(int serieId, int seasonNumber, int episodeCount) {
+        executor.execute(() -> {
+            if (this.serieDAO.fetchSerieByIdSync(serieId) == null) {
+                return;
+            }
+            this.seasonDAO.upsertSeason(serieId, seasonNumber, episodeCount);
+        });
+    }
+
+    public void setEpisodeWatched(int serieId, int seasonNumber, int episodeNumber, boolean watched) {
+        executor.execute(() -> {
+            SeasonDatabase season = this.seasonDAO.getSeasonSync(serieId, seasonNumber);
+
+            if (watched) {
+                insertWatchedEpisode(serieId, seasonNumber, episodeNumber);
+                if (season != null && season.getEpisodeCount() != null && season.getEpisodeCount() > 0
+                        && this.episodeDAO.countBySeason(serieId, seasonNumber) >= season.getEpisodeCount()) {
+                    this.seasonDAO.setSeasonWatched(serieId, seasonNumber, true);
+                }
+            } else {
+                if (season != null && season.isWatched()) {
+                    // The whole season was watched: unflag it and keep the other episodes watched
+                    this.seasonDAO.setSeasonWatched(serieId, seasonNumber, false);
+                    materializeAllEpisodesSync(serieId, seasonNumber);
+                }
+                this.episodeDAO.deleteEpisode(serieId, seasonNumber, episodeNumber);
+            }
+            recomputeSerieWatched(serieId);
+        });
+    }
+
+    private void insertWatchedEpisode(int serieId, int seasonNumber, int episodeNumber) {
+        EpisodeDatabase row = new EpisodeDatabase();
+        row.setSerieId(serieId);
+        row.setSeasonNumber(seasonNumber);
+        row.setEpisodeNumber(episodeNumber);
+        this.episodeDAO.insertEpisode(row);
+    }
+
+    /**
+     * Insert every episode of a season as watched. Only used when a wholesale-watched season
+     * is un-watched on a single episode, so the remaining episodes stay watched.
+     */
+    private void materializeAllEpisodesSync(int serieId, int seasonNumber) {
+        if (this.serieDAO.fetchSerieByIdSync(serieId) == null) {
+            return;
+        }
+        Optional<Season> apiSeason = this.apiRepository.getSeasonBySerieIdSync(serieId, seasonNumber);
+        if (apiSeason.isEmpty() || apiSeason.get().getEpisodes() == null) {
+            return;
+        }
+        List<EpisodeDatabase> rows = new ArrayList<>();
+        for (Episode episode : apiSeason.get().getEpisodes()) {
+            if (episode.getEpisodeNumber() == null) {
+                continue;
+            }
+            EpisodeDatabase row = new EpisodeDatabase();
+            row.setSerieId(serieId);
+            row.setSeasonNumber(seasonNumber);
+            row.setEpisodeNumber(episode.getEpisodeNumber());
+            rows.add(row);
+        }
+        this.episodeDAO.insertEpisodes(rows);
+    }
+
+    /**
+     * Recompute the aggregated "watched" flag of a serie from its non-special seasons.
+     */
+    private void recomputeSerieWatched(int serieId) {
+        List<SeasonDatabase> seasons = this.seasonDAO.getSeasonsBySerieSync(serieId);
+        boolean hasCountableSeason = false;
+        boolean allWatched = true;
+
+        for (SeasonDatabase season : seasons) {
+            if (season.getSeasonNumber() == 0) {
+                continue;
+            }
+            hasCountableSeason = true;
+
+            boolean seasonWatched = season.isWatched();
+            if (!seasonWatched) {
+                int count = season.getEpisodeCount() != null ? season.getEpisodeCount() : 0;
+                if (count > 0 && this.episodeDAO.countBySeason(serieId, season.getSeasonNumber()) >= count) {
+                    seasonWatched = true;
+                    this.seasonDAO.setSeasonWatched(serieId, season.getSeasonNumber(), true);
+                }
+            }
+            if (!seasonWatched) {
+                allWatched = false;
+            }
+        }
+
+        this.serieDAO.updateSerieWatched(serieId, hasCountableSeason && allWatched);
     }
 }

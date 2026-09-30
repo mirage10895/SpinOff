@@ -112,6 +112,21 @@
             </RelativeLayout>
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/watched_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignBottom="@id/poster_ic"
+            android:layout_alignEnd="@id/poster_ic"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_toggle_scrim"
+            android:clickable="true"
+            android:contentDescription="@string/chip_watched"
+            android:focusable="true"
+            android:padding="5dp"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

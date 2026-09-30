@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -21,8 +23,10 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSingleSerieBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Genre;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Movie;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Video;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistsAdapter;
@@ -30,16 +34,18 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.CircularImageBar;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.WatchedToggleListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.YoutubeConnector;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.networks.WatchProviderAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.season.SeasonsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.VideoUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
-public class SingleSerieFragment extends Fragment implements ItemInterface {
+public class SingleSerieFragment extends Fragment implements ItemInterface, WatchedToggleListener {
 
     private static final String ARG_SERIE_ID = "serie_id";
 
@@ -52,6 +58,9 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
     private WatchProviderAdapter watchProviderAdapter;
     private YoutubeConnector youtubeConnector;
     private int serieId;
+    private boolean serieInLibrary = false;
+    private final List<Season> apiSeasons = new ArrayList<>();
+    private final Set<Integer> watchedSeasonNumbers = new HashSet<>();
 
     public SingleSerieFragment() {
         // Required empty public constructor
@@ -101,14 +110,15 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
             }
         });
 
-        binding.layoutChips.chipWatched.setOnClickListener(v -> serieViewModel.toggleSerieIsWatched(serieId));
+        binding.layoutChips.chipWatched.setOnClickListener(v ->
+                serieViewModel.setSerieWatched(serieId, binding.layoutChips.chipWatched.isChecked()));
     }
 
     private void setupRecyclerViews() {
         binding.seasons.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.seasons.setHasFixedSize(false);
         binding.seasons.setNestedScrollingEnabled(false);
-        this.seasonsAdapter = new SeasonsAdapter(this, new ArrayList<>());
+        this.seasonsAdapter = new SeasonsAdapter(this, this);
         binding.seasons.setAdapter(this.seasonsAdapter);
 
         binding.realisators.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -147,15 +157,37 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
                     .findFirst();
 
             if (serieDb.isPresent()) {
+                serieInLibrary = true;
                 binding.layoutChips.chipInLibrary.setChecked(true);
                 binding.layoutChips.chipWatched.setVisibility(View.VISIBLE);
                 binding.layoutChips.chipWatched.setChecked(serieDb.get().isWatched());
             } else {
+                serieInLibrary = false;
                 binding.layoutChips.chipInLibrary.setChecked(false);
                 binding.layoutChips.chipWatched.setVisibility(View.GONE);
                 binding.layoutChips.chipWatched.setChecked(false);
             }
+            this.submitSeasonItems();
         });
+        serieViewModel.getSeasonsBySerie(serieId).observe(getViewLifecycleOwner(), seasons -> {
+            watchedSeasonNumbers.clear();
+            for (SeasonDatabase season : seasons) {
+                if (season.isWatched()) {
+                    watchedSeasonNumbers.add(season.getSeasonNumber());
+                }
+            }
+            this.submitSeasonItems();
+        });
+    }
+
+    private void submitSeasonItems() {
+        List<SeasonItem> items = new ArrayList<>();
+        for (Season season : apiSeasons) {
+            boolean watched = season.getSeasonNumber() != null
+                    && watchedSeasonNumbers.contains(season.getSeasonNumber());
+            items.add(new SeasonItem(season, watched, serieInLibrary));
+        }
+        this.seasonsAdapter.submitList(items);
     }
 
     private void updateUI(Serie serie) {
@@ -203,7 +235,11 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
             binding.youtube.youtubeCard.setVisibility(View.GONE);
         }
 
-        this.seasonsAdapter.submitList(serie.getSeasons());
+        apiSeasons.clear();
+        if (serie.getSeasons() != null) {
+            apiSeasons.addAll(serie.getSeasons());
+        }
+        submitSeasonItems();
         this.artistsAdapter.submitList(serie.getCreatedBy());
         this.networksAdapter.submitList(
                 serie.getNetworks()
@@ -271,6 +307,11 @@ public class SingleSerieFragment extends Fragment implements ItemInterface {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onWatchedToggle(int id, boolean watched) {
+        serieViewModel.setSeasonWatched(serieId, id, watched);
     }
 
     @Override

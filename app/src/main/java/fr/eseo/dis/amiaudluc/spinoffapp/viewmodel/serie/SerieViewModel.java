@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
@@ -21,6 +22,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.TmdbApiRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.repositories.SerieRepository;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.WatchProviderAdapterData;
@@ -56,6 +59,10 @@ public class SerieViewModel extends AndroidViewModel {
     private final TmdbApiRepository apiRepository;
     private final SerieRepository serieRepository;
 
+    private List<SerieDatabase> statsSeries;
+    private List<SeasonDatabase> statsSeasons;
+    private List<EpisodeDatabase> statsEpisodes;
+
     public SerieViewModel(@NonNull Application application, @NonNull SavedStateHandle savedStateHandle) {
         super(application);
         this.savedStateHandle = savedStateHandle;
@@ -87,7 +94,23 @@ public class SerieViewModel extends AndroidViewModel {
         );
 
         this.databaseSeries = serieRepository.fetchAll();
-        this.serieStats = Transformations.map(databaseSeries, SerieViewModel::calculateStats);
+        LiveData<List<SeasonDatabase>> allSeasons = serieRepository.fetchAllSeasons();
+        LiveData<List<EpisodeDatabase>> allEpisodes = serieRepository.fetchAllEpisodes();
+
+        MediatorLiveData<SerieStats> statsLiveData = new MediatorLiveData<>();
+        statsLiveData.addSource(databaseSeries, list -> {
+            statsSeries = list;
+            statsLiveData.setValue(calculateStats(statsSeries, statsSeasons, statsEpisodes));
+        });
+        statsLiveData.addSource(allSeasons, list -> {
+            statsSeasons = list;
+            statsLiveData.setValue(calculateStats(statsSeries, statsSeasons, statsEpisodes));
+        });
+        statsLiveData.addSource(allEpisodes, list -> {
+            statsEpisodes = list;
+            statsLiveData.setValue(calculateStats(statsSeries, statsSeasons, statsEpisodes));
+        });
+        this.serieStats = statsLiveData;
     }
 
     // Public API to trigger data fetch
@@ -122,6 +145,38 @@ public class SerieViewModel extends AndroidViewModel {
 
     public void toggleSerieIsWatched(int id) {
         serieRepository.toggleSerieIsWatched(id);
+    }
+
+    public void setSerieWatched(int id, boolean watched) {
+        serieRepository.setSerieWatched(id, watched);
+    }
+
+    public void setSeasonWatched(int serieId, int seasonNumber, boolean watched) {
+        serieRepository.setSeasonWatched(serieId, seasonNumber, watched);
+    }
+
+    public void toggleEpisodeWatched(int serieId, int seasonNumber, int episodeNumber) {
+        serieRepository.setEpisodeWatched(serieId, seasonNumber, episodeNumber, true);
+    }
+
+    public void setEpisodeWatched(int serieId, int seasonNumber, int episodeNumber, boolean watched) {
+        serieRepository.setEpisodeWatched(serieId, seasonNumber, episodeNumber, watched);
+    }
+
+    public void ensureSeasonMetadata(int serieId, int seasonNumber, int episodeCount) {
+        serieRepository.ensureSeasonMetadata(serieId, seasonNumber, episodeCount);
+    }
+
+    public LiveData<List<SeasonDatabase>> getSeasonsBySerie(int serieId) {
+        return serieRepository.fetchSeasonsBySerie(serieId);
+    }
+
+    public LiveData<SeasonDatabase> getSeasonState(int serieId, int seasonNumber) {
+        return serieRepository.fetchSeason(serieId, seasonNumber);
+    }
+
+    public LiveData<List<EpisodeDatabase>> getEpisodesBySerieAndSeason(int serieId, int seasonNumber) {
+        return serieRepository.fetchEpisodesBySerieAndSeason(serieId, seasonNumber);
     }
 
     // Helper classes for complex triggers
@@ -179,12 +234,29 @@ public class SerieViewModel extends AndroidViewModel {
 
     // Helper methods
     
-    private static SerieStats calculateStats(List<SerieDatabase> series) {
+    private static SerieStats calculateStats(List<SerieDatabase> series,
+                                             List<SeasonDatabase> seasons,
+                                             List<EpisodeDatabase> episodes) {
         if (series == null) return null;
 
         SerieStats stats = new SerieStats();
         int totalRuntimeMinutes = 0;
         int watchlistCount = 0;
+
+        Map<String, Integer> watchedRows = new HashMap<>();
+        if (episodes != null) {
+            for (EpisodeDatabase episode : episodes) {
+                // Every stored episode row means the episode has been watched
+                watchedRows.merge(statsKey(episode.getSerieId(), episode.getSeasonNumber()), 1, Integer::sum);
+            }
+        }
+        Map<Integer, List<SeasonDatabase>> seasonsBySerie = new HashMap<>();
+        if (seasons != null) {
+            for (SeasonDatabase season : seasons) {
+                seasonsBySerie.computeIfAbsent(season.getSerieId(), k -> new ArrayList<>()).add(season);
+            }
+        }
+
         Map<String, Integer> genreCounts = new HashMap<>();
         Map<String, Integer> combinationCounts = new HashMap<>();
         Map<String, Integer> decadeCounts = new HashMap<>();
@@ -196,12 +268,22 @@ public class SerieViewModel extends AndroidViewModel {
         Map<String, Integer> languageCounts = new HashMap<>();
 
         for (SerieDatabase serie : series) {
+            int watchedEpisodes = 0;
+            int watchedSeasons = 0;
+            for (SeasonDatabase season : seasonsBySerie.getOrDefault(serie.getId(), Collections.emptyList())) {
+                int episodeCount = season.getEpisodeCount() != null ? season.getEpisodeCount() : 0;
+                if (season.isWatched()) {
+                    watchedEpisodes += episodeCount;
+                    watchedSeasons++;
+                } else {
+                    watchedEpisodes += watchedRows.getOrDefault(statsKey(serie.getId(), season.getSeasonNumber()), 0);
+                }
+            }
+            stats.setTotalEpisodes(stats.getTotalEpisodes() + watchedEpisodes);
+            stats.setTotalSeasons(stats.getTotalSeasons() + watchedSeasons);
+
             if (serie.isWatched()) {
-                int episodes = serie.getEpisodeCount() != null ? serie.getEpisodeCount() : 0;
-                int seasons = serie.getSeasonCount() != null ? serie.getSeasonCount() : 0;
                 totalRuntimeMinutes += serie.getRuntime();
-                stats.setTotalEpisodes(stats.getTotalEpisodes() + episodes);
-                stats.setTotalSeasons(stats.getTotalSeasons() + seasons);
                 stats.setTotalSeries(stats.getTotalSeries() + 1);
 
                 // Genres and Combinations
@@ -318,5 +400,9 @@ public class SerieViewModel extends AndroidViewModel {
         }
 
         return stats;
+    }
+
+    private static String statsKey(Integer serieId, Integer seasonNumber) {
+        return serieId + ":" + seasonNumber;
     }
 }

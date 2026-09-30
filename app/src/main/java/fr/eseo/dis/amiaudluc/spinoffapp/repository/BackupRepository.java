@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -19,9 +20,12 @@ import java.time.ZoneId;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
 public class BackupRepository {
+
+    private static final int BACKUP_VERSION = 2;
 
     private final ContentResolver contentResolver;
     private final AppDatabase database;
@@ -39,6 +43,9 @@ public class BackupRepository {
             
             writer.setIndent("  ");
             writer.beginObject();
+
+            writer.name("version");
+            writer.value(BACKUP_VERSION);
 
             // Export Movies
             writer.name("movies");
@@ -58,6 +65,17 @@ public class BackupRepository {
                 while (cursor.moveToNext()) {
                     SerieDatabase serie = mapSerie(cursor);
                     gson.toJson(serie, SerieDatabase.class, writer);
+                }
+            }
+            writer.endArray();
+
+            // Export Seasons
+            writer.name("seasons");
+            writer.beginArray();
+            try (Cursor cursor = database.seasonDAO().getAllCursor()) {
+                while (cursor.moveToNext()) {
+                    SeasonDatabase season = mapSeason(cursor);
+                    gson.toJson(season, SeasonDatabase.class, writer);
                 }
             }
             writer.endArray();
@@ -85,6 +103,7 @@ public class BackupRepository {
                 try {
                     // Purge child first if there are FKs
                     database.episodeDAO().deleteAll();
+                    database.seasonDAO().deleteAll();
                     database.moviesDAO().deleteAll();
                     database.serieDAO().deleteAll();
 
@@ -109,11 +128,29 @@ public class BackupRepository {
                                 }
                                 reader.endArray();
                                 break;
+                            case "seasons":
+                                reader.beginArray();
+                                while (reader.hasNext()) {
+                                    SeasonDatabase season = gson.fromJson(reader, SeasonDatabase.class);
+                                    database.seasonDAO().upsertSeason(
+                                            season.getSerieId(), season.getSeasonNumber(),
+                                            season.getEpisodeCount() != null ? season.getEpisodeCount() : 0);
+                                    if (season.isWatched()) {
+                                        database.seasonDAO().setSeasonWatched(
+                                                season.getSerieId(), season.getSeasonNumber(), true);
+                                    }
+                                }
+                                reader.endArray();
+                                break;
                             case "episodes":
                                 reader.beginArray();
                                 while (reader.hasNext()) {
-                                    EpisodeDatabase episode = gson.fromJson(reader, EpisodeDatabase.class);
-                                    database.episodeDAO().insertEpisode(episode);
+                                    JsonObject episodeJson = gson.fromJson(reader, JsonObject.class);
+                                    // Legacy backups used a boolean "number" field and no "watched": skip them
+                                    if (episodeJson != null && episodeJson.has("episode_number")) {
+                                        EpisodeDatabase episode = gson.fromJson(episodeJson, EpisodeDatabase.class);
+                                        database.episodeDAO().insertEpisode(episode);
+                                    }
                                 }
                                 reader.endArray();
                                 break;
@@ -195,18 +232,20 @@ public class BackupRepository {
         return serie;
     }
 
+    private SeasonDatabase mapSeason(Cursor cursor) {
+        SeasonDatabase season = new SeasonDatabase();
+        season.setSerieId(cursor.getInt(cursor.getColumnIndexOrThrow("serie_id")));
+        season.setSeasonNumber(cursor.getInt(cursor.getColumnIndexOrThrow("season_number")));
+        season.setEpisodeCount(cursor.isNull(cursor.getColumnIndexOrThrow("episode_count")) ? null : cursor.getInt(cursor.getColumnIndexOrThrow("episode_count")));
+        season.setWatched(cursor.getInt(cursor.getColumnIndexOrThrow("watched")) == 1);
+        return season;
+    }
+
     private EpisodeDatabase mapEpisode(Cursor cursor) {
         EpisodeDatabase episode = new EpisodeDatabase();
         episode.setSerieId(cursor.getInt(cursor.getColumnIndexOrThrow("serie_id")));
         episode.setSeasonNumber(cursor.getInt(cursor.getColumnIndexOrThrow("season_number")));
-        episode.setNumber(cursor.getInt(cursor.getColumnIndexOrThrow("number")) == 1);
-        episode.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
-
-        if (!cursor.isNull(cursor.getColumnIndexOrThrow("air_date"))) {
-            episode.setAirDate(Instant.ofEpochMilli(cursor.getLong(cursor.getColumnIndexOrThrow("air_date")))
-                    .atZone(ZoneId.systemDefault()).toLocalDate());
-        }
-
+        episode.setEpisodeNumber(cursor.getInt(cursor.getColumnIndexOrThrow("episode_number")));
         return episode;
     }
 }
