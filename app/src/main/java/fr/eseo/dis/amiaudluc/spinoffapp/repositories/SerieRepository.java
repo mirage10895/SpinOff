@@ -79,6 +79,10 @@ public class SerieRepository {
         return this.episodeDAO.getEpisodesBySerieAndSeason(serieId, seasonNumber);
     }
 
+    public LiveData<List<EpisodeDatabase>> fetchEpisodesBySerie(int serieId) {
+        return this.episodeDAO.getEpisodesBySerie(serieId);
+    }
+
     public void insert(int serieId) {
         executor.execute(() -> {
             Optional<Serie> apiSerie = this.apiRepository.getSerieByIdSync(serieId);

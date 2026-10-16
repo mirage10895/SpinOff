@@ -107,9 +107,18 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
                         watchedToggleListener.onWatchedToggle(season.getSeasonNumber(), !item.isWatched());
                     }
                 });
+
+                if (season.getEpisodeCount() > 0) {
+                    binding.seasonProgress.setVisibility(View.VISIBLE);
+                    binding.seasonProgress.setMax(season.getEpisodeCount());
+                    binding.seasonProgress.setProgress(item.isWatched() ? season.getEpisodeCount() : item.getWatchedCount());
+                } else {
+                    binding.seasonProgress.setVisibility(View.GONE);
+                }
             } else {
                 binding.watchedIcon.setVisibility(View.GONE);
                 binding.watchedIcon.setOnClickListener(null);
+                binding.seasonProgress.setVisibility(View.GONE);
             }
 
             itemView.setOnClickListener(v -> {

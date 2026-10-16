@@ -179,6 +179,10 @@ public class SerieViewModel extends AndroidViewModel {
         return serieRepository.fetchEpisodesBySerieAndSeason(serieId, seasonNumber);
     }
 
+    public LiveData<List<EpisodeDatabase>> getEpisodesBySerie(int serieId) {
+        return serieRepository.fetchEpisodesBySerie(serieId);
+    }
+
     // Helper classes for complex triggers
 
     private static class SeasonRequest implements java.io.Serializable {

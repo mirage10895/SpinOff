@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,6 +63,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface, Watc
     private boolean serieInLibrary = false;
     private final List<Season> apiSeasons = new ArrayList<>();
     private final Set<Integer> watchedSeasonNumbers = new HashSet<>();
+    private final Map<Integer, Integer> watchedEpisodeCounts = new HashMap<>();
 
     public SingleSerieFragment() {
         // Required empty public constructor
@@ -178,14 +181,25 @@ public class SingleSerieFragment extends Fragment implements ItemInterface, Watc
             }
             this.submitSeasonItems();
         });
+        serieViewModel.getEpisodesBySerie(serieId).observe(getViewLifecycleOwner(), episodes -> {
+            watchedEpisodeCounts.clear();
+            if (episodes != null) {
+                for (fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase episode : episodes) {
+                    watchedEpisodeCounts.merge(episode.getSeasonNumber(), 1, Integer::sum);
+                }
+            }
+            this.submitSeasonItems();
+        });
     }
 
     private void submitSeasonItems() {
         List<SeasonItem> items = new ArrayList<>();
         for (Season season : apiSeasons) {
-            boolean watched = season.getSeasonNumber() != null
-                    && watchedSeasonNumbers.contains(season.getSeasonNumber());
-            items.add(new SeasonItem(season, watched, serieInLibrary));
+            Integer seasonNumber = season.getSeasonNumber();
+            boolean watched = seasonNumber != null
+                    && watchedSeasonNumbers.contains(seasonNumber);
+            int watchedCount = seasonNumber != null ? watchedEpisodeCounts.getOrDefault(seasonNumber, 0) : 0;
+            items.add(new SeasonItem(season, watched, watchedCount, serieInLibrary));
         }
         this.seasonsAdapter.submitList(items);
     }
