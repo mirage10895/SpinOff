@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -24,6 +26,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.EpisodeDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SeasonDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonCount;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 
@@ -245,9 +248,21 @@ public class SerieRepository {
      * is un-watched on a single episode, so the remaining episodes stay watched.
      */
     private void materializeAllEpisodesSync(int serieId, int seasonNumber) {
-        if (this.serieDAO.fetchSerieByIdSync(serieId) == null) {
+        SeasonDatabase season = this.seasonDAO.getSeasonSync(serieId, seasonNumber);
+        if (season != null && season.getEpisodeCount() != null && season.getEpisodeCount() > 0) {
+            List<EpisodeDatabase> rows = new ArrayList<>();
+            for (int i = 1; i <= season.getEpisodeCount(); i++) {
+                EpisodeDatabase row = new EpisodeDatabase();
+                row.setSerieId(serieId);
+                row.setSeasonNumber(seasonNumber);
+                row.setEpisodeNumber(i);
+                rows.add(row);
+            }
+            this.episodeDAO.insertEpisodes(rows);
             return;
         }
+
+        // Fallback using API if local metadata is missing
         Optional<Season> apiSeason = this.apiRepository.getSeasonBySerieIdSync(serieId, seasonNumber);
         if (apiSeason.isEmpty() || apiSeason.get().getEpisodes() == null) {
             return;
@@ -271,6 +286,12 @@ public class SerieRepository {
      */
     private void recomputeSerieWatched(int serieId) {
         List<SeasonDatabase> seasons = this.seasonDAO.getSeasonsBySerieSync(serieId);
+        List<SeasonCount> watchedCounts = this.episodeDAO.getWatchedCountsBySeasonSync(serieId);
+        Map<Integer, Integer> countsMap = new HashMap<>();
+        for (SeasonCount sc : watchedCounts) {
+            countsMap.put(sc.seasonNumber, sc.watchedCount);
+        }
+
         boolean hasCountableSeason = false;
         boolean allWatched = true;
 
@@ -281,11 +302,14 @@ public class SerieRepository {
             hasCountableSeason = true;
 
             boolean seasonWatched = season.isWatched();
+            int totalCount = season.getEpisodeCount() != null ? season.getEpisodeCount() : 0;
+            int watchedCount = countsMap.getOrDefault(season.getSeasonNumber(), 0);
+
             if (!seasonWatched) {
-                int count = season.getEpisodeCount() != null ? season.getEpisodeCount() : 0;
-                if (count > 0 && this.episodeDAO.countBySeason(serieId, season.getSeasonNumber()) >= count) {
+                if (totalCount > 0 && watchedCount >= totalCount) {
                     seasonWatched = true;
                     this.seasonDAO.setSeasonWatched(serieId, season.getSeasonNumber(), true);
+                    this.episodeDAO.deleteBySeason(serieId, season.getSeasonNumber());
                 }
             }
             if (!seasonWatched) {

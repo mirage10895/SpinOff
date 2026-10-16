@@ -11,6 +11,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonCount;
 
 /**
  * Created by lucasamiaud on 05/04/2018.
@@ -58,4 +59,7 @@ public interface EpisodeDAO {
 
     @Query("select count(*) from serie_episode where serie_id = :serieId and season_number = :seasonNumber")
     int countBySeason(int serieId, int seasonNumber);
+
+    @Query("SELECT season_number, count(*) as watched_count FROM serie_episode WHERE serie_id = :serieId GROUP BY season_number")
+    List<SeasonCount> getWatchedCountsBySeasonSync(int serieId);
 }
