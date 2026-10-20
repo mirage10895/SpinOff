@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -15,8 +16,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 
+import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.InstantAdapter;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.gson.LocalDateAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
@@ -34,7 +38,10 @@ public class BackupRepository {
     public BackupRepository(ContentResolver contentResolver, AppDatabase database) {
         this.contentResolver = contentResolver;
         this.database = database;
-        this.gson = new Gson();
+        this.gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .registerTypeAdapter(Instant.class, new InstantAdapter())
+                .create();
     }
 
     public void exportLibrary(Uri uri) throws IOException {
