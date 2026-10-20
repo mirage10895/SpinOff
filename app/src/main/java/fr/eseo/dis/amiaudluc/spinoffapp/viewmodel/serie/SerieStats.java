@@ -1,7 +1,9 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +30,5 @@ public class SerieStats {
     private List<Map.Entry<String, Integer>> topOrigins;
     private String topLanguage = "";
     private List<Map.Entry<String, Integer>> topLanguages;
+    private Set<Integer> startedSerieIds = new HashSet<>();
 }

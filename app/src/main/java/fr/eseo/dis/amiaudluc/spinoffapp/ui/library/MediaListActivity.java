@@ -27,6 +27,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieStats;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 public class MediaListActivity extends AppCompatActivity implements ItemInterface {
@@ -76,17 +77,20 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
             });
         } else {
             serieViewModel = new ViewModelProvider(this).get(SerieViewModel.class);
-            serieViewModel.getDatabaseSeries().observe(this, series -> {
-                List<AdapterData> filteredSeries = series.stream()
-                        .filter(m -> m.isWatched() == showWatched)
-                        .map(m -> new AdapterData(
-                                m.getId(),
-                                m.getName(),
-                                m.getPosterPath(),
-                                FragmentType.SERIE
-                        ))
-                        .collect(Collectors.toList());
-                adapter.submitList(filteredSeries);
+            serieViewModel.getSerieStats().observe(this, stats -> {
+                List<SerieDatabase> series = serieViewModel.getDatabaseSeries().getValue();
+                if (series != null && stats != null) {
+                    List<AdapterData> filteredSeries = series.stream()
+                            .filter(m -> stats.getStartedSerieIds().contains(m.getId()) == showWatched)
+                            .map(m -> new AdapterData(
+                                    m.getId(),
+                                    m.getName(),
+                                    m.getPosterPath(),
+                                    FragmentType.SERIE
+                            ))
+                            .collect(Collectors.toList());
+                    adapter.submitList(filteredSeries);
+                }
             });
         }
     }
@@ -132,12 +136,15 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
             }
         } else {
             List<SerieDatabase> series = this.serieViewModel.getDatabaseSeries().getValue();
-            if (series != null) {
-                boolean hasBeenWatched = series.stream()
+            SerieStats stats = this.serieViewModel.getSerieStats().getValue();
+            if (series != null && stats != null) {
+                boolean isStarted = stats.getStartedSerieIds().contains(this.selectedMediaId);
+                boolean isFullyWatched = series.stream()
                         .anyMatch(i -> i.isWatched() && i.getId().equals(this.selectedMediaId));
-                if (hasBeenWatched) {
+
+                if (isFullyWatched) {
                     menu.removeItem(R.id.context_menu_mark_as);
-                } else {
+                } else if (!isStarted) {
                     menu.removeItem(R.id.context_menu_mark_as_not);
                 }
             }

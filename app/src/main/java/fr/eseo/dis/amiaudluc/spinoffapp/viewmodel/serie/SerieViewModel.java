@@ -237,10 +237,12 @@ public class SerieViewModel extends AndroidViewModel {
     }
 
     // Helper methods
-    
-    private static SerieStats calculateStats(List<SerieDatabase> series,
-                                             List<SeasonDatabase> seasons,
-                                             List<EpisodeDatabase> episodes) {
+
+    private static SerieStats calculateStats(
+            List<SerieDatabase> series,
+            List<SeasonDatabase> seasons,
+            List<EpisodeDatabase> episodes
+    ) {
         if (series == null) return null;
 
         SerieStats stats = new SerieStats();
@@ -272,23 +274,32 @@ public class SerieViewModel extends AndroidViewModel {
         Map<String, Integer> languageCounts = new HashMap<>();
 
         for (SerieDatabase serie : series) {
-            int watchedEpisodes = 0;
-            int watchedSeasons = 0;
+            int watchedEpisodesInSerie = 0;
+            int watchedSeasonsInSerie = 0;
             for (SeasonDatabase season : seasonsBySerie.getOrDefault(serie.getId(), Collections.emptyList())) {
                 int episodeCount = season.getEpisodeCount() != null ? season.getEpisodeCount() : 0;
-                if (season.isWatched()) {
-                    watchedEpisodes += episodeCount;
-                    watchedSeasons++;
+                int watchedEpisodesInSeason = watchedRows.getOrDefault(statsKey(serie.getId(), season.getSeasonNumber()), 0);
+                if (season.isWatched() || (episodeCount > 0 && watchedEpisodesInSeason >= episodeCount)) {
+                    watchedEpisodesInSerie += episodeCount;
+                    watchedSeasonsInSerie++;
                 } else {
-                    watchedEpisodes += watchedRows.getOrDefault(statsKey(serie.getId(), season.getSeasonNumber()), 0);
+                    watchedEpisodesInSerie += watchedEpisodesInSeason;
                 }
             }
-            stats.setTotalEpisodes(stats.getTotalEpisodes() + watchedEpisodes);
-            stats.setTotalSeasons(stats.getTotalSeasons() + watchedSeasons);
+            stats.setTotalEpisodes(stats.getTotalEpisodes() + watchedEpisodesInSerie);
+            stats.setTotalSeasons(stats.getTotalSeasons() + watchedSeasonsInSerie);
 
-            if (serie.isWatched()) {
-                totalRuntimeMinutes += serie.getRuntime();
+            boolean hasStartedWatching = serie.isWatched() || watchedEpisodesInSerie > 0;
+
+            if (hasStartedWatching) {
                 stats.setTotalSeries(stats.getTotalSeries() + 1);
+                stats.getStartedSerieIds().add(serie.getId());
+                if (serie.isWatched()) {
+                    totalRuntimeMinutes += serie.getRuntime();
+                } else if (serie.getEpisodeCount() != null && serie.getEpisodeCount() > 0) {
+                    double averageRuntime = (double) serie.getRuntime() / serie.getEpisodeCount();
+                    totalRuntimeMinutes += (int) (averageRuntime * watchedEpisodesInSerie);
+                }
 
                 // Genres and Combinations
                 if (serie.getGenres() != null && !serie.getGenres().isEmpty()) {
