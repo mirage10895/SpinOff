@@ -162,10 +162,11 @@ public class MediaListActivity extends AppCompatActivity implements ItemInterfac
             return true;
         }
         if (item.getItemId() == R.id.context_menu_mark_as || item.getItemId() == R.id.context_menu_mark_as_not) {
+            boolean watched = item.getItemId() == R.id.context_menu_mark_as;
             if (type == FragmentType.MOVIE) {
-                this.movieViewModel.toggleMovieIsWatched(this.selectedMediaId);
+                this.movieViewModel.setMovieWatched(this.selectedMediaId, watched);
             } else {
-                this.serieViewModel.toggleSerieIsWatched(this.selectedMediaId);
+                this.serieViewModel.setSerieWatched(this.selectedMediaId, watched);
             }
             return true;
         }

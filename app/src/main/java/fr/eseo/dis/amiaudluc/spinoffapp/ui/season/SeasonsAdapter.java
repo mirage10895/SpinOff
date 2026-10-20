@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
     private final ItemInterface listener;
     private final WatchedToggleListener watchedToggleListener;
 
+    /** Payload emitted when only the watched state or progress of an item changed. */
+    private static final Object PAYLOAD_WATCHED = new Object();
+
     private static final DiffUtil.ItemCallback<SeasonItem> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<>() {
                 @Override
@@ -38,6 +42,16 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
                 @Override
                 public boolean areContentsTheSame(@NonNull SeasonItem oldItem, @NonNull SeasonItem newItem) {
                     return Objects.equals(oldItem, newItem);
+                }
+
+                @Override
+                public Object getChangePayload(@NonNull SeasonItem oldItem, @NonNull SeasonItem newItem) {
+                    if (oldItem.isWatched() != newItem.isWatched()
+                            || oldItem.getWatchedCount() != newItem.getWatchedCount()
+                            || oldItem.isControlsEnabled() != newItem.isControlsEnabled()) {
+                        return PAYLOAD_WATCHED;
+                    }
+                    return null;
                 }
             };
 
@@ -58,6 +72,15 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
     @Override
     public void onBindViewHolder(@NonNull SeasonViewHolder holder, int position) {
         holder.bind(getItem(position));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull SeasonViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty() && payloads.contains(PAYLOAD_WATCHED)) {
+            holder.bindWatchedState(getItem(position));
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     public static class SeasonViewHolder extends RecyclerView.ViewHolder {
@@ -99,12 +122,27 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
                         .into(binding.posterIc);
             }
 
+            bindWatchedState(item);
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(season.getSeasonNumber(), FragmentType.SEASON);
+                }
+            });
+        }
+
+        /** Updates only the watched toggle and progress bar, used for DiffUtil payload binds. */
+        void bindWatchedState(SeasonItem item) {
+            if (item == null || item.getSeason() == null) return;
+            Season season = item.getSeason();
+            Integer seasonNumber = season.getSeasonNumber();
+
             if (item.isControlsEnabled()) {
                 binding.watchedIcon.setVisibility(View.VISIBLE);
                 binding.watchedIcon.setImageResource(item.isWatched() ? R.drawable.ic_watched : R.drawable.ic_unwatched);
                 binding.watchedIcon.setOnClickListener(v -> {
-                    if (watchedToggleListener != null && season.getSeasonNumber() != null) {
-                        watchedToggleListener.onWatchedToggle(season.getSeasonNumber(), !item.isWatched());
+                    if (watchedToggleListener != null && seasonNumber != null) {
+                        watchedToggleListener.onWatchedToggle(seasonNumber, !item.isWatched());
                     }
                 });
 
@@ -120,12 +158,6 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
                 binding.watchedIcon.setOnClickListener(null);
                 binding.seasonProgress.setVisibility(View.GONE);
             }
-
-            itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onItemClick(season.getSeasonNumber(), FragmentType.SEASON);
-                }
-            });
         }
     }
 }

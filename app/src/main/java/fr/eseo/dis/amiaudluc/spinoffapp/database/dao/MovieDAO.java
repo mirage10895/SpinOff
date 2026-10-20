@@ -2,13 +2,14 @@ package fr.eseo.dis.amiaudluc.spinoffapp.database.dao;
 
 import android.database.Cursor;
 
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import java.util.List;
+
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 
 
@@ -32,11 +33,9 @@ public interface MovieDAO {
     void deleteAll();
     @Query("DELETE FROM movie WHERE id = :id")
     void deleteMovieById(Integer id);
-    @Query("select * from movie where id = :id")
-    LiveData<MovieDatabase> fetchMovieById(int id);
 
-    @Query("update movie set watched = not watched where id = :id")
-    void toggleMovieIsWatched(int id);
+    @Query("update movie set watched = :watched where id = :id")
+    void updateMovieWatched(int id, boolean watched);
 
     @Update
     void updateMovie(MovieDatabase movie);

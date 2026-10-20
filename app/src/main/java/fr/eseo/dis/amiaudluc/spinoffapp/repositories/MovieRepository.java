@@ -55,8 +55,8 @@ public class MovieRepository {
         executor.execute(() -> this.movieDao.deleteMovieById(id));
     }
 
-    public void toggleMovieIsWatched(int id) {
-        executor.execute(() -> this.movieDao.toggleMovieIsWatched(id));
+    public void setMovieWatched(int id, boolean watched) {
+        executor.execute(() -> this.movieDao.updateMovieWatched(id, watched));
     }
 
     public void updateAllMoviesSync(Duration notSyncSince) {

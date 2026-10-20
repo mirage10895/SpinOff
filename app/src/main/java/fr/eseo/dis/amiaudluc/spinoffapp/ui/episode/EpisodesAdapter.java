@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,9 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
     private final ItemInterface listener;
     private final WatchedToggleListener watchedToggleListener;
 
+    /** Payload emitted when only the watched state of an item changed. */
+    private static final Object PAYLOAD_WATCHED = new Object();
+
     private static final DiffUtil.ItemCallback<EpisodeItem> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<>() {
                 @Override
@@ -39,6 +43,15 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
                 @Override
                 public boolean areContentsTheSame(@NonNull EpisodeItem oldItem, @NonNull EpisodeItem newItem) {
                     return Objects.equals(oldItem, newItem);
+                }
+
+                @Override
+                public Object getChangePayload(@NonNull EpisodeItem oldItem, @NonNull EpisodeItem newItem) {
+                    if (oldItem.isWatched() != newItem.isWatched()
+                            || oldItem.isControlsEnabled() != newItem.isControlsEnabled()) {
+                        return PAYLOAD_WATCHED;
+                    }
+                    return null;
                 }
             };
 
@@ -59,6 +72,15 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
     @Override
     public void onBindViewHolder(@NonNull EpisodesViewHolder holder, int position) {
         holder.bind(getItem(position));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull EpisodesViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty() && payloads.contains(PAYLOAD_WATCHED)) {
+            holder.bindWatchedState(getItem(position));
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     public static class EpisodesViewHolder extends RecyclerView.ViewHolder {
@@ -102,24 +124,32 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
                         .into(binding.posterIc);
             }
 
-            if (item.isControlsEnabled()) {
-                binding.watchedIcon.setVisibility(View.VISIBLE);
-                binding.watchedIcon.setImageResource(item.isWatched() ? R.drawable.ic_watched : R.drawable.ic_unwatched);
-                binding.watchedIcon.setOnClickListener(v -> {
-                    if (watchedToggleListener != null && episode.getEpisodeNumber() != null) {
-                        watchedToggleListener.onWatchedToggle(episode.getEpisodeNumber(), !item.isWatched());
-                    }
-                });
-            } else {
-                binding.watchedIcon.setVisibility(View.GONE);
-                binding.watchedIcon.setOnClickListener(null);
-            }
+            bindWatchedState(item);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(episode.getEpisodeNumber(), FragmentType.EPISODE);
                 }
             });
+        }
+
+        /** Updates only the watched toggle, used for partial binds driven by DiffUtil payloads. */
+        void bindWatchedState(EpisodeItem item) {
+            if (item == null || item.getEpisode() == null) return;
+            Integer episodeNumber = item.getEpisode().getEpisodeNumber();
+
+            if (item.isControlsEnabled()) {
+                binding.watchedIcon.setVisibility(View.VISIBLE);
+                binding.watchedIcon.setImageResource(item.isWatched() ? R.drawable.ic_watched : R.drawable.ic_unwatched);
+                binding.watchedIcon.setOnClickListener(v -> {
+                    if (watchedToggleListener != null && episodeNumber != null) {
+                        watchedToggleListener.onWatchedToggle(episodeNumber, !item.isWatched());
+                    }
+                });
+            } else {
+                binding.watchedIcon.setVisibility(View.GONE);
+                binding.watchedIcon.setOnClickListener(null);
+            }
         }
     }
 }

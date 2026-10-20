@@ -177,14 +177,6 @@ public class SerieRepository {
         });
     }
 
-    public void toggleSerieIsWatched(int id) {
-        executor.execute(() -> {
-            SerieDatabase serie = this.serieDAO.fetchSerieByIdSync(id);
-            boolean watched = serie != null && !serie.isWatched();
-            applySerieWatched(id, watched);
-        });
-    }
-
     public void setSerieWatched(int serieId, boolean watched) {
         executor.execute(() -> applySerieWatched(serieId, watched));
     }

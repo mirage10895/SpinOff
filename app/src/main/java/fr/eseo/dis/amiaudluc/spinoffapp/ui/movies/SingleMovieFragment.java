@@ -112,7 +112,8 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
             }
         });
 
-        binding.layoutChips.chipWatched.setOnClickListener(v -> movieViewModel.toggleMovieIsWatched(movieId));
+        binding.layoutChips.chipWatched.setOnClickListener(v ->
+                movieViewModel.setMovieWatched(movieId, binding.layoutChips.chipWatched.isChecked()));
     }
 
 
