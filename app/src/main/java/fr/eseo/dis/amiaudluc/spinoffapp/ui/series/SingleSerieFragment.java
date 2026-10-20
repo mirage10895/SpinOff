@@ -111,10 +111,19 @@ public class SingleSerieFragment extends Fragment implements ItemInterface, Watc
             } else {
                 serieViewModel.deleteById(serieId);
             }
+            updateInLibraryChipText();
         });
 
         binding.layoutChips.chipWatched.setOnClickListener(v ->
                 serieViewModel.setSerieWatched(serieId, binding.layoutChips.chipWatched.isChecked()));
+    }
+
+    private void updateInLibraryChipText() {
+        binding.layoutChips.chipInLibrary.setText(
+                binding.layoutChips.chipInLibrary.isChecked()
+                        ? R.string.chip_in_library
+                        : R.string.chip_add_to_library
+        );
     }
 
     private void setupRecyclerViews() {
@@ -170,6 +179,7 @@ public class SingleSerieFragment extends Fragment implements ItemInterface, Watc
                 binding.layoutChips.chipWatched.setVisibility(View.GONE);
                 binding.layoutChips.chipWatched.setChecked(false);
             }
+            updateInLibraryChipText();
             this.submitSeasonItems();
         });
         serieViewModel.getSeasonsBySerie(serieId).observe(getViewLifecycleOwner(), seasons -> {
