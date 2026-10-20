@@ -11,23 +11,42 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 
+/**
+ * ArrayAdapter used to feed a {@code MaterialAutoCompleteTextView}.
+ * <p>
+ * By default the list is searchable (the dropdown is filtered while the user types). Pass
+ * {@code searchable = false} to turn it into a plain non-editable select: the whole list is always
+ * returned, whatever text is currently displayed in the field.
+ */
 public class ArraySearchAdapter<T> extends ArrayAdapter<T> {
     private final List<T> elements;
     private final Function<T, String> fieldMapper;
+    private final boolean searchable;
 
     public ArraySearchAdapter(
-            @NonNull @android.support.annotation.NonNull Context context,
+            @NonNull Context context,
             int resource,
             List<T> elements,
             Function<T, String> fieldMapper
     ) {
-        super(context, resource);
+        this(context, resource, elements, fieldMapper, true);
+    }
+
+    public ArraySearchAdapter(
+            @NonNull Context context,
+            int resource,
+            List<T> elements,
+            Function<T, String> fieldMapper,
+            boolean searchable
+    ) {
+        // Feed the internal ArrayAdapter list so the dropdown has content before any filtering.
+        super(context, resource, new ArrayList<>(elements));
         this.elements = elements;
         this.fieldMapper = fieldMapper;
+        this.searchable = searchable;
     }
 
     @NonNull
-    @android.support.annotation.NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -35,7 +54,7 @@ public class ArraySearchAdapter<T> extends ArrayAdapter<T> {
             protected Filter.FilterResults performFiltering(CharSequence constraint) {
                 Filter.FilterResults results = new Filter.FilterResults();
                 List<T> suggestions;
-                if (constraint == null || constraint.length() == 0) {
+                if (!searchable || constraint == null || constraint.isEmpty()) {
                     suggestions = new ArrayList<>(elements);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();

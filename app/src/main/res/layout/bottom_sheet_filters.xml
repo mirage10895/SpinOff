@@ -126,7 +126,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/year_text"
-            android:inputType="text"
+            android:inputType="none"
+            android:cursorVisible="false"
             android:paddingStart="@dimen/grid_spacing"
             android:paddingEnd="@dimen/grid_spacing" />
 
@@ -151,7 +152,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/origin_country_text"
-            android:inputType="text|textAutoComplete"
+            android:inputType="none"
+            android:cursorVisible="false"
             android:paddingStart="@dimen/grid_spacing"
             android:paddingEnd="@dimen/grid_spacing" />
 

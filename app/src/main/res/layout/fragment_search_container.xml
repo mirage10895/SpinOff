@@ -31,7 +31,7 @@
         app:boxCornerRadiusTopEnd="24dp"
         app:boxCornerRadiusTopStart="24dp"
         app:boxStrokeWidth="2dp"
-        app:boxStrokeColor="@color/card_background_color"
+        app:boxStrokeColor="@color/color_primary_semi_opaq"
         app:boxBackgroundColor="?android:attr/windowBackground"
         app:endIconMode="clear_text"
         app:endIconTint="?android:attr/textColorPrimary"
