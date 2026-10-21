@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Section divider of the watched list: the letter, how many titles it introduces and the
+     matching index label. Purely visual: nothing navigates to a section. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/watched_letter_header_spacing"
+    android:layout_marginBottom="@dimen/watched_letter_header_spacing"
+    android:background="@drawable/bg_letter_header"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/watched_letter_header_padding_horizontal"
+    android:paddingVertical="@dimen/watched_letter_header_padding_vertical">
+
+    <TextView
+        android:id="@+id/letter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/watched_letter_size"
+        android:textStyle="bold"
+        tools:text="A" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/text_margin"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/color_text_secondary"
+        android:textSize="@dimen/watched_meta_size"
+        tools:text="38 titles" />
+
+    <TextView
+        android:id="@+id/index_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_text_secondary"
+        android:textSize="@dimen/watched_meta_size"
+        tools:text="Index A" />
+</LinearLayout>

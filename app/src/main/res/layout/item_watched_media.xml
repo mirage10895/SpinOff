@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tile of the watched list. It shows only what the local library stores: poster, type,
+     duration or season count, title, first credited creator, release year, then a row of tags
+     with the rating and the first genre, and for series the global episode progress. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/watched_tile_spacing"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/card_background_color"
+    app:cardCornerRadius="@dimen/watched_tile_corner"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/watched_tile_padding">
+
+        <FrameLayout
+            android:layout_width="@dimen/watched_poster_width"
+            android:layout_height="@dimen/watched_poster_height"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/text_margin">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/poster_ic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/poster"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.SpinOff.Poster" />
+
+            <TextView
+                android:id="@+id/in_progress_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="2dp"
+                android:background="@drawable/bg_badge_in_progress"
+                android:paddingHorizontal="@dimen/watched_badge_padding_horizontal"
+                android:paddingVertical="@dimen/watched_badge_padding_vertical"
+                android:text="@string/watched_list_in_progress"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/watched_badge_size"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:alpha="0.8"
+                tools:visibility="visible" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/meta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/color_text_secondary"
+                android:textSize="@dimen/watched_meta_size"
+                tools:text="Movie • 2h46" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/watched_title_size"
+                android:textStyle="bold"
+                tools:text="Apocalypse Now: Final Cut" />
+
+            <TextView
+                android:id="@+id/creators"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/color_text_secondary"
+                android:textSize="@dimen/watched_meta_size"
+                tools:text="Francis Ford Coppola • 1979" />
+
+            <LinearLayout
+                android:id="@+id/tags_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_tag"
+                    android:paddingHorizontal="@dimen/watched_badge_padding_horizontal"
+                    android:paddingVertical="@dimen/watched_badge_padding_vertical"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/watched_badge_size"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="★ 4.8"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/watched_tag_spacing"
+                    android:background="@drawable/bg_tag"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:paddingHorizontal="@dimen/watched_badge_padding_horizontal"
+                    android:paddingVertical="@dimen/watched_badge_padding_vertical"
+                    android:textColor="@color/color_text_secondary"
+                    android:textSize="@dimen/watched_badge_size"
+                    android:visibility="gone"
+                    tools:text="Drama"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/progress_block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/episodes_progress"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/color_text_secondary"
+                        android:textSize="@dimen/watched_meta_size"
+                        tools:text="45 / 62 episodes" />
+
+                    <TextView
+                        android:id="@+id/percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/watched_meta_size"
+                        android:textStyle="bold"
+                        tools:text="72%" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/watched_progress_height"
+                    android:layout_marginTop="4dp"
+                    android:progressDrawable="@drawable/progress_bar_horizontal" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/overflow"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/watched_list_overflow"
+            android:src="@drawable/ic_more_vert"
+            app:tint="@color/color_text_secondary" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

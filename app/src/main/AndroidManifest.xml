@@ -48,6 +48,11 @@
             android:label="@string/title_library"
             android:theme="@style/AppTheme.NoActionBar.Modal"
             android:exported="false" />
+        <activity
+            android:name="fr.eseo.dis.amiaudluc.spinoffapp.ui.library.WatchedListActivity"
+            android:label="@string/title_library"
+            android:theme="@style/AppTheme.NoActionBar.Modal"
+            android:exported="false" />
 
     </application>
     <queries>

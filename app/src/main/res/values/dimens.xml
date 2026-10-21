@@ -4,4 +4,25 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_margin">10dp</dimen>
     <dimen name="grid_spacing">14dp</dimen>
+
+    <!-- Watched list -->
+    <dimen name="watched_tile_padding">10dp</dimen>
+    <dimen name="watched_tile_spacing">8dp</dimen>
+    <dimen name="watched_tile_corner">12dp</dimen>
+    <dimen name="watched_poster_width">56dp</dimen>
+    <dimen name="watched_poster_height">80dp</dimen>
+    <dimen name="watched_poster_corner">8dp</dimen>
+    <dimen name="watched_progress_height">3dp</dimen>
+    <dimen name="watched_letter_header_padding_horizontal">12dp</dimen>
+    <dimen name="watched_letter_header_padding_vertical">6dp</dimen>
+    <dimen name="watched_letter_header_corner">8dp</dimen>
+    <dimen name="watched_letter_header_spacing">12dp</dimen>
+    <dimen name="watched_badge_padding_horizontal">6dp</dimen>
+    <dimen name="watched_badge_padding_vertical">2dp</dimen>
+    <dimen name="watched_badge_corner">6dp</dimen>
+    <dimen name="watched_tag_spacing">6dp</dimen>
+    <dimen name="watched_letter_size">16sp</dimen>
+    <dimen name="watched_title_size">16sp</dimen>
+    <dimen name="watched_meta_size">11sp</dimen>
+    <dimen name="watched_badge_size">6sp</dimen>
 </resources>

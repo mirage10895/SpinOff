@@ -45,10 +45,9 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
         });
 
         binding.btnSeeWatched.setOnClickListener(v -> {
-            Intent intent = new Intent(ctx, MediaListActivity.class);
-            intent.putExtra(MediaListActivity.EXTRA_SHOW_WATCHED, true);
-            intent.putExtra(MediaListActivity.EXTRA_TITLE, getString(R.string.library_media_seen_number));
-            intent.putExtra(MediaListActivity.EXTRA_TYPE, getFragmentType());
+            Intent intent = new Intent(ctx, WatchedListActivity.class);
+            intent.putExtra(WatchedListActivity.EXTRA_TITLE, getString(R.string.library_media_seen_number));
+            intent.putExtra(WatchedListActivity.EXTRA_TYPE, getFragmentType());
             startActivity(intent);
         });
 

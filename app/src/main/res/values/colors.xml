@@ -6,4 +6,6 @@
     <color name="white">#FFF</color>
     <color name="color_primary_semi_opaq">#4F9DA6E6</color>
     <color name="card_background_color">#222222</color>
+    <color name="color_text_secondary">#99E5E2E1</color>
+    <color name="color_scrim">#B3000000</color>
 </resources>
