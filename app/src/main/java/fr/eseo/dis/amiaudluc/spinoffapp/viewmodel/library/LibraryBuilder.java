@@ -14,7 +14,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.AlphabetUtils;
 
 /**
- * Turns the local library into the tiles of the watched list screen.
+ * Turns the local library into the tiles of the library list screen, for one
+ * {@link LibraryFilter} at a time.
  * <p>
  * Pure aggregation: stateless and side-effect free, so it can run on any thread and be unit
  * tested in isolation. It is deliberately separate from the statistics calculator that feeds
@@ -25,29 +26,31 @@ import fr.eseo.dis.amiaudluc.spinoffapp.utils.AlphabetUtils;
  * the repository deletes the individual episode rows in that case — and from the episode rows
  * otherwise. Specials are left out, matching the rest of the app.
  */
-public final class WatchedListBuilder {
+public final class LibraryBuilder {
 
     private static final int SPECIALS_SEASON_NUMBER = 0;
 
-    private WatchedListBuilder() {
+    private LibraryBuilder() {
     }
 
     /**
-     * Builds the tiles of every movie marked as watched.
+     * Builds the tiles of the movies of one list.
      *
      * @param movies all the movies of the library, may be {@code null}
+     * @param filter the list to build, watched or watchlist
      */
-    public static List<WatchedMediaItem> buildMovies(List<MovieDatabase> movies) {
-        List<WatchedMediaItem> items = new ArrayList<>();
+    public static List<LibraryItem> buildMovies(List<MovieDatabase> movies, LibraryFilter filter) {
+        List<LibraryItem> items = new ArrayList<>();
         if (movies == null) {
             return items;
         }
 
+        boolean watchedList = filter == LibraryFilter.WATCHED;
         for (MovieDatabase movie : movies) {
-            if (!movie.isWatched()) {
+            if (movie.isWatched() != watchedList) {
                 continue;
             }
-            items.add(new WatchedMediaItem(
+            items.add(new LibraryItem(
                     movie.getId(),
                     movie.getTitle(),
                     movie.getPosterPath(),
@@ -60,28 +63,32 @@ public final class WatchedListBuilder {
                     null,
                     0,
                     0,
-                    true));
+                    watchedList));
         }
         return sortedByTitle(items);
     }
 
     /**
-     * Builds the tiles of every started serie, with its global episode progress.
+     * Builds the tiles of the series of one list, with the global episode progress of the ones
+     * that have been started.
      *
      * @param series   all the series of the library, may be {@code null}
      * @param seasons  all the known seasons, may be {@code null}
      * @param episodes the watched episodes, may be {@code null}
+     * @param filter   the list to build, watched or watchlist
      */
-    public static List<WatchedMediaItem> buildSeries(
+    public static List<LibraryItem> buildSeries(
             List<SerieDatabase> series,
             List<SeasonDatabase> seasons,
-            List<EpisodeDatabase> episodes
+            List<EpisodeDatabase> episodes,
+            LibraryFilter filter
     ) {
-        List<WatchedMediaItem> items = new ArrayList<>();
+        List<LibraryItem> items = new ArrayList<>();
         if (series == null) {
             return items;
         }
 
+        boolean watchedList = filter == LibraryFilter.WATCHED;
         Map<Long, Integer> watchedBySeason = watchedEpisodesBySeason(episodes);
         Map<Integer, List<SeasonDatabase>> seasonsBySerie = seasonsBySerie(seasons);
 
@@ -108,15 +115,16 @@ public final class WatchedListBuilder {
             }
 
             boolean fullyWatched = serie.isWatched();
-            if (!fullyWatched && watchedEpisodes == 0) {
-                continue; // never started: not part of the watched list
+            boolean started = fullyWatched || watchedEpisodes > 0;
+            if (started != watchedList) {
+                continue;
             }
             if (fullyWatched || watchedEpisodes > totalEpisodes) {
                 // The aggregated flag is authoritative, and it also covers missing season counts.
                 watchedEpisodes = totalEpisodes;
             }
 
-            items.add(new WatchedMediaItem(
+            items.add(new LibraryItem(
                     serie.getId(),
                     serie.getName(),
                     serie.getPosterPath(),
@@ -157,7 +165,7 @@ public final class WatchedListBuilder {
         return grouped;
     }
 
-    private static List<WatchedMediaItem> sortedByTitle(List<WatchedMediaItem> items) {
+    private static List<LibraryItem> sortedByTitle(List<LibraryItem> items) {
         items.sort((left, right) -> AlphabetUtils.compareTitles(left.title(), right.title()));
         return items;
     }

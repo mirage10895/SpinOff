@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Watched list screen: the A-Z tiles of the titles the user has watched, with the native
+<!-- Library list screen: the A-Z tiles of one list of the library, with the native
      RecyclerView fast scroller enabled for quick browsing. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,7 +11,7 @@
         layout="@layout/app_bar_main" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/watched_list"
+        android:id="@+id/library_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
@@ -26,7 +26,7 @@
         app:layout_constraintTop_toBottomOf="@id/app_bar_main" />
 
     <include
-        android:id="@+id/watched_empty"
+        android:id="@+id/library_empty"
         layout="@layout/no_data"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

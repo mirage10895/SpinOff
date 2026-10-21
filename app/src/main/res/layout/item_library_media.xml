@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tile of the watched list. It shows only what the local library stores: poster, type,
+<!-- Tile of the library list screen. It shows only what the local library stores: poster, type,
      duration or season count, title, first credited creator, release year, then a row of tags
      with the rating and the first genre, and for series the global episode progress. -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -7,12 +7,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/watched_tile_spacing"
+    android:layout_marginBottom="@dimen/library_tile_spacing"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/card_background_color"
-    app:cardCornerRadius="@dimen/watched_tile_corner"
+    app:cardCornerRadius="@dimen/library_tile_corner"
     app:cardElevation="0dp"
     app:strokeWidth="0dp">
 
@@ -20,11 +20,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/watched_tile_padding">
+        android:padding="@dimen/library_tile_padding">
 
         <FrameLayout
-            android:layout_width="@dimen/watched_poster_width"
-            android:layout_height="@dimen/watched_poster_height"
+            android:layout_width="@dimen/library_poster_width"
+            android:layout_height="@dimen/library_poster_height"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/text_margin">
 
@@ -43,12 +43,12 @@
                 android:layout_gravity="bottom|center"
                 android:layout_margin="2dp"
                 android:background="@drawable/bg_badge_in_progress"
-                android:paddingHorizontal="@dimen/watched_badge_padding_horizontal"
-                android:paddingVertical="@dimen/watched_badge_padding_vertical"
-                android:text="@string/watched_list_in_progress"
+                android:paddingHorizontal="@dimen/library_badge_padding_horizontal"
+                android:paddingVertical="@dimen/library_badge_padding_vertical"
+                android:text="@string/library_list_in_progress"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/watched_badge_size"
+                android:textSize="@dimen/library_badge_size"
                 android:textStyle="bold"
                 android:visibility="gone"
                 android:alpha="0.8"
@@ -69,7 +69,7 @@
                 android:maxLines="1"
                 android:textAllCaps="true"
                 android:textColor="@color/color_text_secondary"
-                android:textSize="@dimen/watched_meta_size"
+                android:textSize="@dimen/library_meta_size"
                 tools:text="Movie • 2h46" />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/white"
-                android:textSize="@dimen/watched_title_size"
+                android:textSize="@dimen/library_title_size"
                 android:textStyle="bold"
                 tools:text="Apocalypse Now: Final Cut" />
 
@@ -90,7 +90,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/color_text_secondary"
-                android:textSize="@dimen/watched_meta_size"
+                android:textSize="@dimen/library_meta_size"
                 tools:text="Francis Ford Coppola • 1979" />
 
             <LinearLayout
@@ -105,10 +105,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_tag"
-                    android:paddingHorizontal="@dimen/watched_badge_padding_horizontal"
-                    android:paddingVertical="@dimen/watched_badge_padding_vertical"
+                    android:paddingHorizontal="@dimen/library_badge_padding_horizontal"
+                    android:paddingVertical="@dimen/library_badge_padding_vertical"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/watched_badge_size"
+                    android:textSize="@dimen/library_badge_size"
                     android:textStyle="bold"
                     android:visibility="gone"
                     tools:text="★ 4.8"
@@ -118,14 +118,14 @@
                     android:id="@+id/genre"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/watched_tag_spacing"
+                    android:layout_marginStart="@dimen/library_tag_spacing"
                     android:background="@drawable/bg_tag"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:paddingHorizontal="@dimen/watched_badge_padding_horizontal"
-                    android:paddingVertical="@dimen/watched_badge_padding_vertical"
+                    android:paddingHorizontal="@dimen/library_badge_padding_horizontal"
+                    android:paddingVertical="@dimen/library_badge_padding_vertical"
                     android:textColor="@color/color_text_secondary"
-                    android:textSize="@dimen/watched_badge_size"
+                    android:textSize="@dimen/library_badge_size"
                     android:visibility="gone"
                     tools:text="Drama"
                     tools:visibility="visible" />
@@ -153,7 +153,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:textColor="@color/color_text_secondary"
-                        android:textSize="@dimen/watched_meta_size"
+                        android:textSize="@dimen/library_meta_size"
                         tools:text="45 / 62 episodes" />
 
                     <TextView
@@ -161,7 +161,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/watched_meta_size"
+                        android:textSize="@dimen/library_meta_size"
                         android:textStyle="bold"
                         tools:text="72%" />
                 </LinearLayout>
@@ -170,7 +170,7 @@
                     android:id="@+id/progress"
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/watched_progress_height"
+                    android:layout_height="@dimen/library_progress_height"
                     android:layout_marginTop="4dp"
                     android:progressDrawable="@drawable/progress_bar_horizontal" />
             </LinearLayout>
@@ -182,7 +182,7 @@
             android:layout_height="48dp"
             android:layout_gravity="top"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/watched_list_overflow"
+            android:contentDescription="@string/library_list_overflow"
             android:src="@drawable/ic_more_vert"
             app:tint="@color/color_text_secondary" />
     </LinearLayout>

@@ -5,7 +5,7 @@ import java.text.Normalizer;
 import java.util.Locale;
 
 /**
- * Alphabetical grouping helpers used by the A-Z sections of the watched list.
+ * Alphabetical grouping helpers used by the A-Z sections of the library list screen.
  * <p>
  * Titles are never stripped of a leading article: the section of a title is its own first
  * letter, so "Les Misérables" belongs to "L" and "The Maze Runner" to "T". Titles are kept in

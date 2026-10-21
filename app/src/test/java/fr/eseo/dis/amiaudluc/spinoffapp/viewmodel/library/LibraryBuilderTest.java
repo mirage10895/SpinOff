@@ -17,25 +17,26 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 
 /**
- * Unit tests of the watched list aggregation, especially the episode progress rule: a watched
- * season carries its whole episode count because the repository deletes its episode rows.
+ * Unit tests of the library list aggregation, for both the watched list and the watchlist, and
+ * especially of the episode progress rule: a watched season carries its whole episode count
+ * because the repository deletes its episode rows.
  */
-public class WatchedListBuilderTest {
+public class LibraryBuilderTest {
 
-    // --- Movies ---------------------------------------------------------------------------
+    // --- Movies, watched list -------------------------------------------------------------
 
     @Test
-    public void buildMovies_keepsOnlyWatchedMovies() {
-        MovieDatabase watched = movie(1, "Alien", true);
-        MovieDatabase notWatched = movie(2, "Aliens", false);
-
-        List<WatchedMediaItem> items = WatchedListBuilder.buildMovies(List.of(watched, notWatched));
+    public void buildMovies_watched_keepsOnlyWatchedMovies() {
+        List<LibraryItem> items = LibraryBuilder.buildMovies(
+                List.of(movie(1, "Alien", true), movie(2, "Aliens", false)),
+                LibraryFilter.WATCHED);
 
         assertEquals(1, items.size());
         assertEquals(1, items.get(0).id());
         assertEquals(FragmentType.MOVIE, items.get(0).fragmentType());
         assertTrue(items.get(0).fullyWatched());
-        assertFalse(items.get(0).hasEpisodeProgress());
+        assertTrue(items.get(0).hasWatchedContent());
+        assertFalse(items.get(0).showsEpisodeProgress());
     }
 
     @Test
@@ -47,7 +48,7 @@ public class WatchedListBuilderTest {
         movie.setDirectors("Francis Ford Coppola,Someone Else");
         movie.setGenres("Drama,War");
 
-        WatchedMediaItem item = WatchedListBuilder.buildMovies(List.of(movie)).get(0);
+        LibraryItem item = LibraryBuilder.buildMovies(List.of(movie), LibraryFilter.WATCHED).get(0);
 
         assertEquals(Integer.valueOf(166), item.runtimeMinutes());
         assertEquals(Double.valueOf(8.4), item.voteAverage());
@@ -59,7 +60,8 @@ public class WatchedListBuilderTest {
 
     @Test
     public void buildMovies_handlesMissingOptionalFields() {
-        WatchedMediaItem item = WatchedListBuilder.buildMovies(List.of(movie(1, "Alien", true))).get(0);
+        LibraryItem item = LibraryBuilder.buildMovies(
+                List.of(movie(1, "Alien", true)), LibraryFilter.WATCHED).get(0);
 
         assertNull(item.releaseYear());
         assertNull(item.creators());
@@ -69,71 +71,89 @@ public class WatchedListBuilderTest {
 
     @Test
     public void buildMovies_ordersTitlesAlphabeticallyWithTheOtherBucketLast() {
-        List<WatchedMediaItem> items = WatchedListBuilder.buildMovies(List.of(
+        List<LibraryItem> items = LibraryBuilder.buildMovies(List.of(
                 movie(1, "Zodiac", true),
                 movie(2, "Les Misérables", true),
                 movie(3, "12 Angry Men", true),
-                movie(4, "Alien", true)));
+                movie(4, "Alien", true)), LibraryFilter.WATCHED);
 
         assertEquals(List.of("Alien", "Les Misérables", "Zodiac", "12 Angry Men"),
-                items.stream().map(WatchedMediaItem::title).toList());
+                items.stream().map(LibraryItem::title).toList());
     }
 
-    // --- Series ---------------------------------------------------------------------------
+    // --- Movies, watchlist ----------------------------------------------------------------
 
     @Test
-    public void buildSeries_fullyWatchedSeasonsHaveNoEpisodeRow() {
+    public void buildMovies_watchlist_keepsOnlyUnwatchedMovies() {
+        List<LibraryItem> items = LibraryBuilder.buildMovies(
+                List.of(movie(1, "Alien", true), movie(2, "Aliens", false)),
+                LibraryFilter.WATCHLIST);
+
+        assertEquals(1, items.size());
+        assertEquals(2, items.get(0).id());
+        assertFalse(items.get(0).fullyWatched());
+        assertFalse(items.get(0).hasWatchedContent());
+    }
+
+    // --- Series, watched list -------------------------------------------------------------
+
+    @Test
+    public void buildSeries_watched_fullyWatchedSeasonsHaveNoEpisodeRow() {
         // A serie marked as watched has its episode rows deleted: only the season flags remain.
         SerieDatabase serie = serie(1, "Arcane", true, 2);
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, true), season(1, 2, 8, true));
 
-        WatchedMediaItem item = WatchedListBuilder.buildSeries(List.of(serie), seasons, List.of()).get(0);
+        LibraryItem item = LibraryBuilder.buildSeries(
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED).get(0);
 
         assertEquals(18, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
         assertEquals(100, item.progressPercent());
         assertTrue(item.fullyWatched());
-        assertTrue(item.hasEpisodeProgress());
+        assertTrue(item.showsEpisodeProgress());
+        assertFalse(item.isInProgress());
         assertEquals(FragmentType.SERIE, item.fragmentType());
         assertNull(item.runtimeMinutes());
     }
 
     @Test
-    public void buildSeries_addsTheWatchedEpisodeRowsOfPartialSeasons() {
+    public void buildSeries_watched_addsTheWatchedEpisodeRowsOfPartialSeasons() {
         SerieDatabase serie = serie(1, "Arcane", false, 2);
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, true), season(1, 2, 8, false));
         List<EpisodeDatabase> episodes = List.of(episode(1, 2, 1), episode(1, 2, 2), episode(1, 2, 3));
 
-        WatchedMediaItem item = WatchedListBuilder.buildSeries(List.of(serie), seasons, episodes).get(0);
+        LibraryItem item = LibraryBuilder.buildSeries(
+                List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
 
         assertEquals(13, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
         assertEquals(72, item.progressPercent());
         assertFalse(item.fullyWatched());
+        assertTrue(item.isInProgress());
     }
 
     @Test
-    public void buildSeries_ignoresSpecials() {
+    public void buildSeries_watched_ignoresSpecials() {
         SerieDatabase serie = serie(1, "Arcane", false, 2);
         List<SeasonDatabase> seasons = List.of(
                 season(1, 0, 5, true),
                 season(1, 1, 10, true),
                 season(1, 2, 8, false));
 
-        WatchedMediaItem item = WatchedListBuilder.buildSeries(List.of(serie), seasons, List.of()).get(0);
+        LibraryItem item = LibraryBuilder.buildSeries(
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED).get(0);
 
         assertEquals(10, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
     }
 
     @Test
-    public void buildSeries_skipsSeriesThatWereNeverStarted() {
+    public void buildSeries_watched_skipsSeriesThatWereNeverStarted() {
         SerieDatabase serie = serie(1, "Arcane", false, 1);
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, false));
 
-        List<WatchedMediaItem> items = WatchedListBuilder.buildSeries(List.of(serie), seasons, List.of());
-
-        assertTrue(items.isEmpty());
+        assertTrue(LibraryBuilder.buildSeries(
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED).isEmpty());
     }
 
     @Test
@@ -143,7 +163,8 @@ public class WatchedListBuilderTest {
         List<EpisodeDatabase> episodes = List.of(
                 episode(1, 1, 1), episode(1, 1, 2), episode(1, 1, 3));
 
-        WatchedMediaItem item = WatchedListBuilder.buildSeries(List.of(serie), seasons, episodes).get(0);
+        LibraryItem item = LibraryBuilder.buildSeries(
+                List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
 
         assertEquals(2, item.watchedEpisodes());
         assertEquals(100, item.progressPercent());
@@ -155,16 +176,62 @@ public class WatchedListBuilderTest {
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, false), season(2, 1, 10, true));
         List<EpisodeDatabase> episodes = List.of(episode(1, 1, 1), episode(2, 1, 1));
 
-        WatchedMediaItem item = WatchedListBuilder.buildSeries(List.of(serie), seasons, episodes).get(0);
+        LibraryItem item = LibraryBuilder.buildSeries(
+                List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
 
         assertEquals(1, item.watchedEpisodes());
         assertEquals(10, item.totalEpisodes());
     }
 
+    // --- Series, watchlist ------------------------------------------------------------------
+
+    @Test
+    public void buildSeries_watchlist_keepsOnlySeriesThatWereNeverStarted() {
+        SerieDatabase notStarted = serie(1, "Arcane", false, 1);
+        SerieDatabase started = serie(2, "Dark", false, 1);
+        List<SeasonDatabase> seasons = List.of(season(1, 1, 10, false), season(2, 1, 8, false));
+        List<EpisodeDatabase> episodes = List.of(episode(2, 1, 1));
+
+        List<LibraryItem> items = LibraryBuilder.buildSeries(
+                List.of(notStarted, started), seasons, episodes, LibraryFilter.WATCHLIST);
+
+        assertEquals(1, items.size());
+        assertEquals(1, items.get(0).id());
+    }
+
+    @Test
+    public void buildSeries_watchlist_excludesFullyWatchedSeries() {
+        SerieDatabase fullyWatched = serie(1, "Arcane", true, 1);
+        List<SeasonDatabase> seasons = List.of(season(1, 1, 10, true));
+
+        assertTrue(LibraryBuilder.buildSeries(
+                List.of(fullyWatched), seasons, List.of(), LibraryFilter.WATCHLIST).isEmpty());
+    }
+
+    @Test
+    public void buildSeries_watchlist_showsNoEpisodeProgress() {
+        // The episode total is known from TMDB, but nothing has been watched yet.
+        SerieDatabase serie = serie(1, "Arcane", false, 1);
+        List<SeasonDatabase> seasons = List.of(season(1, 1, 10, false));
+
+        LibraryItem item = LibraryBuilder.buildSeries(
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHLIST).get(0);
+
+        assertEquals(0, item.watchedEpisodes());
+        assertEquals(10, item.totalEpisodes());
+        assertFalse(item.showsEpisodeProgress());
+        assertFalse(item.isInProgress());
+        assertFalse(item.hasWatchedContent());
+    }
+
+    // --- Robustness -------------------------------------------------------------------------
+
     @Test
     public void buildSeries_toleratesNullSources() {
-        assertTrue(WatchedListBuilder.buildSeries(null, null, null).isEmpty());
-        assertTrue(WatchedListBuilder.buildMovies(null).isEmpty());
+        assertTrue(LibraryBuilder.buildSeries(null, null, null, LibraryFilter.WATCHED).isEmpty());
+        assertTrue(LibraryBuilder.buildSeries(null, null, null, LibraryFilter.WATCHLIST).isEmpty());
+        assertTrue(LibraryBuilder.buildMovies(null, LibraryFilter.WATCHED).isEmpty());
+        assertTrue(LibraryBuilder.buildMovies(null, LibraryFilter.WATCHLIST).isEmpty());
     }
 
     // --- Fixtures -------------------------------------------------------------------------

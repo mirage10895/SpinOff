@@ -3,11 +3,12 @@ package fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 
 /**
- * Immutable description of a single tile of the watched list screen.
+ * Immutable description of a single tile of the library list screen, whatever the list it
+ * belongs to.
  * <p>
  * It only carries what the local library actually stores: a watched date, a watch count or a
  * media format are not part of the model, so they are not exposed here. Built by
- * {@link WatchedListBuilder} for that screen only, independently from the statistics
+ * {@link LibraryBuilder} for that screen only, independently from the statistics
  * aggregation that feeds the library dashboards.
  *
  * @param id              local identifier of the movie or serie
@@ -24,7 +25,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
  * @param totalEpisodes   total episode count, series only
  * @param fullyWatched    {@code true} when nothing is left to watch
  */
-public record WatchedMediaItem(
+public record LibraryItem(
         int id,
         String title,
         String posterPath,
@@ -44,9 +45,26 @@ public record WatchedMediaItem(
         return fragmentType == FragmentType.SERIE;
     }
 
-    /** Whether the episode progress can be rendered. */
-    public boolean hasEpisodeProgress() {
-        return isSerie() && totalEpisodes > 0;
+    /**
+     * Whether the tile has an episode progress to render. A serie that was never started has a
+     * known episode total but nothing watched, and shows no progress bar.
+     */
+    public boolean showsEpisodeProgress() {
+        return isSerie() && totalEpisodes > 0 && watchedEpisodes > 0;
+    }
+
+    /** Whether the serie was started but is not finished, so the "in progress" badge applies. */
+    public boolean isInProgress() {
+        return showsEpisodeProgress() && !fullyWatched;
+    }
+
+    /**
+     * Whether anything of this media has been watched. It drives which context menu entries make
+     * sense: there is nothing to unmark on a title that was never watched, and nothing left to
+     * mark as seen on a fully watched one.
+     */
+    public boolean hasWatchedContent() {
+        return fullyWatched || watchedEpisodes > 0;
     }
 
     /** Watched episodes ratio as a whole percentage, {@code 0} when the total is unknown. */

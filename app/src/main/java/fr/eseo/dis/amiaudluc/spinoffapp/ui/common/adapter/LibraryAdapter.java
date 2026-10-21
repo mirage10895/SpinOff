@@ -18,41 +18,41 @@ import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ItemLetterHeaderBinding;
-import fr.eseo.dis.amiaudluc.databinding.ItemWatchedMediaBinding;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.WatchedTileListener;
+import fr.eseo.dis.amiaudluc.databinding.ItemLibraryMediaBinding;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.LibraryTileListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
-import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.WatchedMediaItem;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryItem;
 
 /**
- * Renders the watched list: letter dividers interleaved with media tiles.
+ * Renders the library list screen: letter dividers interleaved with media tiles.
  * <p>
  * A tile shows only what the local library stores. There is no watched date, no watch count and
  * no media format in the model, so the tile is built from the title, the poster, the rating, the
- * release year, the first credited creator and the genres. Series additionally show their global
- * episode progress. Actions live behind the overflow button: the tile itself has no long press
- * menu.
+ * release year, the first credited creator and the genres. Series that have been started
+ * additionally show their global episode progress. Actions live behind the overflow button: the
+ * tile itself has no long press menu.
  */
-public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.ViewHolder> {
+public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_LETTER_HEADER = 0;
     private static final int VIEW_TYPE_MEDIA_TILE = 1;
 
     private final Context context;
-    private final WatchedTileListener listener;
+    private final LibraryTileListener listener;
     private final String posterBaseUrl;
     private final String separator;
 
-    public WatchedMediaAdapter(Context context, WatchedTileListener listener) {
-        super(WatchedRow.DIFF_CALLBACK);
+    public LibraryAdapter(Context context, LibraryTileListener listener) {
+        super(LibraryRow.DIFF_CALLBACK);
         this.context = context;
         this.listener = listener;
         this.posterBaseUrl = context.getString(R.string.base_url_poster_185);
-        this.separator = context.getString(R.string.watched_list_separator);
+        this.separator = context.getString(R.string.library_list_separator);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position) instanceof WatchedRow.LetterHeader
+        return getItem(position) instanceof LibraryRow.LetterHeader
                 ? VIEW_TYPE_LETTER_HEADER
                 : VIEW_TYPE_MEDIA_TILE;
     }
@@ -65,17 +65,17 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
             return new LetterHeaderViewHolder(ItemLetterHeaderBinding.inflate(inflater, parent, false));
         }
         return new MediaTileViewHolder(
-                ItemWatchedMediaBinding.inflate(inflater, parent, false), listener);
+                ItemLibraryMediaBinding.inflate(inflater, parent, false), listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        WatchedRow row = getItem(position);
+        LibraryRow row = getItem(position);
         if (holder instanceof LetterHeaderViewHolder headerHolder
-                && row instanceof WatchedRow.LetterHeader header) {
+                && row instanceof LibraryRow.LetterHeader header) {
             headerHolder.bind(header);
         } else if (holder instanceof MediaTileViewHolder tileHolder
-                && row instanceof WatchedRow.MediaTile tile) {
+                && row instanceof LibraryRow.MediaTile tile) {
             tileHolder.bind(tile.item());
         }
     }
@@ -100,39 +100,39 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
             this.binding = binding;
         }
 
-        void bind(WatchedRow.LetterHeader header) {
+        void bind(LibraryRow.LetterHeader header) {
             String letter = String.valueOf(header.letter());
             binding.letter.setText(letter);
             binding.count.setText(context.getResources()
-                    .getQuantityString(R.plurals.watched_list_letter_count, header.count(), header.count()));
-            binding.indexLabel.setText(context.getString(R.string.watched_list_index_label, letter));
+                    .getQuantityString(R.plurals.library_list_letter_count, header.count(), header.count()));
+            binding.indexLabel.setText(context.getString(R.string.library_list_index_label, letter));
         }
     }
 
     private class MediaTileViewHolder extends RecyclerView.ViewHolder {
 
-        private final ItemWatchedMediaBinding binding;
+        private final ItemLibraryMediaBinding binding;
 
-        MediaTileViewHolder(ItemWatchedMediaBinding binding, WatchedTileListener listener) {
+        MediaTileViewHolder(ItemLibraryMediaBinding binding, LibraryTileListener listener) {
             super(binding.getRoot());
             this.binding = binding;
             binding.getRoot().setOnClickListener(view -> {
                 int position = getAbsoluteAdapterPosition();
                 if (position != RecyclerView.NO_POSITION
-                        && getItem(position) instanceof WatchedRow.MediaTile tile) {
+                        && getItem(position) instanceof LibraryRow.MediaTile tile) {
                     listener.onTileClick(tile.item());
                 }
             });
             binding.overflow.setOnClickListener(view -> {
                 int position = getAbsoluteAdapterPosition();
                 if (position != RecyclerView.NO_POSITION
-                        && getItem(position) instanceof WatchedRow.MediaTile tile) {
+                        && getItem(position) instanceof LibraryRow.MediaTile tile) {
                     listener.onTileMenu(view, tile.item());
                 }
             });
         }
 
-        void bind(WatchedMediaItem item) {
+        void bind(LibraryItem item) {
             binding.title.setText(item.title());
             binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
             if (item.posterPath() != null) {
@@ -152,23 +152,22 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
             boolean hasGenre = bindGenre(item);
             binding.tagsRow.setVisibility(hasRating || hasGenre ? View.VISIBLE : View.GONE);
 
-            binding.inProgressBadge.setVisibility(
-                    item.isSerie() && !item.fullyWatched() ? View.VISIBLE : View.GONE);
+            binding.inProgressBadge.setVisibility(item.isInProgress() ? View.VISIBLE : View.GONE);
             binding.getRoot().setContentDescription(item.title());
         }
 
-        private String buildMeta(WatchedMediaItem item) {
+        private String buildMeta(LibraryItem item) {
             if (item.isSerie()) {
                 return join(
-                        context.getString(R.string.watched_list_type_series),
+                        context.getString(R.string.library_list_type_series),
                         seasonCountLabel(item.seasonCount()));
             }
             return join(
-                    context.getString(R.string.watched_list_type_movie),
+                    context.getString(R.string.library_list_type_movie),
                     runtimeLabel(item.runtimeMinutes()));
         }
 
-        private void bindCreators(WatchedMediaItem item) {
+        private void bindCreators(LibraryItem item) {
             String subtitle = join(item.creators(), item.releaseYear() != null
                     ? String.valueOf(item.releaseYear())
                     : null);
@@ -176,7 +175,7 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
             binding.creators.setVisibility(subtitle.isEmpty() ? View.GONE : View.VISIBLE);
         }
 
-        private boolean bindRating(WatchedMediaItem item) {
+        private boolean bindRating(LibraryItem item) {
             Double voteAverage = item.voteAverage();
             if (voteAverage == null || voteAverage <= 0) {
                 binding.rating.setVisibility(View.GONE);
@@ -184,11 +183,11 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
             }
             binding.rating.setVisibility(View.VISIBLE);
             binding.rating.setText(context.getString(
-                    R.string.watched_list_rating, String.format(Locale.getDefault(), "%.1f", voteAverage)));
+                    R.string.library_list_rating, String.format(Locale.getDefault(), "%.1f", voteAverage)));
             return true;
         }
 
-        private boolean bindGenre(WatchedMediaItem item) {
+        private boolean bindGenre(LibraryItem item) {
             String genres = item.genres();
             if (genres == null || genres.isBlank()) {
                 binding.genre.setVisibility(View.GONE);
@@ -200,16 +199,16 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
             return true;
         }
 
-        private void bindProgress(WatchedMediaItem item) {
-            if (!item.hasEpisodeProgress()) {
+        private void bindProgress(LibraryItem item) {
+            if (!item.showsEpisodeProgress()) {
                 binding.progressBlock.setVisibility(View.GONE);
                 return;
             }
             binding.progressBlock.setVisibility(View.VISIBLE);
             binding.episodesProgress.setText(context.getString(
-                    R.string.watched_list_episodes_progress, item.watchedEpisodes(), item.totalEpisodes()));
+                    R.string.library_list_episodes_progress, item.watchedEpisodes(), item.totalEpisodes()));
             binding.percent.setText(context.getString(
-                    R.string.watched_list_percent, item.progressPercent()));
+                    R.string.library_list_percent, item.progressPercent()));
             binding.progress.setMax(item.totalEpisodes());
             binding.progress.setProgress(item.watchedEpisodes());
         }
@@ -219,7 +218,7 @@ public class WatchedMediaAdapter extends ListAdapter<WatchedRow, RecyclerView.Vi
                 return null;
             }
             return context.getResources()
-                    .getQuantityString(R.plurals.watched_list_seasons_count, seasonCount, seasonCount);
+                    .getQuantityString(R.plurals.library_list_seasons_count, seasonCount, seasonCount);
         }
 
         private String runtimeLabel(Integer runtimeMinutes) {

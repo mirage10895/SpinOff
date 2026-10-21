@@ -154,24 +154,26 @@
     <string name="import_library_success">Library exported successfully !</string>
     <string name="import_library_error">Error during library export : %s</string>
 
-    <!-- Watched list -->
-    <string name="watched_list_separator">" • "</string>
-    <string name="watched_list_type_movie">Movie</string>
-    <string name="watched_list_type_series">Series</string>
-    <string name="watched_list_index_label">Index %1$s</string>
-    <string name="watched_list_episodes_progress">%1$d / %2$d episodes</string>
-    <string name="watched_list_percent">%1$d%%</string>
-    <string name="watched_list_rating">★ %1$s</string>
-    <string name="watched_list_in_progress">In progress</string>
-    <string name="watched_list_overflow">More options</string>
-    <string name="watched_list_empty_title">Nothing watched yet</string>
-    <string name="watched_list_empty_desc">Titles you mark as watched will appear here.</string>
+    <!-- Library list -->
+    <string name="library_list_separator">" • "</string>
+    <string name="library_list_type_movie">Movie</string>
+    <string name="library_list_type_series">Series</string>
+    <string name="library_list_index_label">Index %1$s</string>
+    <string name="library_list_episodes_progress">%1$d / %2$d episodes</string>
+    <string name="library_list_percent">%1$d%%</string>
+    <string name="library_list_rating">★ %1$s</string>
+    <string name="library_list_in_progress">In progress</string>
+    <string name="library_list_overflow">More options</string>
+    <string name="library_list_empty_watched_title">Nothing watched yet</string>
+    <string name="library_list_empty_watched_desc">Titles you mark as watched will appear here.</string>
+    <string name="library_list_empty_watchlist_title">Your watchlist is empty</string>
+    <string name="library_list_empty_watchlist_desc">Titles you add to your watchlist will appear here.</string>
 
-    <plurals name="watched_list_letter_count">
+    <plurals name="library_list_letter_count">
         <item quantity="one">%1$d title</item>
         <item quantity="other">%1$d titles</item>
     </plurals>
-    <plurals name="watched_list_seasons_count">
+    <plurals name="library_list_seasons_count">
         <item quantity="one">%1$d season</item>
         <item quantity="other">%1$d seasons</item>
     </plurals>

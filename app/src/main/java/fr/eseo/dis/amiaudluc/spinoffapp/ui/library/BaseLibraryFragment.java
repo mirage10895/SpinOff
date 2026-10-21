@@ -1,6 +1,5 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.library;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -18,6 +17,7 @@ import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentMyMediasBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryFilter;
 
 public abstract class BaseLibraryFragment extends Fragment implements ItemInterface {
 
@@ -34,24 +34,26 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Context ctx = view.getContext();
 
-        binding.btnSeeWatchlist.setOnClickListener(v -> {
-            Intent intent = new Intent(ctx, MediaListActivity.class);
-            intent.putExtra(MediaListActivity.EXTRA_SHOW_WATCHED, false);
-            intent.putExtra(MediaListActivity.EXTRA_TITLE, getString(R.string.library_to_see));
-            intent.putExtra(MediaListActivity.EXTRA_TYPE, getFragmentType());
-            startActivity(intent);
-        });
+        binding.btnSeeWatchlist.setOnClickListener(v ->
+                openLibraryList(R.string.library_to_see, LibraryFilter.WATCHLIST));
 
-        binding.btnSeeWatched.setOnClickListener(v -> {
-            Intent intent = new Intent(ctx, WatchedListActivity.class);
-            intent.putExtra(WatchedListActivity.EXTRA_TITLE, getString(R.string.library_media_seen_number));
-            intent.putExtra(WatchedListActivity.EXTRA_TYPE, getFragmentType());
-            startActivity(intent);
-        });
+        binding.btnSeeWatched.setOnClickListener(v ->
+                openLibraryList(R.string.library_media_seen_number, LibraryFilter.WATCHED));
 
         setupViewModel();
+    }
+
+    /**
+     * Opens the A-Z list of the library, restricted to the media type of the screen and to the
+     * given list.
+     */
+    private void openLibraryList(int titleRes, LibraryFilter filter) {
+        Intent intent = new Intent(requireContext(), LibraryListActivity.class);
+        intent.putExtra(LibraryListActivity.EXTRA_TITLE, getString(titleRes));
+        intent.putExtra(LibraryListActivity.EXTRA_TYPE, getFragmentType());
+        intent.putExtra(LibraryListActivity.EXTRA_FILTER, filter);
+        startActivity(intent);
     }
 
     protected abstract FragmentType getFragmentType();

@@ -153,9 +153,9 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
-    <!-- Rounded media thumbnails (watched list tiles). -->
+    <!-- Rounded media thumbnails (library list tiles). -->
     <style name="ShapeAppearanceOverlay.SpinOff.Poster" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/watched_poster_corner</item>
+        <item name="cornerSize">@dimen/library_poster_corner</item>
     </style>
 </resources>
