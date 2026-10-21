@@ -1,5 +1,6 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.season;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +14,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ItemSeasonBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileProgressBinder;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileTagBinder;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileText;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.WatchedToggleBinder;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.WatchedToggleListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
  * Adapter for displaying a list of seasons using View Binding.
+ * <p>
+ * The row follows the shared media tile grammar: the metadata column carries the season label and
+ * episode count, the season name, the air date, the rating, then the watched progress, while the
+ * watched toggle sits in the trailing 48dp slot.
  */
 public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.SeasonViewHolder> {
 
@@ -97,31 +107,15 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
         }
 
         void bind(SeasonItem item) {
-            if (item == null) return;
+            if (item == null || item.getSeason() == null) return;
             Season season = item.getSeason();
-            if (season == null) return;
+            Context context = itemView.getContext();
 
-            binding.season.setText(season.getSeasonNumber() != null ?
-                    String.valueOf(season.getSeasonNumber()) : "-");
-
-            binding.episodes.setText(season.getEpisodeCount() != -1 ?
-                    String.valueOf(season.getEpisodeCount()) : "-");
-
-            binding.airDate.setText(season.getAirDate() != null ?
-                    DateUtils.toDisplayString(season.getAirDate()) : "-");
-
-            binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
-            if (season.getPosterPath() != null) {
-                String baseUrl = itemView.getContext().getString(R.string.base_url_poster_500);
-                String link = baseUrl + season.getPosterPath();
-                Picasso.get()
-                        .load(link)
-                        .fit()
-                        .centerCrop()
-                        .error(R.drawable.ic_launcher_foreground)
-                        .into(binding.posterIc);
-            }
-
+            binding.meta.setText(buildMeta(context, season));
+            binding.title.setText(buildTitle(context, season));
+            bindAirDate(season);
+            bindPoster(context, season);
+            bindRating(context, season);
             bindWatchedState(item);
 
             itemView.setOnClickListener(v -> {
@@ -131,33 +125,82 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
             });
         }
 
-        /** Updates only the watched toggle and progress bar, used for DiffUtil payload binds. */
+        /**
+         * Updates only the watched toggle and the progress block, used for DiffUtil payload binds.
+         */
         void bindWatchedState(SeasonItem item) {
             if (item == null || item.getSeason() == null) return;
             Season season = item.getSeason();
             Integer seasonNumber = season.getSeasonNumber();
+            int totalEpisodes = season.getEpisodeCount();
+            int watchedEpisodes = item.isWatched() ? totalEpisodes : item.getWatchedCount();
 
-            if (item.isControlsEnabled()) {
-                binding.watchedIcon.setVisibility(View.VISIBLE);
-                binding.watchedIcon.setImageResource(item.isWatched() ? R.drawable.ic_watched : R.drawable.ic_unwatched);
-                binding.watchedIcon.setOnClickListener(v -> {
-                    if (watchedToggleListener != null && seasonNumber != null) {
-                        watchedToggleListener.onWatchedToggle(seasonNumber, !item.isWatched());
-                    }
-                });
+            WatchedToggleBinder.bind(
+                    binding.watchedToggle.getRoot(),
+                    binding.watchedToggle.toggleIcon,
+                    item.isControlsEnabled(),
+                    item.isWatched(),
+                    () -> {
+                        if (watchedToggleListener != null && seasonNumber != null) {
+                            watchedToggleListener.onWatchedToggle(seasonNumber, !item.isWatched());
+                        }
+                    });
 
-                if (season.getEpisodeCount() > 0) {
-                    binding.seasonProgress.setVisibility(View.VISIBLE);
-                    binding.seasonProgress.setMax(season.getEpisodeCount());
-                    binding.seasonProgress.setProgress(item.isWatched() ? season.getEpisodeCount() : item.getWatchedCount());
-                } else {
-                    binding.seasonProgress.setVisibility(View.GONE);
-                }
-            } else {
-                binding.watchedIcon.setVisibility(View.GONE);
-                binding.watchedIcon.setOnClickListener(null);
-                binding.seasonProgress.setVisibility(View.GONE);
+            MediaTileProgressBinder.bind(
+                    binding.progressBlock,
+                    item.isControlsEnabled() && totalEpisodes > 0,
+                    watchedEpisodes,
+                    totalEpisodes);
+        }
+
+        private String buildMeta(Context context, Season season) {
+            Integer seasonNumber = season.getSeasonNumber();
+            int episodeCount = season.getEpisodeCount();
+            return MediaTileText.join(context,
+                    seasonNumber != null
+                            ? context.getString(R.string.media_tile_season_meta, seasonNumber)
+                            : null,
+                    episodeCount > 0
+                            ? context.getResources().getQuantityString(
+                                    R.plurals.media_tile_episodes_count, episodeCount, episodeCount)
+                            : null);
+        }
+
+        private String buildTitle(Context context, Season season) {
+            String name = season.getName();
+            if (name != null && !name.isBlank()) {
+                return name;
             }
+            Integer seasonNumber = season.getSeasonNumber();
+            return seasonNumber != null
+                    ? context.getString(R.string.media_tile_season_meta, seasonNumber)
+                    : context.getString(R.string.emptyField);
+        }
+
+        private void bindAirDate(Season season) {
+            String airDate = season.getAirDate() != null
+                    ? DateUtils.toDisplayString(season.getAirDate())
+                    : null;
+            binding.airDate.setText(airDate);
+            binding.airDate.setVisibility(airDate == null ? View.GONE : View.VISIBLE);
+        }
+
+        private void bindPoster(Context context, Season season) {
+            binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
+            if (season.getPosterPath() != null) {
+                Picasso.get()
+                        .load(context.getString(R.string.base_url_poster_500) + season.getPosterPath())
+                        .fit()
+                        .centerCrop()
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(binding.posterIc);
+            }
+        }
+
+        private void bindRating(Context context, Season season) {
+            boolean hasRating = MediaTileTagBinder.bindRating(
+                    context, binding.rating, season.getVoteAverage());
+            binding.tagsRow.setVisibility(hasRating ? View.VISIBLE : View.GONE);
         }
     }
 }

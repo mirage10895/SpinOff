@@ -1,11 +1,13 @@
 package fr.eseo.dis.amiaudluc.spinoffapp.ui.episode;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,15 +17,22 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import fr.eseo.dis.amiaudluc.R;
-import fr.eseo.dis.amiaudluc.databinding.ItemSeasonBinding;
+import fr.eseo.dis.amiaudluc.databinding.ItemEpisodeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileTagBinder;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileText;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.WatchedToggleBinder;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.WatchedToggleListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 
 /**
  * Adapter for displaying a list of episodes using View Binding.
+ * <p>
+ * The row follows the shared media tile grammar: the metadata column carries the episode position
+ * and runtime, the episode name, the air date and the rating, while the watched toggle sits in
+ * the trailing 48dp slot. An episode is watched or not, so there is no progress block.
  */
 public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.EpisodesViewHolder> {
 
@@ -64,7 +73,7 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
     @NonNull
     @Override
     public EpisodesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemSeasonBinding binding = ItemSeasonBinding.inflate(
+        ItemEpisodeBinding binding = ItemEpisodeBinding.inflate(
                 LayoutInflater.from(parent.getContext()), parent, false);
         return new EpisodesViewHolder(binding, listener, watchedToggleListener);
     }
@@ -85,11 +94,11 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
 
     public static class EpisodesViewHolder extends RecyclerView.ViewHolder {
 
-        private final ItemSeasonBinding binding;
+        private final ItemEpisodeBinding binding;
         private final ItemInterface listener;
         private final WatchedToggleListener watchedToggleListener;
 
-        EpisodesViewHolder(ItemSeasonBinding binding, ItemInterface listener, WatchedToggleListener watchedToggleListener) {
+        EpisodesViewHolder(ItemEpisodeBinding binding, ItemInterface listener, WatchedToggleListener watchedToggleListener) {
             super(binding.getRoot());
             this.binding = binding;
             this.listener = listener;
@@ -97,33 +106,15 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
         }
 
         void bind(EpisodeItem item) {
-            if (item == null) return;
+            if (item == null || item.getEpisode() == null) return;
             Episode episode = item.getEpisode();
-            if (episode == null) return;
+            Context context = itemView.getContext();
 
-            // Update labels to match Episode context
-            binding.textNumberSeason.setText(episode.getName() != null ? episode.getName() : "-");
-            binding.season.setVisibility(View.GONE);
-
-            String episodeText = "S" + episode.getSeasonNumber() + ":E" + episode.getEpisodeNumber();
-            binding.textNumberEpisodes.setText(episodeText);
-            binding.episodes.setVisibility(View.GONE);
-
-            binding.textAirDate.setText(episode.getAirDate() != null ?
-                    DateUtils.toDisplayString(episode.getAirDate()) : "-");
-            binding.airDate.setVisibility(View.GONE);
-
-            binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
-            if (episode.getStillPath() != null) {
-                String baseUrl = itemView.getContext().getString(R.string.base_url_poster_500);
-                String link = baseUrl + episode.getStillPath();
-                Picasso.get().load(link)
-                        .fit()
-                        .centerCrop()
-                        .error(R.drawable.ic_launcher_foreground)
-                        .into(binding.posterIc);
-            }
-
+            binding.meta.setText(buildMeta(context, episode));
+            binding.title.setText(buildTitle(context, episode));
+            bindAirDate(episode);
+            bindStill(context, episode);
+            bindRating(context, episode);
             bindWatchedState(item);
 
             itemView.setOnClickListener(v -> {
@@ -138,18 +129,64 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
             if (item == null || item.getEpisode() == null) return;
             Integer episodeNumber = item.getEpisode().getEpisodeNumber();
 
-            if (item.isControlsEnabled()) {
-                binding.watchedIcon.setVisibility(View.VISIBLE);
-                binding.watchedIcon.setImageResource(item.isWatched() ? R.drawable.ic_watched : R.drawable.ic_unwatched);
-                binding.watchedIcon.setOnClickListener(v -> {
-                    if (watchedToggleListener != null && episodeNumber != null) {
-                        watchedToggleListener.onWatchedToggle(episodeNumber, !item.isWatched());
-                    }
-                });
-            } else {
-                binding.watchedIcon.setVisibility(View.GONE);
-                binding.watchedIcon.setOnClickListener(null);
+            WatchedToggleBinder.bind(
+                    binding.watchedToggle.getRoot(),
+                    binding.watchedToggle.toggleIcon,
+                    item.isControlsEnabled(),
+                    item.isWatched(),
+                    () -> {
+                        if (watchedToggleListener != null && episodeNumber != null) {
+                            watchedToggleListener.onWatchedToggle(episodeNumber, !item.isWatched());
+                        }
+                    });
+        }
+
+        private String buildMeta(Context context, Episode episode) {
+            Integer seasonNumber = episode.getSeasonNumber();
+            Integer episodeNumber = episode.getEpisodeNumber();
+            return MediaTileText.join(context,
+                    seasonNumber != null && episodeNumber != null
+                            ? context.getString(R.string.media_tile_episode_meta, seasonNumber, episodeNumber)
+                            : null,
+                    runtimeLabel(episode.getRuntime()));
+        }
+
+        private String buildTitle(Context context, Episode episode) {
+            String name = episode.getName();
+            return name != null && !name.isBlank() ? name : context.getString(R.string.emptyField);
+        }
+
+        private void bindAirDate(Episode episode) {
+            String airDate = episode.getAirDate() != null
+                    ? DateUtils.toDisplayString(episode.getAirDate())
+                    : null;
+            binding.airDate.setText(airDate);
+            binding.airDate.setVisibility(airDate == null ? View.GONE : View.VISIBLE);
+        }
+
+        private void bindStill(Context context, Episode episode) {
+            binding.stillIc.setImageResource(R.drawable.ic_launcher_foreground);
+            if (episode.getStillPath() != null) {
+                Picasso.get()
+                        .load(context.getString(R.string.base_url_poster_300) + episode.getStillPath())
+                        .fit()
+                        .centerCrop()
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(binding.stillIc);
             }
+        }
+
+        private void bindRating(Context context, Episode episode) {
+            boolean hasRating = MediaTileTagBinder.bindRating(
+                    context, binding.rating, episode.getVoteAverage());
+            binding.tagsRow.setVisibility(hasRating ? View.VISIBLE : View.GONE);
+        }
+
+        private String runtimeLabel(Integer runtimeMinutes) {
+            if (runtimeMinutes == null || runtimeMinutes <= 0) {
+                return null;
+            }
+            return DateUtils.displayDuration(Duration.ofMinutes(runtimeMinutes));
         }
     }
 }

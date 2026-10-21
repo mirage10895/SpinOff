@@ -66,12 +66,4 @@ public record LibraryItem(
     public boolean hasWatchedContent() {
         return fullyWatched || watchedEpisodes > 0;
     }
-
-    /** Watched episodes ratio as a whole percentage, {@code 0} when the total is unknown. */
-    public int progressPercent() {
-        if (totalEpisodes <= 0) {
-            return 0;
-        }
-        return (int) Math.round(watchedEpisodes * 100.0 / totalEpisodes);
-    }
 }

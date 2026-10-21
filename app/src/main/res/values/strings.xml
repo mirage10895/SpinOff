@@ -64,8 +64,6 @@
     <string name="menu_library">My library</string>
     <string name="movie">The movie</string>
     <string name="details_budget">Budget</string>
-    <string name="text_season">Season</string>
-    <string name="number_of_episodes">Episodes count</string>
     <string name="air_date">Air date</string>
     <string name="producer_text">Producer</string>
     <string name="realisators_text">Realisators</string>
@@ -154,15 +152,20 @@
     <string name="import_library_success">Library exported successfully !</string>
     <string name="import_library_error">Error during library export : %s</string>
 
-    <!-- Library list -->
-    <string name="library_list_separator">" • "</string>
-    <string name="library_list_type_movie">Movie</string>
-    <string name="library_list_type_series">Series</string>
+    <!-- Media tiles: shared by the library, season and episode rows. -->
+    <string name="media_tile_separator">" • "</string>
+    <string name="media_tile_type_movie">Movie</string>
+    <string name="media_tile_type_series">Series</string>
+    <string name="media_tile_season_meta">Season %1$d</string>
+    <string name="media_tile_episode_meta">S%1$d:E%2$d</string>
+    <string name="media_tile_episodes_progress">%1$d / %2$d episodes</string>
+    <string name="media_tile_percent">%1$d%%</string>
+    <string name="media_tile_rating">★ %1$s</string>
+    <string name="media_tile_in_progress">In progress</string>
+    <string name="media_tile_not_watched">Not watched</string>
+
+    <!-- Library list screen -->
     <string name="library_list_index_label">Index %1$s</string>
-    <string name="library_list_episodes_progress">%1$d / %2$d episodes</string>
-    <string name="library_list_percent">%1$d%%</string>
-    <string name="library_list_rating">★ %1$s</string>
-    <string name="library_list_in_progress">In progress</string>
     <string name="library_list_overflow">More options</string>
     <string name="library_list_empty_watched_title">Nothing watched yet</string>
     <string name="library_list_empty_watched_desc">Titles you mark as watched will appear here.</string>
@@ -173,8 +176,12 @@
         <item quantity="one">%1$d title</item>
         <item quantity="other">%1$d titles</item>
     </plurals>
-    <plurals name="library_list_seasons_count">
+    <plurals name="media_tile_seasons_count">
         <item quantity="one">%1$d season</item>
         <item quantity="other">%1$d seasons</item>
+    </plurals>
+    <plurals name="media_tile_episodes_count">
+        <item quantity="one">%1$d episode</item>
+        <item quantity="other">%1$d episodes</item>
     </plurals>
 </resources>

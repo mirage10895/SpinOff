@@ -5,24 +5,31 @@
     <dimen name="text_margin">10dp</dimen>
     <dimen name="grid_spacing">14dp</dimen>
 
-    <!-- Library list -->
-    <dimen name="library_tile_padding">10dp</dimen>
-    <dimen name="library_tile_spacing">8dp</dimen>
-    <dimen name="library_tile_corner">12dp</dimen>
-    <dimen name="library_poster_width">56dp</dimen>
-    <dimen name="library_poster_height">80dp</dimen>
-    <dimen name="library_poster_corner">8dp</dimen>
-    <dimen name="library_progress_height">3dp</dimen>
+    <!-- Media tile: the shared grammar of the library, season and episode rows. -->
+    <dimen name="media_tile_padding">10dp</dimen>
+    <dimen name="media_tile_spacing">8dp</dimen>
+    <dimen name="media_tile_corner">12dp</dimen>
+    <dimen name="media_tile_poster_width">64dp</dimen>
+    <dimen name="media_tile_poster_height">95dp</dimen>
+    <dimen name="media_tile_poster_corner">8dp</dimen>
+    <dimen name="media_tile_still_width">96dp</dimen>
+    <dimen name="media_tile_still_height">54dp</dimen>
+    <dimen name="media_tile_progress_height">3dp</dimen>
+    <dimen name="media_tile_stroke_width">1dp</dimen>
+    <dimen name="media_tile_toggle_size">24dp</dimen>
+    <dimen name="media_tile_toggle_icon_size">16dp</dimen>
+    <dimen name="media_tile_tag_padding_horizontal">6dp</dimen>
+    <dimen name="media_tile_tag_padding_vertical">2dp</dimen>
+    <dimen name="media_tile_tag_corner">6dp</dimen>
+    <dimen name="media_tile_tag_spacing">6dp</dimen>
+    <dimen name="media_tile_title_size">16sp</dimen>
+    <dimen name="media_tile_meta_size">11sp</dimen>
+    <dimen name="media_tile_tag_text_size">6sp</dimen>
+
+    <!-- A-Z section divider of the library list screen. -->
     <dimen name="library_letter_header_padding_horizontal">12dp</dimen>
     <dimen name="library_letter_header_padding_vertical">6dp</dimen>
     <dimen name="library_letter_header_corner">8dp</dimen>
     <dimen name="library_letter_header_spacing">12dp</dimen>
-    <dimen name="library_badge_padding_horizontal">6dp</dimen>
-    <dimen name="library_badge_padding_vertical">2dp</dimen>
-    <dimen name="library_badge_corner">6dp</dimen>
-    <dimen name="library_tag_spacing">6dp</dimen>
     <dimen name="library_letter_size">16sp</dimen>
-    <dimen name="library_title_size">16sp</dimen>
-    <dimen name="library_meta_size">11sp</dimen>
-    <dimen name="library_badge_size">6sp</dimen>
 </resources>

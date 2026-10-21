@@ -108,7 +108,6 @@ public class LibraryBuilderTest {
 
         assertEquals(18, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
-        assertEquals(100, item.progressPercent());
         assertTrue(item.fullyWatched());
         assertTrue(item.showsEpisodeProgress());
         assertFalse(item.isInProgress());
@@ -127,7 +126,6 @@ public class LibraryBuilderTest {
 
         assertEquals(13, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
-        assertEquals(72, item.progressPercent());
         assertFalse(item.fullyWatched());
         assertTrue(item.isInProgress());
     }
@@ -167,7 +165,7 @@ public class LibraryBuilderTest {
                 List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
 
         assertEquals(2, item.watchedEpisodes());
-        assertEquals(100, item.progressPercent());
+        assertEquals(2, item.totalEpisodes());
     }
 
     @Test

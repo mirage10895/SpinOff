@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Watched toggle shared by the season and episode tiles. It is meant to sit on the poster, in
+     its top-right corner: the container keeps a 32dp touch target while the badge stays small.
+     The badge is a rounded square whose shape and colour live in the ic_watched / ic_unwatched
+     vectors. Include it with an id, then drive it through WatchedToggleBinder. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/media_tile_toggle_size"
+    android:layout_height="@dimen/media_tile_toggle_size"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:alpha="0.7"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/toggle_icon"
+        android:layout_width="@dimen/media_tile_toggle_icon_size"
+        android:layout_height="@dimen/media_tile_toggle_icon_size"
+        android:layout_gravity="center"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no" />
+</FrameLayout>

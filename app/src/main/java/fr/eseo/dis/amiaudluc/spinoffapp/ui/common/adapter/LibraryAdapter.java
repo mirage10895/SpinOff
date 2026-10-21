@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ItemLetterHeaderBinding;
 import fr.eseo.dis.amiaudluc.databinding.ItemLibraryMediaBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.LibraryTileListener;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileProgressBinder;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileTagBinder;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileText;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryItem;
 
@@ -40,14 +40,12 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
     private final Context context;
     private final LibraryTileListener listener;
     private final String posterBaseUrl;
-    private final String separator;
 
     public LibraryAdapter(Context context, LibraryTileListener listener) {
         super(LibraryRow.DIFF_CALLBACK);
         this.context = context;
         this.listener = listener;
         this.posterBaseUrl = context.getString(R.string.base_url_poster_185);
-        this.separator = context.getString(R.string.library_list_separator);
     }
 
     @Override
@@ -78,17 +76,6 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
                 && row instanceof LibraryRow.MediaTile tile) {
             tileHolder.bind(tile.item());
         }
-    }
-
-    /** Joins the non blank parts with the shared separator, skipping the missing ones. */
-    private String join(String... parts) {
-        List<String> kept = new ArrayList<>();
-        for (String part : parts) {
-            if (part != null && !part.isBlank()) {
-                kept.add(part);
-            }
-        }
-        return String.join(separator, kept);
     }
 
     private class LetterHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -158,33 +145,24 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
 
         private String buildMeta(LibraryItem item) {
             if (item.isSerie()) {
-                return join(
-                        context.getString(R.string.library_list_type_series),
+                return MediaTileText.join(context,
+                        context.getString(R.string.media_tile_type_series),
                         seasonCountLabel(item.seasonCount()));
             }
-            return join(
-                    context.getString(R.string.library_list_type_movie),
+            return MediaTileText.join(context,
+                    context.getString(R.string.media_tile_type_movie),
                     runtimeLabel(item.runtimeMinutes()));
         }
 
         private void bindCreators(LibraryItem item) {
-            String subtitle = join(item.creators(), item.releaseYear() != null
-                    ? String.valueOf(item.releaseYear())
-                    : null);
+            String subtitle = MediaTileText.join(context, item.creators(),
+                    item.releaseYear() != null ? String.valueOf(item.releaseYear()) : null);
             binding.creators.setText(subtitle);
             binding.creators.setVisibility(subtitle.isEmpty() ? View.GONE : View.VISIBLE);
         }
 
         private boolean bindRating(LibraryItem item) {
-            Double voteAverage = item.voteAverage();
-            if (voteAverage == null || voteAverage <= 0) {
-                binding.rating.setVisibility(View.GONE);
-                return false;
-            }
-            binding.rating.setVisibility(View.VISIBLE);
-            binding.rating.setText(context.getString(
-                    R.string.library_list_rating, String.format(Locale.getDefault(), "%.1f", voteAverage)));
-            return true;
+            return MediaTileTagBinder.bindRating(context, binding.rating, item.voteAverage());
         }
 
         private boolean bindGenre(LibraryItem item) {
@@ -200,17 +178,11 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
         }
 
         private void bindProgress(LibraryItem item) {
-            if (!item.showsEpisodeProgress()) {
-                binding.progressBlock.setVisibility(View.GONE);
-                return;
-            }
-            binding.progressBlock.setVisibility(View.VISIBLE);
-            binding.episodesProgress.setText(context.getString(
-                    R.string.library_list_episodes_progress, item.watchedEpisodes(), item.totalEpisodes()));
-            binding.percent.setText(context.getString(
-                    R.string.library_list_percent, item.progressPercent()));
-            binding.progress.setMax(item.totalEpisodes());
-            binding.progress.setProgress(item.watchedEpisodes());
+            MediaTileProgressBinder.bind(
+                    binding.progressBlock,
+                    item.showsEpisodeProgress(),
+                    item.watchedEpisodes(),
+                    item.totalEpisodes());
         }
 
         private String seasonCountLabel(Integer seasonCount) {
@@ -218,7 +190,7 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
                 return null;
             }
             return context.getResources()
-                    .getQuantityString(R.plurals.library_list_seasons_count, seasonCount, seasonCount);
+                    .getQuantityString(R.plurals.media_tile_seasons_count, seasonCount, seasonCount);
         }
 
         private String runtimeLabel(Integer runtimeMinutes) {

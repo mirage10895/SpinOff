@@ -23,6 +23,7 @@ public class Season {
     private Integer serieId;
     private LocalDate airDate;
     private int episodeCount;
+    private Double voteAverage;
     private List<Episode> episodes;
     private String overview;
     private Credits<Artist> credits;

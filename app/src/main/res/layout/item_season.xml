@@ -1,141 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Season row, built on the shared media tile grammar: poster, metadata column and the watched
+     toggle sitting on the poster's top-right corner. It carries the same information as before —
+     number, episode count, air date and the watched progress — plus the season rating. -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/media_tile_spacing"
+    android:clickable="true"
+    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/card_background_color"
-    app:strokeColor="#22FFFFFF"
-    app:strokeWidth="1dp"
-    app:cardCornerRadius="12dp"
-    android:layout_marginBottom="@dimen/grid_spacing"
-    android:clickable="true"
-    android:focusable="true">
+    app:cardCornerRadius="@dimen/media_tile_corner"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/color_card_outline"
+    app:strokeWidth="@dimen/media_tile_stroke_width">
 
-    <RelativeLayout
-        android:paddingHorizontal="5dp"
+    <LinearLayout
+        android:baselineAligned="false"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/media_tile_padding">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/poster_ic"
-            android:layout_width="90dp"
-            android:layout_height="110dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            app:strokeColor="#22FFFFFF"
-            app:strokeWidth="1dp"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Chip"
-            android:contentDescription="@null" />
+        <FrameLayout
+            android:layout_width="@dimen/media_tile_poster_width"
+            android:layout_height="@dimen/media_tile_poster_height"
+            android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/text_margin">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/poster_ic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/poster"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.SpinOff.Poster" />
+
+            <include
+                android:id="@+id/watched_toggle"
+                layout="@layout/view_media_tile_toggle"
+                android:layout_margin="@dimen/media_tile_tag_padding_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:visibility="gone" />
+        </FrameLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/poster_ic"
-            android:layout_margin="10dp"
-            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <TextView
+                android:id="@+id/meta"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_margin="5dp">
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/color_text_secondary"
+                android:textSize="@dimen/media_tile_meta_size"
+                tools:text="SEASON 3 • 10 EPISODES" />
 
-                <TextView
-                    android:id="@+id/text_number_season"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/text_season"/>
-
-                <TextView
-                    android:id="@+id/season"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginBottom="41dp"
-                    android:gravity="end"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/white" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <TextView
+                android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_margin="5dp">
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="@dimen/media_tile_title_size"
+                android:textStyle="bold"
+                tools:text="Season 3" />
 
-                <TextView
-                    android:id="@+id/text_number_episodes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/number_of_episodes"
-                    android:textColor="@color/white"/>
-
-                <TextView
-                    android:id="@+id/episodes"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:gravity="end"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:layout_alignParentEnd="true"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
+            <TextView
+                android:id="@+id/air_date"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_margin="5dp">
-                <TextView
-                    android:id="@+id/text_air_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/air_date"
-                    android:textColor="@color/white"/>
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/color_text_secondary"
+                android:textSize="@dimen/media_tile_meta_size"
+                tools:text="12/03/2019" />
 
-                <TextView
-                    android:id="@+id/air_date"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:gravity="end"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:layout_alignParentEnd="true"/>
-            </RelativeLayout>
-
-            <ProgressBar
-                android:id="@+id/season_progress"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            <LinearLayout
+                android:id="@+id/tags_row"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:progressDrawable="@drawable/progress_bar_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_tag"
+                    android:paddingHorizontal="@dimen/media_tile_tag_padding_horizontal"
+                    android:paddingVertical="@dimen/media_tile_tag_padding_vertical"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/media_tile_tag_text_size"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="★ 7.8"
+                    tools:visibility="visible" />
+            </LinearLayout>
+
+            <include
+                android:id="@+id/progress_block"
+                layout="@layout/view_media_tile_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:visibility="gone" />
-
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/watched_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignBottom="@id/poster_ic"
-            android:layout_alignEnd="@id/poster_ic"
-            android:layout_margin="4dp"
-            android:background="@drawable/bg_toggle_scrim"
-            android:clickable="true"
-            android:contentDescription="@string/chip_watched"
-            android:focusable="true"
-            android:padding="5dp"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

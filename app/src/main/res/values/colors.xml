@@ -8,4 +8,5 @@
     <color name="card_background_color">#222222</color>
     <color name="color_text_secondary">#99E5E2E1</color>
     <color name="color_scrim">#B3000000</color>
+    <color name="color_card_outline">#22FFFFFF</color>
 </resources>
