@@ -12,7 +12,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.DBInitializer.AppDatabase;
-import fr.eseo.dis.amiaudluc.spinoffapp.repository.BackupRepository;
+import fr.eseo.dis.amiaudluc.spinoffapp.repositories.BackupRepository;
 
 public class BackupViewModel extends AndroidViewModel {
 

@@ -1,4 +1,4 @@
-package fr.eseo.dis.amiaudluc.spinoffapp.repository;
+package fr.eseo.dis.amiaudluc.spinoffapp.repositories;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
