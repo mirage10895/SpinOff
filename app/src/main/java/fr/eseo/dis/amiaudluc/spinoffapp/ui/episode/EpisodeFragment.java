@@ -7,15 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentEpisodeBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Episode;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ActorsAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.artists.ArtistActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
@@ -25,6 +31,10 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
+ * <p>
+ * Carries the same "watched" chip as the season screen: it is shown once the serie is in the
+ * library, reflects the episode watched state — the whole season being watched implies every
+ * episode is — and toggles it through the view model.
  */
 public class EpisodeFragment extends Fragment implements ItemInterface {
 
@@ -34,6 +44,15 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
 
     private FragmentEpisodeBinding binding;
     private SerieViewModel serieViewModel;
+
+    private int serieId;
+    private int seasonNumber;
+    private int episodeNumber;
+
+    private boolean serieInLibrary = false;
+    private boolean episodeLoaded = false;
+    private SeasonDatabase seasonState;
+    private final Set<Integer> watchedEpisodeNumbers = new HashSet<>();
 
     public EpisodeFragment() {
         // Required empty public constructor
@@ -50,6 +69,16 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            serieId = getArguments().getInt(ARG_SERIE_ID);
+            seasonNumber = getArguments().getInt(ARG_SEASON_NUMBER);
+            episodeNumber = getArguments().getInt(ARG_EPISODE_NUMBER);
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentEpisodeBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -59,8 +88,9 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         serieViewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        
+
         setupRecyclerView();
+        setupChip();
         observeViewModel();
     }
 
@@ -69,12 +99,25 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
         binding.guestStars.setHasFixedSize(true);
     }
 
+    private void setupChip() {
+        binding.chipWatched.setOnClickListener(v -> serieViewModel.setEpisodeWatched(
+                serieId, seasonNumber, episodeNumber, binding.chipWatched.isChecked()));
+    }
+
     private void observeViewModel() {
         serieViewModel.getEpisode().observe(getViewLifecycleOwner(), this::updateUI);
+        serieViewModel.getSeasonState(serieId, seasonNumber).observe(getViewLifecycleOwner(), this::updateSeasonState);
+        serieViewModel.getEpisodesBySerieAndSeason(serieId, seasonNumber).observe(getViewLifecycleOwner(), this::updateEpisodeStates);
+        serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), series -> {
+            serieInLibrary = series.stream().anyMatch(s -> s.getId() == serieId);
+            updateControls();
+        });
     }
 
     private void updateUI(Episode episode) {
         if (episode == null || binding == null) return;
+
+        episodeLoaded = true;
 
         if (episode.getAirDate() != null) {
             binding.airDate.setText(DateUtils.toDisplayString(episode.getAirDate()));
@@ -106,6 +149,39 @@ public class EpisodeFragment extends Fragment implements ItemInterface {
         } else {
             binding.layerGuest.setVisibility(View.GONE);
         }
+
+        updateControls();
+    }
+
+    private void updateSeasonState(SeasonDatabase seasonState) {
+        this.seasonState = seasonState;
+        updateControls();
+    }
+
+    private void updateEpisodeStates(List<EpisodeDatabase> episodes) {
+        watchedEpisodeNumbers.clear();
+        if (episodes != null) {
+            // Every stored row means the episode has been watched
+            for (EpisodeDatabase episode : episodes) {
+                watchedEpisodeNumbers.add(episode.getEpisodeNumber());
+            }
+        }
+        updateControls();
+    }
+
+    /** An episode reads as watched when the whole season is, or when its own row is stored. */
+    private boolean isEpisodeWatched() {
+        if (seasonState != null && seasonState.isWatched()) {
+            return true;
+        }
+        return watchedEpisodeNumbers.contains(episodeNumber);
+    }
+
+    private void updateControls() {
+        if (binding == null) return;
+        boolean visible = serieInLibrary && episodeLoaded;
+        binding.chipWatched.setVisibility(visible ? View.VISIBLE : View.GONE);
+        binding.chipWatched.setChecked(isEpisodeWatched());
     }
 
     @Override
