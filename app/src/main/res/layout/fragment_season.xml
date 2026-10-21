@@ -15,6 +15,21 @@
         android:layout_marginVertical="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_watched"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/chip_watched"
+            app:chipBackgroundColor="@color/chip_background_color"
+            app:checkedIconTint="@color/chip_text_color"
+            app:checkedIconVisible="true"
+            android:textColor="@color/chip_text_color"
+            android:visibility="gone"
+            android:clickable="true"
+            android:checkable="true" />
+
         <com.google.android.material.card.MaterialCardView
             style="@style/BentoCard"
             android:layout_width="match_parent"
@@ -236,7 +251,7 @@
                         android:textSize="20sp" />
                 </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
+                <fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MaxHeightRecyclerView
                     android:id="@+id/episodes_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

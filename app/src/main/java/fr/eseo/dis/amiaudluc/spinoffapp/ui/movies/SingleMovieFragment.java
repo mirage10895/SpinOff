@@ -110,9 +110,19 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
             } else {
                 movieViewModel.deleteMovieById(movieId);
             }
+            updateInLibraryChipText();
         });
 
-        binding.layoutChips.chipWatched.setOnClickListener(v -> movieViewModel.toggleMovieIsWatched(movieId));
+        binding.layoutChips.chipWatched.setOnClickListener(v ->
+                movieViewModel.setMovieWatched(movieId, binding.layoutChips.chipWatched.isChecked()));
+    }
+
+    private void updateInLibraryChipText() {
+        binding.layoutChips.chipInLibrary.setText(
+                binding.layoutChips.chipInLibrary.isChecked()
+                        ? R.string.chip_in_library
+                        : R.string.chip_add_to_library
+        );
     }
 
 
@@ -158,6 +168,7 @@ public class SingleMovieFragment extends Fragment implements ItemInterface {
                 binding.layoutChips.chipWatched.setVisibility(View.GONE);
                 binding.layoutChips.chipWatched.setChecked(false);
             }
+            updateInLibraryChipText();
         });
     }
 

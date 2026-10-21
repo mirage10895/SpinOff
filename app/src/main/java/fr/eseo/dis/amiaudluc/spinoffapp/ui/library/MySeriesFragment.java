@@ -98,8 +98,8 @@ public class MySeriesFragment extends BaseLibraryFragment {
     }
 
     @Override
-    protected void toggleWatched(Integer id) {
-        this.serieViewModel.toggleSerieIsWatched(id);
+    protected void setWatched(Integer id, boolean watched) {
+        this.serieViewModel.setSerieWatched(id, watched);
     }
 
     @Override

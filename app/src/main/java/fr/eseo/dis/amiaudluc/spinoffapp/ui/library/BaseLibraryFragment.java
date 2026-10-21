@@ -92,8 +92,12 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
                 deleteMedia(selectedId);
                 return true;
             }
-            if (item.getItemId() == R.id.context_menu_mark_as || item.getItemId() == R.id.context_menu_mark_as_not) {
-                toggleWatched(selectedId);
+            if (item.getItemId() == R.id.context_menu_mark_as) {
+                setWatched(selectedId, true);
+                return true;
+            }
+            if (item.getItemId() == R.id.context_menu_mark_as_not) {
+                setWatched(selectedId, false);
                 return true;
             }
         }
@@ -101,5 +105,10 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
     }
 
     protected abstract void deleteMedia(Integer id);
-    protected abstract void toggleWatched(Integer id);
+
+    /**
+     * Explicitly sets the watched state instead of toggling it, so "Mark as seen" and
+     * "Mark as unseen" always do what they say, whatever the current state is.
+     */
+    protected abstract void setWatched(Integer id, boolean watched);
 }

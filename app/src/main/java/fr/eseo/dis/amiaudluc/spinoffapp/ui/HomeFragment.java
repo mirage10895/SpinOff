@@ -151,9 +151,7 @@ public class HomeFragment extends Fragment {
 
     private void observeGenres() {
         TmdbApiRepository repository = TmdbApiRepository.getInstance();
-        discoveryStrategy.getGenres(repository).observe(getViewLifecycleOwner(), genres -> {
-            this.availableGenres = genres;
-        });
+        discoveryStrategy.getGenres(repository).observe(getViewLifecycleOwner(), genres -> this.availableGenres = genres);
     }
 
     private void showFiltersBottomSheet() {
@@ -189,9 +187,7 @@ public class HomeFragment extends Fragment {
                 .map(g -> new FilterItem(g.getId(), g.getName(), selectedGenreIds.contains(g.getId())))
                 .collect(Collectors.toList());
 
-        GenreChipAdapter genreAdapter = new GenreChipAdapter(selectedIds -> {
-            selectedGenreIds = selectedIds;
-        });
+        GenreChipAdapter genreAdapter = new GenreChipAdapter(selectedIds -> selectedGenreIds = selectedIds);
         sheetBinding.recyclerGenres.setAdapter(genreAdapter);
         genreAdapter.submitList(filterItems);
 
@@ -202,11 +198,14 @@ public class HomeFragment extends Fragment {
                 .map(String::valueOf)
                 .collect(Collectors.toList());
 
+        // Non-searchable: the year field behaves as a plain select, the dropdown always shows
+        // every year and the displayed value can never be edited by the user.
         ArrayAdapter<String> yearAdapter = new ArraySearchAdapter<>(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
                 years,
-                year -> year
+                year -> year,
+                false
         );
         sheetBinding.spinnerYear.setAdapter(yearAdapter);
         if (selectedYear != null) {

@@ -141,6 +141,7 @@
     <string name="undo_action">Undo</string>
     <string name="error_library_transaction">A problem occurred. Try again or reach an administrator.</string>
 
+    <string name="chip_add_to_library">Add to watchlist</string>
     <string name="chip_in_library">In watchlist</string>
     <string name="chip_watched">Watched</string>
     <string name="apply">Apply</string>

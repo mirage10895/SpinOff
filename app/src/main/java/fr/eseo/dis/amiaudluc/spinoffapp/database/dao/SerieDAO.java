@@ -24,6 +24,9 @@ public interface SerieDAO {
     @Query("SELECT * FROM serie")
     List<SerieDatabase> getAllSync();
 
+    @Query("SELECT * FROM serie where id = :id")
+    SerieDatabase fetchSerieByIdSync(int id);
+
     @Query("SELECT * FROM serie")
     Cursor getAllCursor();
 
@@ -33,6 +36,8 @@ public interface SerieDAO {
     void deleteSerieById(Integer id);
     @Query("update serie set watched = not watched where id = :id")
     void toggleSerieIsWatched(int id);
+    @Query("update serie set watched = :watched where id = :id")
+    void updateSerieWatched(int id, boolean watched);
     @Update
     void updateSerie(SerieDatabase serie);
 }

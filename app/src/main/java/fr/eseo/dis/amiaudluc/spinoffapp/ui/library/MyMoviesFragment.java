@@ -97,8 +97,8 @@ public class MyMoviesFragment extends BaseLibraryFragment {
     }
 
     @Override
-    protected void toggleWatched(Integer id) {
-        this.movieViewModel.toggleMovieIsWatched(id);
+    protected void setWatched(Integer id, boolean watched) {
+        this.movieViewModel.setMovieWatched(id, watched);
     }
 
     @Override
