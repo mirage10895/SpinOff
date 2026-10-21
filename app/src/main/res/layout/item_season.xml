@@ -90,7 +90,7 @@
                 android:id="@+id/tags_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/media_tile_row_gap"
                 android:orientation="horizontal">
 
                 <TextView
@@ -113,7 +113,7 @@
                 layout="@layout/view_media_tile_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/media_tile_row_gap"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>

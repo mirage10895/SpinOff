@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Episode row, built on the shared media tile grammar: a 16:9 still, the metadata column and
+<!-- Episode row, built on the shared media tile grammar: the 16:9 still, the metadata column and
      the watched toggle sitting on the still's top-right corner. There is no progress block: an
      episode is watched or not. -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -18,9 +18,9 @@
     app:strokeWidth="@dimen/media_tile_stroke_width">
 
     <LinearLayout
-        android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal"
         android:padding="@dimen/media_tile_padding">
 
@@ -90,7 +90,7 @@
                 android:id="@+id/tags_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/media_tile_row_gap"
                 android:orientation="horizontal">
 
                 <TextView
