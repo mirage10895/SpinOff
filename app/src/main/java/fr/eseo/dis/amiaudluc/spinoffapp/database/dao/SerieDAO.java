@@ -2,6 +2,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.database.dao;
 
 import android.database.Cursor;
 
+import java.time.Instant;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -38,6 +39,18 @@ public interface SerieDAO {
     void toggleSerieIsWatched(int id);
     @Query("update serie set watched = :watched where id = :id")
     void updateSerieWatched(int id, boolean watched);
+
+    /**
+     * Partial refresh used by the daily release check: only the columns the release detection and
+     * the serie header rely on. It never touches the metadata columns (genres, actors, directors,
+     * runtime…), which the full synchronisation owns, so a lightweight payload cannot erase them.
+     */
+    @Query("update serie set name = :name, poster_path = :posterPath, season_count = :seasonCount, "
+            + "episode_count = :episodeCount, last_synchronisation_time = :synchronisedAt "
+            + "where id = :id")
+    void updateSerieReleaseSnapshot(int id, String name, String posterPath, Integer seasonCount,
+                                    Integer episodeCount, Instant synchronisedAt);
+
     @Update
     void updateSerie(SerieDatabase serie);
 }

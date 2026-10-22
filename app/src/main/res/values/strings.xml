@@ -184,4 +184,17 @@
         <item quantity="one">%1$d episode</item>
         <item quantity="other">%1$d episodes</item>
     </plurals>
+
+    <!-- Serie release notifications -->
+    <string name="notification_channel_releases">New releases</string>
+    <string name="notification_channel_releases_description">New episodes and seasons of the series in your library</string>
+    <string name="notification_new_season">Season %1$d is available</string>
+    <string name="notification_episode_label">S%1$02dE%2$02d</string>
+    <string name="notification_new_episode">%1$s · %2$s</string>
+
+    <!-- Library settings -->
+    <string name="setting_release_notifications">New releases</string>
+    <string name="setting_release_notifications_description">Notify new episodes and seasons of your series</string>
+    <string name="setting_release_notifications_permission_denied">Notifications are blocked for Spin-Off</string>
+    <string name="setting_release_notifications_open_settings">Settings</string>
 </resources>

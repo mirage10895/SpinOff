@@ -21,6 +21,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
 
 public class SerieActivity extends AppCompatActivity {
 
+    public static final String EXTRA_SERIE_ID = "id";
+
     private ActivityMediaBinding binding;
     private SerieViewModel serieViewModel;
     private int serieId;
@@ -33,7 +35,7 @@ public class SerieActivity extends AppCompatActivity {
         // to delegate the behavior of the app bar to the activity
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
-        serieId = getIntent().getIntExtra("id", -1);
+        serieId = getIntent().getIntExtra(EXTRA_SERIE_ID, -1);
         if (serieId == -1) {
             finish();
             return;

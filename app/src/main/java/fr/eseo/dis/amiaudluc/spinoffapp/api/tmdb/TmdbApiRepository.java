@@ -132,6 +132,14 @@ public class TmdbApiRepository {
         return RetrofitApi.execute(this.api.getSerieById(id, "credits,videos,recommendations"));
     }
 
+    /**
+     * Lightweight synchronous fetch used by the daily release check: {@code GET /tv/{id}} without
+     * {@code append_to_response}, roughly five times smaller than the full payload.
+     */
+    public Optional<Serie> getSerieStatusSync(Integer id) {
+        return RetrofitApi.execute(this.api.getSerieStatus(id));
+    }
+
     public LiveData<List<WatchProviderAdapterData>> fetchTvWatchProvider(Integer id, String imdbId) {
         return RetrofitApi.executeAsync(
                 this.api.fetchTvWatchProvider(id),

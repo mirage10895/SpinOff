@@ -54,7 +54,7 @@ public class ArraySearchAdapter<T> extends ArrayAdapter<T> {
             protected Filter.FilterResults performFiltering(CharSequence constraint) {
                 Filter.FilterResults results = new Filter.FilterResults();
                 List<T> suggestions;
-                if (!searchable || constraint == null || constraint.isEmpty()) {
+                if (!searchable || constraint == null || constraint.length() == 0) {
                     suggestions = new ArrayList<>(elements);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();

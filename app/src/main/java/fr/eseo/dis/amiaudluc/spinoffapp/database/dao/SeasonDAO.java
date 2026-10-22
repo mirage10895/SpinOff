@@ -9,6 +9,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
+import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Season;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 
 @Dao
@@ -34,6 +36,19 @@ public interface SeasonDAO {
         insertSeason(season);
         if (episodeCount > 0) {
             updateSeasonEpisodeCount(serieId, seasonNumber, episodeCount);
+        }
+    }
+
+    /**
+     * Apply {@link #upsertSeason(int, int, int)} to every season of a serie payload, ignoring the
+     * entries without a season number.
+     */
+    @Transaction
+    default void upsertSeasons(int serieId, List<Season> seasons) {
+        for (Season season : seasons) {
+            if (season.getSeasonNumber() != null) {
+                upsertSeason(serieId, season.getSeasonNumber(), season.getEpisodeCount());
+            }
         }
     }
 

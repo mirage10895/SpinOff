@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -21,6 +22,35 @@
         android:text="@string/setting_title"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_primary_semi_opaq"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/text_margin">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_release_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_release_notifications"
+            android:textColor="@color/white"
+            app:thumbTint="@color/white"
+            app:trackTint="@color/colorPrimary" />
+
+        <TextView
+            style="@style/BentoLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_release_notifications_description" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

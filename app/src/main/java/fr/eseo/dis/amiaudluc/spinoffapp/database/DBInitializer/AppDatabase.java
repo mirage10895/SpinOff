@@ -13,16 +13,19 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.EpisodeDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.MovieDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SeasonDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieDAO;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.SerieNotificationDAO;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.EpisodeDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieNotificationDatabase;
 
 /**
  * Created by lucasamiaud on 29/12/2017.
  */
 
-@Database(entities = {MovieDatabase.class, SerieDatabase.class, EpisodeDatabase.class, SeasonDatabase.class}, version = 4)
+@Database(entities = {MovieDatabase.class, SerieDatabase.class, EpisodeDatabase.class, SeasonDatabase.class,
+        SerieNotificationDatabase.class}, version = 5)
 @TypeConverters({RoomTypeConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -35,6 +38,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract EpisodeDAO episodeDAO();
 
     public abstract SeasonDAO seasonDAO();
+
+    public abstract SerieNotificationDAO serieNotificationDAO();
 
     public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -92,6 +97,31 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // Dedicated release-tracking table: the library tables (serie, serie_season,
+            // serie_episode) stay untouched and keep their ownership of the watched state.
+            database.execSQL("CREATE TABLE IF NOT EXISTS serie_notification ("
+                    + "serie_id INTEGER NOT NULL, "
+                    + "enabled INTEGER NOT NULL DEFAULT 1, "
+                    + "last_known_status TEXT, "
+                    + "last_known_season_count INTEGER, "
+                    + "last_seen_season INTEGER, "
+                    + "last_seen_episode INTEGER, "
+                    + "last_seen_air_date INTEGER, "
+                    + "notified_at INTEGER, "
+                    + "next_episode_season INTEGER, "
+                    + "next_episode_number INTEGER, "
+                    + "next_episode_air_date INTEGER, "
+                    + "next_episode_name TEXT, "
+                    + "PRIMARY KEY(serie_id), "
+                    + "FOREIGN KEY(serie_id) REFERENCES serie(id) ON UPDATE NO ACTION ON DELETE CASCADE)");
+            database.execSQL("CREATE INDEX IF NOT EXISTS index_serie_notification_serie_id "
+                    + "ON serie_notification(serie_id)");
+        }
+    };
+
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -101,7 +131,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "spinoff-database"
                     )
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                             .build();
                 }
             }
