@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Attributes of the custom views. They can be set on the view tag, or declared at theme level
+     with a matching name so every instance inherits them. -->
+<resources>
+
+    <declare-styleable name="FastScrollBar">
+        <!-- Colour of the thumb, the draggable part of the bar. -->
+        <attr name="fastScrollThumbColor" format="color" />
+        <!-- Colour of the track drawn behind the thumb. -->
+        <attr name="fastScrollTrackColor" format="color" />
+    </declare-styleable>
+
+    <!-- Theme-level defaults, read by FastScrollBar when the view tag does not override them. -->
+    <attr name="fastScrollBarThumbColor" format="color" />
+    <attr name="fastScrollBarTrackColor" format="color" />
+
+</resources>

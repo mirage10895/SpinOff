@@ -10,6 +10,11 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+
+        <!-- Default colours of the custom FastScrollBar. Override them per view with
+             app:fastScrollThumbColor / app:fastScrollTrackColor. -->
+        <item name="fastScrollBarThumbColor">@color/colorAccent</item>
+        <item name="fastScrollBarTrackColor">?android:attr/windowBackground</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">

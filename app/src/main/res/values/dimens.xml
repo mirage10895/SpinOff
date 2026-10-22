@@ -35,4 +35,11 @@
     <dimen name="library_letter_header_corner">10dp</dimen>
     <dimen name="library_letter_header_spacing">14dp</dimen>
     <dimen name="library_letter_size">22sp</dimen>
+
+    <!-- Library list layout: the RecyclerView keeps an outer end margin for the bar, and an inner
+         end padding so the tiles keep their distance from it. -->
+    <dimen name="library_list_end_padding">12dp</dimen>
+
+    <dimen name="fast_scroll_bar_width">5dp</dimen>
+    <dimen name="fast_scroll_screen_margin">4dp</dimen>
 </resources>

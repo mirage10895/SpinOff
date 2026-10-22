@@ -70,6 +70,7 @@ public class LibraryListActivity extends AppCompatActivity implements LibraryTil
         adapter = new LibraryAdapter(this, this);
         binding.libraryList.setLayoutManager(new LinearLayoutManager(this));
         binding.libraryList.setAdapter(adapter);
+        binding.libraryFastScroll.attachTo(binding.libraryList);
 
         viewModel = new ViewModelProvider(this).get(LibraryListViewModel.class);
         viewModel.items(type, filter).observe(this, this::submit);
