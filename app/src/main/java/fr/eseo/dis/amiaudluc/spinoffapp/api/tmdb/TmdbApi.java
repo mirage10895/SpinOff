@@ -45,6 +45,13 @@ public interface TmdbApi {
     @GET("tv/{id}")
     Call<Serie> getSerieById(@Path("id") Integer id, @Query("append_to_response") String appendToResponse);
 
+    /**
+     * Lightweight serie payload: no {@code append_to_response}, so no credits, videos or
+     * recommendations. It still carries everything the release detection needs.
+     */
+    @GET("tv/{id}")
+    Call<Serie> getSerieStatus(@Path("id") Integer id);
+
     @GET("tv/{id}/season/{seasonNumber}")
     Call<Season> getSeasonBySerieId(
             @Path("id") Integer id,

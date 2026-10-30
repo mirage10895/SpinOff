@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug-only components: merged into the debug build only, never into a release build. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <receiver
+            android:name="fr.eseo.dis.amiaudluc.spinoffapp.debug.ReleaseNotificationPreviewReceiver"
+            android:exported="true" />
+    </application>
+
+</manifest>

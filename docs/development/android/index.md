@@ -66,3 +66,21 @@ alwaysApply: false
 
 - Use the project logging helper (`utils/LogUtils`) rather than scattering raw `android.util.Log` calls. Note that it only emits logs in debug builds.
 - Never log sensitive data (API key, personal library content).
+
+## 9. Debug tools
+
+- Debug-only helpers live in the `debug` source set (`app/src/debug/java` + `app/src/debug/AndroidManifest.xml`). The manifest merger only includes them in debug builds, so they are **never shipped in a release APK** (check with `./gradlew :app:processReleaseMainManifest`).
+- They may call the production components directly: the goal is to exercise the real code path, not to reimplement it.
+- **Release notification preview** (`ReleaseNotificationPreviewReceiver`): posts fake `SerieRelease`s through `NotificationUtils` to check the look, the poster download, the summary bundling and the deep link on an emulator. It reuses the series of the library, so the poster and the name are real. The notification permission must be granted (library settings → New releases). The debug build carries the `.debug` application id suffix:
+
+```bash
+# one episode release, using the first serie of the library
+adb shell am broadcast -n fr.eseo.dis.amiaudluc.spinoffapp.debug/fr.eseo.dis.amiaudluc.spinoffapp.debug.ReleaseNotificationPreviewReceiver
+
+# three releases: shows the summary notification bundling
+adb shell am broadcast -n fr.eseo.dis.amiaudluc.spinoffapp.debug/fr.eseo.dis.amiaudluc.spinoffapp.debug.ReleaseNotificationPreviewReceiver --ei count 3
+
+# season flavour, or an explicit name/poster
+adb shell am broadcast -n ... --es kind season
+adb shell am broadcast -n ... --es name "My serie" --es poster /1XS1oqL89opfnbLl8WnZY1O1uJx.jpg
+```
