@@ -42,4 +42,13 @@
 
     <dimen name="fast_scroll_bar_width">5dp</dimen>
     <dimen name="fast_scroll_screen_margin">4dp</dimen>
+
+    <!-- Library settings bottom sheet: sectioned list of preferences and backup actions. -->
+    <dimen name="divider_thickness">1dp</dimen>
+    <dimen name="setting_row_min_height">56dp</dimen>
+    <dimen name="setting_row_title_size">16sp</dimen>
+    <dimen name="setting_row_description_size">13sp</dimen>
+    <dimen name="setting_row_icon_size">24dp</dimen>
+    <dimen name="setting_row_icon_margin">12dp</dimen>
+    <dimen name="setting_row_gap">2dp</dimen>
 </resources>

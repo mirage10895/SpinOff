@@ -142,6 +142,8 @@
 
     <style name="BentoBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BentoBottomSheetStyle</item>
+        <!-- The sheet content is dark: the default (dark) highlight would be invisible. -->
+        <item name="colorControlHighlight">@color/color_primary_ripple</item>
     </style>
 
     <style name="BentoBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">

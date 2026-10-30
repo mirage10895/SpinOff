@@ -33,25 +33,25 @@ public class BackupViewModel extends AndroidViewModel {
     }
 
     public void exportLibrary(Uri uri) {
-        state.setValue(BackupState.loading());
+        state.setValue(BackupState.loading(BackupState.Operation.EXPORT));
         executorService.execute(() -> {
             try {
                 repository.exportLibrary(uri);
-                state.postValue(BackupState.success());
+                state.postValue(BackupState.success(BackupState.Operation.EXPORT));
             } catch (IOException e) {
-                state.postValue(BackupState.error(e.getMessage()));
+                state.postValue(BackupState.error(BackupState.Operation.EXPORT, e.getMessage()));
             }
         });
     }
 
     public void importLibrary(Uri uri) {
-        state.setValue(BackupState.loading());
+        state.setValue(BackupState.loading(BackupState.Operation.IMPORT));
         executorService.execute(() -> {
             try {
                 repository.importLibrary(uri);
-                state.postValue(BackupState.success());
+                state.postValue(BackupState.success(BackupState.Operation.IMPORT));
             } catch (IOException | RuntimeException e) {
-                state.postValue(BackupState.error(e.getMessage()));
+                state.postValue(BackupState.error(BackupState.Operation.IMPORT, e.getMessage()));
             }
         });
     }

@@ -27,3 +27,14 @@ For any notable functional need, document a **"library vs custom"** decision: li
 - **Packages:** lowercase, no underscores.
 - **Resources:** `snake_case` (e.g. `fragment_home.xml`, `menu_bottom_nav.xml`).
 - **Layout ids:** `snake_case`, prefixed by type (`btn_`, `chip_`, `text_`, `recycler_`).
+
+## 5. Documented decisions
+
+### Serie release notifications — library vs custom
+
+- **Need:** notify new episodes/seasons of the series in the library, and keep their next announced release for the future calendar.
+- **Candidates:** `NotificationCompat` + `NotificationChannel` (AndroidX, already pulled in by `androidx.core`); an external notification library; a custom `Notification.Builder` implementation.
+- **Chosen option:** AndroidX `NotificationCompat` / `NotificationManagerCompat`. It is already a transitive dependency, works from API 26 (project minSdk), and handles the API 33 permission gracefully.
+- **Rejected alternatives:** an external notification library (adds weight for a need fully covered by AndroidX); a raw `Notification.Builder` (API-level branching and no backport).
+- **Scheduling:** reuse the existing `WorkManager` periodic `UpdateSeriesWorker`; no extra dependency.
+- **Rejected data source:** TMDB `/tv/changes` (list of edited series IDs). It is an editorial edit log, not a broadcast feed: it requires 26+ requests per day for the ID list alone and floods false positives when metadata is retouched. The canonical `lastEpisodeToAir` / `numberOfSeasons` already returned by `GET /tv/{id}` is both cheaper and more accurate.

@@ -146,11 +146,16 @@
     <string name="clear_all">Clear all</string>
 
     <!-- Library Settings -->
-    <string name="setting_title">Setting</string>
-    <string name="export_library">Export Library</string>
-    <string name="import_library">Import Library</string>
-    <string name="import_library_success">Library exported successfully !</string>
-    <string name="import_library_error">Error during library export : %s</string>
+    <string name="setting_title">Settings</string>
+    <string name="setting_section_notifications">Notifications</string>
+    <string name="setting_section_library">Library</string>
+    <string name="setting_backup_format">JSON</string>
+    <string name="export_library">Export library</string>
+    <string name="import_library">Import library</string>
+    <string name="export_library_success">Library exported</string>
+    <string name="export_library_error">Export failed: %s</string>
+    <string name="import_library_success">Library imported</string>
+    <string name="import_library_error">Import failed: %s</string>
 
     <!-- Media tiles: shared by the library, season and episode rows. -->
     <string name="media_tile_separator">" • "</string>
@@ -184,4 +189,22 @@
         <item quantity="one">%1$d episode</item>
         <item quantity="other">%1$d episodes</item>
     </plurals>
+
+    <!-- Serie release notifications -->
+    <string name="notification_channel_releases">New releases</string>
+    <string name="notification_channel_releases_description">New episodes and seasons of the series in your library</string>
+    <string name="notification_new_season">Season %1$d is available</string>
+    <string name="notification_episode_label">S%1$02dE%2$02d</string>
+    <string name="notification_new_episode">%1$s · %2$s</string>
+    <string name="notification_releases_summary_title">New releases</string>
+    <plurals name="notification_releases_summary">
+        <item quantity="one">%1$d new release in your library</item>
+        <item quantity="other">%1$d new releases in your library</item>
+    </plurals>
+
+    <!-- Library settings -->
+    <string name="setting_release_notifications">New releases</string>
+    <string name="setting_release_notifications_description">Notify new episodes and seasons of your series</string>
+    <string name="setting_release_notifications_permission_denied">Notifications are blocked for Spin-Off</string>
+    <string name="setting_release_notifications_open_settings">Settings</string>
 </resources>
