@@ -160,9 +160,26 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
+    <!-- Poster tile of the discovery grids. The accent outline is disabled by default and
+         toggled at bind time for titles already in the local library. -->
+    <style name="MediaPosterCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">@dimen/discovery_card_corner</item>
+        <item name="cardElevation">@dimen/discovery_card_elevation</item>
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
+
     <!-- Rounded media thumbnails (library list tiles). -->
     <style name="ShapeAppearanceOverlay.SpinOff.Poster" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/media_tile_poster_corner</item>
+    </style>
+
+    <!-- Search field: the app accent (colorAccent) is pink and clashes with the teal lens. Scoping
+         the primary color to this view keeps the cursor and the selection handles coherent. -->
+    <style name="ThemeOverlay.SpinOff.SearchField" parent="">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
 </resources>

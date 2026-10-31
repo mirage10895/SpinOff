@@ -29,6 +29,15 @@
     <dimen name="media_tile_meta_size">13sp</dimen>
     <dimen name="media_tile_tag_text_size">12sp</dimen>
 
+    <!-- Discovery poster grid: poster card, and the badge/outline marking a title already
+         present in the local library. -->
+    <dimen name="discovery_card_corner">12dp</dimen>
+    <dimen name="discovery_card_elevation">4dp</dimen>
+    <dimen name="discovery_poster_height">240dp</dimen>
+    <dimen name="discovery_in_library_stroke_width">2dp</dimen>
+    <dimen name="discovery_badge_size">28dp</dimen>
+    <dimen name="discovery_badge_margin">8dp</dimen>
+
     <!-- A-Z section divider of the library list screen. -->
     <dimen name="library_letter_header_padding_horizontal">14dp</dimen>
     <dimen name="library_letter_header_padding_vertical">8dp</dimen>
@@ -42,6 +51,18 @@
 
     <dimen name="fast_scroll_bar_width">5dp</dimen>
     <dimen name="fast_scroll_screen_margin">4dp</dimen>
+
+    <!-- Search bar: pill-shaped field with a leading lens and a trailing clear button. The clear
+         button keeps a 48dp touch target; its visible circle is inset inside that target. -->
+    <dimen name="search_bar_min_height">56dp</dimen>
+    <dimen name="search_bar_horizontal_padding">18dp</dimen>
+    <dimen name="search_bar_end_padding">6dp</dimen>
+    <dimen name="search_bar_icon_size">24dp</dimen>
+    <dimen name="search_bar_icon_margin">12dp</dimen>
+    <dimen name="search_bar_vertical_padding">14dp</dimen>
+    <dimen name="search_bar_clear_touch_size">48dp</dimen>
+    <dimen name="search_bar_clear_inset">8dp</dimen>
+    <dimen name="search_bar_clear_icon_padding">15dp</dimen>
 
     <!-- Library settings bottom sheet: sectioned list of preferences and backup actions. -->
     <dimen name="divider_thickness">1dp</dimen>

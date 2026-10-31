@@ -15,17 +15,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.ItemMediaCardBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.DiscoverItem;
 
-public class DiscoverMediaAdapter extends ListAdapter<AdapterData, DiscoverMediaAdapter.MediaViewHolder> {
+/**
+ * Grid adapter of the discovery screens. It renders a poster per title and flags the titles that
+ * are already stored in the local library: a bookmark badge sits at the top-end corner and the
+ * card gets an accent outline.
+ * <p>
+ * Library membership is part of {@link DiscoverItem}, so updates go through
+ * {@link #submitList(List)} and DiffUtil only rebinds the rows whose membership changed.
+ */
+public class DiscoverMediaAdapter extends ListAdapter<DiscoverItem, DiscoverMediaAdapter.MediaViewHolder> {
     private final String posterBaseUrl;
     private final ItemInterface fragment;
 
     public DiscoverMediaAdapter(
             ItemInterface fragment,
             String posterBaseUrl,
-            List<AdapterData> initialData
+            List<DiscoverItem> initialData
     ) {
-        super(AdapterData.DIFF_CALLBACK);
+        super(DiscoverItem.DIFF_CALLBACK);
         this.fragment = fragment;
         this.posterBaseUrl = posterBaseUrl;
         if (initialData != null) {
@@ -46,8 +55,8 @@ public class DiscoverMediaAdapter extends ListAdapter<AdapterData, DiscoverMedia
 
     @Override
     public void onBindViewHolder(@NonNull DiscoverMediaAdapter.MediaViewHolder holder, int position) {
-        AdapterData media = getItem(position);
-        holder.bind(media, posterBaseUrl);
+        DiscoverItem item = getItem(position);
+        holder.bind(item.media(), posterBaseUrl, item.inLibrary());
     }
 
     public static class MediaViewHolder extends RecyclerView.ViewHolder
@@ -69,7 +78,7 @@ public class DiscoverMediaAdapter extends ListAdapter<AdapterData, DiscoverMedia
             binding.getRoot().setOnClickListener(this);
         }
 
-        public void bind(AdapterData media, String baseImageUrl) {
+        public void bind(AdapterData media, String baseImageUrl, boolean inLibrary) {
             binding.imagePoster.setImageResource(R.drawable.ic_launcher_foreground);
             if (media.posterPath() != null) {
                 String link = baseImageUrl + media.posterPath();
@@ -87,6 +96,14 @@ public class DiscoverMediaAdapter extends ListAdapter<AdapterData, DiscoverMedia
                 binding.bannerInfo.setVisibility(View.GONE);
             }
 
+            // A title already in the library gets a bookmark badge and an accent outline, so it
+            // can be spotted at a glance without reading anything.
+            binding.libraryBadge.setVisibility(inLibrary ? View.VISIBLE : View.GONE);
+            int strokeWidth = inLibrary
+                    ? itemView.getResources().getDimensionPixelSize(R.dimen.discovery_in_library_stroke_width)
+                    : 0;
+            binding.getRoot().setStrokeWidth(strokeWidth);
+
             fragment.onRegisterContextMenu(itemView, media.id());
         }
 
@@ -94,8 +111,8 @@ public class DiscoverMediaAdapter extends ListAdapter<AdapterData, DiscoverMedia
         public void onClick(View v) {
             int pos = getAbsoluteAdapterPosition();
             if (pos != RecyclerView.NO_POSITION) {
-                AdapterData media = adapter.getItem(pos);
-                fragment.onItemClick(media.id(), media.fragmentType());
+                DiscoverItem item = adapter.getItem(pos);
+                fragment.onItemClick(item.media().id(), item.media().fragmentType());
             }
         }
     }

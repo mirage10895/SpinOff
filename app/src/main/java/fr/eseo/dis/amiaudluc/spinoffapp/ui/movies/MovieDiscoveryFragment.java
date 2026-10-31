@@ -9,7 +9,10 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -22,7 +25,7 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteMovieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.DiscoverMediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.DiscoverItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.MovieDiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.movie.MovieViewModel;
@@ -36,6 +39,8 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
     private MovieViewModel movieViewModel;
     private MovieDiscoveryViewModel movieDiscoveryViewModel;
     protected DiscoverMediaAdapter moviesAdapter;
+    private final Set<Integer> libraryIds = new HashSet<>();
+    private List<Movie> latestMovies = new ArrayList<>();
 
     public static MovieDiscoveryFragment newInstance() {
         return new MovieDiscoveryFragment();
@@ -64,6 +69,19 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
         this.discoveryViewModel.getFilter(FragmentType.MOVIE).observe(getViewLifecycleOwner(), type -> resetScroll());
 
         this.observeMovies();
+        this.observeLibrary();
+    }
+
+    private void observeLibrary() {
+        this.movieViewModel.getDatabaseMovies().observe(getViewLifecycleOwner(), movies -> {
+            libraryIds.clear();
+            if (movies != null) {
+                libraryIds.addAll(movies.stream()
+                        .map(MovieDatabase::getId)
+                        .collect(Collectors.toSet()));
+            }
+            renderMovies();
+        });
     }
 
     @Override
@@ -103,13 +121,9 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
             binding.progressBar.setVisibility(View.GONE);
             binding.cardList.setVisibility(View.VISIBLE);
             binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
-            if (movies != null) {
-                loadMovies(
-                        movies.stream()
-                                .map(Movie::toAdapterFormat)
-                                .collect(Collectors.toList())
-                );
-            } else {
+            latestMovies = movies != null ? movies : Collections.emptyList();
+            renderMovies();
+            if (movies == null) {
                 binding.cardList.setVisibility(View.GONE);
                 binding.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG)
@@ -118,8 +132,12 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
         });
     }
 
-    private void loadMovies(List<AdapterData> movies) {
-        this.moviesAdapter.submitList(movies);
+    private void renderMovies() {
+        this.moviesAdapter.submitList(latestMovies.stream()
+                .map(movie -> new DiscoverItem(
+                        movie.toAdapterFormat(),
+                        libraryIds.contains(movie.getId())))
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -133,14 +151,11 @@ public class MovieDiscoveryFragment extends DiscoveryBaseFragment {
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (super.selectedContextId != null) {
-            this.movieViewModel.getDatabaseMovies().observe(getViewLifecycleOwner(), movies -> {
-                boolean isPresent = movies.stream().map(MovieDatabase::getId).anyMatch(id -> id.equals(super.selectedContextId));
-                if (isPresent) {
-                    menu.removeItem(R.id.context_menu_add);
-                } else {
-                    menu.removeItem(R.id.context_menu_delete);
-                }
-            });
+            if (libraryIds.contains(super.selectedContextId)) {
+                menu.removeItem(R.id.context_menu_add);
+            } else {
+                menu.removeItem(R.id.context_menu_delete);
+            }
         }
     }
 

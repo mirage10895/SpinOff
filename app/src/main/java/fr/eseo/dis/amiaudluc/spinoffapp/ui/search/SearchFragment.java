@@ -27,10 +27,14 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchUiState;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 /**
  * A fragment representing a search result list.
+ * <p>
+ * Renders the medias carried by {@link SearchUiState} in three horizontal rows. While a new query
+ * is loading, the previous medias are kept so the container can display them dimmed.
  */
 public class SearchFragment extends Fragment implements ItemInterface {
     private FragmentSearchMainBinding binding;
@@ -38,6 +42,8 @@ public class SearchFragment extends Fragment implements ItemInterface {
     private MediaAdapter moviesAdapter;
     private MediaAdapter seriesAdapter;
     private ArtistsAdapter artistsAdapter;
+    /** Last list handed to the adapters, used to skip a re-render of unchanged results. */
+    private List<Media> renderedMedias;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -82,11 +88,25 @@ public class SearchFragment extends Fragment implements ItemInterface {
     }
 
     private void observeViewModel() {
-        searchViewModel.getMedias().observe(getViewLifecycleOwner(), this::updateMedias);
+        searchViewModel.getUiState().observe(getViewLifecycleOwner(), this::render);
+    }
+
+    private void render(SearchUiState state) {
+        if (binding == null) {
+            return;
+        }
+        if (state instanceof SearchUiState.Loading loading) {
+            updateMedias(loading.previousResults());
+        } else if (state instanceof SearchUiState.Success success) {
+            updateMedias(success.medias());
+        } else {
+            clearMedias();
+        }
     }
 
     private void updateMedias(List<Media> medias) {
-        if (medias == null || binding == null) return;
+        if (medias == null || binding == null || medias == renderedMedias) return;
+        renderedMedias = medias;
 
         List<Movie> movies = new ArrayList<>();
         List<Serie> series = new ArrayList<>();
@@ -115,10 +135,22 @@ public class SearchFragment extends Fragment implements ItemInterface {
         artistsAdapter.setArtist(artists);
     }
 
+    private void clearMedias() {
+        if (binding == null) return;
+        renderedMedias = null;
+        binding.moviesLayer.setVisibility(View.GONE);
+        binding.seriesLayer.setVisibility(View.GONE);
+        binding.artistsLayer.setVisibility(View.GONE);
+        moviesAdapter.submitList(new ArrayList<>());
+        seriesAdapter.submitList(new ArrayList<>());
+        artistsAdapter.setArtist(new ArrayList<>());
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        renderedMedias = null;
     }
 
     @Override

@@ -9,7 +9,10 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -17,11 +20,12 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Serie;
+import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.DiscoveryBaseFragment;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.action.DeleteSerieActionListener;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.DiscoverMediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.AdapterData;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.adapter.DiscoverItem;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.DiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.discovery.SerieDiscoveryViewModel;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.serie.SerieViewModel;
@@ -34,6 +38,8 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
     private SerieViewModel serieViewModel;
     private SerieDiscoveryViewModel serieDiscoveryViewModel;
     protected DiscoverMediaAdapter seriesAdapter;
+    private final Set<Integer> libraryIds = new HashSet<>();
+    private List<Serie> latestSeries = new ArrayList<>();
 
     public static SerieDiscoveryFragment newInstance() {
         return new SerieDiscoveryFragment();
@@ -62,6 +68,19 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
         this.discoveryViewModel.getFilter(FragmentType.SERIE).observe(getViewLifecycleOwner(), type -> resetScroll());
 
         this.observeSeries();
+        this.observeLibrary();
+    }
+
+    private void observeLibrary() {
+        this.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), series -> {
+            libraryIds.clear();
+            if (series != null) {
+                libraryIds.addAll(series.stream()
+                        .map(SerieDatabase::getId)
+                        .collect(Collectors.toSet()));
+            }
+            renderSeries();
+        });
     }
 
     @Override
@@ -101,11 +120,9 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
             binding.progressBar.setVisibility(View.GONE);
             binding.cardList.setVisibility(View.VISIBLE);
             binding.noMediaDisplay.getRoot().setVisibility(View.GONE);
-            if (series != null) {
-                loadSeries(series.stream()
-                        .map(Serie::toAdapterFormat)
-                        .collect(Collectors.toList()));
-            } else {
+            latestSeries = series != null ? series : Collections.emptyList();
+            renderSeries();
+            if (series == null) {
                 binding.cardList.setVisibility(View.GONE);
                 binding.noMediaDisplay.getRoot().setVisibility(View.VISIBLE);
                 Snackbar.make(binding.getRoot(), R.string.no_results, Snackbar.LENGTH_LONG)
@@ -114,8 +131,12 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
         });
     }
 
-    private void loadSeries(List<AdapterData> serieDatabaseList) {
-        this.seriesAdapter.submitList(serieDatabaseList);
+    private void renderSeries() {
+        this.seriesAdapter.submitList(latestSeries.stream()
+                .map(serie -> new DiscoverItem(
+                        serie.toAdapterFormat(),
+                        libraryIds.contains(serie.getId())))
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -129,14 +150,11 @@ public class SerieDiscoveryFragment extends DiscoveryBaseFragment {
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (super.selectedContextId != null) {
-            this.serieViewModel.getDatabaseSeries().observe(getViewLifecycleOwner(), series -> {
-                boolean isPresent = series.stream().anyMatch(i -> i.getId().equals(super.selectedContextId));
-                if (isPresent) {
-                    menu.removeItem(R.id.context_menu_add);
-                } else {
-                    menu.removeItem(R.id.context_menu_delete);
-                }
-            });
+            if (libraryIds.contains(super.selectedContextId)) {
+                menu.removeItem(R.id.context_menu_add);
+            } else {
+                menu.removeItem(R.id.context_menu_delete);
+            }
         }
     }
 

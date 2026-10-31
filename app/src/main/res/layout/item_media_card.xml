@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MediaPosterCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:rippleColor="?attr/colorControlHighlight">
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,7 +13,7 @@
         <ImageView
             android:id="@+id/image_poster"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="@dimen/discovery_poster_height"
             android:contentDescription="@android:string/untitled"
             android:scaleType="centerCrop" />
 
@@ -26,13 +23,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@color/color_primary_semi_opaq"
-            android:padding="4dp"
             android:gravity="center"
+            android:padding="4dp"
             android:textColor="@color/white"
             android:textSize="12sp"
             android:visibility="gone"
             tools:text="Information banner"
             tools:visibility="visible" />
 
+        <ImageView
+            android:id="@+id/library_badge"
+            android:layout_width="@dimen/discovery_badge_size"
+            android:layout_height="@dimen/discovery_badge_size"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/discovery_badge_margin"
+            android:contentDescription="@string/media_in_library"
+            android:src="@drawable/ic_badge_library"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
     </FrameLayout>
+
 </com.google.android.material.card.MaterialCardView>
