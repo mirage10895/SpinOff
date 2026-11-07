@@ -71,7 +71,7 @@ public class WatchProviderAdapter extends ListAdapter<WatchProviderAdapterData, 
                     .load(link)
                     .fit()
                     .centerInside()
-                    .error(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.ic_media_placeholder)
                     .into(binding.watchProviderLogo);
 
             if (item.externalUrl() != null) {

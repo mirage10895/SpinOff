@@ -165,13 +165,13 @@ public class EpisodesAdapter extends ListAdapter<EpisodeItem, EpisodesAdapter.Ep
         }
 
         private void bindStill(Context context, Episode episode) {
-            binding.stillIc.setImageResource(R.drawable.ic_launcher_foreground);
+            binding.stillIc.setImageResource(R.drawable.ic_media_placeholder);
             if (episode.getStillPath() != null) {
                 Picasso.get()
                         .load(context.getString(R.string.base_url_poster_300) + episode.getStillPath())
                         .fit()
                         .centerCrop()
-                        .error(R.drawable.ic_launcher_foreground)
+                        .error(R.drawable.ic_media_placeholder)
                         .into(binding.stillIc);
             }
         }

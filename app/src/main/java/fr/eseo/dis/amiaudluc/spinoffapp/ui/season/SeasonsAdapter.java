@@ -186,13 +186,13 @@ public class SeasonsAdapter extends ListAdapter<SeasonItem, SeasonsAdapter.Seaso
         }
 
         private void bindPoster(Context context, Season season) {
-            binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
+            binding.posterIc.setImageResource(R.drawable.ic_media_placeholder);
             if (season.getPosterPath() != null) {
                 Picasso.get()
                         .load(context.getString(R.string.base_url_poster_500) + season.getPosterPath())
                         .fit()
                         .centerCrop()
-                        .error(R.drawable.ic_launcher_foreground)
+                        .error(R.drawable.ic_media_placeholder)
                         .into(binding.posterIc);
             }
         }

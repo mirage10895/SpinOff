@@ -79,13 +79,13 @@ public class DiscoverMediaAdapter extends ListAdapter<DiscoverItem, DiscoverMedi
         }
 
         public void bind(AdapterData media, String baseImageUrl, boolean inLibrary) {
-            binding.imagePoster.setImageResource(R.drawable.ic_launcher_foreground);
+            binding.imagePoster.setImageResource(R.drawable.ic_media_placeholder);
             if (media.posterPath() != null) {
                 String link = baseImageUrl + media.posterPath();
                 Picasso.get()
                         .load(link)
                         .fit()
-                        .error(R.drawable.ic_launcher_foreground)
+                        .error(R.drawable.ic_media_placeholder)
                         .into(binding.imagePoster);
             }
             // binding.bannerInfo is used as an optional light information banner

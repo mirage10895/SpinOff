@@ -13,7 +13,7 @@ The interface follows a dark, **Material Design** "Bento" style: rounded cards, 
 ## 1. Theme (`styles.xml`)
 
 - Base theme: `AppTheme` extends `Theme.MaterialComponents.DayNight.NoActionBar`. It defines `colorPrimary`, `colorSecondary`, `colorAccent` and transparent status/navigation bars.
-- Splash screen: `Theme.App.Starting` extends `Theme.SplashScreen` and must set `postSplashScreenTheme` to `AppTheme`.
+- Splash screen: `Theme.App.Starting` extends `Theme.SplashScreen`, uses the icon **foreground** (`@drawable/ic_launcher_foreground`) as its animated icon, and must set `postSplashScreenTheme` to `AppTheme`.
 - Modal screens (detail activities opened from the bottom): use `AppTheme.NoActionBar.Modal` or `AppTheme.Modal`, which apply the `Animation.Activity.BottomUp` window animation (slide in/out from the bottom).
 - Do not create a new base theme: extend `AppTheme` (or an existing derived style).
 
@@ -88,3 +88,38 @@ Reuse these styles instead of redefining them:
 - All user-visible text comes from `strings.xml`; never hardcode text in a layout.
 - Provide a `contentDescription` on meaningful icons and images; use `tools:ignore="ContentDescription"` only for purely decorative elements.
 - Ensure touch targets are at least **48dp** (the `Bento*` styles already enforce this).
+
+## 9. Logo, launcher icon and media placeholders
+
+### Launcher icon
+
+- The app ships an **adaptive icon only** (`minSdk 26`): `res/mipmap-anydpi/ic_launcher.xml` and `ic_launcher_round.xml`. **Never add legacy `mipmap-*dpi` PNGs** — they would never be loaded.
+- The adaptive icon is composed of:
+  - background: `@color/ic_launcher_background` (`#233142`, dark navy);
+  - foreground: `@drawable/ic_launcher_foreground` (vector "SPIN-OFF" ticket + popcorn);
+  - monochrome: `@drawable/ic_launcher_monochrome` (silhouette used by Android 13+ themed icons).
+- `ic_launcher_monochrome.xml` is derived from `ic_launcher_foreground.xml`: update both together when the artwork changes.
+- `AndroidManifest.xml` references `@mipmap/ic_launcher` and `@mipmap/ic_launcher_round`.
+
+### Splash screen
+
+- `Theme.App.Starting` (parent `Theme.SplashScreen`) sets:
+  - `windowSplashScreenAnimatedIcon` to `@drawable/ic_launcher_foreground` — **foreground only**, never the full adaptive icon, because the system applies its own mask and background;
+  - `windowSplashScreenBackground` to `?android:attr/windowBackground`;
+  - `postSplashScreenTheme` to `@style/AppTheme`.
+
+### In-app illustration
+
+- `@drawable/logo_no_back` (WebP, `drawable-nodpi`) is the only in-app version of the logo. It is used **solely** as the search screen's empty-state illustration (`layout/fragment_search_container.xml`), shared by the idle, "no results" and error states — only the caption text changes.
+- It is decorative: keep a `contentDescription` consistent with the surrounding context and never use it as a fallback for a missing content image.
+
+### Media placeholders
+
+- `@drawable/ic_media_placeholder` is the neutral placeholder for failed or missing remote posters, stills and watch-provider logos (Picasso `.error()` and the pre-bind default).
+- `@drawable/ic_unknown` remains the avatar placeholder for artists.
+- **Never use the launcher icon** (`ic_launcher_foreground` / `ic_launcher`) as a content placeholder.
+
+### Adding or changing an asset
+
+- Prefer a vector drawable. For bitmaps, ship them in `drawable-nodpi` as WebP unless density-specific scaling is intended.
+- Update this section whenever the icon, the logo or the placeholder policy changes.
