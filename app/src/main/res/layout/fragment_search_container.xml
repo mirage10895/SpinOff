@@ -16,40 +16,63 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/search_bar_container"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        style="@style/BentoCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
         android:layout_marginVertical="24dp"
-        app:boxCornerRadiusBottomEnd="24dp"
-        app:boxCornerRadiusBottomStart="24dp"
-        app:hintTextColor="?android:attr/textColorPrimary"
-        app:hintEnabled="false"
-        app:cursorColor="?android:attr/textColorPrimary"
-        app:boxCornerRadiusTopEnd="24dp"
-        app:boxCornerRadiusTopStart="24dp"
-        app:boxStrokeWidth="2dp"
-        app:boxStrokeColor="@color/color_primary_semi_opaq"
-        app:boxBackgroundColor="?android:attr/windowBackground"
-        app:endIconMode="clear_text"
-        app:endIconTint="?android:attr/textColorPrimary"
-        app:endIconTintMode="src_atop"
         app:layout_constraintTop_toBottomOf="@id/text_welcome">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/query"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:hint="@string/txt_search"
-            android:inputType="text"
-            android:lines="1"
-            android:maxLines="1"
-            android:paddingVertical="16dp"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/search_bar_min_height"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/search_bar_horizontal_padding"
+            android:paddingEnd="@dimen/search_bar_end_padding">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="@dimen/search_bar_icon_size"
+                android:layout_height="@dimen/search_bar_icon_size"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_search"
+                app:tint="@color/colorPrimary" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/query"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/search_bar_icon_margin"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/txt_search"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingVertical="@dimen/search_bar_vertical_padding"
+                android:textColor="@color/white"
+                android:textColorHint="@color/color_text_secondary"
+                android:textSize="16sp"
+                android:theme="@style/ThemeOverlay.SpinOff.SearchField" />
+
+            <ImageButton
+                android:id="@+id/clear_query"
+                android:layout_width="@dimen/search_bar_clear_touch_size"
+                android:layout_height="@dimen/search_bar_clear_touch_size"
+                android:background="@drawable/bg_search_clear"
+                android:contentDescription="@string/clear_search"
+                android:padding="@dimen/search_bar_clear_icon_padding"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_close"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <RelativeLayout
         android:id="@+id/no_media_display"
@@ -83,21 +106,6 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-        android:layout_marginVertical="@dimen/activity_vertical_margin"
-        app:layout_constraintTop_toBottomOf="@id/search_bar_container">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/results_container"
         android:layout_width="match_parent"
@@ -115,5 +123,22 @@
             android:layout_height="wrap_content" />
 
     </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+        android:layout_marginVertical="@dimen/activity_vertical_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_bar_container">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/colorPrimary"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

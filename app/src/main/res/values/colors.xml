@@ -10,4 +10,5 @@
     <color name="color_scrim">#B3000000</color>
     <color name="color_card_outline">#22FFFFFF</color>
     <color name="color_primary_ripple">#334F9DA6</color>
+    <color name="search_clear_background">#3A3A3A</color>
 </resources>

@@ -30,6 +30,7 @@ The interface follows a dark, **Material Design** "Bento" style: rounded cards, 
 | `color_text_secondary` | `#99E5E2E1` | Secondary text, descriptions |
 | `color_card_outline` | `#22FFFFFF` | Card outlines, off-state switch tracks |
 | `color_primary_ripple` | `#334F9DA6` | Ripples on the dark bottom sheets |
+| `search_clear_background` | `#3A3A3A` | Round background of the search field's clear button |
 
 - **Never hardcode a hex color** in a layout or in code. Always reference a color resource. If a new color is needed, add it to `colors.xml` — and do not create near-duplicate shades for the same semantic intent.
 - State lists (chip text/background, bottom navigation tint) live in `res/color/` (e.g. `chip_text_color.xml`, `bottom_nav_color.xml`).
@@ -50,6 +51,7 @@ The interface follows a dark, **Material Design** "Bento" style: rounded cards, 
 Reuse these styles instead of redefining them:
 
 - `BentoCard` (and `BentoCard.Outline`, `BentoCard.Outline.Primary`): rounded (24dp) flat cards with an optional outline.
+- `MediaPosterCard`: poster tile of the discovery grids (12dp corners, accent outline toggled when the title is in the library).
 - `BentoChip` (parent `Widget.MaterialComponents.Chip.Filter`): filter/selection chip.
 - `BentoIconButton`: 48dp square outlined icon button.
 - `BentoLabel` / `BentoValue` (`BentoValue.Large`): uppercase label and large value used in stat cards.
@@ -77,6 +79,8 @@ Reuse these styles instead of redefining them:
 - Filters and settings open in a **modal bottom sheet** (`BentoBottomSheetDialog`) rather than a full screen.
 - A settings sheet is a **sectioned list**: a `BentoLabel` section title, then full-width rows separated by a `@dimen/divider_thickness` divider. A **preference row** is clickable as a whole (title 16sp white + description 13sp `color_text_secondary`, control at the end, e.g. a `SwitchMaterial` tinted with `@color/switch_thumb_color` / `@color/switch_track_color`); an **action row** adds a leading icon, an optional secondary hint (`JSON`) and a trailing chevron. The touch target is the row, not only the control.
 - Lists use `RecyclerView` with the shared spacing decoration (`GridSpacingItemDecoration`) and the project adapters.
+- The search field is a `BentoCard` pill (no box stroke): a leading lens tinted `colorPrimary`, a borderless `AppCompatEditText` whose text is always `@color/white` (the card stays dark in light mode, so `textColorPrimary` would be unreadable), and a trailing clear button drawn on a `search_clear_background` circle. The clear button keeps a **48dp touch target** (its visible circle is inset inside it) and only its visibility is toggled, so the text does not reflow while typing.
+- Discovery poster grids (`DiscoverMediaAdapter`) flag titles already stored in the local library with a bookmark badge at the top-end corner and a `@color/colorPrimary` outline (`@dimen/discovery_in_library_stroke_width`). The badge carries a `contentDescription`; the outline is never the only signal. Reuse this pattern for any poster grid that mixes remote and local state.
 - Respect the `@dimen/*` margins on every screen; never let content touch the screen edges.
 
 ## 8. Accessibility & text

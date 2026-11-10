@@ -40,7 +40,7 @@ All metadata comes from the **TMDB** API (titles, posters, IMDb ratings, genres,
 
 ## ✨ Features
 
-- **Discovery**: movie and TV show lists (Popular, Top Rated, Now Playing / Currently Airing).
+- **Discovery**: movie and TV show lists (Popular, Top Rated, Now Playing / Currently Airing), with the titles already in your library flagged on their poster.
 - **Advanced filters**: genre, year, origin country, runtime (runtime range chips tailored to movies vs. series).
 - **Search**: search for movies, TV shows and people (actors, directors).
 - **Detailed pages**:

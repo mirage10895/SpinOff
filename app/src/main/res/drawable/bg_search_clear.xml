@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Round background of the search field's clear button. The inset keeps a 48dp touch target
+     while the visible circle stays smaller than the button. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/color_primary_ripple">
+
+    <item
+        android:bottom="@dimen/search_bar_clear_inset"
+        android:left="@dimen/search_bar_clear_inset"
+        android:right="@dimen/search_bar_clear_inset"
+        android:top="@dimen/search_bar_clear_inset">
+
+        <shape android:shape="oval">
+            <solid android:color="@color/search_clear_background" />
+        </shape>
+    </item>
+</ripple>

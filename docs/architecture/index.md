@@ -37,6 +37,26 @@ ViewModel  ──▶  Repository  ──▶  Remote API (Retrofit → TMDB)
 - **Write:** the View triggers an action on the ViewModel → Repository → Room DAO. Writes run off the main thread.
 - **Background:** `WorkManager` workers call repositories through their **synchronous** methods.
 
+## Search screen
+
+The search screen (`SearchContainerFragment` + `SearchFragment`) is driven by `SearchViewModel`,
+which owns the whole state machine and exposes a single `LiveData<SearchUiState>` (`Idle`,
+`Loading`, `Success`, `Error`):
+
+- **Debounce:** every keystroke updates the query immediately, but the TMDB call is delayed by
+  `DEBOUNCE_DELAY_MS` (500 ms) after the last character; each new character restarts the timer.
+- **Immediate feedback:** the state switches to `Loading` as soon as a character is typed, so the
+  progress bar covers the debounce *and* the network call. The last results are carried by
+  `Loading.previousResults` and displayed dimmed instead of being cleared, which also survives a
+  configuration change.
+- **Stale responses:** every query change bumps a request generation and detaches the in-flight
+  `LiveData` source, so a slow response for an older query can never overwrite the results of the
+  query being typed.
+- **Restoration:** the ViewModel keeps the pending query, so a configuration change neither
+  restarts the debounce nor refetches. After a process death the field restores its own text,
+  which goes through the same `TextWatcher` and replays the search; an identical query is ignored.
+- **Enter key:** it only dismisses the keyboard, since the debounce already handles the search.
+
 ## Data storage
 
 - **Room** is the source of truth for the user's library (movies, series, seasons, episodes, watched state).

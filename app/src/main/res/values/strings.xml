@@ -55,6 +55,7 @@
     <string name="release_date">Release date</string>
     <string name="search">Search</string>
     <string name="txt_search">Type your search here …</string>
+    <string name="clear_search">Clear the search field</string>
     <string name="search_title">Search</string>
     <string name="tv_show">The TV Show</string>
     <string name="tv_season">The TV Season</string>
@@ -168,6 +169,7 @@
     <string name="media_tile_rating">★ %1$s</string>
     <string name="media_tile_in_progress">In progress</string>
     <string name="media_tile_not_watched">Not watched</string>
+    <string name="media_in_library">In my library</string>
 
     <!-- Library list screen -->
     <string name="library_list_index_label">Index %1$s</string>
