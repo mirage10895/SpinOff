@@ -108,9 +108,10 @@
     <string name="stats_total_runtime_label">Total watch time</string>
     <string name="stats_hours_unit">HOURS</string>
     <string name="stats_days_equivalent">Equivalent to %s of non-stop cinema.</string>
-    <string name="stats_seasons_watched">Seasons watched</string>
-    <string name="stats_episodes_watched">Episodes watched</string>
-    <string name="stats_series_watched">Series watched</string>
+    <string name="stats_days_equivalent_series">Equivalent to %s of non-stop TV.</string>
+    <string name="stats_seasons_watched">Seasons</string>
+    <string name="stats_episodes_watched">Episodes</string>
+    <string name="stats_series_watched">Series</string>
     <string name="stats_genres_preferred">Preferred Genres</string>
     <string name="stats_top_genre">Top Genre</string>
     <string name="stats_top_genre_combination">Top Genre Combination</string>
