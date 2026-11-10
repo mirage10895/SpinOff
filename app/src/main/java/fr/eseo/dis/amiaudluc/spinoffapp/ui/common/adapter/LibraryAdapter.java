@@ -121,13 +121,13 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
 
         void bind(LibraryItem item) {
             binding.title.setText(item.title());
-            binding.posterIc.setImageResource(R.drawable.ic_media_placeholder);
+            binding.posterIc.setImageResource(R.drawable.ic_launcher_foreground);
             if (item.posterPath() != null) {
                 Picasso.get()
                         .load(posterBaseUrl + item.posterPath())
                         .fit()
                         .centerCrop()
-                        .error(R.drawable.ic_media_placeholder)
+                        .error(R.drawable.ic_launcher_foreground)
                         .into(binding.posterIc);
             }
 

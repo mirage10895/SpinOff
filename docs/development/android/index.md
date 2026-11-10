@@ -61,7 +61,7 @@ alwaysApply: false
 - Colors, dimensions and strings live in `res/values` (`colors.xml`, `dimens.xml`, `strings.xml`) and must be referenced by name — never hardcode `#RRGGBB`, `dp` values or text in layouts.
 - Reuse the shared `Bento*` styles and component styles instead of redefining them (see the [UX charter](../../ux/charte-ux.md)).
 - Load images with **Picasso**; never implement network image loading manually.
-- The launcher icon is **adaptive-only** (`minSdk 26`): edit `mipmap-anydpi/ic_launcher(.xml/_round.xml)` together with `ic_launcher_foreground` and `ic_launcher_monochrome`; never add legacy `mipmap-*dpi` PNGs. Use `@drawable/ic_media_placeholder` for failed images, never the launcher icon (see the [UX charter](../../ux/charte-ux.md#9-logo-launcher-icon-and-media-placeholders)).
+- The launcher icon is **adaptive-only** (`minSdk 26`): edit `mipmap-anydpi/ic_launcher(.xml/_round.xml)` together with `ic_launcher_foreground` and `ic_launcher_monochrome`; never add legacy `mipmap-*dpi` PNGs. Use `@drawable/ic_launcher_foreground` for failed images, never the launcher icon (see the [UX charter](../../ux/charte-ux.md#9-logo-launcher-icon-and-media-placeholders)).
 
 ## 8. Logging
 
