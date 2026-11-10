@@ -27,6 +27,9 @@ The interface follows a dark, **Material Design** "Bento" style: rounded cards, 
 | `color_primary_semi_opaq` | `#4F9DA6E6` | Card/chip outlines |
 | `card_background_color` | `#222222` | Cards, chips, bottom sheets |
 | `white` | `#FFF` | Primary text/icons |
+| `color_text_secondary` | `#99E5E2E1` | Secondary text, descriptions |
+| `color_card_outline` | `#22FFFFFF` | Card outlines, off-state switch tracks |
+| `color_primary_ripple` | `#334F9DA6` | Ripples on the dark bottom sheets |
 
 - **Never hardcode a hex color** in a layout or in code. Always reference a color resource. If a new color is needed, add it to `colors.xml` — and do not create near-duplicate shades for the same semantic intent.
 - State lists (chip text/background, bottom navigation tint) live in `res/color/` (e.g. `chip_text_color.xml`, `bottom_nav_color.xml`).
@@ -72,6 +75,7 @@ Reuse these styles instead of redefining them:
 - Screen titles use `TextAppearance.MaterialComponents.Headline4` in bold, with `@dimen/activity_horizontal_margin` horizontal padding and `@dimen/activity_vertical_margin` top padding.
 - Content is laid out inside a `ConstraintLayout` or a vertical `LinearLayout` with `?android:attr/windowBackground` as background.
 - Filters and settings open in a **modal bottom sheet** (`BentoBottomSheetDialog`) rather than a full screen.
+- A settings sheet is a **sectioned list**: a `BentoLabel` section title, then full-width rows separated by a `@dimen/divider_thickness` divider. A **preference row** is clickable as a whole (title 16sp white + description 13sp `color_text_secondary`, control at the end, e.g. a `SwitchMaterial` tinted with `@color/switch_thumb_color` / `@color/switch_track_color`); an **action row** adds a leading icon, an optional secondary hint (`JSON`) and a trailing chevron. The touch target is the row, not only the control.
 - Lists use `RecyclerView` with the shared spacing decoration (`GridSpacingItemDecoration`) and the project adapters.
 - Respect the `@dimen/*` margins on every screen; never let content touch the screen edges.
 

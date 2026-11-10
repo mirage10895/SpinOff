@@ -55,7 +55,8 @@ All metadata comes from the **TMDB** API (titles, posters, IMDb ratings, genres,
   - Season-by-season and episode-by-episode tracking.
 - **Personal statistics** (movies and TV shows): total watch time, number of movies / seasons / episodes watched, preferred genres, distribution by years and decades, average/median ratings, top actors and directors, original languages, Hollywood vs. international…
 - **Backup**: export / import your library as **JSON**.
-- **Background sync**: periodic series updates via **WorkManager**.
+- **Background sync**: periodic series updates via **WorkManager** — a lightweight daily release check plus a full metadata refresh every 10 days.
+- **Release notifications**: get notified when a new episode or season of a series in your library is released (toggle in the library settings).
 - **Theme**: Material Design UI with an animated splash screen.
 
 ## 🏗️ Architecture
@@ -79,8 +80,10 @@ ViewModel  ──▶  Repository  ──▶  Remote API (Retrofit → TMDB)
 A few complementary patterns structure the code:
 
 - **Strategy** for discovery (`DiscoveryStrategy` → `MovieDiscoveryStrategy` / `SerieDiscoveryStrategy`).
-- Room **DAO** for local database access (`MovieDAO`, `SerieDAO`, `SeasonDAO`, `EpisodeDAO`).
+- Room **DAO** for local database access (`MovieDAO`, `SerieDAO`, `SeasonDAO`, `EpisodeDAO`, `SerieNotificationDAO`).
 - **Worker** (WorkManager) for background tasks (`UpdateSeriesWorker`, `DatabaseMigrationWorker`).
+- **Release tracking**: `SerieReleaseDetector` (pure, unit tested) compares each serie with its stored snapshot to detect new episodes and seasons; `NotificationUtils` publishes them.
+- **Synchronisation split**: `SerieSynchroniser` runs a lightweight daily release check (`GET /tv/{id}`, ~7 Kb) and keeps the heavy metadata refresh (credits, videos, runtime, ~37 Kb) on a 10-day throttle.
 
 ## 🧰 Tech Stack
 
@@ -95,6 +98,7 @@ A few complementary patterns structure the code:
 | Networking | **Retrofit 3** + **converter-gson** + **OkHttp Logging Interceptor** |
 | Local database | **Room 2.8** (runtime + annotation processor) |
 | Background tasks | **WorkManager** |
+| Notifications | **AndroidX Core** (`NotificationCompat` / `NotificationChannel`) — no external library |
 | Image loading | **Picasso** |
 | Video | **Android YouTube Player** (Pierfrancesco Soffritti) |
 | Productivity | **Lombok** |

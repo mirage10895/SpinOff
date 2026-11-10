@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Library settings: a sectioned list (preference first, backup actions second) built with the
+     same grammar as the filter sheet: BentoLabel section titles, 1dp dividers, full-width rows. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -24,28 +27,160 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_primary_semi_opaq"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="@dimen/divider_thickness"
+        android:background="@color/color_primary_semi_opaq" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_export"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+    <!-- Notifications -->
+
+    <TextView
+        style="@style/BentoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/text_margin"
+        android:text="@string/setting_section_notifications" />
+
+    <LinearLayout
+        android:id="@+id/row_release_notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/export_library"
-        android:textAlignment="viewStart"
-        android:textColor="@color/white"
-        android:paddingVertical="12dp" />
+        android:minHeight="@dimen/setting_row_min_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/text_margin">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_import"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_release_notifications"
+                android:textColor="@color/white"
+                android:textSize="@dimen/setting_row_title_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/setting_row_gap"
+                android:text="@string/setting_release_notifications_description"
+                android:textColor="@color/color_text_secondary"
+                android:textSize="@dimen/setting_row_description_size" />
+
+        </LinearLayout>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_release_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/setting_row_icon_margin"
+            app:thumbTint="@color/switch_thumb_color"
+            app:trackTint="@color/switch_track_color" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_thickness"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/color_primary_semi_opaq" />
+
+    <!-- Library -->
+
+    <TextView
+        style="@style/BentoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/text_margin"
+        android:text="@string/setting_section_library" />
+
+    <LinearLayout
+        android:id="@+id/row_export"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/import_library"
-        android:textAlignment="viewStart"
-        android:textColor="@color/white"
-        android:paddingVertical="12dp" />
+        android:minHeight="@dimen/setting_row_min_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/text_margin">
+
+        <ImageView
+            android:layout_width="@dimen/setting_row_icon_size"
+            android:layout_height="@dimen/setting_row_icon_size"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_export" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/setting_row_icon_margin"
+            android:layout_weight="1"
+            android:text="@string/export_library"
+            android:textColor="@color/white"
+            android:textSize="@dimen/setting_row_title_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_backup_format"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="@dimen/setting_row_description_size" />
+
+        <ImageView
+            android:layout_width="@dimen/setting_row_icon_size"
+            android:layout_height="@dimen/setting_row_icon_size"
+            android:layout_marginStart="@dimen/setting_row_icon_margin"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/color_text_secondary" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row_import"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/setting_row_min_height"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingVertical="@dimen/text_margin">
+
+        <ImageView
+            android:layout_width="@dimen/setting_row_icon_size"
+            android:layout_height="@dimen/setting_row_icon_size"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_import" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/setting_row_icon_margin"
+            android:layout_weight="1"
+            android:text="@string/import_library"
+            android:textColor="@color/white"
+            android:textSize="@dimen/setting_row_title_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_backup_format"
+            android:textColor="@color/color_text_secondary"
+            android:textSize="@dimen/setting_row_description_size" />
+
+        <ImageView
+            android:layout_width="@dimen/setting_row_icon_size"
+            android:layout_height="@dimen/setting_row_icon_size"
+            android:layout_marginStart="@dimen/setting_row_icon_margin"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/color_text_secondary" />
+
+    </LinearLayout>
 
 </LinearLayout>

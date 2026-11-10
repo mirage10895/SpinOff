@@ -131,7 +131,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         PeriodicWorkRequest updateSeriesRequest =
-                new PeriodicWorkRequest.Builder(UpdateSeriesWorker.class, 1, TimeUnit.DAYS)
+                new PeriodicWorkRequest.Builder(
+                        UpdateSeriesWorker.class,
+                        UpdateSeriesWorker.WORK_INTERVAL
+                )
                         .setConstraints(constraints)
                         .build();
 
