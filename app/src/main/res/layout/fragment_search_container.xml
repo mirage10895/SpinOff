@@ -54,7 +54,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:paddingVertical="@dimen/search_bar_vertical_padding"
-                android:textColor="?android:attr/textColorPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/color_text_secondary"
                 android:textSize="16sp"
                 android:theme="@style/ThemeOverlay.SpinOff.SearchField" />
