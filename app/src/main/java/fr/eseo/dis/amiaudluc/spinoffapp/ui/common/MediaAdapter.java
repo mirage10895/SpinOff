@@ -70,7 +70,10 @@ public class MediaAdapter extends ListAdapter<AdapterData, MediaAdapter.MediaVie
             poster.setImageResource(R.drawable.ic_launcher_foreground);
             if (media.posterPath() != null) {
                 String link = baseImageUrl + media.posterPath();
-                Picasso.get().load(link).fit().error(R.drawable.ic_launcher_foreground)
+                Picasso.get()
+                        .load(link)
+                        .fit()
+                        .error(R.drawable.ic_launcher_foreground)
                         .into(poster);
             }
 

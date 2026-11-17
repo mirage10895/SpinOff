@@ -18,7 +18,9 @@
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Foreground only: the splash screen applies its own mask/background, so using the
+             full adaptive icon would draw the icon background inside the splash icon. -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="windowSplashScreenBackground">?android:attr/windowBackground</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>

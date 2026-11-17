@@ -46,21 +46,18 @@ public class MySeriesFragment extends BaseLibraryFragment {
 
     private void updateUI(SerieStats stats) {
         binding.totalRuntimeValue.setText(String.format(Locale.getDefault(), "%,d", Duration.ofMinutes(stats.getTotalMinutes()).toHours()));
-        binding.daysEquivalent.setText(getString(R.string.stats_days_equivalent, DateUtils.displayDuration(Duration.ofMinutes(stats.getTotalMinutes()))));
+        binding.daysEquivalent.setText(getString(R.string.stats_days_equivalent_series, DateUtils.displayDuration(Duration.ofMinutes(stats.getTotalMinutes()))));
+
+        binding.heroSeasonValue.setText(String.valueOf(stats.getTotalSeasons()));
+        binding.heroSeasonLabel.setText(R.string.stats_seasons_watched);
+        binding.heroEpisodesValue.setText(String.valueOf(stats.getTotalEpisodes()));
+        binding.heroEpisodesLabel.setText(R.string.stats_episodes_watched);
 
         binding.metric1Value.setText(String.valueOf(stats.getTotalSeries()));
         binding.metric1Label.setText(R.string.stats_series_watched);
         binding.metric1Icon.setImageResource(R.drawable.ic_tv);
 
         binding.watchlistValue.setText(String.valueOf(stats.getWatchlistCount()));
-
-        binding.metricSerieCard1Value.setText(String.valueOf(stats.getTotalSeasons()));
-        binding.metricSerieCard1Label.setText(R.string.stats_seasons_watched);
-        binding.metricSerieCard1Icon.setImageResource(R.drawable.ic_library);
-
-        binding.metricSerieCard2Value.setText(String.valueOf(stats.getTotalEpisodes()));
-        binding.metricSerieCard2Label.setText(R.string.stats_episodes_watched);
-        binding.metricSerieCard2Icon.setImageResource(R.drawable.ic_movie);
 
         // Genres
         if (stats.getTopGenres() != null) {
