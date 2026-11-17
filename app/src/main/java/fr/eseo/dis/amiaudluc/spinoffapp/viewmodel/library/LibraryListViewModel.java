@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,9 @@ import lombok.Getter;
  * screen stays independent from the dashboards aggregation. The series tiles need three tables
  * joined together, so the aggregation runs on a dedicated executor and coalesces the
  * invalidations, exactly like the statistics provider does.
+ * <p>
+ * The sort mode is part of the screen state: changing it re-runs the aggregation on the executor,
+ * and it survives a configuration change with the ViewModel.
  */
 public class LibraryListViewModel extends AndroidViewModel {
 
@@ -49,6 +53,8 @@ public class LibraryListViewModel extends AndroidViewModel {
     private final MediatorLiveData<List<LibraryItem>> watchlistMovieItems = new MediatorLiveData<>();
     private final MediatorLiveData<List<LibraryItem>> watchedSerieItems = new MediatorLiveData<>();
     private final MediatorLiveData<List<LibraryItem>> watchlistSerieItems = new MediatorLiveData<>();
+
+    private final MutableLiveData<LibrarySort> sort = new MutableLiveData<>(LibrarySort.ALPHABETICAL);
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final AtomicBoolean recomputeRequested = new AtomicBoolean(false);
@@ -116,6 +122,23 @@ public class LibraryListViewModel extends AndroidViewModel {
         return filter == LibraryFilter.WATCHED ? watchedSeries : watchlistSeries;
     }
 
+    /** The active ordering of the list, alphabetical until the user picks another one. */
+    public LiveData<LibrarySort> getSort() {
+        return sort;
+    }
+
+    /**
+     * Changes the ordering of the list. A no-op when the mode is already active, so checking the
+     * matching chip again does not trigger a pointless recomputation.
+     */
+    public void setSort(LibrarySort sort) {
+        if (sort == null || sort == this.sort.getValue()) {
+            return;
+        }
+        this.sort.setValue(sort);
+        scheduleRecompute();
+    }
+
     public void setWatched(int id, FragmentType type, boolean watched) {
         if (type == FragmentType.MOVIE) {
             this.movieRepository.setMovieWatched(id, watched);
@@ -151,25 +174,32 @@ public class LibraryListViewModel extends AndroidViewModel {
     }
 
     private void postMovieLists() {
+        LibrarySort activeSort = currentSort();
         if (watchedMovieItems.hasActiveObservers()) {
-            watchedMovieItems.postValue(
-                    LibraryBuilder.buildMovies(movieSource, LibraryFilter.WATCHED));
+            watchedMovieItems.postValue(LibraryBuilder.buildMovies(
+                    movieSource, LibraryFilter.WATCHED, activeSort));
         }
         if (watchlistMovieItems.hasActiveObservers()) {
-            watchlistMovieItems.postValue(
-                    LibraryBuilder.buildMovies(movieSource, LibraryFilter.WATCHLIST));
+            watchlistMovieItems.postValue(LibraryBuilder.buildMovies(
+                    movieSource, LibraryFilter.WATCHLIST, activeSort));
         }
     }
 
     private void postSerieLists() {
+        LibrarySort activeSort = currentSort();
         if (watchedSerieItems.hasActiveObservers()) {
             watchedSerieItems.postValue(LibraryBuilder.buildSeries(
-                    serieSource, seasonSource, episodeSource, LibraryFilter.WATCHED));
+                    serieSource, seasonSource, episodeSource, LibraryFilter.WATCHED, activeSort));
         }
         if (watchlistSerieItems.hasActiveObservers()) {
             watchlistSerieItems.postValue(LibraryBuilder.buildSeries(
-                    serieSource, seasonSource, episodeSource, LibraryFilter.WATCHLIST));
+                    serieSource, seasonSource, episodeSource, LibraryFilter.WATCHLIST, activeSort));
         }
+    }
+
+    private LibrarySort currentSort() {
+        LibrarySort activeSort = sort.getValue();
+        return activeSort != null ? activeSort : LibrarySort.ALPHABETICAL;
     }
 
     private boolean hasActiveObservers() {

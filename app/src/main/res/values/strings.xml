@@ -174,13 +174,18 @@
 
     <!-- Library list screen -->
     <string name="library_list_index_label">Index %1$s</string>
+    <string name="library_list_section_unknown">Unknown</string>
     <string name="library_list_overflow">More options</string>
+    <string name="library_sort_alphabetical">A-Z</string>
+    <string name="library_sort_release_year">Release year</string>
+    <string name="library_sort_genre">Genre</string>
+    <string name="library_sort_rating">Rating</string>
     <string name="library_list_empty_watched_title">Nothing watched yet</string>
     <string name="library_list_empty_watched_desc">Titles you mark as watched will appear here.</string>
     <string name="library_list_empty_watchlist_title">Your watchlist is empty</string>
     <string name="library_list_empty_watchlist_desc">Titles you add to your watchlist will appear here.</string>
 
-    <plurals name="library_list_letter_count">
+    <plurals name="library_list_section_count">
         <item quantity="one">%1$d title</item>
         <item quantity="other">%1$d titles</item>
     </plurals>

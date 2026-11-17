@@ -71,6 +71,7 @@ Reuse these styles instead of redefining them:
 - Configure the `ChipGroup` with `app:singleSelection="true"` and `app:selectionRequired="true"`, and hide the checked icon (`app:checkedIconVisible="false"`) for a segmented-control look.
 - Give the group a clear id (`chip_group_type`, `chip_group_discovery_type`) and react to selection with `setOnCheckedStateChangeListener`.
 - Status toggles (e.g. "In watchlist", "Watched") reuse the pattern in `layout_status_chips.xml` with `Widget.MaterialComponents.Chip.Filter` chips.
+- Sort selectors (e.g. **A-Z / Release year / Genre / Rating** on the library list) use the same single-selection `ChipGroup` of `BentoChip`s, placed under the app bar. Wrap it in a `HorizontalScrollView` when the labels do not fit on narrow screens, and keep the selection synchronized from the ViewModel so it survives a configuration change.
 
 ## 7. Layout conventions
 

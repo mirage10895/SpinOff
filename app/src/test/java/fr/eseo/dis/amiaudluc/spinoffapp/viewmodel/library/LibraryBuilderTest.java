@@ -29,7 +29,7 @@ public class LibraryBuilderTest {
     public void buildMovies_watched_keepsOnlyWatchedMovies() {
         List<LibraryItem> items = LibraryBuilder.buildMovies(
                 List.of(movie(1, "Alien", true), movie(2, "Aliens", false)),
-                LibraryFilter.WATCHED);
+                LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL);
 
         assertEquals(1, items.size());
         assertEquals(1, items.get(0).id());
@@ -48,7 +48,7 @@ public class LibraryBuilderTest {
         movie.setDirectors("Francis Ford Coppola,Someone Else");
         movie.setGenres("Drama,War");
 
-        LibraryItem item = LibraryBuilder.buildMovies(List.of(movie), LibraryFilter.WATCHED).get(0);
+        LibraryItem item = LibraryBuilder.buildMovies(List.of(movie), LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(Integer.valueOf(166), item.runtimeMinutes());
         assertEquals(Double.valueOf(8.4), item.voteAverage());
@@ -61,7 +61,7 @@ public class LibraryBuilderTest {
     @Test
     public void buildMovies_handlesMissingOptionalFields() {
         LibraryItem item = LibraryBuilder.buildMovies(
-                List.of(movie(1, "Alien", true)), LibraryFilter.WATCHED).get(0);
+                List.of(movie(1, "Alien", true)), LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertNull(item.releaseYear());
         assertNull(item.creators());
@@ -75,9 +75,23 @@ public class LibraryBuilderTest {
                 movie(1, "Zodiac", true),
                 movie(2, "Les Misérables", true),
                 movie(3, "12 Angry Men", true),
-                movie(4, "Alien", true)), LibraryFilter.WATCHED);
+                movie(4, "Alien", true)), LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL);
 
         assertEquals(List.of("Alien", "Les Misérables", "Zodiac", "12 Angry Men"),
+                items.stream().map(LibraryItem::title).toList());
+    }
+
+    @Test
+    public void buildMovies_appliesTheRequestedSort() {
+        MovieDatabase old = movie(1, "Alien", true);
+        old.setReleaseDate(LocalDate.of(1979, 5, 25));
+        MovieDatabase recent = movie(2, "Arrival", true);
+        recent.setReleaseDate(LocalDate.of(2016, 11, 11));
+
+        List<LibraryItem> items = LibraryBuilder.buildMovies(
+                List.of(old, recent), LibraryFilter.WATCHED, LibrarySort.RELEASE_YEAR);
+
+        assertEquals(List.of("Arrival", "Alien"),
                 items.stream().map(LibraryItem::title).toList());
     }
 
@@ -87,7 +101,7 @@ public class LibraryBuilderTest {
     public void buildMovies_watchlist_keepsOnlyUnwatchedMovies() {
         List<LibraryItem> items = LibraryBuilder.buildMovies(
                 List.of(movie(1, "Alien", true), movie(2, "Aliens", false)),
-                LibraryFilter.WATCHLIST);
+                LibraryFilter.WATCHLIST, LibrarySort.ALPHABETICAL);
 
         assertEquals(1, items.size());
         assertEquals(2, items.get(0).id());
@@ -104,7 +118,7 @@ public class LibraryBuilderTest {
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, true), season(1, 2, 8, true));
 
         LibraryItem item = LibraryBuilder.buildSeries(
-                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED).get(0);
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(18, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
@@ -122,7 +136,7 @@ public class LibraryBuilderTest {
         List<EpisodeDatabase> episodes = List.of(episode(1, 2, 1), episode(1, 2, 2), episode(1, 2, 3));
 
         LibraryItem item = LibraryBuilder.buildSeries(
-                List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
+                List.of(serie), seasons, episodes, LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(13, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
@@ -139,7 +153,7 @@ public class LibraryBuilderTest {
                 season(1, 2, 8, false));
 
         LibraryItem item = LibraryBuilder.buildSeries(
-                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED).get(0);
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(10, item.watchedEpisodes());
         assertEquals(18, item.totalEpisodes());
@@ -151,7 +165,7 @@ public class LibraryBuilderTest {
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, false));
 
         assertTrue(LibraryBuilder.buildSeries(
-                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED).isEmpty());
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).isEmpty());
     }
 
     @Test
@@ -162,7 +176,7 @@ public class LibraryBuilderTest {
                 episode(1, 1, 1), episode(1, 1, 2), episode(1, 1, 3));
 
         LibraryItem item = LibraryBuilder.buildSeries(
-                List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
+                List.of(serie), seasons, episodes, LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(2, item.watchedEpisodes());
         assertEquals(2, item.totalEpisodes());
@@ -175,7 +189,7 @@ public class LibraryBuilderTest {
         List<EpisodeDatabase> episodes = List.of(episode(1, 1, 1), episode(2, 1, 1));
 
         LibraryItem item = LibraryBuilder.buildSeries(
-                List.of(serie), seasons, episodes, LibraryFilter.WATCHED).get(0);
+                List.of(serie), seasons, episodes, LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(1, item.watchedEpisodes());
         assertEquals(10, item.totalEpisodes());
@@ -191,7 +205,7 @@ public class LibraryBuilderTest {
         List<EpisodeDatabase> episodes = List.of(episode(2, 1, 1));
 
         List<LibraryItem> items = LibraryBuilder.buildSeries(
-                List.of(notStarted, started), seasons, episodes, LibraryFilter.WATCHLIST);
+                List.of(notStarted, started), seasons, episodes, LibraryFilter.WATCHLIST, LibrarySort.ALPHABETICAL);
 
         assertEquals(1, items.size());
         assertEquals(1, items.get(0).id());
@@ -203,7 +217,7 @@ public class LibraryBuilderTest {
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, true));
 
         assertTrue(LibraryBuilder.buildSeries(
-                List.of(fullyWatched), seasons, List.of(), LibraryFilter.WATCHLIST).isEmpty());
+                List.of(fullyWatched), seasons, List.of(), LibraryFilter.WATCHLIST, LibrarySort.ALPHABETICAL).isEmpty());
     }
 
     @Test
@@ -213,7 +227,7 @@ public class LibraryBuilderTest {
         List<SeasonDatabase> seasons = List.of(season(1, 1, 10, false));
 
         LibraryItem item = LibraryBuilder.buildSeries(
-                List.of(serie), seasons, List.of(), LibraryFilter.WATCHLIST).get(0);
+                List.of(serie), seasons, List.of(), LibraryFilter.WATCHLIST, LibrarySort.ALPHABETICAL).get(0);
 
         assertEquals(0, item.watchedEpisodes());
         assertEquals(10, item.totalEpisodes());
@@ -226,10 +240,10 @@ public class LibraryBuilderTest {
 
     @Test
     public void buildSeries_toleratesNullSources() {
-        assertTrue(LibraryBuilder.buildSeries(null, null, null, LibraryFilter.WATCHED).isEmpty());
-        assertTrue(LibraryBuilder.buildSeries(null, null, null, LibraryFilter.WATCHLIST).isEmpty());
-        assertTrue(LibraryBuilder.buildMovies(null, LibraryFilter.WATCHED).isEmpty());
-        assertTrue(LibraryBuilder.buildMovies(null, LibraryFilter.WATCHLIST).isEmpty());
+        assertTrue(LibraryBuilder.buildSeries(null, null, null, LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).isEmpty());
+        assertTrue(LibraryBuilder.buildSeries(null, null, null, LibraryFilter.WATCHLIST, LibrarySort.ALPHABETICAL).isEmpty());
+        assertTrue(LibraryBuilder.buildMovies(null, LibraryFilter.WATCHED, LibrarySort.ALPHABETICAL).isEmpty());
+        assertTrue(LibraryBuilder.buildMovies(null, LibraryFilter.WATCHLIST, LibrarySort.ALPHABETICAL).isEmpty());
     }
 
     // --- Fixtures -------------------------------------------------------------------------

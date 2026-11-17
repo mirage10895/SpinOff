@@ -22,19 +22,23 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileTagBinder;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaTileText;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.DateUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryItem;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibrarySort;
 
 /**
- * Renders the library list screen: letter dividers interleaved with media tiles.
+ * Renders the library list screen: section dividers interleaved with media tiles.
  * <p>
  * A tile shows only what the local library stores. There is no watched date, no watch count and
  * no media format in the model, so the tile is built from the title, the poster, the rating, the
  * release year, the first credited creator and the genres. Series that have been started
  * additionally show their global episode progress. Actions live behind the overflow button: the
  * tile itself has no long press menu.
+ * <p>
+ * A divider shows the raw key of its section, formatted for the active {@link LibrarySort}: a
+ * letter, a release year, a genre, or a rating bucket.
  */
 public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHolder> {
 
-    private static final int VIEW_TYPE_LETTER_HEADER = 0;
+    private static final int VIEW_TYPE_SECTION_HEADER = 0;
     private static final int VIEW_TYPE_MEDIA_TILE = 1;
 
     private final Context context;
@@ -50,8 +54,8 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position) instanceof LibraryRow.LetterHeader
-                ? VIEW_TYPE_LETTER_HEADER
+        return getItem(position) instanceof LibraryRow.SectionHeader
+                ? VIEW_TYPE_SECTION_HEADER
                 : VIEW_TYPE_MEDIA_TILE;
     }
 
@@ -59,8 +63,9 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        if (viewType == VIEW_TYPE_LETTER_HEADER) {
-            return new LetterHeaderViewHolder(ItemLetterHeaderBinding.inflate(inflater, parent, false));
+        if (viewType == VIEW_TYPE_SECTION_HEADER) {
+            return new SectionHeaderViewHolder(
+                    ItemLetterHeaderBinding.inflate(inflater, parent, false));
         }
         return new MediaTileViewHolder(
                 ItemLibraryMediaBinding.inflate(inflater, parent, false), listener);
@@ -69,8 +74,8 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         LibraryRow row = getItem(position);
-        if (holder instanceof LetterHeaderViewHolder headerHolder
-                && row instanceof LibraryRow.LetterHeader header) {
+        if (holder instanceof SectionHeaderViewHolder headerHolder
+                && row instanceof LibraryRow.SectionHeader header) {
             headerHolder.bind(header);
         } else if (holder instanceof MediaTileViewHolder tileHolder
                 && row instanceof LibraryRow.MediaTile tile) {
@@ -78,21 +83,32 @@ public class LibraryAdapter extends ListAdapter<LibraryRow, RecyclerView.ViewHol
         }
     }
 
-    private class LetterHeaderViewHolder extends RecyclerView.ViewHolder {
+    private class SectionHeaderViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemLetterHeaderBinding binding;
 
-        LetterHeaderViewHolder(ItemLetterHeaderBinding binding) {
+        SectionHeaderViewHolder(ItemLetterHeaderBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        void bind(LibraryRow.LetterHeader header) {
-            String letter = String.valueOf(header.letter());
-            binding.letter.setText(letter);
+        void bind(LibraryRow.SectionHeader header) {
+            String label = sectionLabel(header);
+            binding.letter.setText(label);
             binding.count.setText(context.getResources()
-                    .getQuantityString(R.plurals.library_list_letter_count, header.count(), header.count()));
-            binding.indexLabel.setText(context.getString(R.string.library_list_index_label, letter));
+                    .getQuantityString(R.plurals.library_list_section_count, header.count(), header.count()));
+            binding.indexLabel.setText(context.getString(R.string.library_list_index_label, label));
+        }
+
+        /** Turns the raw section key into the label of the active sort mode. */
+        private String sectionLabel(LibraryRow.SectionHeader header) {
+            if (header.value() == null) {
+                return context.getString(R.string.library_list_section_unknown);
+            }
+            if (header.sort() == LibrarySort.RATING) {
+                return context.getString(R.string.media_tile_rating, header.value());
+            }
+            return header.value();
         }
     }
 

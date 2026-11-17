@@ -57,6 +57,29 @@ which owns the whole state machine and exposes a single `LiveData<SearchUiState>
   which goes through the same `TextWatcher` and replays the search; an identical query is ignored.
 - **Enter key:** it only dismisses the keyboard, since the debounce already handles the search.
 
+## Library list screen
+
+`LibraryListActivity` shows the watched list or the watchlist of one media type as a single column
+of tiles split into sections. The user can order and section it in four ways:
+
+| Sort | Sections | Order |
+|---|---|---|
+| **A-Z** (default) | first letter, `#` last | alphabetical |
+| **Release year** | release (or first air) year | most recent first, unknown last |
+| **Genre** | first displayed genre | alphabetical, unknown last |
+| **Rating** | whole-point bucket (`★ 9` = 9.0–9.9) | best rated first, unrated last |
+
+- `LibrarySort` owns the ordering and the raw section key. It is pure and unit tested, and it only
+  reads the fields already carried by `LibraryItem`, so **no database change is involved**.
+- `LibraryBuilder` applies the sort off the main thread (`LibraryListViewModel` executor), which
+  also guarantees that every section is a contiguous run.
+- `LibraryRow` turns the ordered tiles into dividers and tiles in a single pass; the adapter only
+  formats the raw section key (letter, year, genre or rating).
+- The active sort lives in `LibraryListViewModel`, so it survives a configuration change.
+- Changing the sort scrolls the list back to the top once the new order is committed: `DiffUtil`
+  would otherwise keep the tile that was visible before the change and rearrange the rest
+  around it.
+
 ## Data storage
 
 - **Room** is the source of truth for the user's library (movies, series, seasons, episodes, watched state).

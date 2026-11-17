@@ -11,7 +11,6 @@ import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.MovieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SeasonDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.database.dao.model.SerieDatabase;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.FragmentType;
-import fr.eseo.dis.amiaudluc.spinoffapp.utils.AlphabetUtils;
 
 /**
  * Turns the local library into the tiles of the library list screen, for one
@@ -25,6 +24,9 @@ import fr.eseo.dis.amiaudluc.spinoffapp.utils.AlphabetUtils;
  * episodes. Watched episodes are read from the season flag when the season is fully watched —
  * the repository deletes the individual episode rows in that case — and from the episode rows
  * otherwise. Specials are left out, matching the rest of the app.
+ * <p>
+ * The tiles are ordered by the requested {@link LibrarySort}, which also guarantees that every
+ * section is a contiguous run so the list screen can group them in a single pass.
  */
 public final class LibraryBuilder {
 
@@ -38,8 +40,10 @@ public final class LibraryBuilder {
      *
      * @param movies all the movies of the library, may be {@code null}
      * @param filter the list to build, watched or watchlist
+     * @param sort   the ordering and sectioning mode, may be {@code null} for alphabetical
      */
-    public static List<LibraryItem> buildMovies(List<MovieDatabase> movies, LibraryFilter filter) {
+    public static List<LibraryItem> buildMovies(
+            List<MovieDatabase> movies, LibraryFilter filter, LibrarySort sort) {
         List<LibraryItem> items = new ArrayList<>();
         if (movies == null) {
             return items;
@@ -65,7 +69,7 @@ public final class LibraryBuilder {
                     0,
                     watchedList));
         }
-        return sortedByTitle(items);
+        return sorted(items, sort);
     }
 
     /**
@@ -76,12 +80,14 @@ public final class LibraryBuilder {
      * @param seasons  all the known seasons, may be {@code null}
      * @param episodes the watched episodes, may be {@code null}
      * @param filter   the list to build, watched or watchlist
+     * @param sort     the ordering and sectioning mode, may be {@code null} for alphabetical
      */
     public static List<LibraryItem> buildSeries(
             List<SerieDatabase> series,
             List<SeasonDatabase> seasons,
             List<EpisodeDatabase> episodes,
-            LibraryFilter filter
+            LibraryFilter filter,
+            LibrarySort sort
     ) {
         List<LibraryItem> items = new ArrayList<>();
         if (series == null) {
@@ -139,7 +145,7 @@ public final class LibraryBuilder {
                     totalEpisodes,
                     fullyWatched));
         }
-        return sortedByTitle(items);
+        return sorted(items, sort);
     }
 
     /** Watched episode count per (serie, season). Every stored row means a watched episode. */
@@ -165,8 +171,9 @@ public final class LibraryBuilder {
         return grouped;
     }
 
-    private static List<LibraryItem> sortedByTitle(List<LibraryItem> items) {
-        items.sort((left, right) -> AlphabetUtils.compareTitles(left.title(), right.title()));
+    private static List<LibraryItem> sorted(List<LibraryItem> items, LibrarySort sort) {
+        LibrarySort effectiveSort = sort != null ? sort : LibrarySort.ALPHABETICAL;
+        effectiveSort.sort(items);
         return items;
     }
 

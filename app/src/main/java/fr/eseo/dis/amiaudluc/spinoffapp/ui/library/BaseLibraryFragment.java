@@ -45,8 +45,8 @@ public abstract class BaseLibraryFragment extends Fragment implements ItemInterf
     }
 
     /**
-     * Opens the A-Z list of the library, restricted to the media type of the screen and to the
-     * given list.
+     * Opens the sortable list of the library, restricted to the media type of the screen and to
+     * the given list.
      */
     private void openLibraryList(int titleRes, LibraryFilter filter) {
         Intent intent = new Intent(requireContext(), LibraryListActivity.class);

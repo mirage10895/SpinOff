@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Section divider of the library list screen: the letter, how many titles it introduces and the
-     matching index label. Purely visual: nothing navigates to a section. -->
+<!-- Section divider of the library list screen: the section label (a letter, a year, a genre or a
+     rating), how many titles it introduces and the matching index label. Purely visual: nothing
+     navigates to a section. The label auto-sizes so long genres fit next to the count. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,8 +18,14 @@
         android:id="@+id/letter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="@dimen/library_letter_size"
+        android:autoSizeMinTextSize="@dimen/library_section_label_min_size"
+        android:autoSizeStepGranularity="1sp"
+        android:autoSizeTextType="uniform"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxWidth="@dimen/library_section_label_max_width"
         android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/library_letter_size"
         android:textStyle="bold"
         tools:text="A" />
 

@@ -5,16 +5,18 @@ import androidx.recyclerview.widget.DiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import fr.eseo.dis.amiaudluc.spinoffapp.utils.AlphabetUtils;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryItem;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibrarySort;
 
 /**
- * A row of the library list screen: either a letter divider or a media tile.
+ * A row of the library list screen: either a section divider or a media tile.
  * <p>
- * The letter dividers are purely visual: the screen has no index bar, so nothing navigates to
- * a section for now. Grouping relies on the incoming list being ordered by section letter,
- * which {@link fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryBuilder} guarantees.
+ * The dividers are purely visual: the screen has no index bar, so nothing navigates to a section
+ * for now. Grouping relies on the incoming list being ordered by the active {@link LibrarySort},
+ * which {@link fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.library.LibraryBuilder} guarantees, so a
+ * single pass is enough to turn the tiles into dividers followed by their tiles.
  */
 public sealed interface LibraryRow {
     String getReference();
@@ -22,9 +24,10 @@ public sealed interface LibraryRow {
     DiffUtil.ItemCallback<LibraryRow> DIFF_CALLBACK = new DiffUtil.ItemCallback<>() {
         @Override
         public boolean areItemsTheSame(@NonNull LibraryRow oldItem, @NonNull LibraryRow newItem) {
-            if (oldItem instanceof LetterHeader oldHeader
-                    && newItem instanceof LetterHeader newHeader) {
-                return oldHeader.letter() == newHeader.letter();
+            if (oldItem instanceof SectionHeader oldHeader
+                    && newItem instanceof SectionHeader newHeader) {
+                return oldHeader.sort() == newHeader.sort()
+                        && Objects.equals(oldHeader.value(), newHeader.value());
             }
             if (oldItem instanceof MediaTile oldTile && newItem instanceof MediaTile newTile) {
                 return oldTile.item().id() == newTile.item().id()
@@ -40,46 +43,52 @@ public sealed interface LibraryRow {
     };
 
     /**
-     * Splits an alphabetically ordered list of tiles into letter dividers followed by their
-     * tiles. Each divider carries the number of tiles it introduces.
+     * Splits a list ordered by {@code sort} into section dividers followed by their tiles. Each
+     * divider carries the raw section value and the number of tiles it introduces.
      */
-    static List<LibraryRow> group(List<LibraryItem> items) {
+    static List<LibraryRow> group(List<LibraryItem> items, LibrarySort sort) {
         List<LibraryRow> rows = new ArrayList<>();
         if (items == null || items.isEmpty()) {
             return rows;
         }
 
-        char currentLetter = 0;
+        LibrarySort activeSort = sort != null ? sort : LibrarySort.ALPHABETICAL;
+        String currentSection = activeSort.sectionValue(items.get(0));
         List<LibraryItem> currentRun = new ArrayList<>();
 
         for (LibraryItem item : items) {
-            char letter = AlphabetUtils.letterOf(item.title());
-            if (letter != currentLetter && !currentRun.isEmpty()) {
-                appendRun(rows, currentLetter, currentRun);
+            String section = activeSort.sectionValue(item);
+            if (!currentRun.isEmpty() && !Objects.equals(section, currentSection)) {
+                appendRun(rows, activeSort, currentSection, currentRun);
                 currentRun.clear();
+                currentSection = section;
             }
-            currentLetter = letter;
             currentRun.add(item);
         }
-        appendRun(rows, currentLetter, currentRun);
+        appendRun(rows, activeSort, currentSection, currentRun);
         return rows;
     }
 
-    private static void appendRun(List<LibraryRow> rows, char letter, List<LibraryItem> run) {
+    private static void appendRun(
+            List<LibraryRow> rows, LibrarySort sort, String section, List<LibraryItem> run) {
         if (run.isEmpty()) {
             return;
         }
-        rows.add(new LetterHeader(letter, run.size()));
+        rows.add(new SectionHeader(sort, section, run.size()));
         for (LibraryItem item : run) {
             rows.add(new MediaTile(item));
         }
     }
 
-    /** Section divider showing the letter and how many tiles it introduces. */
-    record LetterHeader(char letter, int count) implements LibraryRow {
+    /**
+     * Section divider showing the raw section value and how many tiles it introduces. The value is
+     * {@code null} for the "unknown" section, which the adapter renders with its own label.
+     */
+    record SectionHeader(LibrarySort sort, String value, int count) implements LibraryRow {
         @Override
         public String getReference() {
-            return String.valueOf(letter);
+            // The count belongs to the content: a divider must rebind when its tile count changes.
+            return sort + ":" + value + ":" + count;
         }
     }
 
