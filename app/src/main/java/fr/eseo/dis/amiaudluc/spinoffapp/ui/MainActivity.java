@@ -13,7 +13,10 @@ import android.view.animation.AnticipateInterpolator;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.splashscreen.SplashScreen;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setupWindowInsets();
 
         checkPermissions();
         setupBottomNavigation();
@@ -79,6 +83,32 @@ public class MainActivity extends AppCompatActivity {
             });
 
             slideUp.start();
+        });
+    }
+
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (view, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+
+            // The keyboard is drawn over the bottom navigation and the navigation bar: only the
+            // part that overlaps the screens has to be removed from their height.
+            int keyboardOverlap = ime.bottom - bars.bottom - binding.bottomNavigation.getHeight();
+            binding.navHostFragment.setPadding(0, 0, 0, Math.max(0, keyboardOverlap));
+
+            return WindowInsetsCompat.CONSUMED;
+        });
+
+        // The keyboard overlap depends on the height of the bottom navigation, which is not
+        // measured yet on the first dispatch (e.g. when the activity is recreated with the
+        // keyboard open): re-dispatch the insets once it is laid out.
+        binding.bottomNavigation.addOnLayoutChangeListener((view, left, top, right, bottom,
+                                                            oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (bottom - top != oldBottom - oldTop) {
+                ViewCompat.requestApplyInsets(binding.getRoot());
+            }
         });
     }
 
