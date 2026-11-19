@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSearchMainBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Artist;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
@@ -27,14 +28,16 @@ import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.ItemInterface;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.common.MediaAdapter;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.movies.MovieActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.ui.series.SerieActivity;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchUiState;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 /**
  * A fragment representing a search result list.
  * <p>
- * Renders the medias carried by {@link SearchUiState} in three horizontal rows. While a new query
- * is loading, the previous medias are kept so the container can display them dimmed.
+ * Renders the medias carried by {@link SearchUiState} in three horizontal rows, keeping only the
+ * categories allowed by the {@link SearchFilter} of the state. While a new query is loading, the
+ * previous medias are kept so the container can display them dimmed.
  */
 public class SearchFragment extends Fragment implements ItemInterface {
     private FragmentSearchMainBinding binding;
@@ -44,6 +47,8 @@ public class SearchFragment extends Fragment implements ItemInterface {
     private ArtistsAdapter artistsAdapter;
     /** Last list handed to the adapters, used to skip a re-render of unchanged results. */
     private List<Media> renderedMedias;
+    /** Last filter applied to the adapters, so a filter-only change still re-renders. */
+    private SearchFilter renderedFilter;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -82,9 +87,18 @@ public class SearchFragment extends Fragment implements ItemInterface {
         binding.recyclerArtists.setAdapter(artistsAdapter);
     }
 
-    private void setupLayoutManager(androidx.recyclerview.widget.RecyclerView recyclerView) {
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+    /**
+     * Lays a result row out horizontally.
+     * <p>
+     * {@code setHasFixedSize} is deliberately left at its default ({@code false}): the rows are
+     * {@code wrap_content}, and a row hidden by the category filter is measured while its adapter
+     * is still empty. A fixed size tells the RecyclerView that its size never depends on its
+     * content, so it would skip the relayout when the items arrive and the row would come back
+     * blank after switching the filter.
+     */
+    private void setupLayoutManager(RecyclerView recyclerView) {
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void observeViewModel() {
@@ -96,23 +110,26 @@ public class SearchFragment extends Fragment implements ItemInterface {
             return;
         }
         if (state instanceof SearchUiState.Loading loading) {
-            updateMedias(loading.previousResults());
+            updateMedias(loading.previousResults(), loading.filter());
         } else if (state instanceof SearchUiState.Success success) {
-            updateMedias(success.medias());
+            updateMedias(success.medias(), success.filter());
         } else {
             clearMedias();
         }
     }
 
-    private void updateMedias(List<Media> medias) {
-        if (medias == null || binding == null || medias == renderedMedias) return;
+    private void updateMedias(List<Media> medias, SearchFilter filter) {
+        if (medias == null || filter == null || binding == null) return;
+        if (medias == renderedMedias && filter == renderedFilter) return;
         renderedMedias = medias;
+        renderedFilter = filter;
 
         List<Movie> movies = new ArrayList<>();
         List<Serie> series = new ArrayList<>();
         List<Artist> artists = new ArrayList<>();
 
         for (Media media : medias) {
+            if (!filter.matches(media)) continue;
             switch (media.getMediaType()) {
                 case Media.MOVIE:
                     movies.add((Movie) media);
@@ -138,6 +155,7 @@ public class SearchFragment extends Fragment implements ItemInterface {
     private void clearMedias() {
         if (binding == null) return;
         renderedMedias = null;
+        renderedFilter = null;
         binding.moviesLayer.setVisibility(View.GONE);
         binding.seriesLayer.setVisibility(View.GONE);
         binding.artistsLayer.setVisibility(View.GONE);
@@ -151,6 +169,7 @@ public class SearchFragment extends Fragment implements ItemInterface {
         super.onDestroyView();
         binding = null;
         renderedMedias = null;
+        renderedFilter = null;
     }
 
     @Override

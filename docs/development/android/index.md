@@ -30,6 +30,7 @@ alwaysApply: false
 - Use **ViewBinding** (`buildFeatures.viewBinding = true`); never use `findViewById`.
 - Inflate the layout in `onCreateView` / `onCreate`, keep a binding field, and clear it in `onDestroyView` to avoid leaks.
 - Use `RecyclerView` with dedicated adapters for lists; never build lists by looping over `LinearLayout` children.
+- Never call `setHasFixedSize(true)` on a `wrap_content` list. A `ListAdapter` diff is applied asynchronously, so a row that was measured while its adapter was empty (e.g. hidden by a filter) keeps that height and comes back blank: the fixed size makes the RecyclerView skip the relayout.
 - Any user-visible text must come from `strings.xml` (`@string/...`); never hardcode user-facing strings in code or layouts.
 - Window insets are handled **once**, in `MainActivity.setupWindowInsets()`: the root is padded by the system bars and the navigation host is lifted above the keyboard. Since Android 15 the window is edge-to-edge and the IME no longer resizes it, so do not reintroduce `android:fitsSystemWindows` on the main layout and do not consume insets in the screens.
 - Respect the [UX/UI charter](../../ux/charte-ux.md) for theme, styles, navigation and components.

@@ -7,8 +7,8 @@ import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
 /**
  * State of the search screen, exposed as a single source of truth by {@link SearchViewModel}.
  * <p>
- * The view only renders this state: it never decides by itself whether a search is running or
- * whether the displayed results are up to date.
+ * The view only renders this state: it never decides by itself whether a search is running,
+ * whether the displayed results are up to date or which category is filtered.
  */
 public sealed interface SearchUiState {
 
@@ -21,11 +21,16 @@ public sealed interface SearchUiState {
      * results so the screen can keep them visible (dimmed) instead of clearing them, including
      * after a configuration change.
      */
-    record Loading(String query, List<Media> previousResults) implements SearchUiState {
+    record Loading(String query, List<Media> previousResults, SearchFilter filter)
+            implements SearchUiState {
     }
 
-    /** The API answered for {@code query}. */
-    record Success(String query, List<Media> medias) implements SearchUiState {
+    /**
+     * The API answered for {@code query}. {@code medias} is the complete answer: the
+     * {@code filter} is applied by the view, which needs every category to enable its chip.
+     */
+    record Success(String query, List<Media> medias, SearchFilter filter)
+            implements SearchUiState {
     }
 
     /** The API call for {@code query} failed. */

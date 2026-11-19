@@ -56,6 +56,15 @@ which owns the whole state machine and exposes a single `LiveData<SearchUiState>
   restarts the debounce nor refetches. After a process death the field restores its own text,
   which goes through the same `TextWatcher` and replays the search; an identical query is ignored.
 - **Enter key:** it only dismisses the keyboard, since the debounce already handles the search.
+- **Category filter:** four chips (**All / Movies / Series / Persons**) under the search field
+  filter the results **client-side** — the TMDB search endpoint only accepts a free-text query, so
+  selecting a chip never triggers a call. The selection lives in `SearchViewModel` and is carried by
+  `SearchUiState` (`Loading` and `Success` both expose a `SearchFilter`), so it survives a
+  configuration change and the view keeps rendering a single source of truth. `SearchFilter` decides
+  which media types a chip accepts; `SearchContainerFragment` labels each chip with the number of
+  results of its category (`All 24`, `Movies 14`…), disables a chip whose category is empty and
+  `SearchFragment` hides the rows the filter excludes. When new results no longer contain
+  the selected category, the ViewModel falls back to `ALL` — a disabled chip can never stay checked.
 
 ## Library list screen
 

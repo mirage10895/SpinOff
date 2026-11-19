@@ -67,6 +67,9 @@
     <dimen name="search_bar_clear_inset">8dp</dimen>
     <dimen name="search_bar_clear_icon_padding">15dp</dimen>
 
+    <!-- Horizontal gap between two chips of a selector group. -->
+    <dimen name="chip_group_spacing">8dp</dimen>
+
     <!-- Library settings bottom sheet: sectioned list of preferences and backup actions. -->
     <dimen name="divider_thickness">1dp</dimen>
     <dimen name="setting_row_min_height">56dp</dimen>

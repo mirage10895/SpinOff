@@ -3,6 +3,7 @@ package fr.eseo.dis.amiaudluc.spinoffapp.ui.search;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -23,14 +25,17 @@ import androidx.lifecycle.ViewModelProvider;
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.FragmentSearchContainerBinding;
 import fr.eseo.dis.amiaudluc.spinoffapp.api.tmdb.beans.Media;
+import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchFilter;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchUiState;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.SearchViewModel;
 
 /**
- * Hosts the search field and renders the {@link SearchUiState} exposed by {@link SearchViewModel}.
+ * Hosts the search field, the category chips and renders the {@link SearchUiState} exposed by
+ * {@link SearchViewModel}.
  * <p>
- * The fragment only forwards the typed text and displays the state: the debounce, the loading
- * flag and the freshness of the results are owned by the ViewModel.
+ * The fragment only forwards the typed text and the selected filter, and displays the state: the
+ * debounce, the loading flag, the freshness of the results and the filter itself are owned by the
+ * ViewModel.
  */
 public class SearchContainerFragment extends Fragment {
 
@@ -41,6 +46,8 @@ public class SearchContainerFragment extends Fragment {
     private FragmentSearchContainerBinding binding;
     private SearchViewModel searchViewModel;
     private InputMethodManager imm;
+    /** Guards the chip synchronisation so a programmatic check does not loop back to the ViewModel. */
+    private boolean syncingFilterChips;
 
     public SearchContainerFragment() {
         // Required empty public constructor
@@ -78,6 +85,13 @@ public class SearchContainerFragment extends Fragment {
         binding.searchBarContainer.setOnClickListener(view -> showKeyboard(binding.query));
 
         binding.clearQuery.setOnClickListener(view -> binding.query.setText(""));
+
+        binding.chipGroupSearchFilter.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            if (syncingFilterChips || checkedIds.isEmpty()) {
+                return;
+            }
+            searchViewModel.onFilterSelected(filterOf(checkedIds.get(0)));
+        });
 
         binding.query.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -123,14 +137,89 @@ public class SearchContainerFragment extends Fragment {
             return;
         }
         if (state instanceof SearchUiState.Loading loading) {
+            renderFilterChips(loading.previousResults(), loading.filter());
             renderLoading(loading.previousResults());
         } else if (state instanceof SearchUiState.Success success) {
+            renderFilterChips(success.medias(), success.filter());
             renderSuccess(success.medias());
         } else if (state instanceof SearchUiState.Error) {
+            hideFilterChips();
             renderError();
         } else {
+            hideFilterChips();
             renderIdle();
         }
+    }
+
+    /**
+     * Shows the category chips over the results and disables the ones whose category is empty, so
+     * an unavailable filter can never be selected.
+     * <p>
+     * The chips are hidden when there is nothing to filter: an empty state or an error already
+     * tells the user that no result matches.
+     */
+    private void renderFilterChips(List<Media> medias, SearchFilter filter) {
+        boolean hasResults = medias != null && !medias.isEmpty();
+        binding.chipScrollSearchFilter.setVisibility(hasResults ? View.VISIBLE : View.GONE);
+        if (!hasResults) {
+            return;
+        }
+
+        bindFilterChip(binding.chipSearchAll, SearchFilter.ALL, R.string.search_filter_all, medias);
+        bindFilterChip(binding.chipSearchMovies, SearchFilter.MOVIES, R.string.menu_movie, medias);
+        bindFilterChip(binding.chipSearchSeries, SearchFilter.SERIES, R.string.menu_series, medias);
+        bindFilterChip(binding.chipSearchPersons, SearchFilter.ARTISTS, R.string.menu_artists, medias);
+
+        syncingFilterChips = true;
+        binding.chipGroupSearchFilter.check(chipIdOf(filter));
+        syncingFilterChips = false;
+    }
+
+    private void hideFilterChips() {
+        binding.chipScrollSearchFilter.setVisibility(View.GONE);
+    }
+
+    /**
+     * Labels a chip with its category and the number of results it holds, then disables it when
+     * that category is empty.
+     */
+    private void bindFilterChip(
+            Chip chip, SearchFilter filter, @StringRes int labelRes, List<Media> medias) {
+        int count = 0;
+        for (Media media : medias) {
+            if (filter.matches(media)) {
+                count++;
+            }
+        }
+
+        CharSequence label =
+                getString(R.string.search_filter_chip_label, getString(labelRes), count);
+        if (!TextUtils.equals(label, chip.getText())) {
+            chip.setText(label);
+        }
+        chip.setEnabled(count > 0);
+    }
+
+    private static SearchFilter filterOf(int chipId) {
+        if (chipId == R.id.chip_search_movies) {
+            return SearchFilter.MOVIES;
+        }
+        if (chipId == R.id.chip_search_series) {
+            return SearchFilter.SERIES;
+        }
+        if (chipId == R.id.chip_search_persons) {
+            return SearchFilter.ARTISTS;
+        }
+        return SearchFilter.ALL;
+    }
+
+    private static int chipIdOf(SearchFilter filter) {
+        return switch (filter) {
+            case MOVIES -> R.id.chip_search_movies;
+            case SERIES -> R.id.chip_search_series;
+            case ARTISTS -> R.id.chip_search_persons;
+            case ALL -> R.id.chip_search_all;
+        };
     }
 
     /**

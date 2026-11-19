@@ -31,9 +31,12 @@ The interface follows a dark, **Material Design** "Bento" style: rounded cards, 
 | `color_card_outline` | `#22FFFFFF` | Card outlines, off-state switch tracks |
 | `color_primary_ripple` | `#334F9DA6` | Ripples on the dark bottom sheets |
 | `search_clear_background` | `#3A3A3A` | Round background of the search field's clear button |
+| `color_text_disabled` | `#61E5E2E1` | Text/icons of a disabled selector (chip, dropdown) |
+| `chip_background_disabled` | `#14E5E2E1` | Background of a disabled chip |
+| `chip_stroke_disabled` | `#1F9DA6E6` | Outline of a disabled chip or dropdown |
 
 - **Never hardcode a hex color** in a layout or in code. Always reference a color resource. If a new color is needed, add it to `colors.xml` — and do not create near-duplicate shades for the same semantic intent.
-- State lists (chip text/background, bottom navigation tint) live in `res/color/` (e.g. `chip_text_color.xml`, `bottom_nav_color.xml`).
+- State lists (chip text/background, bottom navigation tint) live in `res/color/` (e.g. `chip_text_color.xml`, `bottom_nav_color.xml`). `chip_background_color.xml`, `chip_text_color.xml` and `bento_selector_stroke_color.xml` all carry a `state_enabled="false"` branch: a disabled selector is dimmed on background, text and outline, never only on one of them.
 
 ## 3. Dimensions (`res/values/dimens.xml`)
 
@@ -52,7 +55,8 @@ Reuse these styles instead of redefining them:
 
 - `BentoCard` (and `BentoCard.Outline`, `BentoCard.Outline.Primary`): rounded (24dp) flat cards with an optional outline.
 - `MediaPosterCard`: poster tile of the discovery grids (12dp corners, accent outline toggled when the title is in the library).
-- `BentoChip` (parent `Widget.MaterialComponents.Chip.Filter`): filter/selection chip.
+- `BentoChip` (parent `Widget.MaterialComponents.Chip.Filter`): filter/selection chip, 48dp tall, used for screen-level sub-navigation and sort selectors.
+- `BentoChip.Compact`: same colors and outline, but 32dp tall with tighter paddings (11sp). Use it for the small selectors that live **inside** a content block — search result filters, status toggles — where a 48dp bar would overpower the content.
 - `BentoIconButton`: 48dp square outlined icon button.
 - `BentoLabel` / `BentoValue` (`BentoValue.Large`): uppercase label and large value used in stat cards.
 - `BentoSelector` / `BentoSelectorText`: outlined exposed-dropdown selector.
@@ -72,6 +76,7 @@ Reuse these styles instead of redefining them:
 - Give the group a clear id (`chip_group_type`, `chip_group_discovery_type`) and react to selection with `setOnCheckedStateChangeListener`.
 - Status toggles (e.g. "In watchlist", "Watched") reuse the pattern in `layout_status_chips.xml` with `Widget.MaterialComponents.Chip.Filter` chips.
 - Sort selectors (e.g. **A-Z / Release year / Genre / Rating** on the library list) use the same single-selection `ChipGroup` of `BentoChip`s, placed under the app bar. Wrap it in a `HorizontalScrollView` when the labels do not fit on narrow screens, and keep the selection synchronized from the ViewModel so it survives a configuration change.
+- The **search result filter** (`chip_group_search_filter`) is a single-selection `ChipGroup` of four compact chips — **All / Movies / Series / Persons** — placed directly under the search field and wrapped in a `HorizontalScrollView`. Each chip carries the number of results of its category (`%1$s %2$d`), uses `BentoChip.Compact` and the `chip_group_spacing` gap. The row is hidden when there is nothing to filter (idle, no result, error). A chip whose category has no result is **disabled** (`setEnabled(false)`) so it reads as dimmed and cannot be selected: an empty filter must never become the current one.
 
 ## 7. Layout conventions
 

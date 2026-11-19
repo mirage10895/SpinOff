@@ -12,6 +12,9 @@
     <string name="empty_results">Nothing to show</string>
     <string name="empty_desc_results">There\'s no medias to display ! \n Check your network connexion.</string>
     <string name="search_for">Search for movies, TV shows ..</string>
+    <string name="search_filter_all">All</string>
+    <!-- Label of a search filter chip: the category name followed by its number of results. -->
+    <string name="search_filter_chip_label">%1$s %2$d</string>
 
     <!-- POSTER URLS -->
     <string name="poster">poster</string>
