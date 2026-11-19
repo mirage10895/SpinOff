@@ -23,12 +23,14 @@ import com.google.android.material.snackbar.Snackbar;
 
 import fr.eseo.dis.amiaudluc.R;
 import fr.eseo.dis.amiaudluc.databinding.BottomSheetLibrarySettingsBinding;
+import fr.eseo.dis.amiaudluc.spinoffapp.ui.about.AboutActivity;
 import fr.eseo.dis.amiaudluc.spinoffapp.utils.NotificationPreferences;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.backup.BackupState;
 import fr.eseo.dis.amiaudluc.spinoffapp.viewmodel.backup.BackupViewModel;
 
 /**
- * Modal settings of the library: backup export/import and the release notification preference.
+ * Modal settings of the library: backup export/import, the release notification preference and
+ * the About entry point.
  * Asks for the notification permission only when the user opts in, so a refusal stays reversible.
  */
 public class LibrarySettingsBottomSheet extends BottomSheetDialogFragment {
@@ -94,6 +96,7 @@ public class LibrarySettingsBottomSheet extends BottomSheetDialogFragment {
         binding.rowExport.setOnClickListener(v -> exportLauncher.launch("spinoff_backup.json"));
         binding.rowImport.setOnClickListener(v ->
                 importLauncher.launch(new String[]{"application/json"}));
+        binding.rowAbout.setOnClickListener(v -> openAbout());
 
         viewModel.getState().observe(getViewLifecycleOwner(), this::handleState);
     }
@@ -146,6 +149,15 @@ public class LibrarySettingsBottomSheet extends BottomSheetDialogFragment {
         Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                 .putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().getPackageName());
         startActivity(intent);
+    }
+
+    /**
+     * The sheet is modal: close it before opening the About screen so it does not stay stacked
+     * behind the activity.
+     */
+    private void openAbout() {
+        dismiss();
+        startActivity(new Intent(requireContext(), AboutActivity.class));
     }
 
     private void handleState(BackupState state) {

@@ -31,7 +31,6 @@ android {
         }
         debug {
             applicationIdSuffix '.debug'
-            versionNameSuffix 'spinoffapp'
         }
     }
     buildFeatures {

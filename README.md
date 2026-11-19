@@ -57,6 +57,7 @@ All metadata comes from the **TMDB** API (titles, posters, IMDb ratings, genres,
 - **Backup**: export / import your library as **JSON**.
 - **Background sync**: periodic series updates via **WorkManager** — a lightweight daily release check plus a full metadata refresh every 10 days.
 - **Release notifications**: get notified when a new episode or season of a series in your library is released (toggle in the library settings).
+- **Settings and About**: the library settings sheet hosts the application-level settings; its About section opens an About screen with the version and the mandatory TMDB attribution (official logo and notice).
 - **Theme**: Material Design UI with an animated splash screen.
 
 ## 🏗️ Architecture

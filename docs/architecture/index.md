@@ -80,6 +80,15 @@ of tiles split into sections. The user can order and section it in four ways:
   would otherwise keep the tile that was visible before the change and rearrange the rest
   around it.
 
+## Settings and About
+
+The library settings bottom sheet (`LibrarySettingsBottomSheet`) is the single settings entry
+point. It ends with an **About** section whose row opens `AboutActivity`, which shows the app
+version (from `BuildConfig.VERSION_NAME`) and the TMDB attribution required by the API terms of
+use: the official logo (`ic_tmdb_logo`, converted unchanged from the published SVG), the verbatim
+notice and a link to themoviedb.org. The notice text is part of the terms: it must not be
+translated or reworded.
+
 ## Data storage
 
 - **Room** is the source of truth for the user's library (movies, series, seasons, episodes, watched state).

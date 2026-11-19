@@ -75,4 +75,11 @@
     <dimen name="setting_row_icon_size">24dp</dimen>
     <dimen name="setting_row_icon_margin">12dp</dimen>
     <dimen name="setting_row_gap">2dp</dimen>
+
+    <!-- About screen: the TMDB wordmark keeps its intrinsic aspect ratio. -->
+    <dimen name="about_logo_width">200dp</dimen>
+    <dimen name="about_section_gap">24dp</dimen>
+    <dimen name="about_version_size">14sp</dimen>
+    <dimen name="about_description_size">15sp</dimen>
+    <dimen name="about_notice_size">13sp</dimen>
 </resources>

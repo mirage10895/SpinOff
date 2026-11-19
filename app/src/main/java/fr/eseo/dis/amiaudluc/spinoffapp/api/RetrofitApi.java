@@ -14,6 +14,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import fr.eseo.dis.amiaudluc.BuildConfig;
+
 public class RetrofitApi {
 
     private RetrofitApi() {
@@ -22,7 +24,12 @@ public class RetrofitApi {
 
     public static OkHttpClient.Builder httpClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        // BODY is a development aid only: it logs the full URL (hence the API key) and the
+        // payloads. Release builds must never write credentials to Logcat.
+        interceptor.setLevel(BuildConfig.DEBUG
+                ? HttpLoggingInterceptor.Level.BODY
+                : HttpLoggingInterceptor.Level.NONE);
+        interceptor.redactHeader("Authorization");
         return new OkHttpClient.Builder()
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .writeTimeout(15, TimeUnit.SECONDS)

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- About screen. The content lives in a dark BentoCard so it reads the same in light and dark
+     mode. The TMDB block (official logo, verbatim notice and link) is the attribution required by
+     the TMDB API terms of use: it must stay in an About/Credits section. -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/app_bar_main"
+        layout="@layout/app_bar_main" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/about_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar_main">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/activity_horizontal_margin"
+            android:paddingVertical="@dimen/activity_vertical_margin">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/BentoCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/activity_horizontal_margin">
+
+                    <TextView
+                        android:id="@+id/text_about_app_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_about_version"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/setting_row_gap"
+                        android:textColor="@color/color_text_secondary"
+                        android:textSize="@dimen/about_version_size"
+                        tools:text="Version 1.0" />
+
+                    <TextView
+                        android:id="@+id/text_about_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:lineSpacingMultiplier="1.15"
+                        android:text="@string/about_description"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/about_description_size" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/divider_thickness"
+                        android:layout_marginTop="@dimen/about_section_gap"
+                        android:background="@color/color_primary_semi_opaq" />
+
+                    <TextView
+                        style="@style/BentoLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:layout_marginBottom="@dimen/text_margin"
+                        android:text="@string/about_section_data" />
+
+                    <ImageView
+                        android:id="@+id/image_about_tmdb_logo"
+                        android:layout_width="@dimen/about_logo_width"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/about_tmdb_logo_description"
+                        android:src="@drawable/ic_tmdb_logo" />
+
+                    <TextView
+                        android:id="@+id/text_about_tmdb_notice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/setting_row_icon_margin"
+                        android:lineSpacingMultiplier="1.15"
+                        android:text="@string/about_tmdb_notice"
+                        android:textColor="@color/color_text_secondary"
+                        android:textSize="@dimen/about_notice_size" />
+
+                    <TextView
+                        android:id="@+id/text_about_tmdb_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/text_margin"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingVertical="@dimen/setting_row_gap"
+                        android:text="@string/about_tmdb_link"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/about_notice_size" />
+
+                    <TextView
+                        android:id="@+id/text_about_copyright"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/about_section_gap"
+                        android:text="@string/copyright"
+                        android:textColor="@color/color_text_secondary"
+                        android:textSize="@dimen/about_notice_size" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
